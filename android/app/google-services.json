@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "868742887756",
+    "firebase_url": "https://unidelivery-fad6f.firebaseio.com",
+    "project_id": "unidelivery-fad6f",
+    "storage_bucket": "unidelivery-fad6f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:868742887756:android:ad79e516cf3787e314b7e9",
+        "android_client_info": {
+          "package_name": "unibean.net"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "868742887756-7puthu01nsp8vr1qc0knonbeeb0ie95j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDJ3B-0xSAFDxYRVQdcuqhcnQaWN9dk7P0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "868742887756-7puthu01nsp8vr1qc0knonbeeb0ie95j.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
