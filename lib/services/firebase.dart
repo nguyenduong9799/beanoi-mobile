@@ -1,35 +1,25 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:unidelivery_mobile/screens/home.dart';
-import 'package:unidelivery_mobile/screens/login.dart';
+import 'package:unidelivery_mobile/Model/DAO/AccountDAO.dart';
+import 'package:unidelivery_mobile/Model/DTO/AccountDTO.dart';
 
 class AuthService {
   FirebaseAuth auth = FirebaseAuth.instance;
-  handleAuth() {
-    return StreamBuilder<User>(
-      stream: auth.authStateChanges(),
-      builder: (context, snapshot) =>
-          snapshot.hasData ? HomeScreen(user: snapshot.data) : LoginScreen(),
-    );
-  }
+  AccountDAO dao = AccountDAO();
 
-  signIn(AuthCredential authCredential) async {
+  Future<UserCredential> signIn(AuthCredential authCredential) async {
     UserCredential userCredential =
         await auth.signInWithCredential(authCredential);
-    // check from server whether has info that user
-    getUserFromServer(userCredential.user.uid);
+    return userCredential;
   }
 
   signOut() {
+    // remove pref
     auth.signOut();
   }
 
-  signInWithOTP(String smsCode, String verId) {
+  Future<AuthCredential> signInWithOTP(String smsCode, String verId) async {
     AuthCredential authCredential =
         PhoneAuthProvider.credential(verificationId: verId, smsCode: smsCode);
-    this.signIn(authCredential);
+    return authCredential;
   }
-
-  // TODO: Implement this
-  getUserFromServer(String uid) {}
 }

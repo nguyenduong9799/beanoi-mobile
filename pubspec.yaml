@@ -27,6 +27,12 @@ dependencies:
   firebase_core: ^0.5.0
   firebase_auth: ^0.18.0+1
   firebase_analytics: ^6.0.0
+  firebase_messaging: ^6.0.16
+  scoped_model: ^1.0.1
+  intl: ^0.16.1
+  progress_dialog: ^1.2.4
+  dio: ^3.0.9
+  shared_preferences: ^0.5.7+3
 
 dev_dependencies:
   flutter_test:
