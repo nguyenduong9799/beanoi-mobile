@@ -1,11 +1,10 @@
+import 'package:animator/animator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:unidelivery_mobile/Model/DAO/AccountDAO.dart';
 import 'package:unidelivery_mobile/View/home.dart';
 import 'package:unidelivery_mobile/ViewModel/login_viewModel.dart';
-import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/services/firebase.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -30,6 +29,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
+
     pr = new ProgressDialog(
       context,
       showLogs: true,
@@ -66,38 +66,51 @@ class _LoginScreenState extends State<LoginScreen> {
                     color: Color(0xFFc3e18e),
                   ),
                 ),
-                // Image.asset(
-                //   'assets/images/Login_Character.png',
-                //   width: 900,
-                //   color: Colors.amber,
-                //   fit: BoxFit.cover,
-                // ),
-                Center(
-                  child: Container(
-                    margin: EdgeInsets.only(top: 90),
-                    height: screenHeight - 240,
-                    width: screenWidth,
-                    // padding: EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      // color: Colors.amber,
-                      image: DecorationImage(
-                        // alignment: Alignment.center,
-                        image: AssetImage('assets/images/16-layers.png'),
-                        // scale: 0.8,
-                        fit: BoxFit.cover,
+                Animator(
+                  tween:
+                      Tween<Offset>(begin: Offset(0, -50), end: Offset(0, 50)),
+                  duration: Duration(seconds: 2),
+                  cycles: 2,
+                  builder: (context, anim, child) => Container(
+                    child: Transform.translate(
+                      offset: anim.value,
+                      child: Container(
+                        margin: EdgeInsets.only(top: 90),
+                        width: screenWidth,
+                        height: screenHeight,
+                        child: Stack(
+                          children: [
+                            Center(
+                              child: Container(
+                                margin: EdgeInsets.only(top: 90),
+                                height: screenHeight - 240,
+                                width: screenWidth,
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    // alignment: Alignment.center,
+                                    image: AssetImage(
+                                        'assets/images/16-layers.png'),
+                                    // scale: 0.8,
+                                    fit: BoxFit.cover,
+                                  ),
+                                  // shape: BoxShape.rectangle,
+                                ),
+                              ),
+                            ),
+                            Center(
+                              child: Container(
+                                margin: EdgeInsets.only(top: 45),
+                                width: formWidth,
+                                child: ScopedModelDescendant<LoginViewModel>(
+                                  builder: (BuildContext context, Widget child,
+                                          LoginViewModel model) =>
+                                      _buildLoginForm(model),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                      // shape: BoxShape.rectangle,
-                    ),
-                  ),
-                ),
-                Center(
-                  child: Container(
-                    margin: EdgeInsets.only(top: 45),
-                    width: formWidth,
-                    child: ScopedModelDescendant<LoginViewModel>(
-                      builder: (BuildContext context, Widget child,
-                              LoginViewModel model) =>
-                          _buildLoginForm(model),
                     ),
                   ),
                 ),
@@ -122,61 +135,49 @@ class _LoginScreenState extends State<LoginScreen> {
     return Center(
       child: Container(
         height: formHeight,
-        child: Column(
+        child: Stack(
+          overflow: Overflow.visible,
           children: [
-            Expanded(
-              flex: 1,
-              child: Align(
-                // alignment: Alignment.center,
-                child: Theme(
-                  data: ThemeData(
-                    primaryColor: Color(0xFF45822b),
-                    accentColor: Colors.orange,
-                    hintColor: Colors.white70,
-                  ),
-                  child: Container(
-                    width: 250,
-                    // height: 70,
-                    // color: Colors.yellowAccent,
-                    child: Stack(
-                      children: [
-                        AnimatedPositioned(
-                          duration: Duration(milliseconds: 700),
-                          curve: Curves.easeIn,
-                          left: smsSent ? -300 : 0,
-                          top: 10,
-                          child: Container(
-                            width: 250,
-                            height: 50,
-                            child: TextFormField(
-                              keyboardType: TextInputType.phone,
-                              style: TextStyle(color: Colors.white),
-                              autofocus: true,
-                              validator: (value) {
-                                if (value.isEmpty) {
-                                  return 'Vui lòng nhập số điện thoại';
-                                }
-                                return null;
-                              },
-                              // autofocus: true,
-                              decoration: InputDecoration(
-                                hintText: "Nhập số điện thoại của bạn đi",
-                              ),
-                              // initialValue: phoneNb,
-                              onChanged: (val) => setState(() {
-                                this.phoneNb = val;
-                              }),
-                            ),
-                          ),
-                        ),
-                        AnimatedPositioned(
-                          duration: Duration(milliseconds: 1500),
-                          curve: Curves.easeIn,
-                          left: smsSent ? 0 : 300,
-                          top: 10,
-                          child: Container(
-                            width: 200,
-                            child: true
+            Column(
+              children: [
+                Expanded(
+                  flex: 1,
+                  child: Align(
+                    // alignment: Alignment.center,
+                    child: Theme(
+                      data: ThemeData(
+                        primaryColor: Color(0xFF45822b),
+                        accentColor: Colors.orange,
+                        hintColor: Colors.white70,
+                      ),
+                      child: Container(
+                        width: 250,
+                        padding: EdgeInsets.only(top: 20),
+                        // height: 70,
+                        child: Stack(
+                          children: [
+                            !smsSent
+                                ? TextFormField(
+                                    keyboardType: TextInputType.phone,
+                                    style: TextStyle(color: Colors.white),
+                                    autofocus: true,
+                                    validator: (value) {
+                                      if (value.isEmpty) {
+                                        return 'Vui lòng nhập số điện thoại';
+                                      }
+                                      return null;
+                                    },
+                                    // autofocus: true,
+                                    decoration: InputDecoration(
+                                      hintText: "Nhập số điện thoại của bạn đi",
+                                    ),
+                                    // initialValue: phoneNb,
+                                    onChanged: (val) => setState(() {
+                                      this.phoneNb = val;
+                                    }),
+                                  )
+                                : Container(),
+                            smsSent
                                 ? TextFormField(
                                     keyboardType: TextInputType.number,
                                     autofocus: true,
@@ -188,43 +189,44 @@ class _LoginScreenState extends State<LoginScreen> {
                                     }),
                                   )
                                 : Container(),
-                          ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ),
 
-            // LOGIN BUTTON
-            GestureDetector(
-              onTap: () async {
-                await _handleLogin();
-              },
-              child: Container(
-                width: formWidth,
-                height: 50,
-                decoration: BoxDecoration(
-                  color: Color(0xFF438029),
-                  borderRadius: BorderRadius.circular(20),
+                // LOGIN BUTTON
+                InkWell(
+                  onTap: () async {
+                    await _handleLogin();
+                  },
+                  child: Container(
+                    width: formWidth,
+                    height: 50,
+                    decoration: BoxDecoration(
+                      color: Color(0xFF438029),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Center(
+                      child: smsSent
+                          ? Text(
+                              "Verify",
+                              textAlign: TextAlign.center,
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 20),
+                            )
+                          : Text(
+                              "Đăng nhập",
+                              textAlign: TextAlign.center,
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 20),
+                            ),
+                    ),
+                  ),
                 ),
-                child: Center(
-                  child: smsSent
-                      ? Text(
-                          "Verify",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(color: Colors.white, fontSize: 20),
-                        )
-                      : Text(
-                          "Đăng nhập",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(color: Colors.white, fontSize: 20),
-                        ),
-                ),
-              ),
+              ],
             ),
-
             smsSent
                 ? Positioned(
                     left: 15,

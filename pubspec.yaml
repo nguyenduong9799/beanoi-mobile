@@ -34,6 +34,7 @@ dependencies:
   dio: ^3.0.9
   shared_preferences: ^0.5.7+3
   flutter_svg: ^0.18.1
+  animator: ^2.0.1
 
 dev_dependencies:
   flutter_test:

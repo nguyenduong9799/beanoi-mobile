@@ -9,6 +9,7 @@ class AuthService {
   Future<UserCredential> signIn(AuthCredential authCredential) async {
     UserCredential userCredential =
         await auth.signInWithCredential(authCredential);
+    print(await userCredential.user.getIdToken());
     return userCredential;
   }
 
