@@ -4,6 +4,7 @@ import 'package:progress_dialog/progress_dialog.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Model/DAO/AccountDAO.dart';
 import 'package:unidelivery_mobile/View/home.dart';
+import 'package:unidelivery_mobile/View/order.dart';
 import 'package:unidelivery_mobile/ViewModel/login_viewModel.dart';
 import 'package:unidelivery_mobile/services/firebase.dart';
 
@@ -234,8 +235,9 @@ class _LoginScreenState extends State<LoginScreen> {
               left: 0,
               bottom: 0,
               child: GestureDetector(
-                onTap: () async {
-                  await _handleLogin();
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => OrderScreen(),));
+                  //await _handleLogin();
                 },
                 child: Container(
                   width: MediaQuery.of(context).size.width - 30,
