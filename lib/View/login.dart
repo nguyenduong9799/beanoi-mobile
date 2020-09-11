@@ -5,6 +5,7 @@ import 'package:progress_dialog/progress_dialog.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/View/home.dart';
 import 'package:unidelivery_mobile/ViewModel/login_viewModel.dart';
+import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/services/firebase.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -68,8 +69,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 Animator(
                   tween:
-                      Tween<Offset>(begin: Offset(0, -50), end: Offset(0, 50)),
-                  duration: Duration(seconds: 2),
+                      Tween<Offset>(begin: Offset(0, -30), end: Offset(0, 30)),
+                  curve: Curves.easeIn,
+                  duration: Duration(milliseconds: 700),
                   cycles: 2,
                   builder: (context, anim, child) => Container(
                     child: Transform.translate(
@@ -82,7 +84,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           children: [
                             Center(
                               child: AspectRatio(
-                                aspectRatio: 2 / 4,
+                                aspectRatio: 2.3 / 4,
                                 child: Container(
                                   margin: EdgeInsets.only(top: 100),
                                   // height: screenHeight,
@@ -156,53 +158,57 @@ class _LoginScreenState extends State<LoginScreen> {
                         accentColor: Colors.orange,
                         hintColor: Colors.white70,
                       ),
-                      child: Container(
-                        width: 250,
-                        padding: EdgeInsets.only(top: 25),
-                        // height: 70,
-                        child: Stack(
-                          children: [
-                            !smsSent
-                                ? TextFormField(
-                                    keyboardType: TextInputType.phone,
-                                    style: TextStyle(color: Colors.white),
-                                    autofocus: true,
-                                    validator: (value) {
-                                      if (value.isEmpty) {
-                                        return 'Bạn chưa nhập SDT kìa :(';
-                                      }
-                                      return null;
-                                    },
-                                    // autofocus: true,
-                                    decoration: InputDecoration(
-                                      hintText:
-                                          "Nhập số điện thoại của bạn đi!",
-                                    ),
-                                    // initialValue: phoneNb,
-                                    onChanged: (val) => setState(() {
-                                      this.phoneNb = val;
-                                    }),
-                                  )
-                                : Container(),
-                            smsSent
-                                ? TextFormField(
-                                    keyboardType: TextInputType.number,
-                                    autofocus: true,
-                                    decoration: InputDecoration(
-                                        hintText: "Vui lòng nhập mã OTP"),
-                                    initialValue: smsCode,
-                                    validator: (value) {
-                                      if (value.isEmpty) {
-                                        return 'Bạn chưa điền kìa :(';
-                                      }
-                                      return null;
-                                    },
-                                    onChanged: (val) => setState(() {
-                                      this.smsCode = val;
-                                    }),
-                                  )
-                                : Container(),
-                          ],
+                      child: AspectRatio(
+                        aspectRatio: 3.5 / 2,
+                        child: Container(
+                          width: 250,
+                          padding: EdgeInsets.only(top: 25),
+                          // height: 70,
+                          child: Stack(
+                            children: [
+                              !smsSent
+                                  ? TextFormField(
+                                      keyboardType: TextInputType.phone,
+                                      style: kTextPrimary,
+                                      autofocus: true,
+                                      validator: (value) {
+                                        if (value.isEmpty) {
+                                          return 'Bạn chưa nhập SDT kìa :(';
+                                        }
+                                        return null;
+                                      },
+                                      // autofocus: true,
+                                      decoration: InputDecoration(
+                                        hintText:
+                                            "Nhập số điện thoại của bạn đi!",
+                                      ),
+                                      // initialValue: phoneNb,
+                                      onChanged: (val) => setState(() {
+                                        this.phoneNb = val;
+                                      }),
+                                    )
+                                  : Container(),
+                              smsSent
+                                  ? TextFormField(
+                                      keyboardType: TextInputType.number,
+                                      style: kTextPrimary,
+                                      autofocus: true,
+                                      decoration: InputDecoration(
+                                          hintText: "Vui lòng nhập mã OTP"),
+                                      initialValue: smsCode,
+                                      validator: (value) {
+                                        if (value.isEmpty) {
+                                          return 'Bạn chưa điền kìa :(';
+                                        }
+                                        return null;
+                                      },
+                                      onChanged: (val) => setState(() {
+                                        this.smsCode = val;
+                                      }),
+                                    )
+                                  : Container(),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -210,34 +216,37 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
 
                 // LOGIN BUTTON
-                Container(
-                  width: formWidth,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    color: Color(0xFF438029),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Material(
-                    color: Colors.transparent,
-                    child: InkWell(
+                AspectRatio(
+                  aspectRatio: 2 / 0.35,
+                  child: Container(
+                    width: formWidth,
+                    height: 50,
+                    decoration: BoxDecoration(
+                      color: Color(0xFF438029),
                       borderRadius: BorderRadius.circular(20),
-                      onTap: () async {
-                        await _handleLogin();
-                      },
-                      child: Center(
-                        child: smsSent
-                            ? Text(
-                                "Xác nhận",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 20),
-                              )
-                            : Text(
-                                "Đăng nhập",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 20),
-                              ),
+                    ),
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(20),
+                        onTap: () async {
+                          await _handleLogin();
+                        },
+                        child: Center(
+                          child: smsSent
+                              ? Text(
+                                  "Xác nhận",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 20),
+                                )
+                              : Text(
+                                  "Đăng nhập",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 20),
+                                ),
+                        ),
                       ),
                     ),
                   ),
