@@ -28,7 +28,7 @@ class _LoginScreenState extends State<LoginScreen> {
   ProgressDialog pr;
   List<DropdownMenuItem<dynamic>> _dropdownMenuItems;
 
-  double formWidth = 300;
+  // double formWidth = 300;
   double formHeight = 180;
 
   @override
@@ -63,12 +63,11 @@ class _LoginScreenState extends State<LoginScreen> {
     // await pr.hide();
   }
 
- 
-
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
+    final formWidth = screenWidth - 30 - 60;
     return ScopedModel(
       model: LoginViewModel(),
       child: SafeArea(
@@ -100,15 +99,15 @@ class _LoginScreenState extends State<LoginScreen> {
                   builder: (context, anim, child) => Container(
                     child: Transform.translate(
                       offset: anim.value,
-                      child: Container(
-                        margin: EdgeInsets.only(top: 90),
-                        width: screenWidth,
-                        height: screenHeight,
-                        child: Stack(
-                          children: [
-                            Center(
-                              child: AspectRatio(
-                                aspectRatio: 2.3 / 4,
+                      child: Center(
+                        child: Container(
+                          margin: EdgeInsets.only(top: 90),
+                          color: Colors.amber,
+                          width: screenWidth - 30,
+                          height: screenHeight,
+                          child: Stack(
+                            children: [
+                              Center(
                                 child: Container(
                                   margin: EdgeInsets.only(top: 100),
                                   // height: screenHeight,
@@ -126,19 +125,21 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ),
                                 ),
                               ),
-                            ),
-                            Center(
-                              child: Container(
-                                margin: EdgeInsets.only(top: 45),
-                                width: formWidth,
-                                child: ScopedModelDescendant<LoginViewModel>(
-                                  builder: (BuildContext context, Widget child,
-                                          LoginViewModel model) =>
-                                      _buildLoginForm(model),
+                              Center(
+                                child: Container(
+                                  margin: EdgeInsets.only(top: 45),
+                                  // color: Colors.blue,
+                                  width: formWidth,
+                                  child: ScopedModelDescendant<LoginViewModel>(
+                                    builder: (BuildContext context,
+                                            Widget child,
+                                            LoginViewModel model) =>
+                                        _buildLoginForm(model),
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -183,79 +184,76 @@ class _LoginScreenState extends State<LoginScreen> {
                         accentColor: Colors.orange,
                         hintColor: Colors.white70,
                       ),
-                      child: AspectRatio(
-                        aspectRatio: 3.7 / 1.8,
-                        child: Container(
-                          width: 250,
-                          padding: EdgeInsets.only(top: 25),
-                          // height: 70,
-                          child: Stack(
-                            fit: StackFit.expand,
-                            children: [
-                              !smsSent
-                                  ? Row(
-                                      children: [
-                                        Flexible(
-                                          flex: 2,
-                                          child: DropdownButtonHideUnderline(
-                                            child: DropdownButton(
-                                                value: countryCode,
-                                                items: _dropdownMenuItems,
-                                                onChanged: (value) =>
-                                                    setState(() {
-                                                      countryCode = value;
-                                                    })),
-                                          ),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width - 30 - 60 - 35,
+                        padding: EdgeInsets.only(top: 25),
+                        // height: 70,
+                        child: Stack(
+                          fit: StackFit.expand,
+                          children: [
+                            !smsSent
+                                ? Row(
+                                    children: [
+                                      Flexible(
+                                        flex: 2,
+                                        child: DropdownButtonHideUnderline(
+                                          child: DropdownButton(
+                                              value: countryCode,
+                                              items: _dropdownMenuItems,
+                                              onChanged: (value) =>
+                                                  setState(() {
+                                                    countryCode = value;
+                                                  })),
                                         ),
-                                        SizedBox(width: 5),
-                                        Flexible(
-                                          flex: 3,
-                                          child: TextFormField(
-                                            keyboardType: TextInputType.phone,
-                                            style: kTextPrimary,
-                                            focusNode: phoneNbFocus,
-                                            // autofocus: true,
-                                            validator: (value) {
-                                              if (value.isEmpty) {
-                                                return 'Bạn chưa nhập SDT kìa :(';
-                                              }
-                                              return null;
-                                            },
-                                            // autofocus: true,
-                                            decoration: InputDecoration(
-                                              hintText:
-                                                  "Nhập số điện thoại của bạn đi!",
-                                            ),
-                                            // initialValue: phoneNb,
-                                            onChanged: (val) => setState(() {
-                                              this.phoneNb = val;
-                                            }),
+                                      ),
+                                      SizedBox(width: 5),
+                                      Flexible(
+                                        flex: 3,
+                                        child: TextFormField(
+                                          keyboardType: TextInputType.phone,
+                                          style: kTextPrimary,
+                                          focusNode: phoneNbFocus,
+                                          // autofocus: true,
+                                          validator: (value) {
+                                            if (value.isEmpty) {
+                                              return 'Bạn chưa nhập SDT kìa :(';
+                                            }
+                                            return null;
+                                          },
+                                          // autofocus: true,
+                                          decoration: InputDecoration(
+                                            hintText:
+                                                "Nhập số điện thoại của bạn đi!",
                                           ),
+                                          // initialValue: phoneNb,
+                                          onChanged: (val) => setState(() {
+                                            this.phoneNb = val;
+                                          }),
                                         ),
-                                      ],
-                                    )
-                                  : Container(),
-                              smsSent
-                                  ? TextFormField(
-                                      keyboardType: TextInputType.number,
-                                      style: kTextPrimary,
-                                      autofocus: true,
-                                      decoration: InputDecoration(
-                                          hintText: "Vui lòng nhập mã OTP"),
-                                      initialValue: smsCode,
-                                      validator: (value) {
-                                        if (value.isEmpty) {
-                                          return 'Bạn chưa điền kìa :(';
-                                        }
-                                        return null;
-                                      },
-                                      onChanged: (val) => setState(() {
-                                        this.smsCode = val;
-                                      }),
-                                    )
-                                  : Container(),
-                            ],
-                          ),
+                                      ),
+                                    ],
+                                  )
+                                : Container(),
+                            smsSent
+                                ? TextFormField(
+                                    keyboardType: TextInputType.number,
+                                    style: kTextPrimary,
+                                    autofocus: true,
+                                    decoration: InputDecoration(
+                                        hintText: "Vui lòng nhập mã OTP"),
+                                    initialValue: smsCode,
+                                    validator: (value) {
+                                      if (value.isEmpty) {
+                                        return 'Bạn chưa điền kìa :(';
+                                      }
+                                      return null;
+                                    },
+                                    onChanged: (val) => setState(() {
+                                      this.smsCode = val;
+                                    }),
+                                  )
+                                : Container(),
+                          ],
                         ),
                       ),
                     ),
@@ -269,38 +267,35 @@ class _LoginScreenState extends State<LoginScreen> {
                   },
                 ),
 
-              // LOGIN BUTTON
-                AspectRatio(
-                  aspectRatio: 2 / 0.3,
-                  child: Container(
-                    width: formWidth,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      color: Color(0xFF438029),
+                // LOGIN BUTTON
+                Container(
+                  width: MediaQuery.of(context).size.width - 30 - 60,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    color: Color(0xFF438029),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
                       borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(20),
-                        onTap: () async {
-                          await _handleLogin();
-                        },
-                        child: Center(
-                          child: smsSent
-                              ? Text(
-                                  "Xác nhận",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 20),
-                                )
-                              : Text(
-                                  "Đăng nhập",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 20),
-                                ),
-                        ),
+                      onTap: () async {
+                        await _handleLogin();
+                      },
+                      child: Center(
+                        child: smsSent
+                            ? Text(
+                                "Xác nhận",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 20),
+                              )
+                            : Text(
+                                "Đăng nhập",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 20),
+                              ),
                       ),
                     ),
                   ),
@@ -354,6 +349,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> onSignInWithGmail(LoginViewModel model) async {
     try {
       final authCredential = await AuthService().signInWithGoogle();
+      if (authCredential == null) return;
       final userInfo = await model.signIn(authCredential);
 
       await pr.hide();
@@ -465,7 +461,4 @@ class _LoginScreenState extends State<LoginScreen> {
       },
     );
   }
-}
-
-class ( {
 }
