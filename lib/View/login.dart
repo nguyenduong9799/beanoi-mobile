@@ -1,11 +1,13 @@
 import 'package:animator/animator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/View/home.dart';
 import 'package:unidelivery_mobile/ViewModel/login_viewModel.dart';
 import 'package:unidelivery_mobile/constraints.dart';
+import 'package:unidelivery_mobile/countries.dart';
 import 'package:unidelivery_mobile/services/firebase.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -17,12 +19,14 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = new GlobalKey<FormState>();
+  FocusNode phoneNbFocus;
 
   String phoneNb = "+84123456789", smsCode = "123456";
   bool smsSent = false;
-  String verificationId;
+  String verificationId, countryCode = "+84";
   FocusNode smsCodeFocus = FocusNode();
   ProgressDialog pr;
+  List<DropdownMenuItem<dynamic>> _dropdownMenuItems;
 
   double formWidth = 300;
   double formHeight = 180;
@@ -30,21 +34,36 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
-
+    phoneNbFocus = FocusNode();
     pr = new ProgressDialog(
       context,
       showLogs: true,
       type: ProgressDialogType.Download,
       isDismissible: false,
     );
+
+    _dropdownMenuItems = countries
+        .map(
+          (country) => DropdownMenuItem(
+            child: Text(
+              "${country["code"]} (${country["dial_code"]})",
+              style: kTextPrimary.copyWith(color: Colors.black, fontSize: 12),
+            ),
+            value: country["dial_code"],
+          ),
+        )
+        .toList();
   }
 
   @override
   void dispose() {
     // TODO: implement dispose
     super.dispose();
+    phoneNbFocus.dispose();
     // await pr.hide();
   }
+
+ 
 
   @override
   Widget build(BuildContext context) {
@@ -71,8 +90,13 @@ class _LoginScreenState extends State<LoginScreen> {
                   tween:
                       Tween<Offset>(begin: Offset(0, -30), end: Offset(0, 30)),
                   curve: Curves.easeIn,
+                  statusListener: (status, state) {
+                    if (status == AnimationStatus.completed) {
+                      phoneNbFocus.requestFocus();
+                    }
+                  },
                   duration: Duration(milliseconds: 700),
-                  cycles: 2,
+                  cycles: 6,
                   builder: (context, anim, child) => Container(
                     child: Transform.translate(
                       offset: anim.value,
@@ -147,6 +171,7 @@ class _LoginScreenState extends State<LoginScreen> {
           overflow: Overflow.visible,
           children: [
             Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Expanded(
                   flex: 1,
@@ -159,33 +184,55 @@ class _LoginScreenState extends State<LoginScreen> {
                         hintColor: Colors.white70,
                       ),
                       child: AspectRatio(
-                        aspectRatio: 3.5 / 2,
+                        aspectRatio: 3.7 / 1.8,
                         child: Container(
                           width: 250,
                           padding: EdgeInsets.only(top: 25),
                           // height: 70,
                           child: Stack(
+                            fit: StackFit.expand,
                             children: [
                               !smsSent
-                                  ? TextFormField(
-                                      keyboardType: TextInputType.phone,
-                                      style: kTextPrimary,
-                                      autofocus: true,
-                                      validator: (value) {
-                                        if (value.isEmpty) {
-                                          return 'Bạn chưa nhập SDT kìa :(';
-                                        }
-                                        return null;
-                                      },
-                                      // autofocus: true,
-                                      decoration: InputDecoration(
-                                        hintText:
-                                            "Nhập số điện thoại của bạn đi!",
-                                      ),
-                                      // initialValue: phoneNb,
-                                      onChanged: (val) => setState(() {
-                                        this.phoneNb = val;
-                                      }),
+                                  ? Row(
+                                      children: [
+                                        Flexible(
+                                          flex: 2,
+                                          child: DropdownButtonHideUnderline(
+                                            child: DropdownButton(
+                                                value: countryCode,
+                                                items: _dropdownMenuItems,
+                                                onChanged: (value) =>
+                                                    setState(() {
+                                                      countryCode = value;
+                                                    })),
+                                          ),
+                                        ),
+                                        SizedBox(width: 5),
+                                        Flexible(
+                                          flex: 3,
+                                          child: TextFormField(
+                                            keyboardType: TextInputType.phone,
+                                            style: kTextPrimary,
+                                            focusNode: phoneNbFocus,
+                                            // autofocus: true,
+                                            validator: (value) {
+                                              if (value.isEmpty) {
+                                                return 'Bạn chưa nhập SDT kìa :(';
+                                              }
+                                              return null;
+                                            },
+                                            // autofocus: true,
+                                            decoration: InputDecoration(
+                                              hintText:
+                                                  "Nhập số điện thoại của bạn đi!",
+                                            ),
+                                            // initialValue: phoneNb,
+                                            onChanged: (val) => setState(() {
+                                              this.phoneNb = val;
+                                            }),
+                                          ),
+                                        ),
+                                      ],
                                     )
                                   : Container(),
                               smsSent
@@ -215,9 +262,16 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
 
-                // LOGIN BUTTON
+                IconButton(
+                  icon: Icon(Icons.accessibility_new),
+                  onPressed: () async {
+                    await onSignInWithGmail(model);
+                  },
+                ),
+
+              // LOGIN BUTTON
                 AspectRatio(
-                  aspectRatio: 2 / 0.35,
+                  aspectRatio: 2 / 0.3,
                   child: Container(
                     width: formWidth,
                     height: 50,
@@ -253,6 +307,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ],
             ),
+
+            // BACK BUTTON
             smsSent
                 ? Positioned(
                     left: 15,
@@ -295,6 +351,23 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  Future<void> onSignInWithGmail(LoginViewModel model) async {
+    try {
+      final authCredential = await AuthService().signInWithGoogle();
+      final userInfo = await model.signIn(authCredential);
+
+      await pr.hide();
+      return Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => HomeScreen(user: userInfo)),
+          (route) => false);
+    } on FirebaseAuthException catch (e) {
+      print("=====OTP Fail: ${e.message}  ");
+      await _showMyDialog("Error", e.message);
+    } finally {
+      await pr.hide();
+    }
+  }
+
   Future<void> onsignInWithOTP(
       smsCode, verificationId, LoginViewModel model) async {
     print("DN = OTP");
@@ -302,7 +375,7 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       final authCredential =
           await AuthService().signInWithOTP(smsCode, verificationId);
-      final userInfo = await model.signInByPhone(authCredential);
+      final userInfo = await model.signIn(authCredential);
 
       await pr.hide();
       return Navigator.of(context).pushAndRemoveUntil(
@@ -321,7 +394,7 @@ class _LoginScreenState extends State<LoginScreen> {
         (AuthCredential authCredential) async {
       await pr.show();
       // dem authuser cho controller xu ly check user
-      final userInfo = await model.signInByPhone(authCredential);
+      final userInfo = await model.signIn(authCredential);
       // chuyen sang trang home
 
       // TODO: Kiem tra xem user moi hay cu
@@ -353,8 +426,9 @@ class _LoginScreenState extends State<LoginScreen> {
     };
 
     await pr.show();
+    print(countryCode + phone);
     await FirebaseAuth.instance.verifyPhoneNumber(
-      phoneNumber: phone,
+      phoneNumber: countryCode + phone,
       timeout: Duration(seconds: 50),
       verificationCompleted: verificationCompleted,
       verificationFailed: verificationFailed,
@@ -391,4 +465,7 @@ class _LoginScreenState extends State<LoginScreen> {
       },
     );
   }
+}
+
+class ( {
 }

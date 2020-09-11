@@ -1,9 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:unidelivery_mobile/Model/DAO/AccountDAO.dart';
-import 'package:unidelivery_mobile/Model/DTO/AccountDTO.dart';
 
 class AuthService {
   FirebaseAuth auth = FirebaseAuth.instance;
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
   AccountDAO dao = AccountDAO();
 
   Future<UserCredential> signIn(AuthCredential authCredential) async {
@@ -16,6 +17,24 @@ class AuthService {
   signOut() {
     // remove pref
     auth.signOut();
+  }
+
+  // final request = MyRequest();
+
+  Future<AuthCredential> signInWithGoogle() async {
+    try {
+      final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+      return credential;
+    } catch (err) {
+      print('Error Login: $err');
+      throw (err);
+    }
   }
 
   Future<AuthCredential> signInWithOTP(String smsCode, String verId) async {

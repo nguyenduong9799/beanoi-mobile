@@ -27,10 +27,11 @@ class LoginViewModel extends Model {
 
   LoginViewModel() {}
 
-  Future<AccountDTO> signInByPhone(AuthCredential authCredential) async {
+  Future<AccountDTO> signIn(AuthCredential authCredential) async {
     // lay thong tin user tu firebase
     final userCredential = await AuthService().signIn(authCredential);
     // lay thong tin user tu sereer
+    // TODO: Thay uid = idToken
     final userInfo = await dao.getUser(userCredential.user.uid);
     await setToken(userInfo.toString());
     return userInfo;
