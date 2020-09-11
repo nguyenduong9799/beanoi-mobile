@@ -61,7 +61,7 @@ class HomeAppBar extends StatefulWidget{
 
 class _HomeAppBarSate extends State<HomeAppBar>{
 
-  String _timeString;
+  String _timeString = "";
   double _appBarRadius = 10;
   double _imageRadius = 5;
   double _elevation = 5;
@@ -75,12 +75,23 @@ class _HomeAppBarSate extends State<HomeAppBar>{
 
   @override
   void initState() {
-    if(DateTime.now().hour > 11){
-      _timeString = DateTime.now().add(Duration(days: 1)) - DateTime.now();
-    }
-    _timeString = _formatDateTime(DateTime.now());
-    Timer.periodic(Duration(minutes: 1), (Timer t) => _getTime());
     super.initState();
+    // final now = DateTime.now();
+    // final orderTime = DateTime(now.year, now.month, now.day, 11);
+    // int milisecond = 0;
+    // if(now.isAfter(orderTime)){
+    //   DateTime tomorrow = DateTime(now.year, now.month, now.day + 1, 11);
+    //   print(tomorrow.toString());
+    //   milisecond = tomorrow.millisecondsSinceEpoch - now.millisecondsSinceEpoch;
+    // }
+    // else if(now.isAtSameMomentAs(orderTime)){
+    //   _timeString = "Hết giờ";
+    // }
+    // else{
+    //   milisecond = orderTime.millisecondsSinceEpoch - now.millisecondsSinceEpoch;
+    // }
+   // _timeString = _formatDateTime(DateTime.fromMicrosecondsSinceEpoch(milisecond));
+    Timer.periodic(Duration(seconds: 1), (Timer t) => _getTime());
   }
 
   @override
@@ -190,15 +201,37 @@ class _HomeAppBarSate extends State<HomeAppBar>{
   }
 
   void _getTime() {
-    final DateTime now = DateTime.now();
-    final String formattedDateTime = _formatDateTime(now);
+    final now = DateTime.now();
+    final orderTime = DateTime(now.year, now.month, now.day, 11);
+    int milisecond;
+    if(now.isAfter(orderTime)){
+      DateTime tomorrow = DateTime(now.year, now.month, now.day + 1, 11);
+      //print(tomorrow.toString());
+      milisecond = tomorrow.millisecondsSinceEpoch - now.millisecondsSinceEpoch;
+    }
+    else if(now.isAtSameMomentAs(orderTime)){
+      milisecond = -1;
+    }
+    else{
+      milisecond = orderTime.millisecondsSinceEpoch - now.millisecondsSinceEpoch;
+    }
+
     setState(() {
-      _timeString = formattedDateTime;
+      if(milisecond == -1){
+        _timeString = "Hết giờ";
+      }
+      else{
+        final String formattedDateTime = _formatDateTime(milisecond);
+        print(milisecond);
+        _timeString = formattedDateTime;
+      }
     });
   }
 
-  String _formatDateTime(DateTime dateTime) {
-    return DateFormat('HH:mm').format(dateTime);
+  String _formatDateTime(int mili) {
+    int min  = ((mili/ (1000*60)) % 60).toInt();
+    int hr   = ((mili/ (1000*60*60)) % 24).toInt();
+    return hr.toString() + ":" + min.toString();
   }
 
 }
