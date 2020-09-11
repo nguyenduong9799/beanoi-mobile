@@ -81,19 +81,23 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: Stack(
                           children: [
                             Center(
-                              child: Container(
-                                margin: EdgeInsets.only(top: 90),
-                                height: screenHeight - 240,
-                                width: screenWidth,
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    // alignment: Alignment.center,
-                                    image: AssetImage(
-                                        'assets/images/16-layers.png'),
-                                    // scale: 0.8,
-                                    fit: BoxFit.cover,
+                              child: AspectRatio(
+                                aspectRatio: 2 / 4,
+                                child: Container(
+                                  margin: EdgeInsets.only(top: 100),
+                                  // height: screenHeight,
+                                  // width: screenWidth,
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                      alignment: Alignment.center,
+                                      image: AssetImage(
+                                        'assets/images/16-layers.png',
+                                      ),
+                                      // scale: 0.4,
+                                      fit: BoxFit.contain,
+                                    ),
+                                    // shape: BoxShape.rectangle,
                                   ),
-                                  // shape: BoxShape.rectangle,
                                 ),
                               ),
                             ),
@@ -127,9 +131,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
     Future<void> _handleLogin() async {
       if (!_formKey.currentState.validate()) return;
+      await pr.show();
       smsSent
           ? await onsignInWithOTP(smsCode, verificationId, model)
           : await onLoginWithPhone(phoneNb, model);
+      await pr.hide();
     }
 
     return Center(
@@ -152,7 +158,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       child: Container(
                         width: 250,
-                        padding: EdgeInsets.only(top: 20),
+                        padding: EdgeInsets.only(top: 25),
                         // height: 70,
                         child: Stack(
                           children: [
@@ -163,13 +169,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                     autofocus: true,
                                     validator: (value) {
                                       if (value.isEmpty) {
-                                        return 'Vui lòng nhập số điện thoại';
+                                        return 'Bạn chưa nhập SDT kìa :(';
                                       }
                                       return null;
                                     },
                                     // autofocus: true,
                                     decoration: InputDecoration(
-                                      hintText: "Nhập số điện thoại của bạn đi",
+                                      hintText:
+                                          "Nhập số điện thoại của bạn đi!",
                                     ),
                                     // initialValue: phoneNb,
                                     onChanged: (val) => setState(() {
@@ -182,8 +189,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                     keyboardType: TextInputType.number,
                                     autofocus: true,
                                     decoration: InputDecoration(
-                                        hintText: "Nhập mã OTP"),
+                                        hintText: "Vui lòng nhập mã OTP"),
                                     initialValue: smsCode,
+                                    validator: (value) {
+                                      if (value.isEmpty) {
+                                        return 'Bạn chưa điền kìa :(';
+                                      }
+                                      return null;
+                                    },
                                     onChanged: (val) => setState(() {
                                       this.smsCode = val;
                                     }),
@@ -197,31 +210,35 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
 
                 // LOGIN BUTTON
-                InkWell(
-                  onTap: () async {
-                    await _handleLogin();
-                  },
-                  child: Container(
-                    width: formWidth,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      color: Color(0xFF438029),
+                Container(
+                  width: formWidth,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    color: Color(0xFF438029),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
                       borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Center(
-                      child: smsSent
-                          ? Text(
-                              "Verify",
-                              textAlign: TextAlign.center,
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 20),
-                            )
-                          : Text(
-                              "Đăng nhập",
-                              textAlign: TextAlign.center,
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 20),
-                            ),
+                      onTap: () async {
+                        await _handleLogin();
+                      },
+                      child: Center(
+                        child: smsSent
+                            ? Text(
+                                "Xác nhận",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 20),
+                              )
+                            : Text(
+                                "Đăng nhập",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 20),
+                              ),
+                      ),
                     ),
                   ),
                 ),
@@ -230,7 +247,7 @@ class _LoginScreenState extends State<LoginScreen> {
             smsSent
                 ? Positioned(
                     left: 15,
-                    top: -25,
+                    top: -10,
                     child: GestureDetector(
                       onTap: () {
                         setState(() {
@@ -240,12 +257,16 @@ class _LoginScreenState extends State<LoginScreen> {
                         });
                       },
                       child: Container(
+                        width: 40,
+                        height: 40,
                         decoration: BoxDecoration(
                           color: Colors.lightBlue,
                           borderRadius: BorderRadius.circular(25),
                         ),
                         child: IconButton(
-                          icon: Icon(Icons.arrow_back),
+                          icon: Icon(
+                            Icons.arrow_back,
+                          ),
                           color: Colors.white,
                           onPressed: () {
                             setState(() {
