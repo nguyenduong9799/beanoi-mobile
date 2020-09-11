@@ -18,24 +18,28 @@ class _OrderScreenState extends State<OrderScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[300],
-      appBar: DefaultAppBar(title: "Thanh toán",),
       bottomNavigationBar: bottomBar(),
-      body: SingleChildScrollView(
-        child: Center(
-          child: Column(
-            children: [
-              Container(
-                  margin: const EdgeInsets.only(top: 10),
-                  child: layoutOrder()),
-              Container(
-                  margin: const EdgeInsets.only(top: 10),
-                  child: layoutAddress()),
-              Container(
-                  margin: const EdgeInsets.only(top: 10),
-                  child: layoutSubtotal())
-            ],
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            child: Center(
+              child: Column(
+                children: [
+                  Container(
+                      margin: const EdgeInsets.only(top: 10),
+                      child: layoutOrder()),
+                  Container(
+                      margin: const EdgeInsets.only(top: 10),
+                      child: layoutAddress()),
+                  Container(
+                      margin: const EdgeInsets.only(top: 10),
+                      child: layoutSubtotal())
+                ],
+              ),
+            ),
           ),
-        ),
+          HomeAppBar(),
+        ],
       ),
     );
   }

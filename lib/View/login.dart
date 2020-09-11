@@ -1,10 +1,9 @@
+import 'package:animator/animator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:unidelivery_mobile/Model/DAO/AccountDAO.dart';
 import 'package:unidelivery_mobile/View/home.dart';
-import 'package:unidelivery_mobile/View/order.dart';
 import 'package:unidelivery_mobile/ViewModel/login_viewModel.dart';
 import 'package:unidelivery_mobile/services/firebase.dart';
 
@@ -23,9 +22,14 @@ class _LoginScreenState extends State<LoginScreen> {
   String verificationId;
   FocusNode smsCodeFocus = FocusNode();
   ProgressDialog pr;
+
+  double formWidth = 300;
+  double formHeight = 180;
+
   @override
   void initState() {
     super.initState();
+
     pr = new ProgressDialog(
       context,
       showLogs: true,
@@ -43,19 +47,78 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
     return ScopedModel(
       model: LoginViewModel(),
       child: SafeArea(
+        bottom: false,
         child: Scaffold(
+          resizeToAvoidBottomPadding: false,
           body: Form(
             key: _formKey,
-            child: Padding(
-              padding: const EdgeInsets.all(0),
-              child: ScopedModelDescendant<LoginViewModel>(
-                builder: (BuildContext context, Widget child,
-                        LoginViewModel model) =>
-                    _buildLoginForm(model),
-              ),
+            child: Stack(
+              children: [
+                Container(
+                  height: screenHeight,
+                  width: screenWidth,
+                  decoration: BoxDecoration(
+                    color: Color(0xFFc3e18e),
+                  ),
+                ),
+                Animator(
+                  tween:
+                  Tween<Offset>(begin: Offset(0, -50), end: Offset(0, 50)),
+                  duration: Duration(seconds: 2),
+                  cycles: 2,
+                  builder: (context, anim, child) => Container(
+                    child: Transform.translate(
+                      offset: anim.value,
+                      child: Container(
+                        margin: EdgeInsets.only(top: 90),
+                        width: screenWidth,
+                        height: screenHeight,
+                        child: Stack(
+                          children: [
+                            Center(
+                              child: AspectRatio(
+                                aspectRatio: 2 / 4,
+                                child: Container(
+                                  margin: EdgeInsets.only(top: 100),
+                                  // height: screenHeight,
+                                  // width: screenWidth,
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                      alignment: Alignment.center,
+                                      image: AssetImage(
+                                        'assets/images/16-layers.png',
+                                      ),
+                                      // scale: 0.4,
+                                      fit: BoxFit.contain,
+                                    ),
+                                    // shape: BoxShape.rectangle,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Center(
+                              child: Container(
+                                margin: EdgeInsets.only(top: 45),
+                                width: formWidth,
+                                child: ScopedModelDescendant<LoginViewModel>(
+                                  builder: (BuildContext context, Widget child,
+                                      LoginViewModel model) =>
+                                      _buildLoginForm(model),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
@@ -68,232 +131,154 @@ class _LoginScreenState extends State<LoginScreen> {
 
     Future<void> _handleLogin() async {
       if (!_formKey.currentState.validate()) return;
+      await pr.show();
       smsSent
           ? await onsignInWithOTP(smsCode, verificationId, model)
           : await onLoginWithPhone(phoneNb, model);
+      await pr.hide();
     }
 
     return Center(
       child: Container(
-        height: 200,
-        margin: EdgeInsets.fromLTRB(15, 15, 15, 15),
-        decoration: BoxDecoration(
-          color: Color(0xFF619a46),
-          borderRadius: BorderRadius.circular(20),
-        ),
+        height: formHeight,
         child: Stack(
-          // mainAxisAlignment: MainAxisAlignment.center,
           overflow: Overflow.visible,
           children: [
-            SizedBox(height: 70),
-            Center(
-              child: Theme(
-                data: ThemeData(
-                  primaryColor: Color(0xFF45822b),
-                  accentColor: Colors.orange,
-                  hintColor: Colors.white70,
-                ),
-                child: Container(
-                  width: 300,
-                  child: Stack(
-                    children: [
-                      AnimatedPositioned(
-                        duration: Duration(milliseconds: 700),
-                        curve: Curves.easeIn,
-                        left: smsSent ? -300 : 0,
-                        top: 10,
-                        child: Container(
-                          width: 300,
-                          child: TextFormField(
-                            keyboardType: TextInputType.phone,
-                            style: TextStyle(color: Colors.white),
-                            autofocus: true,
-                            validator: (value) {
-                              if (value.isEmpty) {
-                                return 'Vui lòng nhập số điện thoại';
-                              }
-                              return null;
-                            },
-                            // autofocus: true,
-                            decoration: InputDecoration(
-                              hintText: "Nhập số điện thoại của bạn đi",
-                            ),
-                            // initialValue: phoneNb,
-                            onChanged: (val) => setState(() {
-                              this.phoneNb = val;
-                            }),
-                          ),
+            Column(
+              children: [
+                Expanded(
+                  flex: 1,
+                  child: Align(
+                    // alignment: Alignment.center,
+                    child: Theme(
+                      data: ThemeData(
+                        primaryColor: Color(0xFF45822b),
+                        accentColor: Colors.orange,
+                        hintColor: Colors.white70,
+                      ),
+                      child: Container(
+                        width: 250,
+                        padding: EdgeInsets.only(top: 25),
+                        // height: 70,
+                        child: Stack(
+                          children: [
+                            !smsSent
+                                ? TextFormField(
+                              keyboardType: TextInputType.phone,
+                              style: TextStyle(color: Colors.white),
+                              autofocus: true,
+                              validator: (value) {
+                                if (value.isEmpty) {
+                                  return 'Bạn chưa nhập SDT kìa :(';
+                                }
+                                return null;
+                              },
+                              // autofocus: true,
+                              decoration: InputDecoration(
+                                hintText:
+                                "Nhập số điện thoại của bạn đi!",
+                              ),
+                              // initialValue: phoneNb,
+                              onChanged: (val) => setState(() {
+                                this.phoneNb = val;
+                              }),
+                            )
+                                : Container(),
+                            smsSent
+                                ? TextFormField(
+                              keyboardType: TextInputType.number,
+                              autofocus: true,
+                              decoration: InputDecoration(
+                                  hintText: "Vui lòng nhập mã OTP"),
+                              initialValue: smsCode,
+                              validator: (value) {
+                                if (value.isEmpty) {
+                                  return 'Bạn chưa điền kìa :(';
+                                }
+                                return null;
+                              },
+                              onChanged: (val) => setState(() {
+                                this.smsCode = val;
+                              }),
+                            )
+                                : Container(),
+                          ],
                         ),
                       ),
-                      AnimatedPositioned(
-                        duration: Duration(milliseconds: 1500),
-                        curve: Curves.easeIn,
-                        left: smsSent ? 0 : 300,
-                        top: 10,
-                        child: Container(
-                          width: 300,
-                          child: true
-                              ? TextFormField(
-                                  keyboardType: TextInputType.number,
-                                  autofocus: true,
-                                  decoration:
-                                      InputDecoration(hintText: "Nhập mã OTP"),
-                                  initialValue: smsCode,
-                                  onChanged: (val) => setState(() {
-                                    this.smsCode = val;
-                                  }),
-                                )
-                              : Container(),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                 ),
-              ),
-            ),
 
-            // AnimatedPositioned(
-            //   duration: Duration(seconds: 1),
-            //   curve: Curves.easeIn,
-            //   left: smsSent ? -400 : 15,
-            //   top: 10,
-            //   child: Container(
-            //     width: 200,
-            //     height: 50,
-            //     child: TextFormField(
-            //       keyboardType: TextInputType.phone,
-            //       style: TextStyle(color: Colors.white),
-            //       autofocus: true,
-            //       validator: (value) {
-            //         if (value.isEmpty) {
-            //           return 'Vui lòng nhập số điện thoại';
-            //         }
-            //         return null;
-            //       },
-            //       // autofocus: true,
-            //       decoration: InputDecoration(
-            //         hintText: "Nhập số điện thoại của bạn đi",
-            //       ),
-            //       // initialValue: phoneNb,
-            //       onChanged: (val) => setState(() {
-            //         this.phoneNb = val;
-            //       }),
-            //     ),
-            //   ),
-            // ),
-            // Padding(
-            //   padding: const EdgeInsets.all(15),
-            //   child: Theme(
-            //     data: new ThemeData(
-            //       primaryColor: Color(0xFF45822b),
-            //       accentColor: Colors.orange,
-            //       hintColor: Colors.white70,
-            //     ),
-            //     child: Column(
-            //       children: [
-            //         SizedBox(height: 20),
-            //         // !smsSent
-            //         //     ? TextFormField(
-            //         //         keyboardType: TextInputType.phone,
-            //         //         style: TextStyle(color: Colors.white),
-            //         //         autofocus: true,
-            //         //         validator: (value) {
-            //         //           if (value.isEmpty) {
-            //         //             return 'Vui lòng nhập số điện thoại';
-            //         //           }
-            //         //           return null;
-            //         //         },
-            //         //         // autofocus: true,
-            //         //         decoration: InputDecoration(
-            //         //           hintText: "Nhập số điện thoại của bạn đi",
-            //         //         ),
-            //         //         // initialValue: phoneNb,
-            //         //         onChanged: (val) => setState(() {
-            //         //           this.phoneNb = val;
-            //         //         }),
-            //         //       )
-            //         //     : Container(),
-            //         smsSent
-            //             ? TextFormField(
-            //                 keyboardType: TextInputType.number,
-            //                 autofocus: true,
-            //                 decoration:
-            //                     InputDecoration(hintText: "Nhập mã OTP"),
-            //                 initialValue: smsCode,
-            //                 onChanged: (val) => setState(() {
-            //                   this.smsCode = val;
-            //                 }),
-            //               )
-            //             : Container(),
-            //       ],
-            //     ),
-            //   ),
-            // ),
-
-            // LOGIN BUTTON
-            Positioned(
-              left: 0,
-              bottom: 0,
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => OrderScreen(),));
-                  //await _handleLogin();
-                },
-                child: Container(
-                  width: MediaQuery.of(context).size.width - 30,
+                // LOGIN BUTTON
+                Container(
+                  width: formWidth,
                   height: 50,
                   decoration: BoxDecoration(
                     color: Color(0xFF438029),
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: Center(
-                    child: smsSent
-                        ? Text(
-                            "Verify",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: Colors.white, fontSize: 20),
-                          )
-                        : Text(
-                            "Đăng nhập",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: Colors.white, fontSize: 20),
-                          ),
-                  ),
-                ),
-              ),
-            ),
-
-            smsSent
-                ? Positioned(
-                    left: 15,
-                    top: -25,
-                    child: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          smsSent = false;
-                          phoneNb = null;
-                          verificationId = null;
-                        });
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(20),
+                      onTap: () async {
+                        await _handleLogin();
                       },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.lightBlue,
-                          borderRadius: BorderRadius.circular(25),
-                        ),
-                        child: IconButton(
-                          icon: Icon(Icons.arrow_back),
-                          color: Colors.white,
-                          onPressed: () {
-                            setState(() {
-                              smsSent = false;
-                              phoneNb = null;
-                              verificationId = null;
-                            });
-                          },
+                      child: Center(
+                        child: smsSent
+                            ? Text(
+                          "Xác nhận",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              color: Colors.white, fontSize: 20),
+                        )
+                            : Text(
+                          "Đăng nhập",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              color: Colors.white, fontSize: 20),
                         ),
                       ),
                     ),
-                  )
+                  ),
+                ),
+              ],
+            ),
+            smsSent
+                ? Positioned(
+              left: 15,
+              top: -10,
+              child: GestureDetector(
+                onTap: () {
+                  setState(() {
+                    smsSent = false;
+                    phoneNb = null;
+                    verificationId = null;
+                  });
+                },
+                child: Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: Colors.lightBlue,
+                    borderRadius: BorderRadius.circular(25),
+                  ),
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.arrow_back,
+                    ),
+                    color: Colors.white,
+                    onPressed: () {
+                      setState(() {
+                        smsSent = false;
+                        phoneNb = null;
+                        verificationId = null;
+                      });
+                    },
+                  ),
+                ),
+              ),
+            )
                 : Container(),
           ],
         ),
@@ -307,13 +292,13 @@ class _LoginScreenState extends State<LoginScreen> {
     await pr.show();
     try {
       final authCredential =
-          await AuthService().signInWithOTP(smsCode, verificationId);
+      await AuthService().signInWithOTP(smsCode, verificationId);
       final userInfo = await model.signInByPhone(authCredential);
 
       await pr.hide();
       return Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) => HomeScreen(user: userInfo)),
-          (route) => false);
+              (route) => false);
     } on FirebaseAuthException catch (e) {
       print("=====OTP Fail: ${e.message}  ");
       await _showMyDialog("Error", e.message);
@@ -335,7 +320,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) => HomeScreen(user: userInfo)),
-          (route) => false);
+              (route) => false);
       print("Login Success");
     };
 
