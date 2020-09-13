@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:unidelivery_mobile/Model/DTO/AccountDTO.dart';
+import 'package:unidelivery_mobile/View/home.dart';
 import 'package:unidelivery_mobile/ViewModel/signup_viewModel.dart';
 import 'package:unidelivery_mobile/utils/regex.dart';
 
@@ -13,6 +16,8 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
+  ProgressDialog pr;
+
   final form = FormGroup({
     'name': FormControl(validators: [
       Validators.required,
@@ -31,14 +36,47 @@ class _SignUpState extends State<SignUp> {
     ], touched: false),
     'gender': FormControl(validators: [
       Validators.required,
-    ], touched: false),
+    ], touched: false, value: 'nam'),
   });
+
+  @override
+  void initState() {
+    super.initState();
+    pr = new ProgressDialog(
+      context,
+      showLogs: true,
+      type: ProgressDialogType.Normal,
+      isDismissible: false,
+    );
+  }
+
+  Future<void> _onUpdateUser(SignUpViewModel model) async {
+    bool updateSucces = false;
+    AccountDTO updatedUser;
+    if (form.valid) {
+      try {
+        updatedUser = await model.updateUser(form.value);
+        print('Updated User ${updatedUser.name}');
+        updateSucces = true;
+      } catch (e) {
+        pr.style(message: e.toString());
+        await pr.show();
+      } finally {
+        if (pr.isShowing()) await pr.hide();
+        // Chuyen trang
+        if (updateSucces) {
+          print('Update Success');
+          Navigator.of(context).pushReplacement(MaterialPageRoute(
+              builder: (context) => HomeScreen(user: updatedUser)));
+        }
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
-
     return ScopedModel(
       model: SignUpViewModel(),
       child: SafeArea(
@@ -46,14 +84,10 @@ class _SignUpState extends State<SignUp> {
           body: ReactiveForm(
             formGroup: this.form,
             child: Stack(
-              // fit: StackFit.expand,
               children: [
                 // BACKGROUND
                 Container(
                   color: Color(0xFFddf1ed),
-                  // child: Center(
-                  //   child: Text('SIGNUP'),
-                  // ),
                 ),
                 // SIGN-UP FORM
                 Stack(
@@ -131,28 +165,36 @@ class _SignUpState extends State<SignUp> {
                               curve: Curves.easeInOut,
                               margin: EdgeInsets.fromLTRB(0, 10, 0, 10),
                               child: Center(
-                                child: RaisedButton(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(18.0),
-                                    // side: BorderSide(color: Colors.red),
-                                  ),
-                                  color: form.valid
-                                      ? Color(0xFF00d286)
-                                      : Colors.grey,
-                                  onPressed: () {
-                                    if (form.valid) print(form.value);
-                                  },
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(10.0),
-                                    child: Text(
-                                      form.valid
-                                          ? "Hoàn thành"
-                                          : "Bạn chưa điền xong",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                                child: ScopedModelDescendant<SignUpViewModel>(
+                                  builder: (context, child, model) =>
+                                      RaisedButton(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(18.0),
+                                      // side: BorderSide(color: Colors.red),
+                                    ),
+                                    color: form.valid
+                                        ? Color(0xFF00d286)
+                                        : Colors.grey,
+                                    onPressed: () async {
+                                      if (!model.isUpdating)
+                                        await _onUpdateUser(model);
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: model.isUpdating
+                                          ? CircularProgressIndicator(
+                                              backgroundColor:
+                                                  Color(0xFFFFFFFF))
+                                          : Text(
+                                              form.valid
+                                                  ? "Hoàn thành"
+                                                  : "Bạn chưa điền xong",
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
                                     ),
                                   ),
                                 ),
@@ -296,9 +338,6 @@ class FormItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ReactiveFormConsumer(builder: (context, form, child) {
-      final isRequired = form.control(formName);
-      print('$formName isRequried $isRequired');
-
       return Container(
         margin: EdgeInsets.only(bottom: 15),
         height: 60,

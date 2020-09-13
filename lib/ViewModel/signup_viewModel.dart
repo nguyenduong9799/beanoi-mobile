@@ -5,7 +5,7 @@ import 'package:unidelivery_mobile/Model/DTO/AccountDTO.dart';
 class SignUpViewModel extends Model {
   static SignUpViewModel _instance;
   AccountDAO dao = AccountDAO();
-
+  bool isUpdating = false;
   SignUpViewModel() {}
   static SignUpViewModel getInstance() {
     if (_instance == null) {
@@ -18,9 +18,19 @@ class SignUpViewModel extends Model {
     _instance = null;
   }
 
-  Future<AccountDTO> updateUser(AccountDTO user) async {
+  Future<AccountDTO> updateUser(Map<String, dynamic> user) async {
     try {
-      final updatedUser = await dao.updateUser(user);
+      isUpdating = true;
+      notifyListeners();
+      final userDTO = AccountDTO(
+        name: user["name"],
+        email: user["email"],
+        birthdate: user["birthdate"],
+        phone: user["phone"],
+        gender: user["gender"],
+      );
+      final updatedUser = await dao.updateUser(userDTO);
+      await Future.delayed(Duration(seconds: 3));
       return updatedUser;
     } on Exception catch (e) {
       print(e.toString());

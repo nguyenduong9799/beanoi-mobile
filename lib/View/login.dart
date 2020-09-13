@@ -102,7 +102,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: Center(
                         child: Container(
                           margin: EdgeInsets.only(top: 90),
-                          color: Colors.amber,
+                          // color: Colors.amber,
                           width: screenWidth - 30,
                           height: screenHeight,
                           child: Stack(

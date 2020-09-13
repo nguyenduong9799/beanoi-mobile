@@ -8,7 +8,7 @@ class AccountDAO {
   Future<AccountDTO> updateUser(AccountDTO updateUser) async {
     return AccountDTO(
       uid: updateUser.uid,
-      name: "Updated Name",
+      name: "${updateUser.name} Updated Name",
       phone: "0123456789",
       gender: "nam",
       email: "bemail@gmail.com",
