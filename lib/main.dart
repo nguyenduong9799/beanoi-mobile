@@ -6,6 +6,7 @@ import 'package:unidelivery_mobile/Model/DTO/AccountDTO.dart';
 import 'package:unidelivery_mobile/View/home.dart';
 import 'package:unidelivery_mobile/View/login.dart';
 import 'package:unidelivery_mobile/View/order.dart';
+import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/services/push_notification_service.dart';
 import 'package:unidelivery_mobile/utils/shared_pref.dart';
 
@@ -25,10 +26,11 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primaryColor: kBackgroundGrey[0],
+        scaffoldBackgroundColor: Colors.grey[200],
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: HomeScreen(),
+      home: OrderScreen(),
     );
   }
 

@@ -7,6 +7,18 @@ class QuantityViewModel extends Model{
   int _count = 1;
   Color _minusColor = Colors.grey;
   Color _addColor = Colors.orange;
+  double _price, total;
+
+
+  QuantityViewModel(this._price){
+    total = _price * count;
+  }
+
+  double get price => _price;
+
+  set price(double value) {
+    _price = value;
+  }
 
   int get count => _count;
 
@@ -26,6 +38,12 @@ class QuantityViewModel extends Model{
       _minusColor = Colors.orange;
     }
     count++;
+    total = price * count;
+    notifyListeners();
+  }
+
+  void deleteQuantity(){
+    count = 0;
     notifyListeners();
   }
 
@@ -35,6 +53,7 @@ class QuantityViewModel extends Model{
       if(count == 1){
         _minusColor = Colors.grey;
       }
+      total = price * count;
       notifyListeners();
     }
   }

@@ -33,13 +33,7 @@ class _AppBarSate extends State<DefaultAppBar>{
     return AppBar(
       elevation: 5.0,
       centerTitle: true,
-      title: Text(widget.title, style: TextStyle(color: Colors.white),),
-      actions: <Widget>[
-        IconButton(
-          icon: actionIcon,
-          onPressed: () {},
-        )
-      ],
+      title: Text(widget.title, style: TextStyle(color: Colors.black),),
     );
   }
 
@@ -60,6 +54,8 @@ class HomeAppBar extends StatefulWidget{
 }
 
 class _HomeAppBarSate extends State<HomeAppBar>{
+
+
 
   String _timeString = "";
   double _appBarRadius = 10;
@@ -91,7 +87,7 @@ class _HomeAppBarSate extends State<HomeAppBar>{
     //   milisecond = orderTime.millisecondsSinceEpoch - now.millisecondsSinceEpoch;
     // }
    // _timeString = _formatDateTime(DateTime.fromMicrosecondsSinceEpoch(milisecond));
-    Timer.periodic(Duration(seconds: 1), (Timer t) => _getTime());
+    //Timer.periodic(Duration(seconds: 1), (Timer t) => _getTime());
   }
 
   @override
@@ -229,4 +225,9 @@ class _HomeAppBarSate extends State<HomeAppBar>{
     return hr.toString() + ":" + min.toString();
   }
 
+  @override
+  void dispose() {
+
+    super.dispose();
+  }
 }
