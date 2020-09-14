@@ -19,34 +19,30 @@ class _OrderScreenState extends State<OrderScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[300],
       bottomNavigationBar: bottomBar(),
-      body: Stack(
-        children: [
-          SingleChildScrollView(
-            child: Center(
-              child: Column(
-                children: [
-                  Container(
-                      margin: const EdgeInsets.only(top: 10),
-                      child: layoutOrder()),
-                  Container(
-                      margin: const EdgeInsets.only(top: 10),
-                      child: layoutAddress()),
-                  Container(
-                      margin: const EdgeInsets.only(top: 10),
-                      child: layoutSubtotal())
-                ],
-              ),
-            ),
+      appBar: DefaultAppBar(title: "Đơn hàng của bạn"),
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            children: [
+              Container(
+                  margin: const EdgeInsets.only(top: 10),
+                  child: layoutAddress()),
+              Container(
+                  margin: const EdgeInsets.only(top: 10),
+                  child: layoutOrder()),
+              Container(
+                  margin: const EdgeInsets.only(top: 10),
+                  child: layoutSubtotal())
+            ],
           ),
-          HomeAppBar(),
-        ],
+        ),
       ),
     );
   }
 
   Widget layoutOrder(){
     return Container(
-      width: MediaQuery.of(context).size.width * 0.95,
+      width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.all(Radius.circular(5))
@@ -138,7 +134,7 @@ class _OrderScreenState extends State<OrderScreen> {
 
   Widget layoutAddress(){
     return Container(
-      width: MediaQuery.of(context).size.width * 0.95,
+      width: MediaQuery.of(context).size.width,
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -151,26 +147,21 @@ class _OrderScreenState extends State<OrderScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("Địa chỉ", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),),
-                Icon(Icons.edit, color: Colors.grey)
+                Icon(Icons.location_on, color: Colors.grey),
+                Text("FPT University", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),),
               ],),
           Padding(
             padding: const EdgeInsets.only(top: 10),
-            child: Text("FPT University"),
+            child: Material(
+              color:  Color(0xfff5f5f5),
+              child: TextFormField(
+                decoration: InputDecoration(
+                  prefixIcon: Icon(Icons.description),
+                  hintText: "Ghi chú"
+                ),
+              ),
+            ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(top: 10),
-            child: Text("Lô E2a-7, Đường D1, Khu Công Nghệ Cao, Long Thạnh Mỹ, Quận 9, Thành phố Hồ Chí Minh"),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 10),
-            child: Row(
-              children: [
-                Text("Nhớ rước tớ vào lúc 11:00 nhé honey", style: TextStyle(color: Colors.pinkAccent),),
-                SizedBox(width: 5,),
-                Icon(Icons.favorite, color: Colors.pinkAccent,)
-              ],),
-          )
         ],
       ),
     );

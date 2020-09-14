@@ -205,11 +205,6 @@ class _HomeAppBarSate extends State<HomeAppBar>{
     final orderTime = DateTime(now.year, now.month, now.day, 11);
     int milisecond;
     if(now.isAfter(orderTime)){
-      DateTime tomorrow = DateTime(now.year, now.month, now.day + 1, 11);
-      //print(tomorrow.toString());
-      milisecond = tomorrow.millisecondsSinceEpoch - now.millisecondsSinceEpoch;
-    }
-    else if(now.isAtSameMomentAs(orderTime)){
       milisecond = -1;
     }
     else{

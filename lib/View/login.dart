@@ -67,8 +67,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 Animator(
-                  tween:
-                  Tween<Offset>(begin: Offset(0, -50), end: Offset(0, 50)),
+                  tween: Tween<Offset>(begin: Offset(0, -50), end: Offset(0, 50)),
                   duration: Duration(seconds: 2),
                   cycles: 2,
                   builder: (context, anim, child) => Container(

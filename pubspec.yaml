@@ -37,6 +37,7 @@ dependencies:
   flutter_spinkit: ^4.1.2
   flutter_svg: ^0.18.1
   animator: ^2.0.1
+  flutter_swiper: ^1.1.6
 
 dev_dependencies:
   flutter_test:
