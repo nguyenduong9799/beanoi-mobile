@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-final kPrimary = Color(0xFF619a46);
+final kPrimary = Color(0xFF00d286);
 final kSecondary = Color(0xFF438029);
 
 final kBackgroundGrey = [
