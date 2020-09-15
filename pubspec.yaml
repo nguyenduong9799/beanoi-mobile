@@ -38,6 +38,8 @@ dependencies:
   flutter_svg: ^0.18.1
   animator: ^2.0.1
   flutter_swiper: ^1.1.6
+  flutter_slidable: ^0.5.4
+  dotted_border: ^1.0.6
 
 dev_dependencies:
   flutter_test:

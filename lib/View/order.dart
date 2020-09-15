@@ -1,12 +1,17 @@
 
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:intl/intl.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/ViewModel/quantity_viewModel.dart';
 import 'package:unidelivery_mobile/acessories/appbar.dart';
+import 'package:unidelivery_mobile/acessories/dash_border.dart';
 import 'package:unidelivery_mobile/acessories/dialog.dart';
+import 'package:unidelivery_mobile/constraints.dart';
 class OrderScreen extends StatefulWidget {
   @override
   _OrderScreenState createState() => _OrderScreenState();
@@ -17,7 +22,6 @@ class _OrderScreenState extends State<OrderScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[300],
       bottomNavigationBar: bottomBar(),
       appBar: DefaultAppBar(title: "Đơn hàng của bạn"),
       body: SingleChildScrollView(
@@ -41,43 +45,71 @@ class _OrderScreenState extends State<OrderScreen> {
   }
 
   Widget layoutOrder(){
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.all(Radius.circular(5))
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Center(child: Text("Đơn hàng của bạn", style: TextStyle(color: Hexcolor("ffc500"), fontSize: 20, fontWeight: FontWeight.bold),)),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          color: kBackgroundGrey[0],
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text("Các món đã đặt", style: TextStyle(fontWeight: FontWeight.bold),),
+                  OutlineButton(
+                    borderSide: BorderSide(
+                        color: Colors.black
+                    ),
+                    child: Text("Thêm", style: TextStyle(color: Colors.black),),
+                  )
+                ],
+              ),
+              Divider(
+                color: Colors.black,
+                thickness: 2,
+              )
+            ],
           ),
-          layoutStore("Bà Mười", [
-            productCard("https://beptruong.edu.vn/wp-content/uploads/2018/06/cach-uop-thit-nuong-com-tam.jpg", "Cơm Tấm Trân Châu Đường Đen", "Size M", "20.000 VND"),
-          ]),
-          Divider(
-            color: Hexcolor('ffc500'),
-            thickness: 2,
-          ),
-          layoutStore("Hẻm 447", [
-            productCard("https://www.huongnghiepaau.com/wp-content/uploads/2019/01/che-buoi-an-giang.jpg", "Chè Bưởi", "Size M", "7.000 VND"),
-          ])
-        ],
-      ),
+        ),
+
+        layoutStore("Bà Mười", [
+          productCard("https://beptruong.edu.vn/wp-content/uploads/2018/06/cach-uop-thit-nuong-com-tam.jpg", "Cơm Tấm", "", "", "", 20000),
+        ]),
+
+        layoutStore("Hẻm 447", [
+          productCard("https://www.huongnghiepaau.com/wp-content/uploads/2019/01/che-buoi-an-giang.jpg", "Chè Bưởi", "size M", "Trân châu đen", "Ít đá", 7000),
+          productCard("https://bizweb.dktcdn.net/100/004/714/articles/nguyen-lieu-tra-sua-gia-re.jpg?v=1559644357347", "Trà sữa", "size M", "Trân châu đen", "Ít đá", 27000),
+        ])
+      ],
     );
   }
   
   Widget layoutStore(String store, List<Widget> card){
-    return Padding(
+
+    int length = card.length;
+    for(int i = 0; i < card.length; i++){
+      if(i % 2 != 0){
+        card.insert(i, Container(
+            color: kBackgroundGrey[0],
+            child: MySeparator(color: kBackgroundGrey[4],)));
+      }
+    }
+    return Container(
+      color: kBackgroundGrey[0],
       padding: const EdgeInsets.only(bottom: 10, top: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.only(left: 10),
-            child: Text(store, style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),
+            padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(store, style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.red),),
+                  Text(length.toString() + " món", style: TextStyle(),),
+                ],
+            ),
           ),
           ...card
         ],
@@ -85,49 +117,87 @@ class _OrderScreenState extends State<OrderScreen> {
     );
   }
 
-  Widget productCard(String imageUrl, String name, String size, String price){
-    return Container(
-      padding: const EdgeInsets.only(left: 10, right: 10, bottom: 5),
-      child: Card(
-        elevation: 2.0,
-        child: InkWell(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  Image(
-                    image: NetworkImage(imageUrl),
-                    fit: BoxFit.fill,
-                    width: MediaQuery.of(context).size.width * 0.33,
-                  ),
-                  SizedBox(width: 10,),
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.21,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+  Widget productCard(String imageUrl, String name, String size, String topping, String note,  double price){
+    List<Widget> list = new List();
+    list.add(Text(name + " " + size, style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)));
+
+    if(topping.isNotEmpty){
+      list.add(SizedBox(height: 10,));
+      list.add(Text(topping, style: TextStyle(fontSize: 14)));
+    }
+
+    if(note.isNotEmpty){
+      list.add(SizedBox(height: 10,));
+      list.add(Text(note, style: TextStyle(fontSize: 14),));
+    }
+    return ScopedModel(
+      model: new QuantityViewModel(price),
+      child: ScopedModelDescendant(
+        builder: (BuildContext context, Widget child, QuantityViewModel model) {
+          if(model.count > 0)
+          return Slidable(
+            actionPane: SlidableDrawerActionPane(),
+            actionExtentRatio: 0.25,
+            child: Container(
+              color: kBackgroundGrey[0],
+              padding: EdgeInsets.only(right: 5, left: 5, top: 10, bottom: 10),
+              child: InkWell(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(name, style: TextStyle(fontSize: 14)),
-                        SizedBox(height: 10,),
-                        Text(price, style: TextStyle(fontSize: 14)),
-                        SizedBox(height: 5,),
-                        Text(size, style: TextStyle(color: Colors.grey, fontSize: 13),)
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Image(
+                              image: NetworkImage(imageUrl),
+                              fit: BoxFit.fill,
+                              width: MediaQuery.of(context).size.width * 0.25,
+                            ),
+                            SizedBox(width: 10,),
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.65 - 120,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  ...list,
+                                  SizedBox(height: 10,),
+                                  Text(NumberFormat.simpleCurrency(locale: 'vi').format(model.total), style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),)
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        selectQuantity()
                       ],
                     ),
-                  ),
-                ],
+
+                  ],
+                ),
               ),
-              Column(
-                children: [
-                  IconButton(
-                    icon: Icon(Icons.delete),
-                  ),
-                  selectQuantity()
-                ],
+            ),
+            secondaryActions: [
+              IconSlideAction(
+                color: kBackgroundGrey[2],
+                foregroundColor: Colors.blue,
+                  icon: Icons.edit,
+                  onTap: () {}
+              ),
+              IconSlideAction(
+                color: kBackgroundGrey[3],
+                foregroundColor: Colors.red,
+                  icon: Icons.delete,
+                  onTap: () {
+                    model.deleteQuantity();
+                  }
               ),
             ],
-          ),
-        ),
+          );
+          return Container();
+
+        },
       ),
     );
   }
@@ -137,7 +207,7 @@ class _OrderScreenState extends State<OrderScreen> {
       width: MediaQuery.of(context).size.width,
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: kBackgroundGrey[0],
           borderRadius: BorderRadius.all(Radius.circular(5))
       ),
 
@@ -145,15 +215,15 @@ class _OrderScreenState extends State<OrderScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Icon(Icons.location_on, color: Colors.grey),
-                Text("FPT University", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),),
+                SizedBox(width: 10,),
+                Text("FPT University", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),),
               ],),
           Padding(
             padding: const EdgeInsets.only(top: 10),
             child: Material(
-              color:  Color(0xfff5f5f5),
+              color:  kBackgroundGrey[2],
               child: TextFormField(
                 decoration: InputDecoration(
                   prefixIcon: Icon(Icons.description),
@@ -169,38 +239,67 @@ class _OrderScreenState extends State<OrderScreen> {
 
   Widget layoutSubtotal(){
     return Container(
-      width: MediaQuery.of(context).size.width * 0.95,
+      width: MediaQuery.of(context).size.width,
       padding: const EdgeInsets.all(10),
       margin: const EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
-          color: Colors.white,
-        borderRadius: BorderRadius.all(Radius.circular(5))
+          color: kBackgroundGrey[0],
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 5, bottom: 5),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          Text("Tổng tiền", style: TextStyle(fontWeight: FontWeight.bold),),
+          Container(
+            margin: EdgeInsets.only(top: 15),
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: kBackgroundGrey[4]
+              ),
+              borderRadius: BorderRadius.all(Radius.circular(10))
+            ),
+            child: Column(
               children: [
-                Text("Tạm tính", style: TextStyle(fontWeight: FontWeight.bold),),
-                Text("27.000 VND", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey)),
+                Padding(
+                  padding: const EdgeInsets.only(top: 5, bottom: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("Tạm tính", style: TextStyle(),),
+                      Text("27.000 VND", style: TextStyle(
+                      )),
+                    ],
+                  ),
+                ),
+                MySeparator(
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 10, bottom: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("Phí vận chuyển",  style: TextStyle()),
+                      Text("10.000 VND", style: TextStyle()),
+                    ],
+                  ),
+                ),
+                Divider(
+                    color: Colors.black
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 5, bottom: 5),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("Tổng cộng",  style: TextStyle(fontWeight: FontWeight.bold)),
+                      Text("50.000 VND", style: TextStyle(fontWeight: FontWeight.bold)),
+                    ],
+                  ),
+                )
               ],
             ),
           ),
-          Divider(
-            color: Colors.black
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 5, bottom: 5),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text("Shipping",  style: TextStyle(fontWeight: FontWeight.bold)),
-                Text("10.000 VND", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey)),
-              ],
-            ),
-          )
+
         ],
       ),
     );
@@ -208,7 +307,6 @@ class _OrderScreenState extends State<OrderScreen> {
 
   Widget bottomBar(){
       return  Container(
-        height: 50,
         padding: const EdgeInsets.only(left: 10, right: 10),
         decoration: BoxDecoration(
             color: Colors.white,
@@ -220,17 +318,20 @@ class _OrderScreenState extends State<OrderScreen> {
             ),
           ],
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: ListView(
+          shrinkWrap: true,
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text("Tổng cộng", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.red),),
-                  Text("37.000 VND", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),)
-                ],
+            Padding(
+              padding: const EdgeInsets.only(top: 10.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text("Tổng tiền", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18,),),
+                    Text("37.000 VND", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),)
+                  ],
+              ),
             ),
+            SizedBox(height: 15,),
             FlatButton(
               onPressed: () async {
                 showLoadingDialog();
@@ -239,11 +340,11 @@ class _OrderScreenState extends State<OrderScreen> {
               },
               padding: EdgeInsets.only(left: 8.0, right:  8.0),
               textColor: Colors.white,
-              color: Hexcolor("ffc500"),
+              color: kPrimary,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(5))
               ),
-              child: Text("Đặt hàng"),
+              child: Text("Chốt đơn"),
             )
           ],
         ),
@@ -251,30 +352,27 @@ class _OrderScreenState extends State<OrderScreen> {
   }
 
   Widget selectQuantity(){
-    return ScopedModel(
-      model: new QuantityViewModel(),
-      child: ScopedModelDescendant(
-        builder: (BuildContext context, Widget child, QuantityViewModel model) {
-          return Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              IconButton(
-                icon: Icon(Icons.do_not_disturb_on, size: 20, color: model.minusColor,),
-                onPressed: (){
-                  model.minusQuantity();
-                },
-              ),
-              Text(model.count.toString()),
-              IconButton(
-                icon: Icon(Icons.add_circle, size: 20, color: model.addColor,),
-                onPressed: (){
-                  model.addQuantity();
-                },
-              )
-            ],
-          );
-        },
-      ),
+    return ScopedModelDescendant(
+      builder: (BuildContext context, Widget child, QuantityViewModel model) {
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              icon: Icon(Icons.do_not_disturb_on, size: 20, color: model.minusColor,),
+              onPressed: (){
+                model.minusQuantity();
+              },
+            ),
+            Text(model.count.toString()),
+            IconButton(
+              icon: Icon(Icons.add_circle, size: 20, color: model.addColor,),
+              onPressed: (){
+                model.addQuantity();
+              },
+            )
+          ],
+        );
+      },
     );
   }
 
@@ -324,7 +422,6 @@ class _OrderScreenState extends State<OrderScreen> {
                   "Loading...",
                   textAlign: TextAlign.left,
                   style: TextStyle(color: Colors.black, fontSize: 18.0, fontWeight: FontWeight.w600),
-                  textDirection: TextDirection.ltr,
                 ),
               ],
             ),
@@ -341,7 +438,7 @@ class _OrderScreenState extends State<OrderScreen> {
             ButtonTheme(
               minWidth: double.infinity,
               child: FlatButton(
-                color: Hexcolor("ffc500"),
+                color: kPrimary,
                 textColor: Colors.white,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
                 child: Padding(
