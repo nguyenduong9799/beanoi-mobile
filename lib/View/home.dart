@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Model/DTO/AccountDTO.dart';
+import 'package:unidelivery_mobile/Model/DTO/ProductDTO.dart';
 import 'package:unidelivery_mobile/View/login.dart';
 import 'package:unidelivery_mobile/ViewModel/home_viewModel.dart';
 import 'package:unidelivery_mobile/ViewModel/login_viewModel.dart';
@@ -96,42 +97,10 @@ class _HomeScreenState extends State<HomeScreen> {
           0.25 /
           (30 + MediaQuery.of(context).size.width * 0.25),
       crossAxisCount: 3,
-      children: List.generate(9, (index) => cardDetail()),
-    );
-  }
-
-  Widget cardDetail() {
-    return Container(
-      width: MediaQuery.of(context).size.width * 0.25,
-      margin: const EdgeInsets.all(5),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(10)),
-      ),
-      child: Card(
-        elevation: 2.0,
-        child: InkWell(
-          child: Column(
-            children: [
-              Container(
-                height: MediaQuery.of(context).size.width * 0.25,
-                color: Colors.grey[300],
-                child: Center(
-                  child: Image(
-                    image: NetworkImage(
-                        "https://celebratingsweets.com/wp-content/uploads/2018/06/Strawberry-Shortcake-Cake-1-1.jpg"),
-                    fit: BoxFit.fill,
-                    height: MediaQuery.of(context).size.width * 0.25,
-                  ),
-                ),
-              ),
-              Text("Bánh Gato", style: TextStyle(fontSize: 14)),
-              SizedBox(
-                height: 10,
-              ),
-            ],
-          ),
-        ),
-      ),
+      children: List.generate(
+          9,
+          (index) => FoodItem(
+              product: ProductDTO(index.toString(), name: 'Sản phẩm $index'))),
     );
   }
 
@@ -300,6 +269,129 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         );
       }),
+    );
+  }
+}
+
+class FoodItem extends StatefulWidget {
+  final ProductDTO product;
+  FoodItem({Key key, this.product}) : super(key: key);
+
+  @override
+  _FoodItemState createState() => _FoodItemState();
+}
+
+class _FoodItemState extends State<FoodItem> {
+  @override
+  Widget build(BuildContext context) {
+    final product = widget.product;
+    final name = product.name;
+    return Container(
+      width: MediaQuery.of(context).size.width * 0.25,
+      margin: const EdgeInsets.only(
+        left: 10,
+        right: 10,
+      ),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(10)),
+      ),
+      child: InkWell(
+        child: Opacity(
+          opacity: 1,
+          child: Stack(
+            children: [
+              Hero(
+                tag: this,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(15),
+                  child: Opacity(
+                    opacity: 0.7,
+                    child: Image.asset(
+                      'assets/images/breed.jpg',
+                      width: 170,
+                      height: 190,
+                      fit: BoxFit.fill,
+                    ),
+                  ),
+                ),
+              ),
+              Positioned(
+                bottom: 0,
+                left: 0,
+                child: Padding(
+                  padding: const EdgeInsets.all(0),
+                  child: Container(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Container(
+                          width: 170,
+                          decoration: BoxDecoration(
+                            color: Colors.black54,
+                            borderRadius: BorderRadius.only(
+                                bottomLeft: Radius.circular(15),
+                                bottomRight: Radius.circular(15)),
+                          ),
+                          padding: EdgeInsets.all(10),
+                          margin: EdgeInsets.only(bottom: 10),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Container(
+                                    width: 90,
+                                    child: Text(
+                                      name,
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 7,
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              // Column(
+              //   children: [
+              //     Container(
+              //       height: MediaQuery.of(context).size.width * 0.25,
+              //       color: Colors.grey[300],
+              //       child: Center(
+              //         child: Image(
+              //           image: NetworkImage(
+              //               "https://celebratingsweets.com/wp-content/uploads/2018/06/Strawberry-Shortcake-Cake-1-1.jpg"),
+              //           fit: BoxFit.fill,
+              //           height: MediaQuery.of(context).size.width * 0.25,
+              //         ),
+              //       ),
+              //     ),
+              //     Text("Bánh Gato", style: TextStyle(fontSize: 14)),
+              //     SizedBox(
+              //       height: 10,
+              //     ),
+              //   ],
+              // ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
