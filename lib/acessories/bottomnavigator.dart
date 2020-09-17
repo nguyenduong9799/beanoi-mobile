@@ -32,13 +32,13 @@ class _NavBarSate extends State<DefaultNavigatorBar> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 8.0 * 7,
+      height: 8.0 * 6,
       child: BottomNavigationBar(
         showSelectedLabels: false,
         showUnselectedLabels: false,
-        iconSize: 16,
+        iconSize: 14,
         type: BottomNavigationBarType.fixed,
-        selectedIconTheme: IconThemeData(color: kPrimary, size: 24),
+        selectedIconTheme: IconThemeData(color: kPrimary, size: 20),
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: ImageIcon(

@@ -202,19 +202,19 @@ class _HomeScreenState extends State<HomeScreen> {
       listContents.add(productPage);
     }
     return Container(
-      height: 370,
+      height: 430,
       child: Swiper(
-        loop: false,
-        fade: 0.8,
+        loop: true,
+        fade: 0.2,
         // itemWidth: MediaQuery.of(context).size.width - 60,
         // itemHeight: 370,
         scrollDirection: Axis.horizontal,
         itemBuilder: (BuildContext context, index) => listContents[index],
         itemCount: listContents.length,
-        indicatorLayout: PageIndicatorLayout.WARM,
+        indicatorLayout: PageIndicatorLayout.SCALE,
         pagination: new SwiperPagination(),
-        viewportFraction: 0.85,
-        scale: 0.9,
+        // viewportFraction: 0.85,
+        scale: 0.7,
         outer: true,
       ),
     );
@@ -462,16 +462,14 @@ class _FoodItemState extends State<FoodItem> {
                       borderRadius: BorderRadius.circular(16),
                       child: Opacity(
                         opacity: 0.7,
-                        child: FadeInImage(
+                        child: AspectRatio(
+                          aspectRatio: 1,
+                          child: FadeInImage(
                             image: NetworkImage(imageURL),
-                            placeholder:
-                                AssetImage('assets/images/avatar.png')),
-                        // Image.network(
-                        //   imageURL,
-                        //   width: 72,
-                        //   // height: 72,
-                        //   fit: BoxFit.fill,
-                        // ),
+                            placeholder: AssetImage('assets/images/avatar.png'),
+                            fit: BoxFit.fill,
+                          ),
+                        ),
                       ),
                     ),
                   ),
