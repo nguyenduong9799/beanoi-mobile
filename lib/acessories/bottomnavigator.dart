@@ -41,7 +41,10 @@ class _NavBarSate extends State<DefaultNavigatorBar> {
         selectedIconTheme: IconThemeData(color: kPrimary, size: 24),
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
+            icon: ImageIcon(
+              AssetImage("assets/images/home.png"),
+              // color: Colors.transparent,
+            ),
             title: Text(
               'Home',
               style: TextStyle(fontSize: 10),

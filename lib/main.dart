@@ -28,11 +28,11 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         fontFamily: 'SourceSansPro',
         primarySwatch: Colors.blue,
-        primaryColor: kBackgroundGrey[0],
+        primaryColor: kPrimary,
         scaffoldBackgroundColor: Colors.grey[200],
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: OrderScreen(),
+      home: HomeScreen(),
     );
   }
 

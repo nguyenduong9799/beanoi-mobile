@@ -1,6 +1,8 @@
 import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Model/DAO/index.dart';
+import 'package:unidelivery_mobile/Model/DTO/CartDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/ProductDTO.dart';
+import 'package:unidelivery_mobile/utils/request.dart';
 
 class Filter {
   final String id;
@@ -12,9 +14,13 @@ class Filter {
       {this.isSelected = false, this.isMultiple = false});
 }
 
+enum Status { Empty, Loading, Completed }
+
 class HomeViewModel extends Model {
   static HomeViewModel _instance;
   List<ProductDTO> products;
+  Cart cart = Cart();
+  Status status;
 
   List<Filter> filterType = [
     Filter('All', 'Tất cả', isSelected: true),
@@ -28,6 +34,11 @@ class HomeViewModel extends Model {
     Filter('drink', 'Thức uống', isMultiple: true),
   ];
 
+  HomeViewModel() {
+    status = Status.Loading;
+    // getProducts();
+  }
+
   static HomeViewModel getInstance() {
     if (_instance == null) {
       _instance = HomeViewModel();
@@ -40,6 +51,28 @@ class HomeViewModel extends Model {
   }
 
   // 1. Get ProductList with current Filter
+  Future<List<ProductDTO>> getProducts() async {
+    if (products != null && products.length != 0) return products;
+
+    try {
+      status = Status.Loading;
+      notifyListeners();
+      final res = await request.get('products');
+      if (res.statusCode == 200) {
+        products = ProductDTO.fromList(res.data);
+      } else {
+        print('Fetch products error');
+      }
+      notifyListeners();
+    } on Exception catch (e) {
+      print("EXCEPTION $e");
+    } finally {
+      status = Status.Completed;
+      notifyListeners();
+    }
+
+    return products;
+  }
 
   // 2. Change filter
 
@@ -74,4 +107,17 @@ class HomeViewModel extends Model {
 
   // 3. Get Product Detail
 
+  // 4. Add item to cart
+  Future<void> updateItemInCart(ProductDTO masterProduct,
+      List<ProductDTO> productsChild, int quantity) async {
+    if (cart == null) {
+      cart = Cart();
+    }
+    cart.addItem(CartItem(
+      masterProduct,
+      quantity,
+      productsChild,
+    ));
+    notifyListeners();
+  }
 }

@@ -2,6 +2,7 @@ import 'package:animator/animator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_page_indicator/flutter_page_indicator.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Model/DTO/AccountDTO.dart';
@@ -25,14 +26,66 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   bool switcher = false;
   PageController _scrollController = new PageController();
+  HomeViewModel model = HomeViewModel();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    model.getProducts();
+  }
 
   @override
   Widget build(BuildContext context) {
     // print(widget?.user.uid);
     return SafeArea(
       child: ScopedModel(
-        model: HomeViewModel(),
+        model: model,
         child: Scaffold(
+          floatingActionButton: ScopedModelDescendant<HomeViewModel>(
+              builder: (context, child, model) {
+            bool hasItemInCart = !model.cart.isEmpty;
+            int quantity = model.cart.itemQuantity;
+
+            return hasItemInCart
+                ? Stack(
+                    overflow: Overflow.visible,
+                    children: [
+                      Container(
+                        width: 48,
+                        height: 48,
+                        decoration: BoxDecoration(
+                          color: kPrimary,
+                          // borderRadius: BorderRadius.circular(48),
+                        ),
+                        child: IconButton(
+                            icon:
+                                Icon(Icons.shopping_cart, color: Colors.white),
+                            onPressed: () {}),
+                      ),
+                      Positioned(
+                        top: -12,
+                        left: 36,
+                        child: Container(
+                          width: 24,
+                          height: 24,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.amber,
+                          ),
+                          child: Center(
+                            child: Text(
+                              quantity.toString(),
+                              style: kTextPrimary.copyWith(
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
+                  )
+                : SizedBox();
+          }),
           bottomNavigationBar: ListView(
             shrinkWrap: true,
             children: [
@@ -46,18 +99,83 @@ class _HomeScreenState extends State<HomeScreen> {
           //bottomNavigationBar: bottomBar(),
           body: Stack(
             children: [
-              Center(
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 100),
-                  child: Column(
-                    children: [
-                      // banner(),
-                      swipeLayout(),
-                    ],
-                  ),
+              Container(
+                // height: 800,
+                child: ListView(
+                  children: [
+                    Container(
+                      // height: 750,
+                      child: Center(
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 80),
+                          child: Column(
+                            children: [
+                              // banner(),
+                              Center(
+                                child: Container(
+                                  margin: EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(16),
+                                    color: Colors.blue[200],
+                                  ),
+                                  height: 80,
+                                  width: double.infinity,
+                                  child: Center(
+                                      child: Text(
+                                    "Banner",
+                                    style: TextStyle(
+                                      fontSize: 25,
+                                    ),
+                                  )),
+                                ),
+                              ),
+                              SizedBox(height: 16),
+                              ScopedModelDescendant<HomeViewModel>(
+                                builder: (context, child, model) {
+                                  List<ProductDTO> products = model.products;
+                                  Status status = model.status;
+                                  switch (status) {
+                                    case Status.Loading:
+                                      return CircularProgressIndicator();
+                                    case Status.Empty:
+                                      return Center(
+                                        child: Text("Empty list"),
+                                      );
+                                    case Status.Completed:
+                                      return productListSection(products);
+                                    default:
+                                      return Text("Some thing wrong");
+                                  }
+                                },
+                              ),
+                              SizedBox(height: 16),
+                              Center(
+                                child: Container(
+                                  margin: EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(16),
+                                    color: Colors.orange[300],
+                                  ),
+                                  height: 80,
+                                  width: double.infinity,
+                                  child: Center(
+                                      child: Text(
+                                    "Bottom Section",
+                                    style: TextStyle(
+                                      fontSize: 25,
+                                    ),
+                                  )),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    // SizedBox(height: 48),
+                  ],
                 ),
               ),
-              SizedBox(height: 48),
               HomeAppBar(),
             ],
           ),
@@ -73,34 +191,51 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget swipeLayout() {
+  Widget productListSection(List<ProductDTO> products) {
     List<Widget> listContents = new List();
-    for (int i = 0; i < 9; i++) {
-      listContents.add(homeContent());
+    // xay 1 trang gom 3 x 3 item
+    for (int i = 0; i < products.length; i += 9) {
+      List<ProductDTO> chunk;
+      int endIndex = i + 9 > products.length ? products.length : i + 9;
+      chunk = products.sublist(i, endIndex);
+      Widget productPage = homeContent(chunk);
+      listContents.add(productPage);
     }
-    return Expanded(
+    return Container(
+      height: 370,
       child: Swiper(
         loop: false,
+        fade: 0.8,
+        // itemWidth: MediaQuery.of(context).size.width - 60,
+        // itemHeight: 370,
         scrollDirection: Axis.horizontal,
         itemBuilder: (BuildContext context, index) => listContents[index],
         itemCount: listContents.length,
+        indicatorLayout: PageIndicatorLayout.WARM,
         pagination: new SwiperPagination(),
+        viewportFraction: 0.85,
+        scale: 0.9,
+        outer: true,
       ),
     );
   }
 
-  Widget homeContent() {
+  Widget homeContent(List<ProductDTO> list) {
     return GridView.count(
       shrinkWrap: true,
       scrollDirection: Axis.vertical,
-      childAspectRatio: MediaQuery.of(context).size.width *
-          0.25 /
-          (30 + MediaQuery.of(context).size.width * 0.25),
+      primary: false,
+      crossAxisSpacing: 8,
+      // childAspectRatio: 1 / 2,
+      mainAxisSpacing: 8,
       crossAxisCount: 3,
-      children: List.generate(
-          9,
-          (index) => FoodItem(
-              product: ProductDTO(index.toString(), name: 'Sản phẩm $index'))),
+      children: list
+          .map(
+            (item) => FoodItem(
+              product: item,
+            ),
+          )
+          .toList(),
     );
   }
 
@@ -239,7 +374,7 @@ class _HomeScreenState extends State<HomeScreen> {
           builder: (context, child, model) {
         final onChangeFilter = model.updateFilter;
         return FlatButton(
-          color: isSelected ? Color(0xFF00d286) : kBackgroundGrey[3],
+          color: isSelected ? Color(0xFF00d286) : kBackgroundGrey[0],
           onPressed: () async {
             await onChangeFilter(id, isMultiple);
           },
@@ -286,111 +421,76 @@ class _FoodItemState extends State<FoodItem> {
   Widget build(BuildContext context) {
     final product = widget.product;
     final name = product.name;
+    final imageURL = product.imageURL;
     return Container(
-      width: MediaQuery.of(context).size.width * 0.25,
+      // width: MediaQuery.of(context).size.width * 0.3,
       margin: const EdgeInsets.only(
         left: 10,
         right: 10,
       ),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(10)),
+        // color: Colors.white,
       ),
-      child: InkWell(
-        child: Opacity(
-          opacity: 1,
-          child: Stack(
-            children: [
-              Hero(
-                tag: this,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(15),
-                  child: Opacity(
-                    opacity: 0.7,
-                    child: Image.asset(
-                      'assets/images/breed.jpg',
-                      width: 170,
-                      height: 190,
-                      fit: BoxFit.fill,
+      child: Material(
+        color: Colors.transparent,
+        child: ScopedModelDescendant<HomeViewModel>(
+            builder: (context, child, model) {
+          return InkWell(
+            customBorder: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            onTap: () async {
+              print('Add item to cart');
+              // TODO: Change by receive result from Navigator
+              await model.updateItemInCart(
+                ProductDTO('item1'),
+                List.generate(
+                    2,
+                    (index) => ProductDTO('$index',
+                        name: 'Prodcut Child ${index + 1}')),
+                1,
+              );
+            },
+            child: Opacity(
+              opacity: 1,
+              child: Column(
+                children: [
+                  Hero(
+                    tag: this,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(16),
+                      child: Opacity(
+                        opacity: 0.7,
+                        child: FadeInImage(
+                            image: NetworkImage(imageURL),
+                            placeholder:
+                                AssetImage('assets/images/avatar.png')),
+                        // Image.network(
+                        //   imageURL,
+                        //   width: 72,
+                        //   // height: 72,
+                        //   fit: BoxFit.fill,
+                        // ),
+                      ),
                     ),
                   ),
-                ),
-              ),
-              Positioned(
-                bottom: 0,
-                left: 0,
-                child: Padding(
-                  padding: const EdgeInsets.all(0),
-                  child: Container(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Container(
-                          width: 170,
-                          decoration: BoxDecoration(
-                            color: Colors.black54,
-                            borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(15),
-                                bottomRight: Radius.circular(15)),
-                          ),
-                          padding: EdgeInsets.all(10),
-                          margin: EdgeInsets.only(bottom: 10),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Container(
-                                    width: 90,
-                                    child: Text(
-                                      name,
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 1,
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(
-                                height: 7,
-                              ),
-                            ],
-                          ),
-                        )
-                      ],
+                  Expanded(
+                    child: Container(
+                      // color: Colors.blue,
+                      child: Text(
+                        name,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
                     ),
-                  ),
-                ),
+                  )
+                ],
               ),
-              // Column(
-              //   children: [
-              //     Container(
-              //       height: MediaQuery.of(context).size.width * 0.25,
-              //       color: Colors.grey[300],
-              //       child: Center(
-              //         child: Image(
-              //           image: NetworkImage(
-              //               "https://celebratingsweets.com/wp-content/uploads/2018/06/Strawberry-Shortcake-Cake-1-1.jpg"),
-              //           fit: BoxFit.fill,
-              //           height: MediaQuery.of(context).size.width * 0.25,
-              //         ),
-              //       ),
-              //     ),
-              //     Text("Bánh Gato", style: TextStyle(fontSize: 14)),
-              //     SizedBox(
-              //       height: 10,
-              //     ),
-              //   ],
-              // ),
-            ],
-          ),
-        ),
+            ),
+          );
+        }),
       ),
     );
   }
