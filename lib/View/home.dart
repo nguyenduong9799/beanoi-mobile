@@ -8,6 +8,7 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Model/DTO/AccountDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/ProductDTO.dart';
 import 'package:unidelivery_mobile/View/login.dart';
+import 'package:unidelivery_mobile/View/order.dart';
 import 'package:unidelivery_mobile/ViewModel/home_viewModel.dart';
 import 'package:unidelivery_mobile/ViewModel/login_viewModel.dart';
 import 'package:unidelivery_mobile/acessories/appbar.dart';
@@ -48,41 +49,47 @@ class _HomeScreenState extends State<HomeScreen> {
             int quantity = model.cart.itemQuantity;
 
             return hasItemInCart
-                ? Stack(
-                    overflow: Overflow.visible,
-                    children: [
-                      Container(
-                        width: 48,
-                        height: 48,
-                        decoration: BoxDecoration(
-                          color: kPrimary,
-                          // borderRadius: BorderRadius.circular(48),
-                        ),
-                        child: IconButton(
-                            icon:
-                                Icon(Icons.shopping_cart, color: Colors.white),
-                            onPressed: () {}),
-                      ),
-                      Positioned(
-                        top: -12,
-                        left: 36,
-                        child: Container(
-                          width: 24,
-                          height: 24,
+                ? FloatingActionButton(
+                    backgroundColor: Colors.transparent,
+                    onPressed: () {
+                      print('Tap order');
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => OrderScreen(),
+                      ));
+                    },
+                    child: Stack(
+                      overflow: Overflow.visible,
+                      children: [
+                        Container(
+                          width: 48,
+                          height: 48,
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colors.amber,
+                            color: kPrimary,
+                            borderRadius: BorderRadius.circular(48),
                           ),
-                          child: Center(
-                            child: Text(
-                              quantity.toString(),
-                              style: kTextPrimary.copyWith(
-                                  fontWeight: FontWeight.bold),
+                          child: Icon(Icons.shopping_cart, color: Colors.white),
+                        ),
+                        Positioned(
+                          top: -12,
+                          left: 36,
+                          child: Container(
+                            width: 24,
+                            height: 24,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: Colors.amber,
+                            ),
+                            child: Center(
+                              child: Text(
+                                quantity.toString(),
+                                style: kTextPrimary.copyWith(
+                                    fontWeight: FontWeight.bold),
+                              ),
                             ),
                           ),
-                        ),
-                      )
-                    ],
+                        )
+                      ],
+                    ),
                   )
                 : SizedBox();
           }),
@@ -120,13 +127,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                   height: 80,
                                   width: double.infinity,
-                                  child: Center(
-                                      child: Text(
-                                    "Banner",
-                                    style: TextStyle(
-                                      fontSize: 25,
-                                    ),
-                                  )),
+                                  child: Image.asset(
+                                    'assets/images/banner.png',
+                                    fit: BoxFit.cover,
+                                    // width: double.infinity,
+                                  ),
                                 ),
                               ),
                               SizedBox(height: 16),
@@ -461,7 +466,7 @@ class _FoodItemState extends State<FoodItem> {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(16),
                       child: Opacity(
-                        opacity: 0.7,
+                        opacity: 1,
                         child: AspectRatio(
                           aspectRatio: 1,
                           child: FadeInImage(
