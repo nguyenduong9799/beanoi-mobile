@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:intl/intl.dart';
+import 'package:unidelivery_mobile/Services/firebase.dart';
+import 'package:unidelivery_mobile/View/login.dart';
 
 class DefaultAppBar extends StatefulWidget implements PreferredSizeWidget {
   String title;
@@ -100,12 +102,22 @@ class _HomeAppBarSate extends State<HomeAppBar> {
                         borderRadius: BorderRadius.all(
                           Radius.circular(_imageRadius),
                         )),
-                    child: Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Image(
-                        image: AssetImage("assets/images/avatar.png"),
-                        width: 40,
-                        height: 40,
+                    child: GestureDetector(
+                      onTap: () async {
+                        await AuthService().signOut();
+                        Navigator.of(context).pushAndRemoveUntil(
+                            MaterialPageRoute(
+                              builder: (context) => LoginScreen(),
+                            ),
+                            (route) => false);
+                      },
+                      child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Image(
+                          image: AssetImage("assets/images/avatar.png"),
+                          width: 40,
+                          height: 40,
+                        ),
                       ),
                     ),
                   ),

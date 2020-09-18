@@ -28,15 +28,16 @@ class ProductDTO {
   }); // balance. point;
 
   factory ProductDTO.fromJson(dynamic json) => ProductDTO(
-        uid: json["userId"] as String,
+        json["userId"] as String,
         name: json['name'] as String,
-        price: json['price'] as double,
+        price: double.parse(json['price']),
         size: json['size'] as String,
         quantity: json['quantity'] as int,
         topping: json['topping'] as List,
         description: json['description'] as String,
         type: json['type'] as int,
         atrributes: json['map'] as Map,
+        imageURL: json['imageURL'] as String,
       );
 
   Map<String, dynamic> toJson() {
@@ -45,4 +46,7 @@ class ProductDTO {
       "name": name,
     };
   }
+
+  static List<ProductDTO> fromList(List list) =>
+      list.map((map) => ProductDTO.fromJson(map)).toList();
 }

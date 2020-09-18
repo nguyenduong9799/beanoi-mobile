@@ -6,6 +6,7 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Model/DTO/AccountDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/ProductDTO.dart';
 import 'package:unidelivery_mobile/View/order.dart';
+import 'package:unidelivery_mobile/View/product_detail.dart';
 import 'package:unidelivery_mobile/ViewModel/home_viewModel.dart';
 import 'package:unidelivery_mobile/acessories/appbar.dart';
 import 'package:unidelivery_mobile/acessories/bottomnavigator.dart';
@@ -443,14 +444,17 @@ class _FoodItemState extends State<FoodItem> {
             onTap: () async {
               print('Add item to cart');
               // TODO: Change by receive result from Navigator
-              await model.updateItemInCart(
-                ProductDTO('item1'),
-                List.generate(
-                    2,
-                    (index) => ProductDTO('$index',
-                        name: 'Prodcut Child ${index + 1}')),
-                1,
-              );
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => ProductDetailScreen(product, 0),
+              ));
+              // await model.updateItemInCart(
+              //   ProductDTO('item1'),
+              //   List.generate(
+              //       2,
+              //       (index) => ProductDTO('$index',
+              //           name: 'Prodcut Child ${index + 1}')),
+              //   1,
+              // );
             },
             child: Opacity(
               opacity: 1,
