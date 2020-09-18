@@ -1,12 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:unidelivery_mobile/Model/DAO/AccountDAO.dart';
 import 'package:unidelivery_mobile/Model/DTO/AccountDTO.dart';
 import 'package:unidelivery_mobile/View/home.dart';
 import 'package:unidelivery_mobile/View/login.dart';
 import 'package:unidelivery_mobile/View/signup.dart';
-import 'package:unidelivery_mobile/services/push_notification_service.dart';
+import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/utils/shared_pref.dart';
 
 void main() async {
@@ -25,9 +23,13 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
+        fontFamily: 'SourceSansPro',
         primarySwatch: Colors.blue,
+        primaryColor: kPrimary,
+        scaffoldBackgroundColor: Colors.grey[200],
+        visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: SignUp(),
+      home: HomeScreen(),
     );
   }
 
