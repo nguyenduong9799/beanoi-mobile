@@ -8,6 +8,7 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Model/DTO/AccountDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/ProductDTO.dart';
 import 'package:unidelivery_mobile/View/login.dart';
+
 import 'package:unidelivery_mobile/ViewModel/home_viewModel.dart';
 import 'package:unidelivery_mobile/ViewModel/login_viewModel.dart';
 import 'package:unidelivery_mobile/acessories/appbar.dart';
@@ -24,6 +25,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+
   bool switcher = false;
   PageController _scrollController = new PageController();
   HomeViewModel model = HomeViewModel();
@@ -38,6 +40,21 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     // print(widget?.user.uid);
+    return Scaffold(
+      bottomNavigationBar: DefaultNavigatorBar(selectedIndex: 0,),
+      backgroundColor: Colors.grey[300],
+      //bottomNavigationBar: bottomBar(),
+      body: Stack(
+        children: [
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 100),
+              child: Column(
+                children: [
+                  banner(),
+                  swipeLayout(),
+                  tag()
+                ],
     return SafeArea(
       child: ScopedModel(
         model: model,
@@ -93,8 +110,11 @@ class _HomeScreenState extends State<HomeScreen> {
               DefaultNavigatorBar(
                 selectedIndex: 0,
               ),
+            ),
             ],
           ),
+          HomeAppBar(),
+        ],
           backgroundColor: Colors.white,
           //bottomNavigationBar: bottomBar(),
           body: Stack(
@@ -184,6 +204,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  Widget banner(){
   Widget banner() {
     return Container(
       height: 90,
@@ -191,8 +212,12 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  Widget swipeLayout(){
   Widget productListSection(List<ProductDTO> products) {
     List<Widget> listContents = new List();
+    for(int i = 0; i < 9; i++){
+      listContents.add(homeContent());
+
     // xay 1 trang gom 3 x 3 item
     for (int i = 0; i < products.length; i += 9) {
       List<ProductDTO> chunk;
@@ -201,9 +226,11 @@ class _HomeScreenState extends State<HomeScreen> {
       Widget productPage = homeContent(chunk);
       listContents.add(productPage);
     }
+    return Expanded(
     return Container(
       height: 430,
       child: Swiper(
+        loop: false,
         loop: true,
         fade: 0.2,
         // itemWidth: MediaQuery.of(context).size.width - 60,
@@ -213,6 +240,7 @@ class _HomeScreenState extends State<HomeScreen> {
         itemCount: listContents.length,
         indicatorLayout: PageIndicatorLayout.SCALE,
         pagination: new SwiperPagination(),
+
         // viewportFraction: 0.85,
         scale: 0.7,
         outer: true,
@@ -220,6 +248,15 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  Widget homeContent(){
+      return GridView.count(
+        shrinkWrap: true,
+        scrollDirection: Axis.vertical,
+        childAspectRatio: MediaQuery.of(context).size.width * 0.25 /
+            (30 + MediaQuery.of(context).size.width * 0.25),
+        crossAxisCount: 3,
+        children: List.generate(9, (index) => cardDetail()),
+      );
   Widget homeContent(List<ProductDTO> list) {
     return GridView.count(
       shrinkWrap: true,
@@ -239,12 +276,17 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  Widget cardDetail(){
+
   Widget tag() {
     double screenWidth = MediaQuery.of(context).size.width;
     return Container(
+      width: MediaQuery.of(context).size.width * 0.25,
+      margin: const EdgeInsets.all(5),
       height: 50,
       width: screenWidth,
       decoration: BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(10)),
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.5),
@@ -255,6 +297,22 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
         color: Colors.white,
       ),
+      child: Card(
+        elevation: 2.0,
+        child: InkWell(
+          child: Column(
+
+
+
+
+
+
+
+
+
+
+
+
       child: Animator(
         tween:
             Tween<Offset>(begin: Offset(-screenWidth, 0), end: Offset(-0, 0)),
@@ -380,6 +438,19 @@ class _HomeScreenState extends State<HomeScreen> {
           },
           child: Row(
             children: [
+              Container(
+                height: MediaQuery.of(context).size.width * 0.25,
+                color: Colors.grey[300],
+                child: Center(
+                  child: Image(
+                    image: NetworkImage("https://celebratingsweets.com/wp-content/uploads/2018/06/Strawberry-Shortcake-Cake-1-1.jpg"),
+                    fit: BoxFit.fill,
+                    height: MediaQuery.of(context).size.width * 0.25,
+                  ),
+                ),
+
+
+
               isSelected && isMultiple
                   ? Padding(
                       padding: const EdgeInsets.only(right: 4.0),
@@ -397,8 +468,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       )
                     : kTextPrimary.copyWith(color: Colors.black),
               ),
+              Text("Bánh Gato", style: TextStyle(fontSize: 14)),
+              SizedBox(height: 10,),
             ],
           ),
+        ),
+      ),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8.0),
           ),
@@ -408,6 +483,22 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
+  Widget tag(){
+    double screenWidth = MediaQuery.of(context).size.width;
+    return Animator(
+      tween: Tween<Offset>(begin: Offset(0, -50), end: Offset(0, 50)),
+      duration: Duration(seconds: 2),
+      cycles: 2,
+      builder: (context, animatorState, child) {
+        return Transform.translate(
+          offset: animatorState.value,
+          child: Container(
+            height: 50,
+            color: Colors.amber,
+            child: !switcher ? Padding(
+              padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
 class FoodItem extends StatefulWidget {
   final ProductDTO product;
   FoodItem({Key key, this.product}) : super(key: key);
@@ -456,6 +547,9 @@ class _FoodItemState extends State<FoodItem> {
               opacity: 1,
               child: Column(
                 children: [
+                  FlatButton(
+                    color: Colors.blue,
+                    child: Text("Tất cả"),
                   Hero(
                     tag: this,
                     child: ClipRRect(
@@ -473,6 +567,22 @@ class _FoodItemState extends State<FoodItem> {
                       ),
                     ),
                   ),
+                  FlatButton(
+                    color: Colors.blue,
+                    child: Text("Gần đây"),
+                  ),
+                  FlatButton(
+                    color: Colors.blue,
+                    child: Text("Mới"),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        switcher = true;
+                      });
+                    },
+                    child: Icon(Icons.arrow_forward_ios),
+                  ),
                   Expanded(
                     child: Container(
                       // color: Colors.blue,
@@ -486,7 +596,38 @@ class _FoodItemState extends State<FoodItem> {
                   )
                 ],
               ),
+            ):
+            Padding(
+              padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        switcher = false;
+                      });
+                    },
+                    child: Icon(Icons.arrow_back_ios),
+                  ),
+                  FlatButton(
+                    color: Colors.blue,
+                    child: Text("Món nước"),
+                  ),
+                  FlatButton(
+                    color: Colors.blue,
+                    child: Text("Món cơm"),
+                  ),
+                  FlatButton(
+                    color: Colors.blue,
+                    child: Text("Thức uống"),
+                  ),
+                ],
+              ),
             ),
+          ),
+        );
+      },
           );
         }),
       ),

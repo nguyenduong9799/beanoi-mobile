@@ -44,7 +44,6 @@ dependencies:
   flutter_slidable: ^0.5.4
   dotted_border: ^1.0.6
   flutter_page_indicator: ^0.0.3
-
 dev_dependencies:
   flutter_test:
     sdk: flutter
