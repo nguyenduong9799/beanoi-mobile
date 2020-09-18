@@ -1,40 +1,33 @@
 
-class ProductDTO {
-  final String uid, name;
-  final double price;
-  final String size;
-  final int quantity;
-  final List<String> topping;
-  final String description;
-  final int type;
-  final Map<String, List<String>> atrributes;
 
+class ProductDTO {
+  String id, name;
+  double price;
+  String size;
+  int quantity;
+  List<String> topping;
+  String description;
+  int type;
+  String imageURL;
+  Map<String, List<String>> atrributes;
 
   @override
   String toString() {
-    return 'ProductDTO{uid: $uid, name: $name, price: $price, size: $size, quantity: $quantity, topping: $topping, description: $description, type: $type, atrributes: $atrributes}';
+    return 'ProductDTO{uid: $id, name: $name, price: $price, size: $size, quantity: $quantity, topping: $topping, description: $description, type: $type, atrributes: $atrributes}';
   }
 
-  ProductDTO({this.uid, this.name, this.price, this.size, this.quantity,
-      this.topping, this.description, this.type, this.atrributes}); // balance. point;
+  ProductDTO(this.id, {this.name, this.price, this.size, this.quantity,
+      this.topping = const ["Trân châu", "Bánh flan", "Thạch 7 màu"], this.description = "Trà sữa là loại thức uống đa dạng được tìm thấy ở nhiều nền văn hóa, bao gồm một vài cách kết hợp giữa trà và sữa. Các loại thức uống khác nhau tùy thuộc vào lượng thành phần chính của mỗi loại, phương pháp pha chế, và các thành phần khác được thêm vào. Bột trà sữa pha sẵn là một sản phẩm được sản xuất hàng loạt.",
+    this.type, this.atrributes = const {"size" : ["Size M", "Size L", "Size S"], "đá" : ["0%", "25%", "50%", "75%", "100%"], "đường" : ["0%", "25%", "50%", "75%", "100%"],}, this.imageURL}); // balance. point;
 
 
-  factory ProductDTO.fromJson(dynamic json) => ProductDTO(
-    uid: json["userId"] as String,
-    name: json['name'] as String,
-    price: json['price'] as double,
-    size: json['size'] as String,
-    quantity: json['quantity'] as int,
-    topping: json['topping'] as List,
-    description: json['description'] as String,
-    type: json['type'] as int,
-    atrributes: json['map'] as Map,
-  );
+  factory ProductDTO.fromJson(Map<String, dynamic> map) =>
+      ProductDTO(map["id"] as String,
+          name: map["name"] as String,
+          price: double.parse(map["price"]),
+          imageURL: map["imageURL"] as String);
 
-  Map<String, dynamic> toJson() {
-    return {
-      "userId": uid,
-      "name": name,
-    };
-  }
+
+  static List<ProductDTO> fromList(List list) =>
+      list.map((map) => ProductDTO.fromJson(map)).toList();
 }

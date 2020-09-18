@@ -1,5 +1,4 @@
 import 'package:scoped_model/scoped_model.dart';
-import 'package:unidelivery_mobile/Model/DAO/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/CartDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/ProductDTO.dart';
 import 'package:unidelivery_mobile/utils/request.dart';

@@ -8,7 +8,7 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Model/DTO/AccountDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/ProductDTO.dart';
 import 'package:unidelivery_mobile/View/login.dart';
-
+import 'package:unidelivery_mobile/View/product_detail.dart';
 import 'package:unidelivery_mobile/ViewModel/home_viewModel.dart';
 import 'package:unidelivery_mobile/ViewModel/login_viewModel.dart';
 import 'package:unidelivery_mobile/acessories/appbar.dart';
@@ -25,7 +25,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
   bool switcher = false;
   PageController _scrollController = new PageController();
   HomeViewModel model = HomeViewModel();
@@ -40,69 +39,54 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     // print(widget?.user.uid);
-    return Scaffold(
-      bottomNavigationBar: DefaultNavigatorBar(selectedIndex: 0,),
-      backgroundColor: Colors.grey[300],
-      //bottomNavigationBar: bottomBar(),
-      body: Stack(
-        children: [
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.only(top: 100),
-              child: Column(
-                children: [
-                  banner(),
-                  swipeLayout(),
-                  tag()
-                ],
     return SafeArea(
       child: ScopedModel(
         model: model,
         child: Scaffold(
           floatingActionButton: ScopedModelDescendant<HomeViewModel>(
               builder: (context, child, model) {
-            bool hasItemInCart = !model.cart.isEmpty;
-            int quantity = model.cart.itemQuantity;
+                bool hasItemInCart = !model.cart.isEmpty;
+                int quantity = model.cart.itemQuantity;
 
-            return hasItemInCart
-                ? Stack(
-                    overflow: Overflow.visible,
-                    children: [
-                      Container(
-                        width: 48,
-                        height: 48,
-                        decoration: BoxDecoration(
-                          color: kPrimary,
-                          // borderRadius: BorderRadius.circular(48),
-                        ),
-                        child: IconButton(
-                            icon:
-                                Icon(Icons.shopping_cart, color: Colors.white),
-                            onPressed: () {}),
+                return hasItemInCart
+                    ? Stack(
+                  overflow: Overflow.visible,
+                  children: [
+                    Container(
+                      width: 48,
+                      height: 48,
+                      decoration: BoxDecoration(
+                        color: kPrimary,
+                        // borderRadius: BorderRadius.circular(48),
                       ),
-                      Positioned(
-                        top: -12,
-                        left: 36,
-                        child: Container(
-                          width: 24,
-                          height: 24,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colors.amber,
-                          ),
-                          child: Center(
-                            child: Text(
-                              quantity.toString(),
-                              style: kTextPrimary.copyWith(
-                                  fontWeight: FontWeight.bold),
-                            ),
+                      child: IconButton(
+                          icon:
+                          Icon(Icons.shopping_cart, color: Colors.white),
+                          onPressed: () {}),
+                    ),
+                    Positioned(
+                      top: -12,
+                      left: 36,
+                      child: Container(
+                        width: 24,
+                        height: 24,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.amber,
+                        ),
+                        child: Center(
+                          child: Text(
+                            quantity.toString(),
+                            style: kTextPrimary.copyWith(
+                                fontWeight: FontWeight.bold),
                           ),
                         ),
-                      )
-                    ],
-                  )
-                : SizedBox();
-          }),
+                      ),
+                    )
+                  ],
+                )
+                    : SizedBox();
+              }),
           bottomNavigationBar: ListView(
             shrinkWrap: true,
             children: [
@@ -110,11 +94,8 @@ class _HomeScreenState extends State<HomeScreen> {
               DefaultNavigatorBar(
                 selectedIndex: 0,
               ),
-            ),
             ],
           ),
-          HomeAppBar(),
-        ],
           backgroundColor: Colors.white,
           //bottomNavigationBar: bottomBar(),
           body: Stack(
@@ -142,11 +123,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                   width: double.infinity,
                                   child: Center(
                                       child: Text(
-                                    "Banner",
-                                    style: TextStyle(
-                                      fontSize: 25,
-                                    ),
-                                  )),
+                                        "Banner",
+                                        style: TextStyle(
+                                          fontSize: 25,
+                                        ),
+                                      )),
                                 ),
                               ),
                               SizedBox(height: 16),
@@ -180,11 +161,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                   width: double.infinity,
                                   child: Center(
                                       child: Text(
-                                    "Bottom Section",
-                                    style: TextStyle(
-                                      fontSize: 25,
-                                    ),
-                                  )),
+                                        "Bottom Section",
+                                        style: TextStyle(
+                                          fontSize: 25,
+                                        ),
+                                      )),
                                 ),
                               ),
                             ],
@@ -204,7 +185,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget banner(){
   Widget banner() {
     return Container(
       height: 90,
@@ -212,12 +192,8 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget swipeLayout(){
   Widget productListSection(List<ProductDTO> products) {
     List<Widget> listContents = new List();
-    for(int i = 0; i < 9; i++){
-      listContents.add(homeContent());
-
     // xay 1 trang gom 3 x 3 item
     for (int i = 0; i < products.length; i += 9) {
       List<ProductDTO> chunk;
@@ -226,11 +202,9 @@ class _HomeScreenState extends State<HomeScreen> {
       Widget productPage = homeContent(chunk);
       listContents.add(productPage);
     }
-    return Expanded(
     return Container(
       height: 430,
       child: Swiper(
-        loop: false,
         loop: true,
         fade: 0.2,
         // itemWidth: MediaQuery.of(context).size.width - 60,
@@ -240,7 +214,6 @@ class _HomeScreenState extends State<HomeScreen> {
         itemCount: listContents.length,
         indicatorLayout: PageIndicatorLayout.SCALE,
         pagination: new SwiperPagination(),
-
         // viewportFraction: 0.85,
         scale: 0.7,
         outer: true,
@@ -248,15 +221,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget homeContent(){
-      return GridView.count(
-        shrinkWrap: true,
-        scrollDirection: Axis.vertical,
-        childAspectRatio: MediaQuery.of(context).size.width * 0.25 /
-            (30 + MediaQuery.of(context).size.width * 0.25),
-        crossAxisCount: 3,
-        children: List.generate(9, (index) => cardDetail()),
-      );
   Widget homeContent(List<ProductDTO> list) {
     return GridView.count(
       shrinkWrap: true,
@@ -269,24 +233,19 @@ class _HomeScreenState extends State<HomeScreen> {
       children: list
           .map(
             (item) => FoodItem(
-              product: item,
-            ),
-          )
+          product: item,
+        ),
+      )
           .toList(),
     );
   }
 
-  Widget cardDetail(){
-
   Widget tag() {
     double screenWidth = MediaQuery.of(context).size.width;
     return Container(
-      width: MediaQuery.of(context).size.width * 0.25,
-      margin: const EdgeInsets.all(5),
       height: 50,
       width: screenWidth,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(10)),
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.5),
@@ -297,25 +256,9 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
         color: Colors.white,
       ),
-      child: Card(
-        elevation: 2.0,
-        child: InkWell(
-          child: Column(
-
-
-
-
-
-
-
-
-
-
-
-
       child: Animator(
         tween:
-            Tween<Offset>(begin: Offset(-screenWidth, 0), end: Offset(-0, 0)),
+        Tween<Offset>(begin: Offset(-screenWidth, 0), end: Offset(-0, 0)),
         duration: Duration(milliseconds: 700),
         builder: (context, animatorState, child) => Transform.translate(
           offset: animatorState.value,
@@ -430,75 +373,42 @@ class _HomeScreenState extends State<HomeScreen> {
       textTheme: ButtonTextTheme.normal,
       child: ScopedModelDescendant<HomeViewModel>(
           builder: (context, child, model) {
-        final onChangeFilter = model.updateFilter;
-        return FlatButton(
-          color: isSelected ? Color(0xFF00d286) : kBackgroundGrey[0],
-          onPressed: () async {
-            await onChangeFilter(id, isMultiple);
-          },
-          child: Row(
-            children: [
-              Container(
-                height: MediaQuery.of(context).size.width * 0.25,
-                color: Colors.grey[300],
-                child: Center(
-                  child: Image(
-                    image: NetworkImage("https://celebratingsweets.com/wp-content/uploads/2018/06/Strawberry-Shortcake-Cake-1-1.jpg"),
-                    fit: BoxFit.fill,
-                    height: MediaQuery.of(context).size.width * 0.25,
-                  ),
-                ),
-
-
-
-              isSelected && isMultiple
-                  ? Padding(
-                      padding: const EdgeInsets.only(right: 4.0),
-                      child: Icon(
-                        Icons.done,
-                        size: 20,
-                      ),
+            final onChangeFilter = model.updateFilter;
+            return FlatButton(
+              color: isSelected ? Color(0xFF00d286) : kBackgroundGrey[0],
+              onPressed: () async {
+                await onChangeFilter(id, isMultiple);
+              },
+              child: Row(
+                children: [
+                  isSelected && isMultiple
+                      ? Padding(
+                    padding: const EdgeInsets.only(right: 4.0),
+                    child: Icon(
+                      Icons.done,
+                      size: 20,
+                    ),
+                  )
+                      : SizedBox(),
+                  Text(
+                    title,
+                    style: isSelected
+                        ? kTextPrimary.copyWith(
+                      fontWeight: FontWeight.bold,
                     )
-                  : SizedBox(),
-              Text(
-                title,
-                style: isSelected
-                    ? kTextPrimary.copyWith(
-                        fontWeight: FontWeight.bold,
-                      )
-                    : kTextPrimary.copyWith(color: Colors.black),
+                        : kTextPrimary.copyWith(color: Colors.black),
+                  ),
+                ],
               ),
-              Text("Bánh Gato", style: TextStyle(fontSize: 14)),
-              SizedBox(height: 10,),
-            ],
-          ),
-        ),
-      ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8.0),
-          ),
-        );
-      }),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+            );
+          }),
     );
   }
 }
 
-  Widget tag(){
-    double screenWidth = MediaQuery.of(context).size.width;
-    return Animator(
-      tween: Tween<Offset>(begin: Offset(0, -50), end: Offset(0, 50)),
-      duration: Duration(seconds: 2),
-      cycles: 2,
-      builder: (context, animatorState, child) {
-        return Transform.translate(
-          offset: animatorState.value,
-          child: Container(
-            height: 50,
-            color: Colors.amber,
-            child: !switcher ? Padding(
-              padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
 class FoodItem extends StatefulWidget {
   final ProductDTO product;
   FoodItem({Key key, this.product}) : super(key: key);
@@ -527,109 +437,51 @@ class _FoodItemState extends State<FoodItem> {
         color: Colors.transparent,
         child: ScopedModelDescendant<HomeViewModel>(
             builder: (context, child, model) {
-          return InkWell(
-            customBorder: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            onTap: () async {
-              print('Add item to cart');
-              // TODO: Change by receive result from Navigator
-              await model.updateItemInCart(
-                ProductDTO('item1'),
-                List.generate(
-                    2,
-                    (index) => ProductDTO('$index',
-                        name: 'Prodcut Child ${index + 1}')),
-                1,
-              );
-            },
-            child: Opacity(
-              opacity: 1,
-              child: Column(
-                children: [
-                  FlatButton(
-                    color: Colors.blue,
-                    child: Text("Tất cả"),
-                  Hero(
-                    tag: this,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(16),
-                      child: Opacity(
-                        opacity: 0.7,
-                        child: AspectRatio(
-                          aspectRatio: 1,
-                          child: FadeInImage(
-                            image: NetworkImage(imageURL),
-                            placeholder: AssetImage('assets/images/avatar.png'),
-                            fit: BoxFit.fill,
+              return InkWell(
+                customBorder: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                onTap: () async {
+                  print('Add item to cart');
+                  Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => ProductDetailScreen(widget.product),));
+                },
+                child: Opacity(
+                  opacity: 1,
+                  child: Column(
+                    children: [
+                      Hero(
+                        tag: this.widget.product.id,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(16),
+                          child: Opacity(
+                            opacity: 0.7,
+                            child: AspectRatio(
+                              aspectRatio: 1,
+                              child: FadeInImage(
+                                image: NetworkImage(imageURL),
+                                placeholder: AssetImage('assets/images/avatar.png'),
+                                fit: BoxFit.fill,
+                              ),
+                            ),
                           ),
                         ),
                       ),
-                    ),
+                      Expanded(
+                        child: Container(
+                          // color: Colors.blue,
+                          child: Text(
+                            name,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      )
+                    ],
                   ),
-                  FlatButton(
-                    color: Colors.blue,
-                    child: Text("Gần đây"),
-                  ),
-                  FlatButton(
-                    color: Colors.blue,
-                    child: Text("Mới"),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        switcher = true;
-                      });
-                    },
-                    child: Icon(Icons.arrow_forward_ios),
-                  ),
-                  Expanded(
-                    child: Container(
-                      // color: Colors.blue,
-                      child: Text(
-                        name,
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 2,
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  )
-                ],
-              ),
-            ):
-            Padding(
-              padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        switcher = false;
-                      });
-                    },
-                    child: Icon(Icons.arrow_back_ios),
-                  ),
-                  FlatButton(
-                    color: Colors.blue,
-                    child: Text("Món nước"),
-                  ),
-                  FlatButton(
-                    color: Colors.blue,
-                    child: Text("Món cơm"),
-                  ),
-                  FlatButton(
-                    color: Colors.blue,
-                    child: Text("Thức uống"),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-          );
-        }),
+                ),
+              );
+            }),
       ),
     );
   }

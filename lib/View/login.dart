@@ -45,13 +45,13 @@ class _LoginScreenState extends State<LoginScreen> {
     _dropdownMenuItems = countries
         .map(
           (country) => DropdownMenuItem(
-            child: Text(
-              "${country["code"]} (${country["dial_code"]})",
-              style: kTextPrimary.copyWith(color: Colors.black, fontSize: 12),
-            ),
-            value: country["dial_code"],
-          ),
-        )
+        child: Text(
+          "${country["code"]} (${country["dial_code"]})",
+          style: kTextPrimary.copyWith(color: Colors.black, fontSize: 12),
+        ),
+        value: country["dial_code"],
+      ),
+    )
         .toList();
   }
 
@@ -86,9 +86,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 Animator(
-<<<<<<<<< Temporary merge branch 1
                   tween:
-                      Tween<Offset>(begin: Offset(0, -30), end: Offset(0, 30)),
+                  Tween<Offset>(begin: Offset(0, -30), end: Offset(0, 30)),
                   curve: Curves.easeIn,
                   statusListener: (status, state) {
                     if (status == AnimationStatus.completed) {
@@ -97,11 +96,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   },
                   duration: Duration(milliseconds: 700),
                   cycles: 6,
-=========
-                  tween: Tween<Offset>(begin: Offset(0, -50), end: Offset(0, 50)),
-                  duration: Duration(seconds: 2),
-                  cycles: 2,
->>>>>>>>> Temporary merge branch 2
                   builder: (context, anim, child) => Container(
                     child: Transform.translate(
                       offset: anim.value,
@@ -131,7 +125,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ),
                                 ),
                               ),
-<<<<<<<<< Temporary merge branch 1
                               Center(
                                 child: Container(
                                   margin: EdgeInsets.only(top: 45),
@@ -139,21 +132,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                   width: formWidth,
                                   child: ScopedModelDescendant<LoginViewModel>(
                                     builder: (BuildContext context,
-                                            Widget child,
-                                            LoginViewModel model) =>
+                                        Widget child,
+                                        LoginViewModel model) =>
                                         _buildLoginForm(model),
                                   ),
-=========
-                            ),
-                            Center(
-                              child: Container(
-                                margin: EdgeInsets.only(top: 45),
-                                width: formWidth,
-                                child: ScopedModelDescendant<LoginViewModel>(
-                                  builder: (BuildContext context, Widget child,
-                                      LoginViewModel model) =>
-                                      _buildLoginForm(model),
->>>>>>>>> Temporary merge branch 2
                                 ),
                               ),
                             ],
@@ -210,96 +192,52 @@ class _LoginScreenState extends State<LoginScreen> {
                           fit: StackFit.expand,
                           children: [
                             !smsSent
-<<<<<<<<< Temporary merge branch 1
                                 ? Row(
-                                    children: [
-                                      Flexible(
-                                        flex: 2,
-                                        child: DropdownButtonHideUnderline(
-                                          child: DropdownButton(
-                                              value: countryCode,
-                                              items: _dropdownMenuItems,
-                                              onChanged: (value) =>
-                                                  setState(() {
-                                                    countryCode = value;
-                                                  })),
-                                        ),
-                                      ),
-                                      SizedBox(width: 5),
-                                      Flexible(
-                                        flex: 3,
-                                        child: TextFormField(
-                                          keyboardType: TextInputType.phone,
-                                          style: kTextPrimary,
-                                          focusNode: phoneNbFocus,
-                                          // autofocus: true,
-                                          validator: (value) {
-                                            if (value.isEmpty) {
-                                              return 'Bạn chưa nhập SDT kìa :(';
-                                            }
-                                            return null;
-                                          },
-                                          // autofocus: true,
-                                          decoration: InputDecoration(
-                                            hintText:
-                                                "Nhập số điện thoại của bạn đi!",
-                                          ),
-                                          // initialValue: phoneNb,
-                                          onChanged: (val) => setState(() {
-                                            this.phoneNb = val;
-                                          }),
-                                        ),
-                                      ),
-                                    ],
-                                  )
-                                : Container(),
-                            smsSent
-                                ? TextFormField(
-                                    keyboardType: TextInputType.number,
+                              children: [
+                                Flexible(
+                                  flex: 2,
+                                  child: DropdownButtonHideUnderline(
+                                    child: DropdownButton(
+                                        value: countryCode,
+                                        items: _dropdownMenuItems,
+                                        onChanged: (value) =>
+                                            setState(() {
+                                              countryCode = value;
+                                            })),
+                                  ),
+                                ),
+                                SizedBox(width: 5),
+                                Flexible(
+                                  flex: 3,
+                                  child: TextFormField(
+                                    keyboardType: TextInputType.phone,
                                     style: kTextPrimary,
-                                    autofocus: true,
-                                    decoration: InputDecoration(
-                                        hintText: "Vui lòng nhập mã OTP"),
-                                    initialValue: smsCode,
+                                    focusNode: phoneNbFocus,
+                                    // autofocus: true,
                                     validator: (value) {
                                       if (value.isEmpty) {
-                                        return 'Bạn chưa điền kìa :(';
+                                        return 'Bạn chưa nhập SDT kìa :(';
                                       }
                                       return null;
                                     },
+                                    // autofocus: true,
+                                    decoration: InputDecoration(
+                                      hintText:
+                                      "Nhập số điện thoại của bạn đi!",
+                                    ),
+                                    // initialValue: phoneNb,
                                     onChanged: (val) => setState(() {
-                                      this.smsCode = val;
+                                      this.phoneNb = val;
                                     }),
-                                  )
-=========
-                                ? TextFormField(
-                              keyboardType: TextInputType.phone,
-                              style: TextStyle(color: Colors.white),
-                              autofocus: true,
-                              validator: (value) {
-                                if (value.isEmpty) {
-                                  return 'Bạn chưa nhập SDT kìa :(';
-                                }
-                                return null;
-                              },
-                              // autofocus: true,
-                              decoration: InputDecoration(
-                                hintText:
-                                "Nhập số điện thoại của bạn đi!",
-                              ),
-                              // initialValue: phoneNb,
-                              onChanged: (val) => setState(() {
-                                this.phoneNb = val;
-                              }),
+                                  ),
+                                ),
+                              ],
                             )
-                                  )
-
-
-
                                 : Container(),
                             smsSent
                                 ? TextFormField(
                               keyboardType: TextInputType.number,
+                              style: kTextPrimary,
                               autofocus: true,
                               decoration: InputDecoration(
                                   hintText: "Vui lòng nhập mã OTP"),
@@ -314,27 +252,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 this.smsCode = val;
                               }),
                             )
->>>>>>>>> Temporary merge branch 2
                                 : Container(),
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                           ],
                         ),
                       ),
@@ -372,22 +290,12 @@ class _LoginScreenState extends State<LoginScreen> {
                           style: TextStyle(
                               color: Colors.white, fontSize: 20),
                         )
-                                "Xác nhận",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 20),
-                              )
                             : Text(
                           "Đăng nhập",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               color: Colors.white, fontSize: 20),
                         ),
-                                "Đăng nhập",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 20),
-                              ),
                       ),
                     ),
                   ),
@@ -418,37 +326,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: IconButton(
                     icon: Icon(
                       Icons.arrow_back,
-                    left: 15,
-                    top: -10,
-                    child: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          smsSent = false;
-                          phoneNb = null;
-                          verificationId = null;
-                        });
-                      },
-                      child: Container(
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          color: Colors.lightBlue,
-                          borderRadius: BorderRadius.circular(25),
-                        ),
-                        child: IconButton(
-                          icon: Icon(
-                            Icons.arrow_back,
-                          ),
-                          color: Colors.white,
-                          onPressed: () {
-                            setState(() {
-                              smsSent = false;
-                              phoneNb = null;
-                              verificationId = null;
-                            });
-                          },
-                        ),
-                      ),
                     ),
                     color: Colors.white,
                     onPressed: () {
@@ -462,7 +339,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
             )
-                  )
                 : Container(),
           ],
         ),
@@ -479,7 +355,7 @@ class _LoginScreenState extends State<LoginScreen> {
       await pr.hide();
       return Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) => HomeScreen(user: userInfo)),
-          (route) => false);
+              (route) => false);
     } on FirebaseAuthException catch (e) {
       print("=====OTP Fail: ${e.message}  ");
       await _showMyDialog("Error", e.message);
@@ -494,20 +370,13 @@ class _LoginScreenState extends State<LoginScreen> {
     await pr.show();
     try {
       final authCredential =
-<<<<<<<<< Temporary merge branch 1
-          await AuthService().signInWithOTP(smsCode, verificationId);
-          await AuthService().signInWithOTP(smsCode, verificationId);
-      final userInfo = await model.signIn(authCredential);
-=========
       await AuthService().signInWithOTP(smsCode, verificationId);
-      final userInfo = await model.signInByPhone(authCredential);
->>>>>>>>> Temporary merge branch 2
+      final userInfo = await model.signIn(authCredential);
 
       await pr.hide();
       return Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) => HomeScreen(user: userInfo)),
               (route) => false);
-          (route) => false);
     } on FirebaseAuthException catch (e) {
       print("=====OTP Fail: ${e.message}  ");
       await _showMyDialog("Error", e.message);
@@ -530,7 +399,6 @@ class _LoginScreenState extends State<LoginScreen> {
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) => HomeScreen(user: userInfo)),
               (route) => false);
-          (route) => false);
       print("Login Success");
     };
 
@@ -593,5 +461,4 @@ class _LoginScreenState extends State<LoginScreen> {
       },
     );
   }
-}
 }
