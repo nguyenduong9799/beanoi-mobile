@@ -154,6 +154,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> with SingleTi
                 topRight: Radius.circular(8),
             ),
             color: kBackgroundGrey[0]),
+
         isScrollable: true,
         tabs: myTabs,
         indicatorColor: kBackgroundGrey[0],

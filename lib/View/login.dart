@@ -1,10 +1,13 @@
 import 'package:animator/animator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/View/home.dart';
 import 'package:unidelivery_mobile/ViewModel/login_viewModel.dart';
+import 'package:unidelivery_mobile/constraints.dart';
+import 'package:unidelivery_mobile/countries.dart';
 import 'package:unidelivery_mobile/services/firebase.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -16,32 +19,47 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = new GlobalKey<FormState>();
+  FocusNode phoneNbFocus;
 
   String phoneNb = "+84123456789", smsCode = "123456";
   bool smsSent = false;
-  String verificationId;
+  String verificationId, countryCode = "+84";
   FocusNode smsCodeFocus = FocusNode();
   ProgressDialog pr;
+  List<DropdownMenuItem<dynamic>> _dropdownMenuItems;
 
-  double formWidth = 300;
+  // double formWidth = 300;
   double formHeight = 180;
 
   @override
   void initState() {
     super.initState();
-
+    phoneNbFocus = FocusNode();
     pr = new ProgressDialog(
       context,
       showLogs: true,
       type: ProgressDialogType.Download,
       isDismissible: false,
     );
+
+    _dropdownMenuItems = countries
+        .map(
+          (country) => DropdownMenuItem(
+        child: Text(
+          "${country["code"]} (${country["dial_code"]})",
+          style: kTextPrimary.copyWith(color: Colors.black, fontSize: 12),
+        ),
+        value: country["dial_code"],
+      ),
+    )
+        .toList();
   }
 
   @override
   void dispose() {
     // TODO: implement dispose
     super.dispose();
+    phoneNbFocus.dispose();
     // await pr.hide();
   }
 
@@ -49,6 +67,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
+    final formWidth = screenWidth - 30 - 60;
     return ScopedModel(
       model: LoginViewModel(),
       child: SafeArea(
@@ -67,21 +86,28 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 Animator(
-                  tween: Tween<Offset>(begin: Offset(0, -50), end: Offset(0, 50)),
-                  duration: Duration(seconds: 2),
-                  cycles: 2,
+                  tween:
+                  Tween<Offset>(begin: Offset(0, -30), end: Offset(0, 30)),
+                  curve: Curves.easeIn,
+                  statusListener: (status, state) {
+                    if (status == AnimationStatus.completed) {
+                      phoneNbFocus.requestFocus();
+                    }
+                  },
+                  duration: Duration(milliseconds: 700),
+                  cycles: 6,
                   builder: (context, anim, child) => Container(
                     child: Transform.translate(
                       offset: anim.value,
-                      child: Container(
-                        margin: EdgeInsets.only(top: 90),
-                        width: screenWidth,
-                        height: screenHeight,
-                        child: Stack(
-                          children: [
-                            Center(
-                              child: AspectRatio(
-                                aspectRatio: 2 / 4,
+                      child: Center(
+                        child: Container(
+                          margin: EdgeInsets.only(top: 90),
+                          color: Colors.amber,
+                          width: screenWidth - 30,
+                          height: screenHeight,
+                          child: Stack(
+                            children: [
+                              Center(
                                 child: Container(
                                   margin: EdgeInsets.only(top: 100),
                                   // height: screenHeight,
@@ -99,19 +125,21 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ),
                                 ),
                               ),
-                            ),
-                            Center(
-                              child: Container(
-                                margin: EdgeInsets.only(top: 45),
-                                width: formWidth,
-                                child: ScopedModelDescendant<LoginViewModel>(
-                                  builder: (BuildContext context, Widget child,
-                                      LoginViewModel model) =>
-                                      _buildLoginForm(model),
+                              Center(
+                                child: Container(
+                                  margin: EdgeInsets.only(top: 45),
+                                  // color: Colors.blue,
+                                  width: formWidth,
+                                  child: ScopedModelDescendant<LoginViewModel>(
+                                    builder: (BuildContext context,
+                                        Widget child,
+                                        LoginViewModel model) =>
+                                        _buildLoginForm(model),
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -144,6 +172,7 @@ class _LoginScreenState extends State<LoginScreen> {
           overflow: Overflow.visible,
           children: [
             Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Expanded(
                   flex: 1,
@@ -156,36 +185,59 @@ class _LoginScreenState extends State<LoginScreen> {
                         hintColor: Colors.white70,
                       ),
                       child: Container(
-                        width: 250,
+                        width: MediaQuery.of(context).size.width - 30 - 60 - 35,
                         padding: EdgeInsets.only(top: 25),
                         // height: 70,
                         child: Stack(
+                          fit: StackFit.expand,
                           children: [
                             !smsSent
-                                ? TextFormField(
-                              keyboardType: TextInputType.phone,
-                              style: TextStyle(color: Colors.white),
-                              autofocus: true,
-                              validator: (value) {
-                                if (value.isEmpty) {
-                                  return 'Bạn chưa nhập SDT kìa :(';
-                                }
-                                return null;
-                              },
-                              // autofocus: true,
-                              decoration: InputDecoration(
-                                hintText:
-                                "Nhập số điện thoại của bạn đi!",
-                              ),
-                              // initialValue: phoneNb,
-                              onChanged: (val) => setState(() {
-                                this.phoneNb = val;
-                              }),
+                                ? Row(
+                              children: [
+                                Flexible(
+                                  flex: 2,
+                                  child: DropdownButtonHideUnderline(
+                                    child: DropdownButton(
+                                        value: countryCode,
+                                        items: _dropdownMenuItems,
+                                        onChanged: (value) =>
+                                            setState(() {
+                                              countryCode = value;
+                                            })),
+                                  ),
+                                ),
+                                SizedBox(width: 5),
+                                Flexible(
+                                  flex: 3,
+                                  child: TextFormField(
+                                    keyboardType: TextInputType.phone,
+                                    style: kTextPrimary,
+                                    focusNode: phoneNbFocus,
+                                    // autofocus: true,
+                                    validator: (value) {
+                                      if (value.isEmpty) {
+                                        return 'Bạn chưa nhập SDT kìa :(';
+                                      }
+                                      return null;
+                                    },
+                                    // autofocus: true,
+                                    decoration: InputDecoration(
+                                      hintText:
+                                      "Nhập số điện thoại của bạn đi!",
+                                    ),
+                                    // initialValue: phoneNb,
+                                    onChanged: (val) => setState(() {
+                                      this.phoneNb = val;
+                                    }),
+                                  ),
+                                ),
+                              ],
                             )
                                 : Container(),
                             smsSent
                                 ? TextFormField(
                               keyboardType: TextInputType.number,
+                              style: kTextPrimary,
                               autofocus: true,
                               decoration: InputDecoration(
                                   hintText: "Vui lòng nhập mã OTP"),
@@ -208,9 +260,16 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
 
+                IconButton(
+                  icon: Icon(Icons.accessibility_new),
+                  onPressed: () async {
+                    await onSignInWithGmail(model);
+                  },
+                ),
+
                 // LOGIN BUTTON
                 Container(
-                  width: formWidth,
+                  width: MediaQuery.of(context).size.width - 30 - 60,
                   height: 50,
                   decoration: BoxDecoration(
                     color: Color(0xFF438029),
@@ -243,6 +302,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ],
             ),
+
+            // BACK BUTTON
             smsSent
                 ? Positioned(
               left: 15,
@@ -285,6 +346,24 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  Future<void> onSignInWithGmail(LoginViewModel model) async {
+    try {
+      final authCredential = await AuthService().signInWithGoogle();
+      if (authCredential == null) return;
+      final userInfo = await model.signIn(authCredential);
+
+      await pr.hide();
+      return Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => HomeScreen(user: userInfo)),
+              (route) => false);
+    } on FirebaseAuthException catch (e) {
+      print("=====OTP Fail: ${e.message}  ");
+      await _showMyDialog("Error", e.message);
+    } finally {
+      await pr.hide();
+    }
+  }
+
   Future<void> onsignInWithOTP(
       smsCode, verificationId, LoginViewModel model) async {
     print("DN = OTP");
@@ -292,7 +371,7 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       final authCredential =
       await AuthService().signInWithOTP(smsCode, verificationId);
-      final userInfo = await model.signInByPhone(authCredential);
+      final userInfo = await model.signIn(authCredential);
 
       await pr.hide();
       return Navigator.of(context).pushAndRemoveUntil(
@@ -311,7 +390,7 @@ class _LoginScreenState extends State<LoginScreen> {
         (AuthCredential authCredential) async {
       await pr.show();
       // dem authuser cho controller xu ly check user
-      final userInfo = await model.signInByPhone(authCredential);
+      final userInfo = await model.signIn(authCredential);
       // chuyen sang trang home
 
       // TODO: Kiem tra xem user moi hay cu
@@ -343,8 +422,9 @@ class _LoginScreenState extends State<LoginScreen> {
     };
 
     await pr.show();
+    print(countryCode + phone);
     await FirebaseAuth.instance.verifyPhoneNumber(
-      phoneNumber: phone,
+      phoneNumber: countryCode + phone,
       timeout: Duration(seconds: 50),
       verificationCompleted: verificationCompleted,
       verificationFailed: verificationFailed,
