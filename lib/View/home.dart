@@ -1,20 +1,16 @@
 import 'package:animator/animator.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_page_indicator/flutter_page_indicator.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Model/DTO/AccountDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/ProductDTO.dart';
-import 'package:unidelivery_mobile/View/login.dart';
+import 'package:unidelivery_mobile/View/order.dart';
 import 'package:unidelivery_mobile/View/product_detail.dart';
 import 'package:unidelivery_mobile/ViewModel/home_viewModel.dart';
-import 'package:unidelivery_mobile/ViewModel/login_viewModel.dart';
 import 'package:unidelivery_mobile/acessories/appbar.dart';
 import 'package:unidelivery_mobile/acessories/bottomnavigator.dart';
 import 'package:unidelivery_mobile/constraints.dart';
-import 'package:unidelivery_mobile/services/firebase.dart';
 
 class HomeScreen extends StatefulWidget {
   final AccountDTO user;
@@ -45,48 +41,54 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Scaffold(
           floatingActionButton: ScopedModelDescendant<HomeViewModel>(
               builder: (context, child, model) {
-                bool hasItemInCart = !model.cart.isEmpty;
-                int quantity = model.cart.itemQuantity;
+            bool hasItemInCart = !model.cart.isEmpty;
+            int quantity = model.cart.itemQuantity;
 
-                return hasItemInCart
-                    ? Stack(
-                  overflow: Overflow.visible,
-                  children: [
-                    Container(
-                      width: 48,
-                      height: 48,
-                      decoration: BoxDecoration(
-                        color: kPrimary,
-                        // borderRadius: BorderRadius.circular(48),
-                      ),
-                      child: IconButton(
-                          icon:
-                          Icon(Icons.shopping_cart, color: Colors.white),
-                          onPressed: () {}),
-                    ),
-                    Positioned(
-                      top: -12,
-                      left: 36,
-                      child: Container(
-                        width: 24,
-                        height: 24,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: Colors.amber,
-                        ),
-                        child: Center(
-                          child: Text(
-                            quantity.toString(),
-                            style: kTextPrimary.copyWith(
-                                fontWeight: FontWeight.bold),
+            return hasItemInCart
+                ? FloatingActionButton(
+                    backgroundColor: Colors.transparent,
+                    onPressed: () {
+                      print('Tap order');
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => OrderScreen(),
+                      ));
+                    },
+                    child: Stack(
+                      overflow: Overflow.visible,
+                      children: [
+                        Container(
+                          width: 48,
+                          height: 48,
+                          decoration: BoxDecoration(
+                            color: kPrimary,
+                            borderRadius: BorderRadius.circular(48),
                           ),
+                          child: Icon(Icons.shopping_cart, color: Colors.white),
                         ),
-                      ),
-                    )
-                  ],
-                )
-                    : SizedBox();
-              }),
+                        Positioned(
+                          top: -12,
+                          left: 36,
+                          child: Container(
+                            width: 24,
+                            height: 24,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: Colors.amber,
+                            ),
+                            child: Center(
+                              child: Text(
+                                quantity.toString(),
+                                style: kTextPrimary.copyWith(
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  )
+                : SizedBox();
+          }),
           bottomNavigationBar: ListView(
             shrinkWrap: true,
             children: [
@@ -121,13 +123,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                   height: 80,
                                   width: double.infinity,
-                                  child: Center(
-                                      child: Text(
-                                        "Banner",
-                                        style: TextStyle(
-                                          fontSize: 25,
-                                        ),
-                                      )),
+                                  child: Image.asset(
+                                    'assets/images/banner.png',
+                                    fit: BoxFit.cover,
+                                    // width: double.infinity,
+                                  ),
                                 ),
                               ),
                               SizedBox(height: 16),
@@ -161,11 +161,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                   width: double.infinity,
                                   child: Center(
                                       child: Text(
-                                        "Bottom Section",
-                                        style: TextStyle(
-                                          fontSize: 25,
-                                        ),
-                                      )),
+                                    "Bottom Section",
+                                    style: TextStyle(
+                                      fontSize: 25,
+                                    ),
+                                  )),
                                 ),
                               ),
                             ],
@@ -233,9 +233,9 @@ class _HomeScreenState extends State<HomeScreen> {
       children: list
           .map(
             (item) => FoodItem(
-          product: item,
-        ),
-      )
+              product: item,
+            ),
+          )
           .toList(),
     );
   }
@@ -258,7 +258,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       child: Animator(
         tween:
-        Tween<Offset>(begin: Offset(-screenWidth, 0), end: Offset(-0, 0)),
+            Tween<Offset>(begin: Offset(-screenWidth, 0), end: Offset(-0, 0)),
         duration: Duration(milliseconds: 700),
         builder: (context, animatorState, child) => Transform.translate(
           offset: animatorState.value,
@@ -373,38 +373,38 @@ class _HomeScreenState extends State<HomeScreen> {
       textTheme: ButtonTextTheme.normal,
       child: ScopedModelDescendant<HomeViewModel>(
           builder: (context, child, model) {
-            final onChangeFilter = model.updateFilter;
-            return FlatButton(
-              color: isSelected ? Color(0xFF00d286) : kBackgroundGrey[0],
-              onPressed: () async {
-                await onChangeFilter(id, isMultiple);
-              },
-              child: Row(
-                children: [
-                  isSelected && isMultiple
-                      ? Padding(
-                    padding: const EdgeInsets.only(right: 4.0),
-                    child: Icon(
-                      Icons.done,
-                      size: 20,
-                    ),
-                  )
-                      : SizedBox(),
-                  Text(
-                    title,
-                    style: isSelected
-                        ? kTextPrimary.copyWith(
-                      fontWeight: FontWeight.bold,
+        final onChangeFilter = model.updateFilter;
+        return FlatButton(
+          color: isSelected ? Color(0xFF00d286) : kBackgroundGrey[0],
+          onPressed: () async {
+            await onChangeFilter(id, isMultiple);
+          },
+          child: Row(
+            children: [
+              isSelected && isMultiple
+                  ? Padding(
+                      padding: const EdgeInsets.only(right: 4.0),
+                      child: Icon(
+                        Icons.done,
+                        size: 20,
+                      ),
                     )
-                        : kTextPrimary.copyWith(color: Colors.black),
-                  ),
-                ],
+                  : SizedBox(),
+              Text(
+                title,
+                style: isSelected
+                    ? kTextPrimary.copyWith(
+                        fontWeight: FontWeight.bold,
+                      )
+                    : kTextPrimary.copyWith(color: Colors.black),
               ),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-            );
-          }),
+            ],
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+        );
+      }),
     );
   }
 }
@@ -437,51 +437,52 @@ class _FoodItemState extends State<FoodItem> {
         color: Colors.transparent,
         child: ScopedModelDescendant<HomeViewModel>(
             builder: (context, child, model) {
-              return InkWell(
-                customBorder: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                onTap: () async {
-                  print('Add item to cart');
-                  Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => ProductDetailScreen(widget.product),));
-                },
-                child: Opacity(
-                  opacity: 1,
-                  child: Column(
-                    children: [
-                      Hero(
-                        tag: this.widget.product.id,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(16),
-                          child: Opacity(
-                            opacity: 0.7,
-                            child: AspectRatio(
-                              aspectRatio: 1,
-                              child: FadeInImage(
-                                image: NetworkImage(imageURL),
-                                placeholder: AssetImage('assets/images/avatar.png'),
-                                fit: BoxFit.fill,
-                              ),
-                            ),
+          return InkWell(
+            customBorder: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            onTap: () async {
+              print('Add item to cart');
+              // TODO: Change by receive result from Navigator
+              Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => ProductDetailScreen(widget.product),));
+            },
+            child: Opacity(
+              opacity: 1,
+              child: Column(
+                children: [
+                  Hero(
+                    tag: this.widget.product.id,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(16),
+                      child: Opacity(
+                        opacity: 1,
+                        child: AspectRatio(
+                          aspectRatio: 1,
+                          child: FadeInImage(
+                            image: NetworkImage(imageURL),
+                            placeholder: AssetImage('assets/images/avatar.png'),
+                            fit: BoxFit.fill,
                           ),
                         ),
                       ),
-                      Expanded(
-                        child: Container(
-                          // color: Colors.blue,
-                          child: Text(
-                            name,
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 2,
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                      )
-                    ],
+                    ),
                   ),
-                ),
-              );
-            }),
+                  Expanded(
+                    child: Container(
+                      // color: Colors.blue,
+                      child: Text(
+                        name,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ),
+          );
+        }),
       ),
     );
   }
