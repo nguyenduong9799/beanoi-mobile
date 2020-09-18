@@ -1,30 +1,35 @@
 class ProductDTO {
-  final String uid, name;
-  final double price;
-  final String imageURL;
-  final String size;
-  final int quantity;
-  final List<String> topping;
-  final String description;
-  final int type;
-  final Map<String, List<String>> atrributes;
+  String id, name;
+  double price;
+  String size;
+  int quantity;
+  List<String> topping;
+  String description;
+  int type;
+  String imageURL;
+  Map<String, List<String>> atrributes;
 
   @override
   String toString() {
-    return 'ProductDTO{uid: $uid, name: $name, price: $price, size: $size, quantity: $quantity, topping: $topping, description: $description, type: $type, atrributes: $atrributes}';
+    return 'ProductDTO{uid: $id, name: $name, price: $price, size: $size, quantity: $quantity, topping: $topping, description: $description, type: $type, atrributes: $atrributes}';
   }
 
   ProductDTO(
-    this.uid, {
+    this.id, {
     this.name,
     this.imageURL,
     this.price,
     this.size,
     this.quantity,
-    this.topping,
-    this.description,
+    this.topping = const ["Trân châu", "Bánh flan", "Thạch 7 màu"],
+    this.description =
+        "Trà sữa là loại thức uống đa dạng được tìm thấy ở nhiều nền văn hóa, bao gồm một vài cách kết hợp giữa trà và sữa. Các loại thức uống khác nhau tùy thuộc vào lượng thành phần chính của mỗi loại, phương pháp pha chế, và các thành phần khác được thêm vào. Bột trà sữa pha sẵn là một sản phẩm được sản xuất hàng loạt.",
     this.type,
-    this.atrributes,
+    this.atrributes = const {
+      "size": ["Size M", "Size L", "Size S"],
+      "đá": ["0%", "25%", "50%", "75%", "100%"],
+      "đường": ["0%", "25%", "50%", "75%", "100%"],
+    },
   }); // balance. point;
 
   factory ProductDTO.fromJson(dynamic json) => ProductDTO(
@@ -42,7 +47,7 @@ class ProductDTO {
 
   Map<String, dynamic> toJson() {
     return {
-      "userId": uid,
+      "userId": id,
       "name": name,
     };
   }

@@ -10,9 +10,8 @@ import 'package:unidelivery_mobile/constraints.dart';
 
 class ProductDetailScreen extends StatefulWidget {
   ProductDTO dto;
-  int index;
 
-  ProductDetailScreen(this.dto, this.index);
+  ProductDetailScreen(this.dto);
 
   @override
   _ProductDetailScreenState createState() => _ProductDetailScreenState();
@@ -43,7 +42,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> with SingleTi
       child: Text("Thêm"),
     ));
 
-    print("Parent: " + widget.index.toString());
+    print("Parent: " + widget.dto.id);
 
     _tabController = TabController(vsync: this, length: myTabs.length);
 
@@ -64,19 +63,34 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> with SingleTi
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
+            leading: Container(
+              margin: EdgeInsets.only(left: 8),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: kBackgroundGrey[4],
+              ),
+
+
+              child: BackButton(
+
+      color: Colors.black
+      ),
+            ),
+            backgroundColor: kBackgroundGrey[0],
             elevation: 0,
             pinned: true,
             floating: false,
             expandedHeight: 250.0,
             flexibleSpace: FlexibleSpaceBar(
               background: Hero(
-                tag: widget.index.toString(),
+                tag: widget.dto.id,
                 child: ClipRRect(
                   child: Opacity(
-                    opacity: 1,
-                    child: Image(
-                      image: NetworkImage("https://bizweb.dktcdn.net/100/004/714/articles/nguyen-lieu-tra-sua-gia-re.jpg?v=1559644357347"),
+                    opacity: 0.8,
+                    child: FadeInImage(
+                      image: NetworkImage(widget.dto.imageURL),
                       width: MediaQuery.of(context).size.width,
+                      placeholder: AssetImage('assets/images/avatar.png'),
                       // height: 250,
                       fit: BoxFit.cover,
                     ),
@@ -108,15 +122,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> with SingleTi
     );
   }
 
-  Widget productImage(){
-    return Hero(
-      tag: widget.index.toString(),
-      child: Image(
-          image: NetworkImage("https://bizweb.dktcdn.net/100/004/714/articles/nguyen-lieu-tra-sua-gia-re.jpg?v=1559644357347"),
-          width: MediaQuery.of(context).size.width,
-      ),
-    );
-  }
 
   Widget productTitle(){
     return Container(

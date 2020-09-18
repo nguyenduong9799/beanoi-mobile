@@ -445,23 +445,16 @@ class _FoodItemState extends State<FoodItem> {
               print('Add item to cart');
               // TODO: Change by receive result from Navigator
               Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => ProductDetailScreen(product, 0),
+                builder: (BuildContext context) =>
+                    ProductDetailScreen(widget.product),
               ));
-              // await model.updateItemInCart(
-              //   ProductDTO('item1'),
-              //   List.generate(
-              //       2,
-              //       (index) => ProductDTO('$index',
-              //           name: 'Prodcut Child ${index + 1}')),
-              //   1,
-              // );
             },
             child: Opacity(
               opacity: 1,
               child: Column(
                 children: [
                   Hero(
-                    tag: this,
+                    tag: this.widget.product.id,
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(16),
                       child: Opacity(
