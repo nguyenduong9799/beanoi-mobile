@@ -11,6 +11,7 @@ import 'package:unidelivery_mobile/ViewModel/home_viewModel.dart';
 import 'package:unidelivery_mobile/acessories/appbar.dart';
 import 'package:unidelivery_mobile/acessories/bottomnavigator.dart';
 import 'package:unidelivery_mobile/constraints.dart';
+import 'package:unidelivery_mobile/utils/enum.dart';
 
 class HomeScreen extends StatefulWidget {
   final AccountDTO user;
