@@ -5,11 +5,14 @@ import 'package:reactive_forms/reactive_forms.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Model/DTO/AccountDTO.dart';
 import 'package:unidelivery_mobile/View/home.dart';
+import 'package:unidelivery_mobile/View/login.dart';
 import 'package:unidelivery_mobile/ViewModel/signup_viewModel.dart';
+import 'package:unidelivery_mobile/utils/pageNavigation.dart';
 import 'package:unidelivery_mobile/utils/regex.dart';
 
 class SignUp extends StatefulWidget {
-  const SignUp({Key key}) : super(key: key);
+  const SignUp({Key key, this.user}) : super(key: key);
+  final AccountDTO user;
 
   @override
   _SignUpState createState() => _SignUpState();
@@ -48,6 +51,15 @@ class _SignUpState extends State<SignUp> {
       type: ProgressDialogType.Normal,
       isDismissible: false,
     );
+    final user = widget.user;
+    // UPDATE USER INFO INTO FORM
+    form.value = {
+      "name": user.name,
+      "phone": user.phone,
+      "birthdate": user.birthdate,
+      "email": user.email,
+      "gender": user.gender,
+    };
   }
 
   Future<void> _onUpdateUser(SignUpViewModel model) async {
@@ -75,6 +87,7 @@ class _SignUpState extends State<SignUp> {
 
   @override
   Widget build(BuildContext context) {
+    final user = widget.user;
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     return ScopedModel(
@@ -201,6 +214,25 @@ class _SignUpState extends State<SignUp> {
                               ),
                             );
                           }),
+                          // BACK TO LOGIN SCREEN
+                          Center(
+                            child: GestureDetector(
+                              onTap: () async {
+                                await Navigator.of(context).pushAndRemoveUntil(
+                                    FadeRoute(page: LoginScreen()),
+                                    (route) => false);
+                                print("Back to home");
+                              },
+                              child: Text(
+                                "Quay lại",
+                                style: TextStyle(
+                                  color: Colors.redAccent,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 10),
                         ],
                       ),
                     ),

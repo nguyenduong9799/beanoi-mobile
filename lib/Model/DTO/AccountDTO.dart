@@ -4,7 +4,7 @@ class AccountDTO {
   final String uid, name, phone, gender, email;
   final DateTime birthdate;
   // balance. point;
-
+  final bool isFirstLogin;
   AccountDTO({
     this.uid,
     this.name,
@@ -12,6 +12,7 @@ class AccountDTO {
     this.gender,
     this.email,
     this.birthdate,
+    this.isFirstLogin = true,
   });
 
   factory AccountDTO.fromJson(dynamic json) => AccountDTO(
@@ -19,6 +20,7 @@ class AccountDTO {
         name: json['name'] as String,
         email: json['email'] as String,
         gender: json['gender'] as String,
+        isFirstLogin: json['is_first_login'] as bool,
         birthdate: json['birthdate'] as String != null
             ? DateTime.parse(json['birthdate'] as String)
             : null,

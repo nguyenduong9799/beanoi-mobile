@@ -1,8 +1,14 @@
+import 'package:dio/dio.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
+import 'package:unidelivery_mobile/utils/request.dart';
 
 class AccountDAO {
-  Future<AccountDTO> getUser(String uid) async {
-    return AccountDTO(uid: uid, name: "Default Name");
+  Future<AccountDTO> getUser(String idToken) async {
+    // Response response = await Dio().post(
+    //     "http://192.168.88.12:45455/api/authen",
+    //     options: RequestOptions(connectTimeout: 10),
+    //     data: {"id_token": idToken});
+    return AccountDTO(uid: idToken, name: "Default Name");
   }
 
   Future<AccountDTO> updateUser(AccountDTO updateUser) async {

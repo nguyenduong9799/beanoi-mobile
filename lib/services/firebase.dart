@@ -14,9 +14,9 @@ class AuthService {
     return userCredential;
   }
 
-  signOut() {
+  signOut() async {
     // remove pref
-    auth.signOut();
+    await auth.signOut();
   }
 
   // final request = MyRequest();
