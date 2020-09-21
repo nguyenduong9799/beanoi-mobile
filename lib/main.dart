@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: Colors.grey[200],
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: checkAuthorize(),
+      home: HomeScreen(),
     );
   }
 

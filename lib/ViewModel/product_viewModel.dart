@@ -1,36 +1,50 @@
 
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:unidelivery_mobile/Model/DTO/ProductDTO.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 
 class ProductDetailViewModel extends Model{
 
   int index = 0;
+  //List product không ảnh hưởng giá
   Map<String, List<String>> content;
+  //List choice bắt buộc
   List<String> option;
   int count = 1;
   Color minusColor = kBackgroundGrey[5];
   Color addColor = kBackgroundGrey[5];
   double price, total;
-  Color buttonColor = kBackgroundGrey[5];
+  bool order = false;
+  //List choice option
   Map<String, bool> extra;
+  //Bật cờ để đổi radio thành checkbox
   bool isExtra;
+  //List size
+  List<ProductDTO> listChild;
 
 
+  ProductDetailViewModel(ProductDTO dto){
 
-  ProductDetailViewModel(Map<String, List<String>> attribute, List<String> extra, this.price){
-    content = attribute;
+    content = dto.atrributes;
     option = new List<String>();
     isExtra = false;
-    total = price * count;
+
     this.extra = new Map<String, bool>();
+    listChild = dto.listChild;
+
+    if(listChild.isNotEmpty)
+      this.price = dto.price;
+
+    if(listChild.isNotEmpty)
+      option.add("");
 
     for(int i = 0; i < content.keys.toList().length; i++){
       option.add("");
     }
 
-    for(int i = 0; i < extra.length; i++){
-      this.extra[extra[i]] = false;
+    for(int i = 0; i < dto.topping.length; i++){
+      this.extra[dto.topping[i]] = false;
     }
   }
 
@@ -56,14 +70,22 @@ class ProductDetailViewModel extends Model{
       if(count == 1){
         minusColor = kBackgroundGrey[5];
       }
-      total = price * count;
+      total  = price * count;
       notifyListeners();
     }
   }
 
   void changeAtrribute(String e){
-    bool order = true;
+    order = true;
     option[index] = e;
+    if(index == 0){
+      for(ProductDTO dto in listChild){
+        if(dto.id == e){
+          price = dto.price;
+          total = price * count;
+        }
+      }
+    }
     for(String s in option){
       if(s.isEmpty){
         order = false;
@@ -71,14 +93,13 @@ class ProductDetailViewModel extends Model{
     }
     if(order){
       addColor = kPrimary;
-      buttonColor = kPrimary;
     }
     notifyListeners();
   }
 
   void changeIndex(int index){
     this.index = index;
-    if(index == content.keys.toList().length){
+    if(index == content.keys.toList().length + 1){
       isExtra = true;
     }
     else isExtra = false;
@@ -89,7 +110,5 @@ class ProductDetailViewModel extends Model{
     extra[extra.keys.elementAt(i)] = value;
     notifyListeners();
   }
-
-
 
 }

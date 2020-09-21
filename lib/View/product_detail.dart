@@ -1,4 +1,3 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -6,7 +5,6 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Model/DTO/ProductDTO.dart';
 import 'package:unidelivery_mobile/ViewModel/product_viewModel.dart';
 import 'package:unidelivery_mobile/constraints.dart';
-
 
 class ProductDetailScreen extends StatefulWidget {
   ProductDTO dto;
@@ -17,27 +15,32 @@ class ProductDetailScreen extends StatefulWidget {
   _ProductDetailScreenState createState() => _ProductDetailScreenState();
 }
 
-class _ProductDetailScreenState extends State<ProductDetailScreen> with SingleTickerProviderStateMixin{
-
+class _ProductDetailScreenState extends State<ProductDetailScreen>
+    with SingleTickerProviderStateMixin {
   List<Tab> myTabs;
 
   TabController _tabController;
 
   ProductDetailViewModel productDetailViewModel;
 
-
   @override
   void initState() {
     super.initState();
     myTabs = new List<Tab>();
-    productDetailViewModel = new ProductDetailViewModel(widget.dto.atrributes, widget.dto.topping, widget.dto.price);
+    productDetailViewModel = new ProductDetailViewModel(widget.dto);
     List<String> keys = productDetailViewModel.content.keys.toList();
 
-    for(int i = 0; i < keys.length; i ++){
+    myTabs.add(Tab(
+      child: Text("Size (*)"),
+    ));
+
+    for (int i = 0; i < keys.length; i++) {
       print(keys[i].toString());
       myTabs.add(Tab(
-        child: Text(keys[i].toUpperCase() + " (*)") ,));
+        child: Text(keys[i].toUpperCase() + " (*)"),
+      ));
     }
+
     myTabs.add(Tab(
       child: Text("Thêm"),
     ));
@@ -46,12 +49,11 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> with SingleTi
 
     _tabController = TabController(vsync: this, length: myTabs.length);
 
-
     _tabController.addListener(_handleTabSelection);
   }
 
   void _handleTabSelection() {
-    if(_tabController.indexIsChanging){
+    if (_tabController.indexIsChanging) {
       productDetailViewModel.changeIndex(_tabController.index);
     }
   }
@@ -69,12 +71,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> with SingleTi
                 shape: BoxShape.circle,
                 color: kBackgroundGrey[4],
               ),
-
-
-              child: BackButton(
-
-      color: Colors.black
-      ),
+              child: BackButton(color: Colors.black),
             ),
             backgroundColor: kBackgroundGrey[0],
             elevation: 0,
@@ -122,8 +119,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> with SingleTi
     );
   }
 
-
-  Widget productTitle(){
+  Widget productTitle() {
     return Container(
       color: kBackgroundGrey[0],
       padding: EdgeInsets.all(8),
@@ -132,34 +128,54 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> with SingleTi
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Flexible(child: Text(widget.dto.name, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),)),
-              Flexible(child: Text(NumberFormat.simpleCurrency(locale: 'vi').format(widget.dto.price), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),))
+              Flexible(
+                  child: Text(
+                widget.dto.name,
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              )),
+              widget.dto.listChild.isNotEmpty
+                  ? Flexible(
+                      child: Text(
+                      NumberFormat.simpleCurrency(locale: 'vi')
+                          .format(widget.dto.price),
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                    ))
+                  : Container()
             ],
           ),
-          SizedBox(height: 16,),
-          Text(" " + widget.dto.description, style: TextStyle(color: kBackgroundGrey[5],),),
-          SizedBox(height: 8,)
+          SizedBox(
+            height: 16,
+          ),
+          Text(
+            " " + widget.dto.description,
+            style: TextStyle(
+              color: kBackgroundGrey[5],
+            ),
+          ),
+          SizedBox(
+            height: 8,
+          )
         ],
       ),
     );
   }
 
-  Widget tabAtritbute(){
+  Widget tabAtritbute() {
     return Container(
       width: MediaQuery.of(context).size.width,
       color: kPrimary,
       padding: EdgeInsets.only(top: 8),
       child: TabBar(
-        labelColor:  kPrimary,
+        labelColor: kPrimary,
         unselectedLabelColor: kBackgroundGrey[0],
         indicatorSize: TabBarIndicatorSize.tab,
         indicator: BoxDecoration(
             borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(8),
-                topRight: Radius.circular(8),
+              topLeft: Radius.circular(8),
+              topRight: Radius.circular(8),
             ),
             color: kBackgroundGrey[0]),
-
         isScrollable: true,
         tabs: myTabs,
         indicatorColor: kBackgroundGrey[0],
@@ -168,35 +184,61 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> with SingleTi
     );
   }
 
-  Widget atributeContent(){
+  Widget atributeContent() {
     List<Widget> attributes;
-    List<String> listOptions;
+    List<dynamic> listOptions;
     return ScopedModel(
       model: productDetailViewModel,
       child: ScopedModelDescendant(
-        builder: (BuildContext context, Widget child, ProductDetailViewModel model) {
-          if(!model.isExtra){
+        builder:
+            (BuildContext context, Widget child, ProductDetailViewModel model) {
+          if (!model.isExtra) {
             attributes = new List();
-            listOptions =  model.content[model.content.keys.elementAt(model.index)];
-            for(int i = 0; i < listOptions.length; i++){
-              attributes.add(Row(
-                children: [
-                  Radio(
-                    groupValue: model.option[model.index],
-                    value: listOptions[i],
-                    onChanged: (e){
-                      model.changeAtrribute(e);
-                    },
-                  ),
-                  SizedBox(width: 5,),
-                  Text(listOptions[i])
-                ],
-              ));
+            if (model.index > 0) {
+              listOptions =
+                  model.content[model.content.keys.elementAt(model.index - 1)];
+              List<String> listString = listOptions.cast<String>();
+              for (int i = 0; i < listOptions.length; i++) {
+                attributes.add(Row(
+                  children: [
+                    Radio(
+                      groupValue: model.option[model.index],
+                      value: listString[i],
+                      onChanged: (e) {
+                        model.changeAtrribute(e);
+                      },
+                    ),
+                    SizedBox(
+                      width: 5,
+                    ),
+                    Text(listString[i])
+                  ],
+                ));
+              }
+            } else {
+              listOptions = model.listChild;
+              List<ProductDTO> listDto = listOptions.cast<ProductDTO>();
+              for (int i = 0; i < listOptions.length; i++) {
+                attributes.add(Row(
+                  children: [
+                    Radio(
+                      groupValue: model.option[model.index],
+                      value: listDto[i].id,
+                      onChanged: (e) {
+                        model.changeAtrribute(e);
+                      },
+                    ),
+                    SizedBox(
+                      width: 5,
+                    ),
+                    Text(listDto[i].name)
+                  ],
+                ));
+              }
             }
-          }
-          else{
+          } else {
             attributes = new List();
-            for(int i = 0; i < model.extra.keys.toList().length; i++){
+            for (int i = 0; i < model.extra.keys.toList().length; i++) {
               attributes.add(Row(
                 children: [
                   Checkbox(
@@ -205,7 +247,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> with SingleTi
                       model.changExtra(value, i);
                     },
                   ),
-                  SizedBox(width: 5,),
+                  SizedBox(
+                    width: 5,
+                  ),
                   Text(model.extra.keys.elementAt(i))
                 ],
               ));
@@ -215,9 +259,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> with SingleTi
           return Container(
             color: kBackgroundGrey[0],
             child: Column(
-children: [
-  ...attributes
-],
+              children: [...attributes],
             ),
           );
         },
@@ -225,8 +267,8 @@ children: [
     );
   }
 
-  Widget bottomBar(){
-    return  Container(
+  Widget bottomBar() {
+    return Container(
       padding: const EdgeInsets.only(left: 10, right: 10),
       decoration: BoxDecoration(
         color: kBackgroundGrey[0],
@@ -243,64 +285,118 @@ children: [
         child: ListView(
           shrinkWrap: true,
           children: [
-            SizedBox(height: 8,),
+            SizedBox(
+              height: 8,
+            ),
             Center(child: selectQuantity()),
-            SizedBox(height: 8,),
+            SizedBox(
+              height: 8,
+            ),
             orderButton(),
-            SizedBox(height: 8,)
+            SizedBox(
+              height: 8,
+            )
           ],
         ),
       ),
     );
   }
 
-  Widget orderButton(){
+  Widget orderButton() {
     return ScopedModelDescendant(
-      builder: (BuildContext context, Widget child, ProductDetailViewModel model) =>
-          FlatButton(
-            padding: EdgeInsets.all(8),
-            onPressed: (){},
-            textColor: kBackgroundGrey[0],
-            color: model.buttonColor,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(8))
-            ),
-            child: Column(
-              children: [
-                SizedBox(height: 8,),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(model.count.toString() + " Món", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-                    Text("Thêm", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-                    Text(NumberFormat.simpleCurrency(locale: "vi").format(model.total), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),),
-                  ],
-                ),
-                SizedBox(height: 8,),
-              ],
-            ),
-          )
-    );
-}
+        builder: (BuildContext context, Widget child,
+                ProductDetailViewModel model) =>
+            model.order
+                ? FlatButton(
+                    padding: EdgeInsets.all(8),
+                    onPressed: () {},
+                    textColor: kBackgroundGrey[0],
+                    color: kPrimary,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(8))),
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: 8,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(model.count.toString() + " Món",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 15)),
+                            Text("Thêm",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 15)),
+                            Text(
+                              NumberFormat.simpleCurrency(locale: "vi")
+                                  .format(model.total),
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 15),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 8,
+                        ),
+                      ],
+                    ),
+                  )
+                : FlatButton(
+                    padding: EdgeInsets.all(8),
+                    onPressed: () {},
+                    textColor: kBackgroundGrey[0],
+                    color: kBackgroundGrey[5],
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(8))),
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: 8,
+                        ),
+                        Text("Vui lòng chọn những trường bắt buộc (*)"),
+                        SizedBox(
+                          height: 8,
+                        ),
+                      ],
+                    ),
+                  ));
+  }
 
-  Widget selectQuantity(){
+  Widget selectQuantity() {
     return ScopedModelDescendant(
-      builder: (BuildContext context, Widget child, ProductDetailViewModel model) {
+      builder:
+          (BuildContext context, Widget child, ProductDetailViewModel model) {
         return Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             IconButton(
-              icon: Icon(Icons.remove_circle_outline, size: 30, color: model.minusColor,),
-              onPressed: (){
+              icon: Icon(
+                Icons.remove_circle_outline,
+                size: 30,
+                color: model.minusColor,
+              ),
+              onPressed: () {
                 model.minusQuantity();
               },
             ),
-            SizedBox(width: 16,),
-            Text(model.count.toString(), style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
-            SizedBox(width: 8,),
+            SizedBox(
+              width: 16,
+            ),
+            Text(
+              model.count.toString(),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(
+              width: 8,
+            ),
             IconButton(
-              icon: Icon(Icons.add_circle_outline, size: 30, color: model.addColor,),
-              onPressed: (){
+              icon: Icon(
+                Icons.add_circle_outline,
+                size: 30,
+                color: model.addColor,
+              ),
+              onPressed: () {
                 model.addQuantity();
               },
             )
@@ -309,5 +405,4 @@ children: [
       },
     );
   }
-
 }

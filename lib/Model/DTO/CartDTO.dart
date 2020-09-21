@@ -18,13 +18,11 @@ class Cart {
 }
 
 class CartItem {
-  ProductDTO masterProduct;
+  ProductDTO product;
   int quantity;
-  List<ProductDTO> productChild;
 
   CartItem(
-    this.masterProduct,
+    this.product,
     this.quantity,
-    this.productChild,
   );
 }
