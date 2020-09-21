@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:intl/intl.dart';
 import 'package:unidelivery_mobile/Services/firebase.dart';
 import 'package:unidelivery_mobile/View/login.dart';
 import 'package:unidelivery_mobile/View/orderHistory.dart';
+import 'package:unidelivery_mobile/constraints.dart';
 
 class DefaultAppBar extends StatefulWidget implements PreferredSizeWidget {
   String title;
@@ -78,14 +80,21 @@ class _HomeAppBarSate extends State<HomeAppBar> {
     return Container(
       height: 70,
       padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-      decoration: BoxDecoration(color: Colors.white, boxShadow: [
-        BoxShadow(
-          color: Colors.grey.withOpacity(0.5),
-          spreadRadius: 5,
-          blurRadius: 7,
-          offset: Offset(0, 3), // changes position of shadow
+      decoration: BoxDecoration(
+        color: kPrimary,
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(16),
+          bottomRight: Radius.circular(16),
         ),
-      ]),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            spreadRadius: 5,
+            blurRadius: 7,
+            offset: Offset(0, 3), // changes position of shadow
+          ),
+        ],
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -135,10 +144,10 @@ class _HomeAppBarSate extends State<HomeAppBar> {
                 ],
               ),
               SizedBox(
-                width: 5,
+                width: 8,
               ),
               Container(
-                width: 230,
+                width: 220,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -149,7 +158,7 @@ class _HomeAppBarSate extends State<HomeAppBar> {
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
-                        color: Colors.black,
+                        color: Colors.white,
                       ),
                     )),
                     SizedBox(
@@ -169,9 +178,10 @@ class _HomeAppBarSate extends State<HomeAppBar> {
                             child: Text(
                           "Bạn có 100.000đ",
                           style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w100,
-                              color: Colors.black),
+                            fontSize: 14,
+                            fontWeight: FontWeight.w100,
+                            color: Colors.white,
+                          ),
                         )),
                       ],
                     )
@@ -186,39 +196,25 @@ class _HomeAppBarSate extends State<HomeAppBar> {
               child: InkWell(
                 borderRadius: BorderRadius.circular(25),
                 child: Container(
-                  padding: EdgeInsets.all(15),
-                  child: Icon(
-                    Icons.history,
-                    size: 30,
-                  ),
-                ),
+                    padding: EdgeInsets.all(15),
+                    child: Image.asset(
+                      'assets/images/history.png',
+                      width: 24,
+                    )
+                    // Icon(
+                    //   Foundation.clipboard_notes,
+                    //   size: 30,
+                    //   color: Colors.white,
+                    // ),
+                    ),
                 onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
+                  Navigator.of(context).push(CupertinoPageRoute(
                     builder: (context) => OrderHistoryScreen(),
                   ));
                 },
               ),
             ),
           )
-          // Container(
-          //   margin: const EdgeInsets.only(right: 10, top: 15),
-          //   height: 90,
-          //   width: 55,
-          //   decoration: BoxDecoration(
-          //     borderRadius: BorderRadius.only(
-          //       bottomRight: Radius.circular(30),
-          //       bottomLeft: Radius.circular(30),
-          //     ),
-          //     color: Color(0xFF619a46),
-          //   ),
-          //   child: Center(
-          //     child: Text(
-          //       _timeString,
-          //       style: _time,
-          //       textAlign: TextAlign.center,
-          //     ),
-          //   ),
-          // )
         ],
       ),
     );

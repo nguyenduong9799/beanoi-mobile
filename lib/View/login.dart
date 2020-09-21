@@ -82,23 +82,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           // side: BorderSide(color: Colors.red),
                         ),
                         onPressed: () {
-                          // Navigator.of(context).push(PageRouteBuilder(
-                          //   pageBuilder:
-                          //       (context, animation, secondaryAnimation) =>
-                          //           LoginWithPhone(),
-                          //   transitionsBuilder: (context, animation,
-                          //       secondaryAnimation, child) {
-                          //     var begin = Offset(0.0, 1.0);
-                          //     var end = Offset.zero;
-                          //     var tween = Tween(begin: begin, end: end);
-                          //     var offsetAnimation = animation.drive(tween);
-
-                          //     return SlideTransition(
-                          //       position: offsetAnimation,
-                          //       child: child,
-                          //     );
-                          //   },
-                          // ));
                           Navigator.of(context).push(CupertinoPageRoute(
                             builder: (context) => LoginWithPhone(),
                           ));

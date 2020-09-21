@@ -75,6 +75,7 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
     final screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -105,156 +106,158 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
         child: ReactiveForm(
           formGroup: this.form,
           child: Container(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+            child: Stack(
+              // crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 SizedBox(
                   height: screenHeight * 0.1,
                 ),
-                Expanded(
-                  flex: 1,
-                  child: Container(
-                    // color: Colors.blue,
-                    padding: EdgeInsets.all(0),
-                    child: Image.asset(
-                      'assets/images/bi.png',
-                      alignment: Alignment.bottomRight,
-                      fit: BoxFit.fitHeight,
-                      // scale: 0.4,
-                    ),
+                Container(
+                  // color: Colors.blue,
+                  padding: EdgeInsets.all(0),
+                  child: Image.asset(
+                    'assets/images/bi.png',
+                    alignment: Alignment.topRight,
+                    fit: BoxFit.fitHeight,
+                    // scale: 0.4,
                   ),
                 ),
-                Container(
-                  decoration: BoxDecoration(
-                    color: kPrimary,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(16),
-                      topRight: Radius.circular(16),
-                    ),
-                  ),
-                  padding: EdgeInsets.fromLTRB(48, 24, 48, 16),
-                  height: screenHeight * 0.55,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Text(
-                        "Nhập số điện thoại",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
-                        ),
+                // PHONE FORM
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: kPrimary,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(16),
+                        topRight: Radius.circular(16),
                       ),
-                      SizedBox(height: 24),
-                      Container(
-                        width: double.infinity,
-                        // color: Colors.grey[300],
-                        child: Row(
-                          // mainAxisSize: MainAxisSize.max,
-                          children: [
-                            Flexible(
-                              flex: 1,
-                              child: Container(
-                                // padding: EdgeInsets.all(4),
-                                height: 48,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(4),
-                                  color: Color(0xFFf4f4f6),
-                                ),
-                                child: ReactiveDropdownField(
-                                  formControlName: 'countryCode',
-                                  items: _dropdownMenuItems,
-                                  style: TextStyle(fontSize: 20),
-                                  // onChanged: (value) => setState(() {
-                                  //   countryCode = value;
-                                  // }),
-                                ),
-                              ),
-                            ),
-                            SizedBox(width: 16),
-                            Flexible(
-                              flex: 1,
-                              child: ReactiveFormConsumer(
-                                  builder: (context, form, child) {
-                                return Container(
+                    ),
+                    padding: EdgeInsets.fromLTRB(48, 24, 48, 16),
+                    width: screenWidth,
+                    height: screenHeight * 0.5,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Text(
+                          "Nhập số điện thoại",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(height: 24),
+                        // INPUT
+                        Container(
+                          width: double.infinity,
+                          // color: Colors.grey[300],
+                          child: Row(
+                            // mainAxisSize: MainAxisSize.max,
+                            children: [
+                              Expanded(
+                                flex: 1,
+                                child: Container(
+                                  // padding: EdgeInsets.all(4),
                                   height: 48,
-                                  // height: 100,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(4),
                                     color: Color(0xFFf4f4f6),
                                   ),
-                                  child: ReactiveTextField(
-                                    validationMessages: {
-                                      ValidationMessage.email: ':(',
-                                      ValidationMessage.required: ':(',
-                                      ValidationMessage.number: ':(',
-                                      ValidationMessage.pattern: ':('
-                                    },
-                                    formControlName: 'phone',
-                                    textAlignVertical: TextAlignVertical.center,
-                                    decoration: InputDecoration(
-                                      filled: true,
-                                      fillColor: Color(0xFFf4f4f6),
-                                      focusColor: Colors.white,
-                                      focusedBorder: OutlineInputBorder(
-                                        borderSide: new BorderSide(
-                                          color: Color(0xFFc7c3e4),
+                                  child: ReactiveDropdownField(
+                                    formControlName: 'countryCode',
+                                    items: _dropdownMenuItems,
+                                    style: TextStyle(fontSize: 20),
+                                    // onChanged: (value) => setState(() {
+                                    //   countryCode = value;
+                                    // }),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: 16),
+                              Expanded(
+                                flex: 1,
+                                child: ReactiveFormConsumer(
+                                    builder: (context, form, child) {
+                                  return Container(
+                                    height: 48,
+                                    // height: 100,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(4),
+                                      color: Color(0xFFf4f4f6),
+                                    ),
+                                    child: ReactiveTextField(
+                                      validationMessages: {
+                                        ValidationMessage.email: ':(',
+                                        ValidationMessage.required: ':(',
+                                        ValidationMessage.number: ':(',
+                                        ValidationMessage.pattern: ':('
+                                      },
+                                      formControlName: 'phone',
+                                      textAlignVertical:
+                                          TextAlignVertical.center,
+                                      decoration: InputDecoration(
+                                        filled: true,
+                                        fillColor: Color(0xFFf4f4f6),
+                                        focusColor: Colors.white,
+                                        focusedBorder: OutlineInputBorder(
+                                          borderSide: new BorderSide(
+                                            color: Color(0xFFc7c3e4),
+                                          ),
+                                          // borderRadius: new BorderRadius.circular(25.7),
                                         ),
-                                        // borderRadius: new BorderRadius.circular(25.7),
-                                      ),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(4),
-                                        borderSide: new BorderSide(
-                                          color: Colors.red,
+                                        border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(4),
+                                          borderSide: new BorderSide(
+                                            color: Colors.red,
+                                          ),
                                         ),
-                                      ),
-                                      enabledBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(4),
-                                        borderSide: new BorderSide(
-                                          color: Colors.red,
-                                          style: BorderStyle.none,
+                                        enabledBorder: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(4),
+                                          borderSide: new BorderSide(
+                                            color: Colors.red,
+                                            style: BorderStyle.none,
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                );
-                              }),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: 16),
-                      ScopedModelDescendant<LoginViewModel>(
-                        builder: (context, child, model) => ButtonTheme(
-                          minWidth: 150.0,
-                          height: 48,
-                          child: RaisedButton(
-                              color: Colors.white,
-                              padding: EdgeInsets.fromLTRB(4, 0, 4, 0),
-                              elevation: 8,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(24.0),
-                                // side: BorderSide(color: Colors.red),
+                                  );
+                                }),
                               ),
-                              onPressed: () {
-                                // marks all children as touched
-                                form.touch();
-                                if (form.valid) {
-                                  // setState(() {
-                                  //   smsSent = true;
-                                  // });
-                                  _handleLogin(model);
-                                } else {
-                                  print("Nopt valid form ${form.errors}");
-                                }
-                              },
-                              child: Text(
-                                "Xác nhận",
-                                // style: kTextPrimary,
-                              )),
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                        SizedBox(height: 16),
+                        ScopedModelDescendant<LoginViewModel>(
+                          builder: (context, child, model) => ButtonTheme(
+                            minWidth: 150.0,
+                            height: 48,
+                            child: RaisedButton(
+                                color: Colors.white,
+                                padding: EdgeInsets.fromLTRB(4, 0, 4, 0),
+                                elevation: 8,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(24.0),
+                                  // side: BorderSide(color: Colors.red),
+                                ),
+                                onPressed: () {
+                                  // marks all children as touched
+                                  form.touch();
+                                  if (form.valid) {
+                                    _handleLogin(model);
+                                  } else {
+                                    print("Nopt valid form ${form.errors}");
+                                  }
+                                },
+                                child: Text(
+                                  "Xác nhận",
+                                )),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],

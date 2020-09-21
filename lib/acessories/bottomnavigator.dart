@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:unidelivery_mobile/View/home.dart';
+import 'package:unidelivery_mobile/View/orderHistory.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 
 class DefaultNavigatorBar extends StatefulWidget {
@@ -17,7 +18,7 @@ class DefaultNavigatorBar extends StatefulWidget {
 class _NavBarSate extends State<DefaultNavigatorBar> {
   static List<Widget> _widgetOptions = <Widget>[
     HomeScreen(),
-    HomeScreen(),
+    OrderHistoryScreen(),
     HomeScreen()
   ];
 

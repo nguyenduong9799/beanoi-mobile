@@ -28,7 +28,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     model.getProducts();
   }
@@ -36,72 +35,72 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     // print(widget?.user.uid);
-    return SafeArea(
-      child: ScopedModel(
-        model: model,
-        child: Scaffold(
-          floatingActionButton: ScopedModelDescendant<HomeViewModel>(
-              builder: (context, child, model) {
-            bool hasItemInCart = !model.cart.isEmpty;
-            int quantity = model.cart.itemQuantity;
+    return ScopedModel(
+      model: model,
+      child: Scaffold(
+        floatingActionButton: ScopedModelDescendant<HomeViewModel>(
+            builder: (context, child, model) {
+          bool hasItemInCart = !model.cart.isEmpty;
+          int quantity = model.cart.itemQuantity;
 
-            return hasItemInCart
-                ? FloatingActionButton(
-                    backgroundColor: Colors.transparent,
-                    onPressed: () {
-                      print('Tap order');
-                      Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => OrderScreen(),
-                      ));
-                    },
-                    child: Stack(
-                      overflow: Overflow.visible,
-                      children: [
-                        Container(
-                          width: 48,
-                          height: 48,
-                          decoration: BoxDecoration(
-                            color: kPrimary,
-                            borderRadius: BorderRadius.circular(48),
-                          ),
-                          child: Icon(Icons.shopping_cart, color: Colors.white),
+          return hasItemInCart
+              ? FloatingActionButton(
+                  backgroundColor: Colors.transparent,
+                  onPressed: () {
+                    print('Tap order');
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => OrderScreen(),
+                    ));
+                  },
+                  child: Stack(
+                    overflow: Overflow.visible,
+                    children: [
+                      Container(
+                        width: 48,
+                        height: 48,
+                        decoration: BoxDecoration(
+                          color: kPrimary,
+                          borderRadius: BorderRadius.circular(48),
                         ),
-                        Positioned(
-                          top: -12,
-                          left: 36,
-                          child: Container(
-                            width: 24,
-                            height: 24,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: Colors.amber,
-                            ),
-                            child: Center(
-                              child: Text(
-                                quantity.toString(),
-                                style: kTextPrimary.copyWith(
-                                    fontWeight: FontWeight.bold),
-                              ),
+                        child: Icon(Icons.shopping_cart, color: Colors.white),
+                      ),
+                      Positioned(
+                        top: -12,
+                        left: 36,
+                        child: Container(
+                          width: 24,
+                          height: 24,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.amber,
+                          ),
+                          child: Center(
+                            child: Text(
+                              quantity.toString(),
+                              style: kTextPrimary.copyWith(
+                                  fontWeight: FontWeight.bold),
                             ),
                           ),
-                        )
-                      ],
-                    ),
-                  )
-                : SizedBox();
-          }),
-          bottomNavigationBar: ListView(
-            shrinkWrap: true,
-            children: [
-              tag(),
-              DefaultNavigatorBar(
-                selectedIndex: 0,
-              ),
-            ],
-          ),
-          backgroundColor: Colors.white,
-          //bottomNavigationBar: bottomBar(),
-          body: Stack(
+                        ),
+                      )
+                    ],
+                  ),
+                )
+              : SizedBox();
+        }),
+        bottomNavigationBar: ListView(
+          shrinkWrap: true,
+          children: [
+            tag(),
+            DefaultNavigatorBar(
+              selectedIndex: 0,
+            ),
+          ],
+        ),
+        backgroundColor: Colors.white,
+        //bottomNavigationBar: bottomBar(),
+        body: SafeArea(
+          child: Stack(
             children: [
               Container(
                 // height: 800,
@@ -179,6 +178,27 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               HomeAppBar(),
+              Positioned(
+                top: 150,
+                right: 0,
+                child: RotatedBox(
+                  quarterTurns: -1,
+                  child: Container(
+                    padding: const EdgeInsets.all(8.0),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFE8581C),
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(5),
+                        topRight: Radius.circular(5),
+                      ),
+                    ),
+                    child: const Text(
+                      '11:07',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ),
+              )
             ],
           ),
         ),
@@ -205,19 +225,26 @@ class _HomeScreenState extends State<HomeScreen> {
     }
     return Container(
       height: 430,
-      child: Swiper(
-        loop: true,
-        fade: 0.2,
-        // itemWidth: MediaQuery.of(context).size.width - 60,
-        // itemHeight: 370,
-        scrollDirection: Axis.horizontal,
-        itemBuilder: (BuildContext context, index) => listContents[index],
-        itemCount: listContents.length,
-        indicatorLayout: PageIndicatorLayout.SCALE,
-        pagination: new SwiperPagination(),
-        // viewportFraction: 0.85,
-        scale: 0.7,
-        outer: true,
+      child: Theme(
+        data: ThemeData(
+          backgroundColor: Colors.grey,
+          scaffoldBackgroundColor: Colors.grey,
+        ),
+        child: Swiper(
+          loop: true,
+          fade: 0.2,
+
+          // itemWidth: MediaQuery.of(context).size.width - 60,
+          // itemHeight: 370,
+          scrollDirection: Axis.horizontal,
+          itemBuilder: (BuildContext context, index) => listContents[index],
+          itemCount: listContents.length,
+          indicatorLayout: PageIndicatorLayout.SCALE,
+          pagination: new SwiperPagination(),
+          // viewportFraction: 0.85,
+          scale: 0.7,
+          outer: true,
+        ),
       ),
     );
   }
@@ -280,31 +307,34 @@ class _HomeScreenState extends State<HomeScreen> {
                       // color: Colors.amber,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           ...filterType.map((e) => filterButton(e)).toList(),
                           Material(
                             color: Colors.transparent,
                             borderRadius: BorderRadius.circular(20),
-                            child: Container(
-                              width: 40,
-                              height: 40,
-                              decoration: BoxDecoration(
-                                // color: Colors.amber,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: RawMaterialButton(
-                                child: Icon(
-                                  Icons.keyboard_arrow_right,
-                                  color: kPrimary,
+                            child: AspectRatio(
+                              aspectRatio: 1,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  // color: Colors.amber,
+                                  borderRadius: BorderRadius.circular(20),
                                 ),
-                                onPressed: () {
-                                  _scrollController.animateTo(
-                                    _scrollController.position.maxScrollExtent,
-                                    duration: Duration(seconds: 1),
-                                    curve: Curves.fastOutSlowIn,
-                                  );
-                                },
-                                shape: CircleBorder(),
+                                child: RawMaterialButton(
+                                  child: Icon(
+                                    Icons.keyboard_arrow_right,
+                                    color: kPrimary,
+                                  ),
+                                  onPressed: () {
+                                    _scrollController.animateTo(
+                                      _scrollController
+                                          .position.maxScrollExtent,
+                                      duration: Duration(seconds: 1),
+                                      curve: Curves.fastOutSlowIn,
+                                    );
+                                  },
+                                  shape: CircleBorder(),
+                                ),
                               ),
                             ),
                           ),
@@ -320,27 +350,31 @@ class _HomeScreenState extends State<HomeScreen> {
                           Material(
                             color: Colors.transparent,
                             borderRadius: BorderRadius.circular(20),
-                            child: Container(
-                              width: 40,
-                              height: 40,
-                              decoration: BoxDecoration(
-                                // color: Colors.amber,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: RawMaterialButton(
-                                child: Icon(
-                                  Icons.keyboard_arrow_left,
-                                  color: kPrimary,
+                            child: AspectRatio(
+                              aspectRatio: 1,
+                              child: Container(
+                                width: 40,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                  // color: Colors.amber,
+                                  borderRadius: BorderRadius.circular(20),
                                 ),
-                                onPressed: () {
-                                  print('Change filter type');
-                                  _scrollController.animateTo(
-                                    _scrollController.position.minScrollExtent,
-                                    duration: Duration(seconds: 1),
-                                    curve: Curves.fastOutSlowIn,
-                                  );
-                                },
-                                shape: CircleBorder(),
+                                child: RawMaterialButton(
+                                  child: Icon(
+                                    Icons.keyboard_arrow_left,
+                                    color: kPrimary,
+                                  ),
+                                  onPressed: () {
+                                    print('Change filter type');
+                                    _scrollController.animateTo(
+                                      _scrollController
+                                          .position.minScrollExtent,
+                                      duration: Duration(seconds: 1),
+                                      curve: Curves.fastOutSlowIn,
+                                    );
+                                  },
+                                  shape: CircleBorder(),
+                                ),
                               ),
                             ),
                           ),
@@ -377,6 +411,7 @@ class _HomeScreenState extends State<HomeScreen> {
         final onChangeFilter = model.updateFilter;
         return FlatButton(
           color: isSelected ? Color(0xFF00d286) : kBackgroundGrey[0],
+          padding: EdgeInsets.all(4),
           onPressed: () async {
             await onChangeFilter(id, isMultiple);
           },
@@ -460,7 +495,7 @@ class _FoodItemState extends State<FoodItem> {
                       child: Opacity(
                         opacity: 1,
                         child: AspectRatio(
-                          aspectRatio: 1,
+                          aspectRatio: 1.1,
                           child: FadeInImage(
                             image: NetworkImage(imageURL),
                             placeholder: AssetImage('assets/images/avatar.png'),
@@ -473,6 +508,7 @@ class _FoodItemState extends State<FoodItem> {
                   Expanded(
                     child: Container(
                       // color: Colors.blue,
+                      height: 50,
                       child: Text(
                         name,
                         overflow: TextOverflow.ellipsis,
