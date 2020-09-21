@@ -4,6 +4,7 @@ import 'package:flutter/painting.dart';
 import 'package:intl/intl.dart';
 import 'package:unidelivery_mobile/Services/firebase.dart';
 import 'package:unidelivery_mobile/View/login.dart';
+import 'package:unidelivery_mobile/View/orderHistory.dart';
 
 class DefaultAppBar extends StatefulWidget implements PreferredSizeWidget {
   String title;
@@ -191,7 +192,11 @@ class _HomeAppBarSate extends State<HomeAppBar> {
                     size: 30,
                   ),
                 ),
-                onTap: () {},
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => OrderHistoryScreen(),
+                  ));
+                },
               ),
             ),
           )

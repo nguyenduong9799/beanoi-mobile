@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:unidelivery_mobile/Model/DTO/AccountDTO.dart';
 import 'package:unidelivery_mobile/View/home.dart';
 import 'package:unidelivery_mobile/View/login.dart';
+import 'package:unidelivery_mobile/View/orderHistory.dart';
 import 'package:unidelivery_mobile/View/signup.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/utils/shared_pref.dart';
@@ -26,7 +27,7 @@ class MyApp extends StatelessWidget {
         fontFamily: 'SourceSansPro',
         primarySwatch: Colors.blue,
         primaryColor: kPrimary,
-        scaffoldBackgroundColor: Colors.grey[200],
+        scaffoldBackgroundColor: Colors.white,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: checkAuthorize(),
