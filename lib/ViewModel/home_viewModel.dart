@@ -19,7 +19,7 @@ class HomeViewModel extends Model {
   List<ProductDTO> products;
   Cart cart = Cart();
   Status status;
-
+  bool _isFirstFetch = true;
   List<Filter> filterType = [
     Filter('All', 'Tất cả', isSelected: true),
     Filter('Previous', 'Gần đây'),
@@ -50,18 +50,29 @@ class HomeViewModel extends Model {
 
   // 1. Get ProductList with current Filter
   Future<List<ProductDTO>> getProducts() async {
-    if (products != null && products.length != 0) return products;
-
     try {
       status = Status.Loading;
       notifyListeners();
-      final res = await request.get('products');
-      if (res.statusCode == 200) {
-        products = ProductDTO.fromList(res.data);
+      var res;
+      if (_isFirstFetch) {
+        res = await request.get(
+          'products',
+        );
+        if (res.statusCode == 200) {
+          products = ProductDTO.fromList(res.data);
+        } else {
+          print('Fetch products error');
+        }
+        _isFirstFetch = false;
+        notifyListeners();
       } else {
-        print('Fetch products error');
+        // change filter
+        // do something with products
+        print("Fetch prodyuct with filter");
+        products.removeAt(0);
+        products.removeAt(1);
+        notifyListeners();
       }
-      notifyListeners();
     } on Exception catch (e) {
       print("EXCEPTION $e");
     } finally {
@@ -79,6 +90,8 @@ class HomeViewModel extends Model {
       await updateFilterCategories(filterId);
     else
       await updateFilterType(filterId);
+    // Update Product List
+    await getProducts();
   }
 
   Future<void> updateFilterType(String filterId) async {

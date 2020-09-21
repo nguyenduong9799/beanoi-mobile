@@ -445,9 +445,8 @@ class _FoodItemState extends State<FoodItem> {
             onTap: () async {
               print('Add item to cart');
               // TODO: Change by receive result from Navigator
-              Navigator.of(context).push(MaterialPageRoute(
-                builder: (BuildContext context) =>
-                    ProductDetailScreen(widget.product),
+              await Navigator.of(context).push(MaterialPageRoute(
+                builder: (BuildContext context) => ProductDetailScreen(product),
               ));
             },
             child: Opacity(
@@ -455,7 +454,7 @@ class _FoodItemState extends State<FoodItem> {
               child: Column(
                 children: [
                   Hero(
-                    tag: this.widget.product.id,
+                    tag: product.id,
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(16),
                       child: Opacity(
