@@ -178,6 +178,27 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               HomeAppBar(),
+              Positioned(
+                top: 150,
+                right: 0,
+                child: RotatedBox(
+                  quarterTurns: -1,
+                  child: Container(
+                    padding: const EdgeInsets.all(8.0),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFE8581C),
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(5),
+                        topRight: Radius.circular(5),
+                      ),
+                    ),
+                    child: const Text(
+                      '11:07',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ),
+              )
             ],
           ),
         ),

@@ -144,7 +144,7 @@ class _HomeAppBarSate extends State<HomeAppBar> {
                 ],
               ),
               SizedBox(
-                width: 5,
+                width: 8,
               ),
               Container(
                 width: 220,
