@@ -53,32 +53,36 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
               child: Container(
                 // color: Colors.amber,
                 width: double.infinity,
-                child: ToggleButtons(
-                  renderBorder: false,
-                  onPressed: (int index) async {
-                    setState(() {
-                      _selections = _selections.map((e) => false).toList();
-                      _selections[index] = true;
-                    });
-                    await orderHandler();
-                  },
-                  isSelected: _selections,
-                  children: [
-                    Container(
-                      width: MediaQuery.of(context).size.width / 2,
-                      child: Text(
-                        "Đang giao",
-                        textAlign: TextAlign.center,
+                child: Center(
+                  child: ToggleButtons(
+                    renderBorder: false,
+                    selectedColor: kPrimary,
+                    onPressed: (int index) async {
+                      setState(() {
+                        _selections = _selections.map((e) => false).toList();
+                        _selections[index] = true;
+                      });
+                      await orderHandler();
+                    },
+                    borderRadius: BorderRadius.circular(24),
+                    isSelected: _selections,
+                    children: [
+                      Container(
+                        width: MediaQuery.of(context).size.width / 3,
+                        child: Text(
+                          "Đang giao",
+                          textAlign: TextAlign.center,
+                        ),
                       ),
-                    ),
-                    Container(
-                      width: MediaQuery.of(context).size.width / 2,
-                      child: Text(
-                        "Hoàn thành",
-                        textAlign: TextAlign.center,
+                      Container(
+                        width: MediaQuery.of(context).size.width / 3,
+                        child: Text(
+                          "Hoàn thành",
+                          textAlign: TextAlign.center,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),

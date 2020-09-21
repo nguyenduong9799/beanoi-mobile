@@ -1,4 +1,5 @@
 import 'package:scoped_model/scoped_model.dart';
+import 'package:unidelivery_mobile/Model/DAO/ProductDAO.dart';
 import 'package:unidelivery_mobile/Model/DTO/CartDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/ProductDTO.dart';
 import 'package:unidelivery_mobile/utils/enum.dart';
@@ -16,6 +17,9 @@ class Filter {
 
 class HomeViewModel extends Model {
   static HomeViewModel _instance;
+
+  ProductDAO _dao = ProductDAO();
+
   List<ProductDTO> products;
   Cart cart = Cart();
   Status status;
@@ -53,24 +57,15 @@ class HomeViewModel extends Model {
     try {
       status = Status.Loading;
       notifyListeners();
-      var res;
       if (_isFirstFetch) {
-        res = await request.get(
-          'products',
-        );
-        if (res.statusCode == 200) {
-          products = ProductDTO.fromList(res.data);
-        } else {
-          print('Fetch products error');
-        }
+        products = await _dao.getProducts();
         _isFirstFetch = false;
         notifyListeners();
       } else {
         // change filter
         // do something with products
         print("Fetch prodyuct with filter");
-        products.removeAt(0);
-        products.removeAt(1);
+        products = products.sublist(2)..shuffle();
         notifyListeners();
       }
     } on Exception catch (e) {
