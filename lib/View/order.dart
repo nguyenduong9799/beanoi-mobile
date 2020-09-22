@@ -7,11 +7,13 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:intl/intl.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:unidelivery_mobile/Model/DTO/CartDTO.dart';
 import 'package:unidelivery_mobile/ViewModel/quantity_viewModel.dart';
 import 'package:unidelivery_mobile/acessories/appbar.dart';
 import 'package:unidelivery_mobile/acessories/dash_border.dart';
 import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/constraints.dart';
+import 'package:unidelivery_mobile/utils/shared_pref.dart';
 class OrderScreen extends StatefulWidget {
   @override
   _OrderScreenState createState() => _OrderScreenState();
@@ -95,25 +97,33 @@ class _OrderScreenState extends State<OrderScreen> {
             child: MySeparator(color: kBackgroundGrey[4],)));
       }
     }
-    return Container(
-      color: kBackgroundGrey[0],
-      padding: const EdgeInsets.only(bottom: 10, top: 10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(store, style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.red),),
-                  Text(length.toString() + " món", style: TextStyle(),),
-                ],
+    return FutureBuilder(
+      future: getCart(),
+      builder: (BuildContext context, AsyncSnapshot<Cart> snapshot) {
+        if(snapshot.hasData){
+          return Container(
+            color: kBackgroundGrey[0],
+            padding: const EdgeInsets.only(bottom: 10, top: 10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(store, style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.red),),
+                      Text(length.toString() + " món", style: TextStyle(),),
+                    ],
+                  ),
+                ),
+                ...card
+              ],
             ),
-          ),
-          ...card
-        ],
-      ),
+          );
+        }
+        return CircularProgressIndicator();
+      },
     );
   }
 

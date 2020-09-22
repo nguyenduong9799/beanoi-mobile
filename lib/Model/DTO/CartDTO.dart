@@ -13,18 +13,49 @@ class Cart {
   int get itemQuantity => items.length;
 
   void addItem(CartItem item) {
+    for(CartItem cart in items){
+      if(cart.findCartItem(item)){
+        cart.quantity += item.quantity;
+        return;
+      }
+    }
     items.add(item);
   }
+
+  void removeItem(CartItem item){
+    items.removeWhere((element) => element.findCartItem(item) && element.quantity == item.quantity);
+  }
+
+  void updateQuantity(CartItem item){
+    for(CartItem cart in items){
+      if(cart.findCartItem(item)){
+        cart.quantity = item.quantity;
+      }
+    }
+  }
+
+
 }
 
 class CartItem {
-  ProductDTO masterProduct;
+  List<ProductDTO> products;
+  String description;
   int quantity;
-  List<ProductDTO> productChild;
 
-  CartItem(
-    this.masterProduct,
-    this.quantity,
-    this.productChild,
-  );
+  CartItem(this.products, this.description, this.quantity);
+
+  bool findCartItem(CartItem item){
+    bool found = true;
+    if(this.products.length != item.products.length){
+      return false;
+    }
+    for(int i = 0; i < this.products.length; i++){
+      if(item.products[i].id != this.products[i].id)
+        found = false;
+    }
+    if(item.description != this.description){
+      found = false;
+    }
+    return found;
+  }
 }
