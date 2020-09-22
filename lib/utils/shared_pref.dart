@@ -52,7 +52,7 @@ Future<void> addItemToCart(List<ProductDTO> products, int quantity, String descr
 Future<void> removeItemFromCart(List<ProductDTO> products, int quantity, String description) async {
   Cart cart = await getCart();
   if(cart == null){
-    cart = new Cart();
+    return;
   }
   cart.removeItem(CartItem(products, description, quantity));
   setCart(cart);

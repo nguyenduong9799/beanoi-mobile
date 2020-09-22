@@ -13,6 +13,12 @@ class Cart {
   int get itemQuantity => items.length;
 
   void addItem(CartItem item) {
+    for(CartItem cart in items){
+      if(cart.findCartItem(item)){
+        cart.quantity += item.quantity;
+        return;
+      }
+    }
     items.add(item);
   }
 

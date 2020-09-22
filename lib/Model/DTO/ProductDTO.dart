@@ -10,6 +10,8 @@ class ProductDTO {
   List<String> atrributes;
   List<ProductDTO> listChild;
   String catergory_id;
+  String store_id;
+  String store_name;
 
   @override
   String toString() {
@@ -26,7 +28,10 @@ class ProductDTO {
     this.topping = const ["Trân châu", "Bánh flan", "Thạch 7 màu"],
     this.description,
     this.type = 6,
-    this.atrributes = const ["size", "đá", "đường"], this.listChild
+    this.atrributes = const ["size", "đá", "đường"], this.listChild,
+        this.catergory_id,
+        this.store_id,
+        this.store_name
   }); // balance. point;
 
   factory ProductDTO.fromJson(dynamic json){
@@ -55,6 +60,9 @@ class ProductDTO {
         description: json['description'] as String,
         type: json['type'] as int,
         imageURL: json['imageURL'] as String,
+      store_id: json["store_id"] as String,
+      store_name: json["store_name"] as String,
+      catergory_id: json['catergory_id'] as String
     );
   }
 
