@@ -30,16 +30,11 @@ class _AppBarSate extends State<DefaultAppBar> {
     return AppBar(
       elevation: 5.0,
       centerTitle: true,
+      iconTheme: IconThemeData(color: Colors.white),
       title: Text(
         widget.title,
         style: TextStyle(color: Colors.white),
       ),
-      actions: <Widget>[
-        IconButton(
-          icon: actionIcon,
-          onPressed: () {},
-        )
-      ],
     );
   }
 }

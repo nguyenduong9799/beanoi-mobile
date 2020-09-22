@@ -16,7 +16,7 @@ class ProductDetailViewModel extends Model{
   //List product ảnh hưởng giá
   Map<String, List<ProductDTO>> affectPriceContent;
   //List choice bắt buộc không ảnh hưởng giá
-  Map<String, String> affectPriceChoice;
+  Map<String, ProductDTO> affectPriceChoice;
   int count = 1;
   Color minusColor = kBackgroundGrey[5];
   Color addColor = kBackgroundGrey[5];
@@ -40,12 +40,13 @@ class ProductDetailViewModel extends Model{
     this.affectPriceContent = new Map();
 
     this.unaffectPriceChoice = new Map<String, String>();
-    this.affectPriceChoice = new Map<String, String>();
+    this.affectPriceChoice = new Map<String, ProductDTO>();
     //
     if(dto.type != 6){
       this.price = dto.price;
       this.total = price * count;
     }
+
     else{
       for(String s in dto.atrributes){
         if(s.toUpperCase() == "ĐÁ" || s.toUpperCase() == "ĐƯỜNG"){
@@ -54,7 +55,7 @@ class ProductDetailViewModel extends Model{
         }
         else{
          affectPriceContent[s] = dto.listChild;
-         affectPriceChoice[s] = "";
+         affectPriceChoice[s] = null;
         }
       }
     }
@@ -100,13 +101,20 @@ class ProductDetailViewModel extends Model{
     }
   }
 
-  void changeAffectPriceAtrribute(String e){
+  void changeAffectPriceAtrribute(ProductDTO e){
+    price = 0;
     affectPriceChoice[affectPriceContent.keys.elementAt(affectIndex)] = e;
-    for(ProductDTO dto in affectPriceContent[affectPriceContent.keys.elementAt(affectIndex)]){
-      if(dto.id == e){
-        price = dto.price;
+
+    for(int i = 0; i < affectPriceContent.keys.toList().length; i++){
+
+      for(ProductDTO dto in affectPriceContent[affectPriceContent.keys.elementAt(i)]){
+        if(dto.id == e.id){
+          price += dto.price;
+        }
       }
     }
+
+
     total = price * count;
 
     verifyOrder();
@@ -137,7 +145,7 @@ class ProductDetailViewModel extends Model{
   void verifyOrder(){
     order = true;
     for(int i = 0; i < affectPriceContent.keys.toList().length; i++){
-      if(affectPriceChoice[affectPriceContent.keys.elementAt(i)].isEmpty){
+      if(affectPriceChoice[affectPriceContent.keys.elementAt(i)] == null){
         order = false;
       }
     }

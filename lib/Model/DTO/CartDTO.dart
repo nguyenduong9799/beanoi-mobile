@@ -1,13 +1,45 @@
+import 'dart:convert';
+
+import 'package:flutter/cupertino.dart';
 import 'package:unidelivery_mobile/Model/DTO/ProductDTO.dart';
 
 class Cart {
   List<CartItem> items;
   // User info
   String orderNote;
+  String storeName;
+
+
+  Cart.get({this.items, this.orderNote, this.storeName});
 
   Cart() {
     items = List();
+    storeName = "Uni Delivery";
   }
+
+  factory Cart.fromJson(dynamic json){
+    List<CartItem> list = new List();
+    if(json["items"] != null){
+      var itemJson = json["items"] as List;
+      list = itemJson.map((e) => CartItem.fromJson(e)).toList();
+    }
+    return Cart.get(
+      items: list,
+      storeName: json['storeName'] as String,
+      orderNote: json['orderNote'] as String,
+    );
+  }
+
+  Map<String, dynamic> toJson(){
+    List listCartItem = items.map((e) => e.toJson()).toList();
+    print("Items: " + listCartItem.toString());
+    return {
+      "items" : listCartItem,
+      "storeName" : storeName,
+      "orderNote" : orderNote,
+    };
+  }
+
 
   bool get isEmpty => items != null && items.isEmpty;
   int get itemQuantity => items.length;
@@ -57,5 +89,28 @@ class CartItem {
       found = false;
     }
     return found;
+  }
+
+  factory CartItem.fromJson(dynamic json){
+    List<ProductDTO> list = new List();
+    if(json["products"] != null){
+      var itemJson = json["products"] as List;
+      list = itemJson.map((e) => ProductDTO.fromJson(e)).toList();
+    }
+    return CartItem(
+      list,
+      json['description'] as String,
+      json['quantity'] as int,
+    );
+  }
+
+  Map<String, dynamic> toJson(){
+    List listProducts = products.map((e) => e.toJson()).toList();
+    print("Products: " + listProducts.toString());
+    return{
+      "products" : listProducts,
+      "description": description,
+      "quantity" : quantity
+    };
   }
 }

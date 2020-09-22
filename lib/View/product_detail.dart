@@ -2,10 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:intl/intl.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:unidelivery_mobile/Model/DTO/CartDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/ProductDTO.dart';
+import 'package:unidelivery_mobile/View/order.dart';
 import 'package:unidelivery_mobile/ViewModel/product_viewModel.dart';
 import 'package:unidelivery_mobile/constraints.dart';
+import 'package:unidelivery_mobile/utils/shared_pref.dart';
 
 class ProductDetailScreen extends StatefulWidget {
   ProductDTO dto;
@@ -27,10 +31,18 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
 
   ProductDetailViewModel productDetailViewModel;
 
+  ProgressDialog pr;
+
   @override
   void initState() {
     super.initState();
     productDetailViewModel = new ProductDetailViewModel(widget.dto);
+    pr = new ProgressDialog(
+      context,
+      showLogs: true,
+      type: ProgressDialogType.Normal,
+      isDismissible: false,
+    );
 
     if(widget.dto.type == 6){
       affectPriceTabs = new List<Tab>();
@@ -236,7 +248,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                       Radio(
                         groupValue: model.affectPriceChoice[model.affectPriceContent
                             .keys.elementAt(model.affectIndex)],
-                        value: listOptions[i].id,
+                        value: listOptions[i],
                         onChanged: (e) {
                           model.changeAffectPriceAtrribute(e);
                         },
@@ -398,7 +410,27 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
             model.order
                 ? FlatButton(
                     padding: EdgeInsets.all(8),
-                    onPressed: () {},
+                    onPressed: () async {
+                      await pr.show();
+                      List<ProductDTO> listChoices= new List();
+                      if(widget.dto.type == 6){
+                      for(int i = 0; i < model.affectPriceChoice.keys.toList().length; i++){
+                        model.affectPriceChoice[model.affectPriceChoice.keys.elementAt(i)].imageURL = widget.dto.imageURL;
+                        listChoices.add(model.affectPriceChoice[model.affectPriceChoice.keys.elementAt(i)]);
+                      }
+                      }else{
+                        listChoices.add(widget.dto);
+                      }
+
+                      String description = "";
+                      for(int i = 0; i < model.unaffectPriceChoice.keys.toList().length; i++){
+                        description += model.unaffectPriceChoice.keys.elementAt(i) + ": " + model.unaffectPriceChoice[model.unaffectPriceChoice.keys.elementAt(i)] + "\n";
+                      }
+                      CartItem item = new CartItem(listChoices, description, model.count);
+                      await addItemToCart(item);
+                      await pr.hide();
+                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => OrderScreen(),));
+                    },
                     textColor: kBackgroundGrey[0],
                     color: kPrimary,
                     shape: RoundedRectangleBorder(
