@@ -19,6 +19,7 @@ class AccountDTO {
         uid: json["userId"] as String,
         name: json['name'] as String,
         email: json['email'] as String,
+        phone: json['phone'] as String,
         gender: json['gender'] as String,
         isFirstLogin: json['is_first_login'] as bool,
         birthdate: json['birthdate'] as String != null
@@ -33,7 +34,8 @@ class AccountDTO {
       "email": email,
       "phone": phone,
       "gender": gender,
-      "birthdate": DateFormat('dd/MM/yyyy').format(birthdate),
+      "birth_day": DateFormat('dd/MM/yyyy').format(birthdate),
+      "pic_url": "https://randomuser.me/api/portraits/women/28.jpg",
     };
   }
 }

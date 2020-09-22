@@ -8,6 +8,7 @@ import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:unidelivery_mobile/Model/DTO/AccountDTO.dart';
+import 'package:unidelivery_mobile/Model/DTO/CartDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/ProductDTO.dart';
 import 'package:unidelivery_mobile/View/order.dart';
 import 'package:unidelivery_mobile/View/product_detail.dart';
@@ -57,11 +58,15 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Scaffold(
         floatingActionButton: ScopedModelDescendant<HomeViewModel>(
             builder: (context, child, model) {
-          bool hasItemInCart = !model.cart.isEmpty;
-          int quantity = model.cart.itemQuantity;
+          return FutureBuilder(
+              future: model.cart,
+              builder: (context, snapshot) {
+                Cart cart = snapshot.data;
+                if (cart == null) return SizedBox.shrink();
+                bool hasItemInCart = cart.isEmpty;
+                int quantity = cart?.itemQuantity;
 
-          return hasItemInCart
-              ? FloatingActionButton(
+                return FloatingActionButton(
                   backgroundColor: Colors.transparent,
                   onPressed: () {
                     print('Tap order');
@@ -102,8 +107,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       )
                     ],
                   ),
-                )
-              : SizedBox();
+                );
+              });
         }),
         backgroundColor: Colors.white,
         //bottomNavigationBar: bottomBar(),
@@ -213,7 +218,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 },
                               )
                             : Text(
-                                "Hết giờ :(",
+                                "Bạn quay lại sau nhé :(",
                                 style: TextStyle(
                                   color: Colors.white,
                                 ),

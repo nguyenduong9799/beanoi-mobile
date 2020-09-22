@@ -46,7 +46,7 @@ class _LoginWithPhoneOTPState extends State<LoginWithPhoneOTP> {
     pr = new ProgressDialog(
       context,
       showLogs: true,
-      type: ProgressDialogType.Download,
+      type: ProgressDialogType.Normal,
       isDismissible: false,
     );
   }

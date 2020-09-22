@@ -4,6 +4,7 @@ import 'package:unidelivery_mobile/Model/DTO/CartDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/ProductDTO.dart';
 import 'package:unidelivery_mobile/utils/enum.dart';
 import 'package:unidelivery_mobile/utils/request.dart';
+import 'package:unidelivery_mobile/utils/shared_pref.dart';
 
 class Filter {
   final String id;
@@ -21,7 +22,6 @@ class HomeViewModel extends Model {
   ProductDAO _dao = ProductDAO();
 
   List<ProductDTO> products;
-  Cart cart = Cart();
   Status status;
   bool _isFirstFetch = true;
   List<Filter> filterType = [
@@ -39,6 +39,10 @@ class HomeViewModel extends Model {
   HomeViewModel() {
     status = Status.Loading;
     // getProducts();
+  }
+
+  Future<Cart> get cart async {
+    return await getCart();
   }
 
   static HomeViewModel getInstance() {
@@ -110,6 +114,4 @@ class HomeViewModel extends Model {
     }).toList();
     notifyListeners();
   }
-
-
 }

@@ -1,8 +1,10 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:intl/intl.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:unidelivery_mobile/Model/DTO/ProductDTO.dart';
 import 'package:unidelivery_mobile/ViewModel/product_viewModel.dart';
 import 'package:unidelivery_mobile/constraints.dart';
@@ -18,7 +20,6 @@ class ProductDetailScreen extends StatefulWidget {
 
 class _ProductDetailScreenState extends State<ProductDetailScreen>
     with TickerProviderStateMixin {
-
   List<Tab> affectPriceTabs;
   List<Tab> unaffectPriceTabs;
 
@@ -32,9 +33,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
     super.initState();
     productDetailViewModel = new ProductDetailViewModel(widget.dto);
 
-    if(widget.dto.type == 6){
+    if (widget.dto.type == 6) {
       affectPriceTabs = new List<Tab>();
-      List<String> affectkeys = productDetailViewModel.affectPriceContent.keys.toList();
+      List<String> affectkeys =
+          productDetailViewModel.affectPriceContent.keys.toList();
       for (int i = 0; i < affectkeys.length; i++) {
         print(affectkeys[i].toString());
         affectPriceTabs.add(Tab(
@@ -42,12 +44,14 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
         ));
       }
 
-      _affectPriceController = TabController(vsync: this, length: affectPriceTabs.length);
+      _affectPriceController =
+          TabController(vsync: this, length: affectPriceTabs.length);
       _affectPriceController.addListener(_handleAffectTabSelection);
     }
 
     unaffectPriceTabs = new List<Tab>();
-    List<String> keys = productDetailViewModel.unaffectPriceContent.keys.toList();
+    List<String> keys =
+        productDetailViewModel.unaffectPriceContent.keys.toList();
     for (int i = 0; i < keys.length; i++) {
       print(keys[i].toString());
       unaffectPriceTabs.add(Tab(
@@ -55,14 +59,15 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
       ));
     }
 
-    if(widget.dto.topping != null){
+    if (widget.dto.topping != null) {
       unaffectPriceTabs.add(Tab(
         child: Text("Thêm"),
       ));
     }
 
     print("Parent: " + widget.dto.id);
-    _unaffectPriceController = TabController(vsync: this, length: unaffectPriceTabs.length);
+    _unaffectPriceController =
+        TabController(vsync: this, length: unaffectPriceTabs.length);
     _unaffectPriceController.addListener(_handleUnaffectTabSelection);
   }
 
@@ -70,14 +75,13 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
     if (_affectPriceController.indexIsChanging) {
       productDetailViewModel.changeAffectIndex(_affectPriceController.index);
     }
-
   }
 
   void _handleUnaffectTabSelection() {
     if (_unaffectPriceController.indexIsChanging) {
-      productDetailViewModel.changeUnAffectIndex(_unaffectPriceController.index);
+      productDetailViewModel
+          .changeUnAffectIndex(_unaffectPriceController.index);
     }
-
   }
 
   @override
@@ -106,12 +110,29 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                 child: ClipRRect(
                   child: Opacity(
                     opacity: 0.8,
-                    child: FadeInImage(
-                      image: NetworkImage(widget.dto.imageURL),
-                      width: MediaQuery.of(context).size.width,
-                      placeholder: AssetImage('assets/images/avatar.png'),
-                      // height: 250,
-                      fit: BoxFit.cover,
+                    child: CachedNetworkImage(
+                      imageUrl: widget.dto.imageURL,
+                      imageBuilder: (context, imageProvider) => Container(
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: imageProvider,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                      progressIndicatorBuilder:
+                          (context, url, downloadProgress) =>
+                              Shimmer.fromColors(
+                        baseColor: Colors.grey[300],
+                        highlightColor: Colors.grey[100],
+                        enabled: true,
+                        child: Container(
+                          width: MediaQuery.of(context).size.width,
+                          // height: 100,
+                          color: Colors.grey,
+                        ),
+                      ),
+                      errorWidget: (context, url, error) => Icon(Icons.error),
                     ),
                   ),
                 ),
@@ -176,10 +197,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
           ),
           Text(
             " " + widget.dto.description,
-            style: TextStyle(
-              color: Colors.grey,
-              fontSize: 16
-            ),
+            style: TextStyle(color: Colors.grey, fontSize: 16),
           ),
           SizedBox(
             height: 8,
@@ -190,15 +208,12 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
   }
 
   Widget tabAffectAtritbute() {
-    if(widget.dto.type == 6){
+    if (widget.dto.type == 6) {
       return Container(
         decoration: BoxDecoration(
-          border: Border(
-            top: BorderSide(color: Hexcolor("ffc500"),width: 2)
-          )
-        ),
+            border:
+                Border(top: BorderSide(color: Hexcolor("ffc500"), width: 2))),
         width: MediaQuery.of(context).size.width,
-
         child: TabBar(
           labelStyle: TextStyle(fontWeight: FontWeight.bold),
           labelColor: kSecondary,
@@ -217,13 +232,13 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
   Widget AffectAtributeContent() {
     List<Widget> attributes;
     List<ProductDTO> listOptions;
-    if(widget.dto.type == 6){
-      return  ScopedModelDescendant(
+    if (widget.dto.type == 6) {
+      return ScopedModelDescendant(
         builder:
             (BuildContext context, Widget child, ProductDetailViewModel model) {
-
           attributes = new List();
-          listOptions = model.affectPriceContent[model.affectPriceContent.keys.elementAt(model.affectIndex)];
+          listOptions = model.affectPriceContent[
+              model.affectPriceContent.keys.elementAt(model.affectIndex)];
 
           for (int i = 0; i < listOptions.length; i++) {
             attributes.add(Container(
@@ -234,8 +249,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                   Row(
                     children: [
                       Radio(
-                        groupValue: model.affectPriceChoice[model.affectPriceContent
-                            .keys.elementAt(model.affectIndex)],
+                        groupValue: model.affectPriceChoice[model
+                            .affectPriceContent.keys
+                            .elementAt(model.affectIndex)],
                         value: listOptions[i].id,
                         onChanged: (e) {
                           model.changeAffectPriceAtrribute(e);
@@ -249,11 +265,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                   ),
                   Flexible(
                       child: Text(
-                        NumberFormat.simpleCurrency(locale: 'vi')
-                            .format(listOptions[i].price),
-                        style:
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                      ))
+                    NumberFormat.simpleCurrency(locale: 'vi')
+                        .format(listOptions[i].price),
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ))
                 ],
               ),
             ));
@@ -272,27 +287,27 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
   }
 
   Widget tabUnaffectAtritbute() {
-    if(unaffectPriceTabs.length != 0)
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      color: kPrimary,
-      padding: EdgeInsets.only(top: 8),
-      child: TabBar(
-        labelColor: kPrimary,
-        unselectedLabelColor: kBackgroundGrey[0],
-        indicatorSize: TabBarIndicatorSize.tab,
-        indicator: BoxDecoration(
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(8),
-              topRight: Radius.circular(8),
-            ),
-            color: kBackgroundGrey[0]),
-        isScrollable: true,
-        tabs: unaffectPriceTabs,
-        indicatorColor: kBackgroundGrey[0],
-        controller: _unaffectPriceController,
-      ),
-    );
+    if (unaffectPriceTabs.length != 0)
+      return Container(
+        width: MediaQuery.of(context).size.width,
+        color: kPrimary,
+        padding: EdgeInsets.only(top: 8),
+        child: TabBar(
+          labelColor: kPrimary,
+          unselectedLabelColor: kBackgroundGrey[0],
+          indicatorSize: TabBarIndicatorSize.tab,
+          indicator: BoxDecoration(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(8),
+                topRight: Radius.circular(8),
+              ),
+              color: kBackgroundGrey[0]),
+          isScrollable: true,
+          tabs: unaffectPriceTabs,
+          indicatorColor: kBackgroundGrey[0],
+          controller: _unaffectPriceController,
+        ),
+      );
     return Container();
   }
 
@@ -304,14 +319,16 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
           (BuildContext context, Widget child, ProductDetailViewModel model) {
         if (!model.isExtra) {
           attributes = new List();
-          if(widget.dto.type == 6){
-            listOptions =
-            model.unaffectPriceContent[model.unaffectPriceContent.keys.elementAt(model.unaffectIndex)];
+          if (widget.dto.type == 6) {
+            listOptions = model.unaffectPriceContent[
+                model.unaffectPriceContent.keys.elementAt(model.unaffectIndex)];
             for (int i = 0; i < listOptions.length; i++) {
               attributes.add(Row(
                 children: [
                   Radio(
-                    groupValue: model.unaffectPriceChoice[model.unaffectPriceContent.keys.elementAt(model.unaffectIndex)],
+                    groupValue: model.unaffectPriceChoice[model
+                        .unaffectPriceContent.keys
+                        .elementAt(model.unaffectIndex)],
                     value: listOptions[i],
                     onChanged: (e) {
                       model.changeUnAffectPriceAtrribute(e);
@@ -325,7 +342,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
               ));
             }
           }
-
         } else {
           attributes = new List();
           for (int i = 0; i < model.extra.keys.toList().length; i++) {
@@ -460,7 +476,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
           mainAxisSize: MainAxisSize.min,
           children: [
             Material(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(30))),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(30))),
               child: IconButton(
                 icon: Icon(
                   Icons.remove_circle_outline,
