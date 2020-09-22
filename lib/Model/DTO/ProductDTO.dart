@@ -7,8 +7,9 @@ class ProductDTO {
   String description;
   int type;
   String imageURL;
-  Map<String, List<String>> atrributes;
+  List<String> atrributes;
   List<ProductDTO> listChild;
+  String catergory_id;
 
   @override
   String toString() {
@@ -24,15 +25,12 @@ class ProductDTO {
     this.quantity,
     this.topping = const ["Trân châu", "Bánh flan", "Thạch 7 màu"],
     this.description,
-    this.type,
-    this.atrributes = const {
-      "đá": ["0%", "25%", "50%", "75%", "100%"],
-      "đường": ["0%", "25%", "50%", "75%", "100%"],
-    }, this.listChild
+    this.type = 6,
+    this.atrributes = const ["size", "đá", "đường"], this.listChild
   }); // balance. point;
 
   factory ProductDTO.fromJson(dynamic json){
-    
+
     var listChildJson = json['productChilds'] as List;
     if(listChildJson != null){
       List<ProductDTO> listChild = listChildJson.map((e) => ProductDTO.fromJson(e)).toList();
@@ -43,7 +41,6 @@ class ProductDTO {
           size: json['size'] as String,
           quantity: json['quantity'] as int,
           description: json['description'] as String,
-          type: json['type'] as int,
           imageURL: json['imageURL'] as String,
           listChild: listChild
       );

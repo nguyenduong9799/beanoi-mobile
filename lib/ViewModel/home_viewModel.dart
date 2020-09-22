@@ -111,14 +111,5 @@ class HomeViewModel extends Model {
     notifyListeners();
   }
 
-  // 3. Get Product Detail
 
-  // 4. Add item to cart
-  Future<void> updateItemInCart(ProductDTO masterProduct, int quantity) async {
-    if (cart == null) {
-      cart = Cart();
-    }
-    cart.addItem(CartItem(masterProduct, quantity));
-    notifyListeners();
-  }
 }
