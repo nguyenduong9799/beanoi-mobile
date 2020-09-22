@@ -1,9 +1,12 @@
 import 'package:animator/animator.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_countdown_timer/countdown_timer.dart';
 import 'package:flutter_page_indicator/flutter_page_indicator.dart';
+import 'package:flutter_shimmer/flutter_shimmer.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:unidelivery_mobile/Model/DTO/AccountDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/ProductDTO.dart';
 import 'package:unidelivery_mobile/View/order.dart';
@@ -14,7 +17,7 @@ import 'package:unidelivery_mobile/acessories/bottomnavigator.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/utils/enum.dart';
 
-const ORDER_TIME = 11;
+const ORDER_TIME = 9;
 
 class HomeScreen extends StatefulWidget {
   final AccountDTO user;
@@ -29,18 +32,21 @@ class _HomeScreenState extends State<HomeScreen> {
   PageController _scrollController = new PageController();
   HomeViewModel model = HomeViewModel();
   DateTime now = DateTime.now();
-  DateTime orderTime = DateTime(
-    DateTime.now().year,
-    DateTime.now().month,
-    DateTime.now().day,
-    ORDER_TIME,
-  );
+  DateTime orderTime = DateTime(DateTime.now().year, DateTime.now().month,
+      DateTime.now().day, ORDER_TIME, 8);
   // int endTime = DateTime.now().millisecondsSinceEpoch + 1000 * 60 * 60;
+
+  bool _endOrderTime = false;
 
   @override
   void initState() {
     super.initState();
     model.getProducts();
+    if (orderTime.isBefore(DateTime.now())) {
+      setState(() {
+        _endOrderTime = true;
+      });
+    }
   }
 
   @override
@@ -186,7 +192,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: RotatedBox(
                   quarterTurns: -1,
                   child: Container(
-                    padding: const EdgeInsets.fromLTRB(4, 4, 4, 0),
+                    padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
                     decoration: BoxDecoration(
                       color: const Color(0xFFE8581C),
                       borderRadius: BorderRadius.only(
@@ -197,13 +203,21 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Column(
                       children: [
                         // Text("Còn lại"),
-                        CountdownTimer(
-                          endTime: orderTime.millisecondsSinceEpoch,
-                          textStyle: TextStyle(color: Colors.white),
-                          onEnd: () {
-                            print("Game Over");
-                          },
-                        ),
+                        !_endOrderTime
+                            ? CountdownTimer(
+                                endTime: orderTime.millisecondsSinceEpoch,
+                                onEnd: () {
+                                  setState(() {
+                                    _endOrderTime = true;
+                                  });
+                                },
+                              )
+                            : Text(
+                                "Hết giờ :(",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                ),
+                              ),
                       ],
                     ),
                   ),
@@ -507,11 +521,46 @@ class _FoodItemState extends State<FoodItem> {
                         opacity: 1,
                         child: AspectRatio(
                           aspectRatio: 1.1,
-                          child: FadeInImage(
-                            image: NetworkImage(imageURL),
-                            placeholder: AssetImage('assets/images/avatar.png'),
-                            fit: BoxFit.fill,
+                          child: CachedNetworkImage(
+                            imageUrl: imageURL,
+                            imageBuilder: (context, imageProvider) => Container(
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image: imageProvider,
+                                  fit: BoxFit.fill,
+                                ),
+                              ),
+                            ),
+                            progressIndicatorBuilder:
+                                (context, url, downloadProgress) =>
+                                    Shimmer.fromColors(
+                              baseColor: Colors.grey[300],
+                              highlightColor: Colors.grey[100],
+                              enabled: true,
+                              child: Container(
+                                width: 100,
+                                height: 100,
+                                color: Colors.grey,
+                              ),
+                            ),
+                            // placeholder: (context, url) => Container(
+                            //   width: 100,
+                            //   height: 100,
+                            //   child: Shimmer.fromColors(
+                            //     baseColor: Colors.grey[300],
+                            //     highlightColor: Colors.grey[100],
+                            //     enabled: true,
+                            //     child: SizedBox.shrink(),
+                            //   ),
+                            // ),
+                            errorWidget: (context, url, error) =>
+                                Icon(Icons.error),
                           ),
+                          // FadeInImage(
+                          //   image: NetworkImage(imageURL),
+                          //   placeholder: AssetImage('assets/images/avatar.png'),
+                          //   fit: BoxFit.fill,
+                          // ),
                         ),
                       ),
                     ),
