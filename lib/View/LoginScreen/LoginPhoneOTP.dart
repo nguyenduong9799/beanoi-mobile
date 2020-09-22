@@ -9,6 +9,7 @@ import 'package:reactive_forms/reactive_forms.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Services/firebase.dart';
 import 'package:unidelivery_mobile/View/home.dart';
+import 'package:unidelivery_mobile/View/nav_screen.dart';
 import 'package:unidelivery_mobile/View/signup.dart';
 import 'package:unidelivery_mobile/ViewModel/login_viewModel.dart';
 import 'package:unidelivery_mobile/constraints.dart';
@@ -265,8 +266,7 @@ class _LoginWithPhoneOTPState extends State<LoginWithPhoneOTP> {
             duration: Duration(seconds: 3),
           ));
           await Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(
-                  builder: (context) => HomeScreen(user: userInfo)),
+              MaterialPageRoute(builder: (context) => NavScreen()),
               (route) => false);
           print("Login Success");
           // chuyen sang trang home

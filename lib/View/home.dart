@@ -1,5 +1,6 @@
 import 'package:animator/animator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_countdown_timer/countdown_timer.dart';
 import 'package:flutter_page_indicator/flutter_page_indicator.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -13,6 +14,8 @@ import 'package:unidelivery_mobile/acessories/bottomnavigator.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/utils/enum.dart';
 
+const ORDER_TIME = 11;
+
 class HomeScreen extends StatefulWidget {
   final AccountDTO user;
   const HomeScreen({Key key, @required this.user}) : super(key: key);
@@ -25,6 +28,14 @@ class _HomeScreenState extends State<HomeScreen> {
   bool switcher = false;
   PageController _scrollController = new PageController();
   HomeViewModel model = HomeViewModel();
+  DateTime now = DateTime.now();
+  DateTime orderTime = DateTime(
+    DateTime.now().year,
+    DateTime.now().month,
+    DateTime.now().day,
+    ORDER_TIME,
+  );
+  // int endTime = DateTime.now().millisecondsSinceEpoch + 1000 * 60 * 60;
 
   @override
   void initState() {
@@ -88,15 +99,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 )
               : SizedBox();
         }),
-        bottomNavigationBar: ListView(
-          shrinkWrap: true,
-          children: [
-            tag(),
-            DefaultNavigatorBar(
-              selectedIndex: 0,
-            ),
-          ],
-        ),
         backgroundColor: Colors.white,
         //bottomNavigationBar: bottomBar(),
         body: SafeArea(
@@ -184,7 +186,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: RotatedBox(
                   quarterTurns: -1,
                   child: Container(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.fromLTRB(4, 4, 4, 0),
                     decoration: BoxDecoration(
                       color: const Color(0xFFE8581C),
                       borderRadius: BorderRadius.only(
@@ -192,13 +194,22 @@ class _HomeScreenState extends State<HomeScreen> {
                         topRight: Radius.circular(5),
                       ),
                     ),
-                    child: const Text(
-                      '11:07',
-                      style: TextStyle(color: Colors.white),
+                    child: Column(
+                      children: [
+                        // Text("Còn lại"),
+                        CountdownTimer(
+                          endTime: orderTime.millisecondsSinceEpoch,
+                          textStyle: TextStyle(color: Colors.white),
+                          onEnd: () {
+                            print("Game Over");
+                          },
+                        ),
+                      ],
                     ),
                   ),
                 ),
-              )
+              ),
+              Positioned(left: 0, bottom: 0, child: tag()),
             ],
           ),
         ),
