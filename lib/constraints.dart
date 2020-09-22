@@ -14,3 +14,5 @@ final kBackgroundGrey = [
 ];
 
 final kTextPrimary = TextStyle(color: Color(0xFFFFFFFF));
+
+final double DELIVERY_FEE = 5000;

@@ -1,11 +1,9 @@
-
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Model/DTO/ProductDTO.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 
-class ProductDetailViewModel extends Model{
-
+class ProductDetailViewModel extends Model {
   int unaffectIndex = 0;
 
   int affectIndex = 0;
@@ -28,10 +26,7 @@ class ProductDetailViewModel extends Model{
   bool isExtra;
   //List size
 
-
-
-  ProductDetailViewModel(ProductDTO dto){
-
+  ProductDetailViewModel(ProductDTO dto) {
     isExtra = false;
 
     this.extra = new Map<String, bool>();
@@ -42,41 +37,36 @@ class ProductDetailViewModel extends Model{
     this.unaffectPriceChoice = new Map<String, String>();
     this.affectPriceChoice = new Map<String, ProductDTO>();
     //
-    if(dto.type != 6){
+    if (dto.type != 6) {
       this.price = dto.price;
       this.total = price * count;
-    }
-
-    else{
-      for(String s in dto.atrributes){
-        if(s.toUpperCase() == "ĐÁ" || s.toUpperCase() == "ĐƯỜNG"){
+    } else {
+      for (String s in dto.atrributes) {
+        if (s.toUpperCase() == "ĐÁ" || s.toUpperCase() == "ĐƯỜNG") {
           unaffectPriceContent[s] = ["0%", "25%", "50%", "75%", "100%"];
           unaffectPriceChoice[s] = "";
-        }
-        else{
-         affectPriceContent[s] = dto.listChild;
-         affectPriceChoice[s] = null;
+        } else {
+          affectPriceContent[s] = dto.listChild;
+          affectPriceChoice[s] = null;
         }
       }
     }
 
-
-    if(dto.topping != null){
-      for(int i = 0; i < dto.topping.length; i++){
+    if (dto.topping != null) {
+      for (int i = 0; i < dto.topping.length; i++) {
         this.extra[dto.topping[i]] = false;
       }
-      if(unaffectPriceContent.keys.toList().length == 0){
+      if (unaffectPriceContent.keys.toList().length == 0) {
         isExtra = true;
       }
     }
 
-
     verifyOrder();
   }
 
-  void addQuantity(){
-    if(addColor == kPrimary){
-      if(count == 1){
+  void addQuantity() {
+    if (addColor == kPrimary) {
+      if (count == 1) {
         minusColor = kPrimary;
       }
       count++;
@@ -85,35 +75,34 @@ class ProductDetailViewModel extends Model{
     }
   }
 
-  void deleteQuantity(){
+  void deleteQuantity() {
     count = 0;
     notifyListeners();
   }
 
-  void minusQuantity(){
-    if(count > 1){
+  void minusQuantity() {
+    if (count > 1) {
       count--;
-      if(count == 1){
+      if (count == 1) {
         minusColor = kBackgroundGrey[5];
       }
-      total  = price * count;
+      total = price * count;
       notifyListeners();
     }
   }
 
-  void changeAffectPriceAtrribute(ProductDTO e){
+  void changeAffectPriceAtrribute(ProductDTO e) {
     price = 0;
     affectPriceChoice[affectPriceContent.keys.elementAt(affectIndex)] = e;
 
-    for(int i = 0; i < affectPriceContent.keys.toList().length; i++){
-
-      for(ProductDTO dto in affectPriceContent[affectPriceContent.keys.elementAt(i)]){
-        if(dto.id == e.id){
+    for (int i = 0; i < affectPriceContent.keys.toList().length; i++) {
+      for (ProductDTO dto
+          in affectPriceContent[affectPriceContent.keys.elementAt(i)]) {
+        if (dto.id == e.id) {
           price += dto.price;
         }
       }
     }
-
 
     total = price * count;
 
@@ -121,49 +110,48 @@ class ProductDetailViewModel extends Model{
     notifyListeners();
   }
 
-  void changeUnAffectPriceAtrribute(String e){
+  void changeUnAffectPriceAtrribute(String e) {
     unaffectPriceChoice[unaffectPriceContent.keys.elementAt(unaffectIndex)] = e;
 
     verifyOrder();
     notifyListeners();
   }
 
-  void changeUnAffectIndex(int index){
+  void changeUnAffectIndex(int index) {
     this.unaffectIndex = index;
-    if(index == unaffectPriceContent.keys.toList().length){
+    if (index == unaffectPriceContent.keys.toList().length) {
       isExtra = true;
-    }
-    else isExtra = false;
+    } else
+      isExtra = false;
     notifyListeners();
   }
 
-  void changeAffectIndex(int index){
+  void changeAffectIndex(int index) {
     this.affectIndex = index;
     notifyListeners();
   }
 
-  void verifyOrder(){
+  void verifyOrder() {
     order = true;
-    for(int i = 0; i < affectPriceContent.keys.toList().length; i++){
-      if(affectPriceChoice[affectPriceContent.keys.elementAt(i)] == null){
+    for (int i = 0; i < affectPriceContent.keys.toList().length; i++) {
+      if (affectPriceChoice[affectPriceContent.keys.elementAt(i)] == null) {
         order = false;
       }
     }
 
-    for(int i = 0; i < unaffectPriceContent.keys.toList().length; i++){
-      if(unaffectPriceChoice[unaffectPriceContent.keys.elementAt(i)].isEmpty){
+    for (int i = 0; i < unaffectPriceContent.keys.toList().length; i++) {
+      if (unaffectPriceChoice[unaffectPriceContent.keys.elementAt(i)].isEmpty) {
         order = false;
       }
     }
 
-    if(order){
+    if (order) {
       addColor = kPrimary;
     }
   }
 
-  void changExtra(bool value, int i){
+  void changExtra(bool value, int i) {
     extra[extra.keys.elementAt(i)] = value;
     notifyListeners();
   }
-
 }

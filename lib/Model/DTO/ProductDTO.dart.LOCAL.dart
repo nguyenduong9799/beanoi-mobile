@@ -24,32 +24,36 @@ class ProductDTO {
     this.topping = const ["Trân châu", "Bánh flan", "Thạch 7 màu"],
     this.description,
     this.type = 6,
-    this.atrributes = const ["size", "đá", "đường"],
-    this.listChild,
-    this.catergory_id,
+    this.atrributes = const ["size", "đá", "đường"], this.listChild,
+        this.catergory_id,
   }); // balance. point;
 
-  factory ProductDTO.fromJson(dynamic json) {
+  factory ProductDTO.fromJson(dynamic json){
+
     var listChildJson = json['productChilds'] as List;
-    if (listChildJson != null && listChildJson.isNotEmpty) {
-      List<ProductDTO> listChild =
-          listChildJson.map((e) => ProductDTO.fromJson(e)).toList();
-      return ProductDTO(json["id"] as String,
+    if(listChildJson != null && listChildJson.isNotEmpty){
+      List<ProductDTO> listChild = listChildJson.map((e) => ProductDTO.fromJson(e)).toList();
+      return ProductDTO(
+          json["id"] as String,
           name: json['name'] as String,
           price: double.parse(json['price'].toString()),
           description: json['description'] as String,
           imageURL: json['imageURL'] as String,
-          listChild: listChild);
+          listChild: listChild
+      );
     }
 
-    return ProductDTO(json["id"] as String,
+    return ProductDTO(
+        json["id"] as String,
         name: json['name'] as String,
         price: double.parse(json['price'].toString()),
         description: json['description'] as String,
         type: json['type'] as int,
         imageURL: json['imageURL'] as String,
-        catergory_id: json['catergory_id'] as String);
+      catergory_id: json['catergory_id'] as String
+    );
   }
+
 
   Map<String, dynamic> toJson() {
     return {
@@ -57,7 +61,7 @@ class ProductDTO {
       "name": name,
       "price": price,
       "description": description,
-      "type": type,
+      "type" : type,
       "imageURL": imageURL,
       "catergory_id": catergory_id,
     };

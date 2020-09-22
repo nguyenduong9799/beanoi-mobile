@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Model/DTO/OrderDTO.dart';
 import 'package:unidelivery_mobile/ViewModel/orderHistory_viewModel.dart';
+import 'package:unidelivery_mobile/acessories/dash_border.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/utils/enum.dart';
 
@@ -121,16 +122,16 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                         ),
                       ),
                     )
-                  : _buildOrderItem2(orders[index]);
+                  : _buildOrderItem(orders[index], context);
             }),
       );
     });
   }
 
-  Widget _buildOrderItem2(OrderDTO order) {
+  Widget _buildOrderItem(OrderDTO order, BuildContext context) {
     return ListTile(
       onTap: () {
-        print("Tap ${order.id}");
+        _settingModalBottomSheet(context);
       },
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -161,6 +162,160 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
           fontWeight: FontWeight.bold,
           fontSize: 20,
         ),
+      ),
+    );
+  }
+
+  void _settingModalBottomSheet(context) {
+    showModalBottomSheet(
+        context: context,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(16),
+            topRight: Radius.circular(16),
+          ),
+        ),
+        builder: (BuildContext bc) {
+          return OrderDetailBottomSheet();
+        });
+  }
+}
+
+class OrderDetailBottomSheet extends StatelessWidget {
+  const OrderDetailBottomSheet({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.fromLTRB(16, 8, 16, 16),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(16),
+          topRight: Radius.circular(16),
+        ),
+        // color: Colors.grey,
+      ),
+      height: 450,
+      child: Column(
+        children: <Widget>[
+          Row(
+            children: [
+              Text(
+                'Menu',
+                style: TextStyle(color: Colors.black45),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.only(left: 8, right: 8),
+                  child: Divider(),
+                ),
+              ),
+              Text(
+                '22/02/2020',
+                style: TextStyle(color: Colors.black45),
+              ),
+            ],
+          ),
+          SizedBox(height: 16),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ListView.separated(
+                itemBuilder: (context, index) => Row(
+                  children: [
+                    Text(
+                      "${index + 1}x",
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                    SizedBox(width: 4),
+                    Expanded(
+                        child: Text(
+                      "Món ${index + 1}",
+                      style: TextStyle(
+                        fontSize: 18,
+                      ),
+                    )),
+                    Text("${(index + 1) * 15000}đ"),
+                  ],
+                ),
+                separatorBuilder: (context, index) => Divider(),
+                itemCount: 8,
+              ),
+            ),
+          ),
+          layoutSubtotal(context),
+        ],
+      ),
+    );
+  }
+
+  Widget layoutSubtotal(BuildContext context) {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      padding: const EdgeInsets.all(8),
+      // margin: const EdgeInsets.only(bottom: 8),
+      decoration: BoxDecoration(
+        color: kBackgroundGrey[0],
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "Tổng tiền",
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          Container(
+            margin: EdgeInsets.only(top: 15),
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+                border: Border.all(color: kBackgroundGrey[4]),
+                borderRadius: BorderRadius.all(Radius.circular(10))),
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 5, bottom: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Tạm tính",
+                        style: TextStyle(),
+                      ),
+                      Text("27.000 VND", style: TextStyle()),
+                    ],
+                  ),
+                ),
+                MySeparator(),
+                Padding(
+                  padding: const EdgeInsets.only(top: 10, bottom: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("Phí vận chuyển", style: TextStyle()),
+                      Text("10.000 VND", style: TextStyle()),
+                    ],
+                  ),
+                ),
+                Divider(color: Colors.black),
+                Padding(
+                  padding: const EdgeInsets.only(top: 5, bottom: 5),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("Tổng cộng",
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      Text("50.000 VND",
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                    ],
+                  ),
+                )
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

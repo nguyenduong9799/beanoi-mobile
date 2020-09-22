@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:unidelivery_mobile/Model/DTO/AccountDTO.dart';
 import 'package:unidelivery_mobile/View/home.dart';
 import 'package:unidelivery_mobile/View/login.dart';
-import 'package:unidelivery_mobile/View/order.dart';
+import 'package:unidelivery_mobile/View/nav_screen.dart';
 import 'package:unidelivery_mobile/View/orderHistory.dart';
 import 'package:unidelivery_mobile/View/signup.dart';
 import 'package:unidelivery_mobile/constraints.dart';
@@ -28,10 +28,10 @@ class MyApp extends StatelessWidget {
         fontFamily: 'SourceSansPro',
         primarySwatch: Colors.blue,
         primaryColor: kPrimary,
-        scaffoldBackgroundColor: Colors.white,
+        scaffoldBackgroundColor: Color(0xFFF0F2F5),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: HomeScreen(),
+      home: NavScreen(),
     );
   }
 
@@ -44,9 +44,7 @@ class MyApp extends StatelessWidget {
           String token = snapshot.data;
           // cho nay co can gui token lai cho server khong
           // neu khong thi lay thong tin user tu token ma thoi
-          return token != null
-              ? HomeScreen(user: AccountDTO(uid: '123', name: 'Hung Bui'))
-              : LoginScreen();
+          return token != null ? NavScreen() : LoginScreen();
         });
     // return FutureBuilder<SharedPreferences>(
     //   future: SharedPreferences.getInstance(),
