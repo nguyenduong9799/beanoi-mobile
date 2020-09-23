@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:unidelivery_mobile/Model/DAO/ProductDAO.dart';
 import 'package:unidelivery_mobile/Model/DTO/ProductDTO.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 
@@ -18,18 +19,19 @@ class ProductDetailViewModel extends Model {
   int count = 1;
   Color minusColor = kBackgroundGrey[5];
   Color addColor = kBackgroundGrey[5];
-  double price, total;
+  double price, total, fixTotal, extraTotal = 0;
   bool order = false;
   //List choice option
-  Map<String, bool> extra;
+  Map<ProductDTO, bool> extra;
   //Bật cờ để đổi radio thành checkbox
   bool isExtra;
   //List size
+  bool isLoading = false;
 
   ProductDetailViewModel(ProductDTO dto) {
     isExtra = false;
 
-    this.extra = new Map<String, bool>();
+    this.extra = new Map<ProductDTO, bool>();
 
     this.unaffectPriceContent = new Map<String, List<String>>();
     this.affectPriceContent = new Map();
@@ -39,7 +41,7 @@ class ProductDetailViewModel extends Model {
     //
     if (dto.type != 6) {
       this.price = dto.price;
-      this.total = price * count;
+      this.fixTotal = price * count;
     } else {
       for (String s in dto.atrributes) {
         if (s.toUpperCase() == "ĐÁ" || s.toUpperCase() == "ĐƯỜNG") {
@@ -52,16 +54,25 @@ class ProductDetailViewModel extends Model {
       }
     }
 
-    if (dto.topping != null) {
-      for (int i = 0; i < dto.topping.length; i++) {
-        this.extra[dto.topping[i]] = false;
-      }
-      if (unaffectPriceContent.keys.toList().length == 0) {
-        isExtra = true;
-      }
+    if (unaffectPriceContent.keys.toList().length == 0 && dto.extra) {
+      isExtra = true;
     }
 
     verifyOrder();
+  }
+
+  Future<void> getExtra() async {
+    isLoading = true;
+    notifyListeners();
+
+    ProductDAO dao = new ProductDAO();
+    List<ProductDTO> products = await dao.getProducts();
+    for (ProductDTO dto in products) {
+      extra[dto] = false;
+    }
+
+    isLoading = false;
+    notifyListeners();
   }
 
   void addQuantity() {
@@ -70,7 +81,7 @@ class ProductDetailViewModel extends Model {
         minusColor = kPrimary;
       }
       count++;
-      total = price * count;
+      total = (extraTotal + fixTotal) * count;
       notifyListeners();
     }
   }
@@ -86,7 +97,7 @@ class ProductDetailViewModel extends Model {
       if (count == 1) {
         minusColor = kBackgroundGrey[5];
       }
-      total = price * count;
+      total = (extraTotal + fixTotal) * count;
       notifyListeners();
     }
   }
@@ -104,7 +115,8 @@ class ProductDetailViewModel extends Model {
       }
     }
 
-    total = price * count;
+    fixTotal = price;
+    total = (fixTotal + extraTotal) * count;
 
     verifyOrder();
     notifyListeners();
@@ -151,7 +163,15 @@ class ProductDetailViewModel extends Model {
   }
 
   void changExtra(bool value, int i) {
+    double extraPrice = 0;
     extra[extra.keys.elementAt(i)] = value;
+    for (int j = 0; j < extra.keys.toList().length; j++) {
+      if (extra[extra.keys.elementAt(j)]) {
+        extraPrice += extra.keys.elementAt(j).price;
+      }
+    }
+    extraTotal = extraPrice;
+    total = (fixTotal + extraTotal) * count;
     notifyListeners();
   }
 }

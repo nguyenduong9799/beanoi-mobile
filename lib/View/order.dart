@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -53,13 +52,13 @@ class _OrderScreenState extends State<OrderScreen> {
                 child: Column(
                   children: [
                     Container(
-                        margin: const EdgeInsets.only(top: 10),
+                        margin: const EdgeInsets.only(top: 8),
                         child: layoutAddress()),
                     Container(
-                        margin: const EdgeInsets.only(top: 10),
+                        margin: const EdgeInsets.only(top: 8),
                         child: layoutOrder()),
                     Container(
-                        margin: const EdgeInsets.only(top: 10),
+                        margin: const EdgeInsets.only(top: 8),
                         child: layoutSubtotal())
                   ],
                 ),
@@ -83,7 +82,7 @@ class _OrderScreenState extends State<OrderScreen> {
               children: [
                 Container(
                   color: kBackgroundGrey[0],
-                  padding: const EdgeInsets.all(10.0),
+                  padding: const EdgeInsets.all(8),
                   child: Column(
                     children: [
                       Row(
@@ -125,7 +124,6 @@ class _OrderScreenState extends State<OrderScreen> {
 
   Widget layoutStore(String store, List<CartItem> list) {
     List<Widget> card = new List();
-    int length = list.length;
     for (CartItem item in list) {
       card.add(productCard(item));
     }
@@ -144,12 +142,12 @@ class _OrderScreenState extends State<OrderScreen> {
 
     return Container(
       color: kBackgroundGrey[0],
-      padding: const EdgeInsets.only(bottom: 10, top: 10),
+      padding: const EdgeInsets.only(bottom: 8, top: 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
+            padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -159,10 +157,6 @@ class _OrderScreenState extends State<OrderScreen> {
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
                       color: Colors.red),
-                ),
-                Text(
-                  length.toString() + " món",
-                  style: TextStyle(),
                 ),
               ],
             ),
@@ -190,7 +184,7 @@ class _OrderScreenState extends State<OrderScreen> {
 
     if (item.description.isNotEmpty) {
       list.add(SizedBox(
-        height: 10,
+        height: 8,
       ));
       list.add(Text(
         item.description,
@@ -221,6 +215,10 @@ class _OrderScreenState extends State<OrderScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               CachedNetworkImage(
+                                width: MediaQuery.of(context).size.width * 0.25,
+                                height:
+                                    MediaQuery.of(context).size.width * 0.25,
+                                fit: BoxFit.fill,
                                 imageUrl: item.products[0].imageURL,
                                 imageBuilder: (context, imageProvider) =>
                                     Container(
@@ -288,12 +286,17 @@ class _OrderScreenState extends State<OrderScreen> {
                     onTap: () async {
                       model.deleteQuantity();
                       await pr.show();
-                      await removeItemFromCart(item);
-                      double reTotal = await countPrice();
-                      setState(() {
-                        total = reTotal;
-                      });
-                      await pr.hide();
+                      bool result = await removeItemFromCart(item);
+                      if (result) {
+                        await pr.hide();
+                        Navigator.of(context).pop(false);
+                      } else {
+                        double reTotal = await countPrice();
+                        setState(() {
+                          total = reTotal;
+                        });
+                        await pr.hide();
+                      }
                     }),
               ],
             );
@@ -418,7 +421,7 @@ class _OrderScreenState extends State<OrderScreen> {
 
   Widget bottomBar() {
     return Container(
-      padding: const EdgeInsets.only(left: 10, right: 10),
+      padding: const EdgeInsets.only(left: 8, right: 8),
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [
@@ -433,7 +436,7 @@ class _OrderScreenState extends State<OrderScreen> {
         shrinkWrap: true,
         children: [
           Padding(
-            padding: const EdgeInsets.only(top: 10.0),
+            padding: const EdgeInsets.only(top: 8.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -452,11 +455,15 @@ class _OrderScreenState extends State<OrderScreen> {
             ),
           ),
           SizedBox(
-            height: 15,
+            height: 16,
           ),
           FlatButton(
             onPressed: () async {
-              showLoadingDialog();
+              await pr.show();
+              await deleteCart();
+              await pr.hide();
+              Navigator.pop(context, true);
+
               // pr.hide();
               // showStateDialog();
             },
@@ -464,8 +471,23 @@ class _OrderScreenState extends State<OrderScreen> {
             textColor: Colors.white,
             color: kPrimary,
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(5))),
-            child: Text("Chốt đơn"),
+                borderRadius: BorderRadius.all(Radius.circular(8))),
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 16,
+                ),
+                Text("Chốt đơn",
+                    style:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                SizedBox(
+                  height: 16,
+                )
+              ],
+            ),
+          ),
+          SizedBox(
+            height: 8,
           )
         ],
       ),
@@ -517,96 +539,6 @@ class _OrderScreenState extends State<OrderScreen> {
                 });
                 await pr.hide();
               },
-            )
-          ],
-        );
-      },
-    );
-  }
-
-  Future<void> showLoadingDialog() async {
-    showDialog<dynamic>(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return Dialog(
-            backgroundColor: Colors.white,
-            elevation: 8.0,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(8.0))),
-            child: Container(
-              padding: const EdgeInsets.all(8.0),
-              child: dialogContent(),
-            ));
-      },
-    );
-    // Delaying the function for 200 milliseconds
-  }
-
-  Widget dialogContent() {
-    return FutureBuilder(
-      future: Future.delayed(Duration(seconds: 3)),
-      builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Padding(
-            padding: const EdgeInsets.only(top: 10, bottom: 10),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                const SizedBox(width: 8.0),
-                SpinKitDualRing(
-                  color: Colors.blue[400],
-                  size: 40,
-                ),
-                const SizedBox(width: 20.0),
-                Text(
-                  "Loading...",
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.w600),
-                ),
-              ],
-            ),
-          );
-        }
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              Icons.check_circle_outline,
-              color: Colors.green,
-              size: 60,
-            ),
-            Center(
-                child: Text(
-              "Thành công",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            )),
-            SizedBox(
-              height: 10,
-            ),
-            Text("Đơn hàng của bạn sẽ được giao trong vòng 20 phút nữa"),
-            SizedBox(
-              height: 20,
-            ),
-            ButtonTheme(
-              minWidth: double.infinity,
-              child: FlatButton(
-                color: kPrimary,
-                textColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(5))),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text("OK"),
-                ),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  Navigator.of(context).pop();
-                },
-              ),
             )
           ],
         );

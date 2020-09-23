@@ -1,7 +1,6 @@
 class ProductDTO {
   String id, name;
   double price;
-  List<String> topping;
   String description;
   int type;
   String imageURL;
@@ -10,24 +9,23 @@ class ProductDTO {
   String catergory_id;
   String store_id;
   String store_name;
+  bool extra;
 
   @override
   String toString() {
-    return 'ProductDTO{uid: $id, name: $name, price: $price, topping: $topping, description: $description, type: $type, atrributes: $atrributes}';
+    return 'ProductDTO{uid: $id, name: $name, price: $price, description: $description, type: $type, atrributes: $atrributes}';
   }
 
-  ProductDTO(
-    this.id, {
-    this.name,
-    this.imageURL,
-    this.price,
-    this.topping = const ["Trân châu", "Bánh flan", "Thạch 7 màu"],
-    this.description,
-    this.type = 6,
-    this.atrributes = const ["size", "đá", "đường"],
-    this.listChild,
-    this.catergory_id,
-  }); // balance. point;
+  ProductDTO(this.id,
+      {this.name,
+      this.imageURL,
+      this.price,
+      this.description,
+      this.type = 6,
+      this.atrributes = const ["size", "đá", "đường"],
+      this.listChild,
+      this.catergory_id,
+      this.extra = true}); // balance. point;
 
   factory ProductDTO.fromJson(dynamic json) {
     var listChildJson = json['productChilds'] as List;

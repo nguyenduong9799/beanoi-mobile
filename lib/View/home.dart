@@ -61,36 +61,58 @@ class _HomeScreenState extends State<HomeScreen> {
         floatingActionButton: ScopedModelDescendant<HomeViewModel>(
             rebuildOnChange: true,
             builder: (context, child, model) {
-              return FutureBuilder(
-                  future: model.cart,
-                  builder: (context, snapshot) {
-                    Cart cart = snapshot.data;
-                    if (cart == null) return SizedBox.shrink();
-                    bool hasItemInCart = cart.isEmpty;
-                    int quantity = cart?.itemQuantity;
+          return FutureBuilder(
+              future: model.cart,
+              builder: (context, snapshot) {
+                Cart cart = snapshot.data;
+                if (cart == null) return SizedBox.shrink();
+                bool hasItemInCart = cart.isEmpty;
+                int quantity = cart?.itemQuantity();
 
-                    return Container(
-                      margin: EdgeInsets.only(bottom: 50),
-                      child: FloatingActionButton(
-                        backgroundColor: Colors.transparent,
-                        onPressed: () {
-                          print('Tap order');
-                          Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => OrderScreen(),
-                          ));
-                        },
-                        child: Stack(
-                          overflow: Overflow.visible,
-                          children: [
-                            Container(
-                              width: 48,
-                              height: 48,
-                              decoration: BoxDecoration(
-                                color: kPrimary,
-                                borderRadius: BorderRadius.circular(48),
-                              ),
-                              child: Icon(Icons.shopping_cart,
-                                  color: Colors.white),
+                return FloatingActionButton(
+                  backgroundColor: Colors.transparent,
+                  onPressed: () async {
+                    print('Tap order');
+                    bool result =
+                        await Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => OrderScreen(),
+                    ));
+
+                    model.notifyListeners();
+
+                    if (result != null) {
+                      if (result) {
+                        showLoadingDialog();
+                      }
+                    }
+                  },
+                  child: Stack(
+                    overflow: Overflow.visible,
+                    children: [
+                      Container(
+                        width: 48,
+                        height: 48,
+                        decoration: BoxDecoration(
+                          color: kPrimary,
+                          borderRadius: BorderRadius.circular(48),
+                        ),
+                        child: Icon(Icons.shopping_cart, color: Colors.white),
+                      ),
+                      Positioned(
+                        top: -12,
+                        left: 36,
+                        child: Container(
+                          width: 24,
+                          height: 24,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.amber,
+                          ),
+                          child: Center(
+                            child: Text(
+                              quantity.toString(),
+                              style: kTextPrimary.copyWith(
+                                  fontWeight: FontWeight.bold),
                             ),
                             Positioned(
                               top: -12,
@@ -477,6 +499,62 @@ class _HomeScreenState extends State<HomeScreen> {
         );
       }),
     );
+  }
+
+  void showLoadingDialog() {
+    showDialog<dynamic>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return Dialog(
+            backgroundColor: Colors.white,
+            elevation: 8.0,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(8.0))),
+            child: Container(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.check_circle_outline,
+                    color: Colors.green,
+                    size: 60,
+                  ),
+                  Center(
+                      child: Text(
+                    "Thành công",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  )),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text("Đơn hàng của bạn sẽ được giao trong vòng 20 phút nữa"),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  ButtonTheme(
+                    minWidth: double.infinity,
+                    child: FlatButton(
+                      color: kPrimary,
+                      textColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(5))),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text("OK"),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  )
+                ],
+              ),
+            ));
+      },
+    );
+    // Delaying the function for 200 milliseconds
   }
 }
 
