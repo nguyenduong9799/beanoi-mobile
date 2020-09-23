@@ -19,8 +19,11 @@ class OrderHistoryViewModel extends Model {
     status = Status.Loading;
     notifyListeners();
     final data = await _orderDAO.getOrders(filter);
+
     orders = data;
     status = Status.Completed;
     notifyListeners();
   }
+
+  void normalizeOrders(List<OrderDTO> orders) {}
 }

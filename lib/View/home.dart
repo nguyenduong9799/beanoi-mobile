@@ -3,7 +3,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_countdown_timer/countdown_timer.dart';
 import 'package:flutter_page_indicator/flutter_page_indicator.dart';
-import 'package:flutter_shimmer/flutter_shimmer.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shimmer/shimmer.dart';
@@ -14,7 +13,6 @@ import 'package:unidelivery_mobile/View/order.dart';
 import 'package:unidelivery_mobile/View/product_detail.dart';
 import 'package:unidelivery_mobile/ViewModel/home_viewModel.dart';
 import 'package:unidelivery_mobile/acessories/appbar.dart';
-import 'package:unidelivery_mobile/acessories/bottomnavigator.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/utils/enum.dart';
 
@@ -33,8 +31,12 @@ class _HomeScreenState extends State<HomeScreen> {
   PageController _scrollController = new PageController();
   HomeViewModel model = HomeViewModel();
   DateTime now = DateTime.now();
-  DateTime orderTime = DateTime(DateTime.now().year, DateTime.now().month,
-      DateTime.now().day, ORDER_TIME, 8);
+  DateTime orderTime = DateTime(
+    DateTime.now().year,
+    DateTime.now().month,
+    DateTime.now().day,
+    ORDER_TIME,
+  );
   // int endTime = DateTime.now().millisecondsSinceEpoch + 1000 * 60 * 60;
 
   bool _endOrderTime = false;
@@ -57,59 +59,64 @@ class _HomeScreenState extends State<HomeScreen> {
       model: model,
       child: Scaffold(
         floatingActionButton: ScopedModelDescendant<HomeViewModel>(
+            rebuildOnChange: true,
             builder: (context, child, model) {
-          return FutureBuilder(
-              future: model.cart,
-              builder: (context, snapshot) {
-                Cart cart = snapshot.data;
-                if (cart == null) return SizedBox.shrink();
-                bool hasItemInCart = cart.isEmpty;
-                int quantity = cart?.itemQuantity;
+              return FutureBuilder(
+                  future: model.cart,
+                  builder: (context, snapshot) {
+                    Cart cart = snapshot.data;
+                    if (cart == null) return SizedBox.shrink();
+                    bool hasItemInCart = cart.isEmpty;
+                    int quantity = cart?.itemQuantity;
 
-                return FloatingActionButton(
-                  backgroundColor: Colors.transparent,
-                  onPressed: () {
-                    print('Tap order');
-                    Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => OrderScreen(),
-                    ));
-                  },
-                  child: Stack(
-                    overflow: Overflow.visible,
-                    children: [
-                      Container(
-                        width: 48,
-                        height: 48,
-                        decoration: BoxDecoration(
-                          color: kPrimary,
-                          borderRadius: BorderRadius.circular(48),
-                        ),
-                        child: Icon(Icons.shopping_cart, color: Colors.white),
-                      ),
-                      Positioned(
-                        top: -12,
-                        left: 36,
-                        child: Container(
-                          width: 24,
-                          height: 24,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colors.amber,
-                          ),
-                          child: Center(
-                            child: Text(
-                              quantity.toString(),
-                              style: kTextPrimary.copyWith(
-                                  fontWeight: FontWeight.bold),
+                    return Container(
+                      margin: EdgeInsets.only(bottom: 50),
+                      child: FloatingActionButton(
+                        backgroundColor: Colors.transparent,
+                        onPressed: () {
+                          print('Tap order');
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => OrderScreen(),
+                          ));
+                        },
+                        child: Stack(
+                          overflow: Overflow.visible,
+                          children: [
+                            Container(
+                              width: 48,
+                              height: 48,
+                              decoration: BoxDecoration(
+                                color: kPrimary,
+                                borderRadius: BorderRadius.circular(48),
+                              ),
+                              child: Icon(Icons.shopping_cart,
+                                  color: Colors.white),
                             ),
-                          ),
+                            Positioned(
+                              top: -12,
+                              left: 36,
+                              child: Container(
+                                width: 24,
+                                height: 24,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: Colors.amber,
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    quantity.toString(),
+                                    style: kTextPrimary.copyWith(
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ),
+                            )
+                          ],
                         ),
-                      )
-                    ],
-                  ),
-                );
-              });
-        }),
+                      ),
+                    );
+                  });
+            }),
         backgroundColor: Colors.white,
         //bottomNavigationBar: bottomBar(),
         body: SafeArea(
@@ -259,17 +266,15 @@ class _HomeScreenState extends State<HomeScreen> {
         data: ThemeData(
           backgroundColor: Colors.grey,
           scaffoldBackgroundColor: Colors.grey,
+          primaryColor: kPrimary,
         ),
         child: Swiper(
-          loop: true,
+          loop: false,
           fade: 0.2,
-
-          // itemWidth: MediaQuery.of(context).size.width - 60,
-          // itemHeight: 370,
           scrollDirection: Axis.horizontal,
           itemBuilder: (BuildContext context, index) => listContents[index],
           itemCount: listContents.length,
-          indicatorLayout: PageIndicatorLayout.SCALE,
+          indicatorLayout: PageIndicatorLayout.WARM,
           pagination: new SwiperPagination(),
           // viewportFraction: 0.85,
           scale: 0.7,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Model/DTO/OrderDTO.dart';
 import 'package:unidelivery_mobile/ViewModel/orderHistory_viewModel.dart';
@@ -39,6 +40,12 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
       child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back_ios, color: Colors.white),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
           title: Text(
             "Lịch sử",
             style: TextStyle(
@@ -53,7 +60,18 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
             Center(
               child: Container(
                 // color: Colors.amber,
+                padding: EdgeInsets.fromLTRB(0, 8, 0, 8),
                 width: double.infinity,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey,
+                      offset: Offset(0.0, 1.0), //(x,y)
+                      blurRadius: 6.0,
+                    ),
+                  ],
+                ),
                 child: Center(
                   child: ToggleButtons(
                     renderBorder: false,
@@ -88,7 +106,12 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
               ),
             ),
             SizedBox(height: 16),
-            _buildOrders(),
+            Expanded(
+              child: Container(
+                child: _buildOrders(),
+                color: Color(0xffefefef),
+              ),
+            ),
           ],
         ),
       ),
@@ -101,66 +124,135 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
       final status = model.status;
       final orders = model.orders;
       if (status == Status.Loading)
-        return CircularProgressIndicator();
+        return Center(
+          child: Container(
+            width: 50,
+            height: 50,
+            child: CircularProgressIndicator(
+              backgroundColor: kPrimary,
+            ),
+          ),
+        );
       else if (status == Status.Empty)
-        return Image.asset('assets/images/order_history.svg');
+        return Expanded(
+          child: SvgPicture.asset(
+            'assets/images/order_history.svg',
+            semanticsLabel: 'Acme Logo',
+            fit: BoxFit.cover,
+          ),
+        );
 
       return Expanded(
-        child: ListView.separated(
-            padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
-            itemCount: orders?.length + 1,
-            separatorBuilder: (context, index) =>
-                Divider(color: kPrimary, height: 16),
-            itemBuilder: (context, index) {
-              return index == orders?.length
-                  ? Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Center(
-                        child: Text(
-                          "Bạn đã xem hết rồi đây :)",
-                          style: TextStyle(color: Colors.grey),
-                        ),
-                      ),
-                    )
-                  : _buildOrderItem(orders[index], context);
-            }),
+        child: ListView(
+          padding: EdgeInsets.all(8),
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 24, bottom: 16),
+              child: Text(
+                "12/02/2020",
+                style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
+              ),
+            ),
+            ...orders.map((e) => _buildOrderItem(e, context)).toList(),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Center(
+                child: Text(
+                  "Bạn đã xem hết rồi đây :)",
+                  style: TextStyle(color: Colors.grey),
+                ),
+              ),
+            ),
+            // Container(
+            //   height: 300,
+            //   child: ListView.separated(
+            //       padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
+            //       itemCount: orders?.length + 1,
+            //       separatorBuilder: (context, index) =>
+            //           Divider(color: kPrimary, height: 16),
+            //       itemBuilder: (context, index) {
+            //         return index == orders?.length
+            //             ? Padding(
+            //                 padding: const EdgeInsets.all(8.0),
+            //                 child: Center(
+            //                   child: Text(
+            //                     "Bạn đã xem hết rồi đây :)",
+            //                     style: TextStyle(color: Colors.grey),
+            //                   ),
+            //                 ),
+            //               )
+            //             : _buildOrderItem(orders[index], context);
+            //       }),
+            // ),
+          ],
+        ),
       );
     });
   }
 
   Widget _buildOrderItem(OrderDTO order, BuildContext context) {
-    return ListTile(
-      onTap: () {
-        _settingModalBottomSheet(context);
-      },
-      title: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            "1 món",
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          Text(
-            "FPT University",
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.grey[600],
-            ),
-          ),
-        ],
+    return Container(
+      // height: 80,
+      margin: EdgeInsets.fromLTRB(8, 0, 8, 16),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        color: Colors.white,
       ),
-      trailing: Text(
-        "${order.total} đ",
-        textAlign: TextAlign.right,
-        style: TextStyle(
-          color: kPrimary,
-          fontWeight: FontWeight.bold,
-          fontSize: 20,
+      child: Material(
+        color: Colors.transparent,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8.0),
+          // side: BorderSide(color: Colors.red),
+        ),
+        child: Column(
+          children: [
+            ListTile(
+              onTap: () {
+                _settingModalBottomSheet(context);
+              },
+              contentPadding: EdgeInsets.fromLTRB(16, 8, 16, 8),
+              title: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "1 món",
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    "FPT University",
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                ],
+              ),
+              trailing: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "${order.total} đ",
+                    textAlign: TextAlign.right,
+                    style: TextStyle(
+                      color: kPrimary,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            // Text("Chi tiết", style: TextStyle(color: Colors.blue)),
+          ],
         ),
       ),
     );
@@ -223,21 +315,25 @@ class OrderDetailBottomSheet extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: ListView.separated(
-                itemBuilder: (context, index) => Row(
+                itemBuilder: (context, index) => Column(
                   children: [
-                    Text(
-                      "${index + 1}x",
-                      style: TextStyle(color: Colors.grey),
+                    Row(
+                      children: [
+                        Text(
+                          "${index + 1}x",
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                        SizedBox(width: 4),
+                        Expanded(
+                            child: Text(
+                          "Món ${index + 1}",
+                          style: TextStyle(
+                            fontSize: 18,
+                          ),
+                        )),
+                        Text("${(index + 1) * 15000}đ"),
+                      ],
                     ),
-                    SizedBox(width: 4),
-                    Expanded(
-                        child: Text(
-                      "Món ${index + 1}",
-                      style: TextStyle(
-                        fontSize: 18,
-                      ),
-                    )),
-                    Text("${(index + 1) * 15000}đ"),
                   ],
                 ),
                 separatorBuilder: (context, index) => Divider(),
