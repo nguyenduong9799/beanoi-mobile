@@ -38,6 +38,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
   void initState() {
     super.initState();
     productDetailViewModel = new ProductDetailViewModel(widget.dto);
+
     pr = new ProgressDialog(
       context,
       showLogs: true,
@@ -62,6 +63,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
     }
 
     unaffectPriceTabs = new List<Tab>();
+
     List<String> keys =
         productDetailViewModel.unaffectPriceContent.keys.toList();
     for (int i = 0; i < keys.length; i++) {
@@ -71,10 +73,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
       ));
     }
 
-    if (widget.dto.topping != null) {
-      unaffectPriceTabs.add(Tab(
-        child: Text("Thêm"),
-      ));
+    if (widget.dto.extra) {
+      productDetailViewModel.getExtra();
+      unaffectPriceTabs.add(Tab(child: Text("Thêm ")));
     }
 
     print("Parent: " + widget.dto.id);
@@ -329,48 +330,66 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
     return ScopedModelDescendant(
       builder:
           (BuildContext context, Widget child, ProductDetailViewModel model) {
-        if (!model.isExtra) {
-          attributes = new List();
-          if (widget.dto.type == 6) {
-            listOptions = model.unaffectPriceContent[
-                model.unaffectPriceContent.keys.elementAt(model.unaffectIndex)];
-            for (int i = 0; i < listOptions.length; i++) {
+        if (model.isLoading) {
+          return Padding(
+            padding: const EdgeInsets.only(top: 16.0),
+            child: Center(child: CircularProgressIndicator()),
+          );
+        } else {
+          if (!model.isExtra) {
+            attributes = new List();
+            if (widget.dto.type == 6) {
+              listOptions = model.unaffectPriceContent[model
+                  .unaffectPriceContent.keys
+                  .elementAt(model.unaffectIndex)];
+              for (int i = 0; i < listOptions.length; i++) {
+                attributes.add(Row(
+                  children: [
+                    Radio(
+                      groupValue: model.unaffectPriceChoice[model
+                          .unaffectPriceContent.keys
+                          .elementAt(model.unaffectIndex)],
+                      value: listOptions[i],
+                      onChanged: (e) {
+                        model.changeUnAffectPriceAtrribute(e);
+                      },
+                    ),
+                    SizedBox(
+                      width: 5,
+                    ),
+                    Text(listOptions[i])
+                  ],
+                ));
+              }
+            }
+          } else {
+            attributes = new List();
+            for (int i = 0; i < model.extra.keys.toList().length; i++) {
               attributes.add(Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Radio(
-                    groupValue: model.unaffectPriceChoice[model
-                        .unaffectPriceContent.keys
-                        .elementAt(model.unaffectIndex)],
-                    value: listOptions[i],
-                    onChanged: (e) {
-                      model.changeUnAffectPriceAtrribute(e);
-                    },
+                  Row(
+                    children: [
+                      Checkbox(
+                        value: model.extra[model.extra.keys.elementAt(i)],
+                        onChanged: (value) {
+                          model.changExtra(value, i);
+                        },
+                      ),
+                      SizedBox(
+                        width: 5,
+                      ),
+                      Text(model.extra.keys.elementAt(i).name)
+                    ],
                   ),
-                  SizedBox(
-                    width: 5,
-                  ),
-                  Text(listOptions[i])
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: Text(NumberFormat.simpleCurrency(locale: "vi")
+                        .format(model.extra.keys.elementAt(i).price)),
+                  )
                 ],
               ));
             }
-          }
-        } else {
-          attributes = new List();
-          for (int i = 0; i < model.extra.keys.toList().length; i++) {
-            attributes.add(Row(
-              children: [
-                Checkbox(
-                  value: model.extra[model.extra.keys.elementAt(i)],
-                  onChanged: (value) {
-                    model.changExtra(value, i);
-                  },
-                ),
-                SizedBox(
-                  width: 5,
-                ),
-                Text(model.extra.keys.elementAt(i))
-              ],
-            ));
           }
         }
 
@@ -444,6 +463,14 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                         listChoices.add(widget.dto);
                       }
 
+                      if (widget.dto.extra) {
+                        for (int i = 0; i < model.extra.keys.length; i++) {
+                          if (model.extra[model.extra.keys.elementAt(i)]) {
+                            listChoices.add(model.extra.keys.elementAt(i));
+                          }
+                        }
+                      }
+
                       String description = "";
                       for (int i = 0;
                           i < model.unaffectPriceChoice.keys.toList().length;
@@ -505,7 +532,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                         SizedBox(
                           height: 8,
                         ),
-                        Text("Vui lòng chọn những trường bắt buộc (*)"),
+                        Text("Vui lòng chọn những trường bắt buộc (*)",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 15)),
                         SizedBox(
                           height: 8,
                         ),

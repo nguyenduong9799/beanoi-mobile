@@ -64,15 +64,24 @@ class _HomeScreenState extends State<HomeScreen> {
                 Cart cart = snapshot.data;
                 if (cart == null) return SizedBox.shrink();
                 bool hasItemInCart = cart.isEmpty;
-                int quantity = cart?.itemQuantity;
+                int quantity = cart?.itemQuantity();
 
                 return FloatingActionButton(
                   backgroundColor: Colors.transparent,
-                  onPressed: () {
+                  onPressed: () async {
                     print('Tap order');
-                    Navigator.of(context).push(MaterialPageRoute(
+                    bool result =
+                        await Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => OrderScreen(),
                     ));
+
+                    model.notifyListeners();
+
+                    if (result != null) {
+                      if (result) {
+                        showLoadingDialog();
+                      }
+                    }
                   },
                   child: Stack(
                     overflow: Overflow.visible,
@@ -472,6 +481,62 @@ class _HomeScreenState extends State<HomeScreen> {
         );
       }),
     );
+  }
+
+  void showLoadingDialog() {
+    showDialog<dynamic>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return Dialog(
+            backgroundColor: Colors.white,
+            elevation: 8.0,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(8.0))),
+            child: Container(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.check_circle_outline,
+                    color: Colors.green,
+                    size: 60,
+                  ),
+                  Center(
+                      child: Text(
+                    "Thành công",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  )),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text("Đơn hàng của bạn sẽ được giao trong vòng 20 phút nữa"),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  ButtonTheme(
+                    minWidth: double.infinity,
+                    child: FlatButton(
+                      color: kPrimary,
+                      textColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(5))),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text("OK"),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  )
+                ],
+              ),
+            ));
+      },
+    );
+    // Delaying the function for 200 milliseconds
   }
 }
 

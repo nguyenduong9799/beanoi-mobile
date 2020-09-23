@@ -50,13 +50,25 @@ Future<void> addItemToCart(CartItem item) async {
   setCart(cart);
 }
 
-Future<void> removeItemFromCart(CartItem item) async {
+Future<bool> removeItemFromCart(CartItem item) async {
   Cart cart = await getCart();
   if(cart == null){
-    return;
+    return false;
   }
   cart.removeItem(item);
-  setCart(cart);
+
+  if(cart.items.length == 0){
+    deleteCart();
+    return true;
+  }else{
+    setCart(cart);
+    return false;
+  }
+}
+
+Future<void> deleteCart() async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  prefs.remove("CART");
 }
 
 Future<void> updateItemFromCart(CartItem item) async {
