@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-final kPrimary = Color(0xFF00d286);
+final kPrimary = Color(0xFF4fba6f);
 final kSecondary = Color(0xFF438029);
 
 final kBackgroundGrey = [
@@ -15,4 +15,5 @@ final kBackgroundGrey = [
 
 final kTextPrimary = TextStyle(color: Color(0xFFFFFFFF));
 
-final double DELIVERY_FEE = 5000;
+const double DELIVERY_FEE = 5000;
+const UNIBEAN_STORE = 10;
