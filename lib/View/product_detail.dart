@@ -14,7 +14,7 @@ import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/utils/shared_pref.dart';
 
 class ProductDetailScreen extends StatefulWidget {
-  ProductDTO dto;
+  final ProductDTO dto;
 
   ProductDetailScreen(this.dto);
 
@@ -78,7 +78,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
       unaffectPriceTabs.add(Tab(child: Text("Thêm ")));
     }
 
-    print("Parent: " + widget.dto.id);
     _unaffectPriceController =
         TabController(vsync: this, length: unaffectPriceTabs.length);
     _unaffectPriceController.addListener(_handleUnaffectTabSelection);
@@ -124,7 +123,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                   child: Opacity(
                     opacity: 0.8,
                     child: CachedNetworkImage(
-                      imageUrl: widget.dto.imageURL,
+                      imageUrl: widget.dto.imageURL ?? "",
                       imageBuilder: (context, imageProvider) => Container(
                         decoration: BoxDecoration(
                           image: DecorationImage(

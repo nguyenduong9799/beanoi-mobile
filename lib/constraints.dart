@@ -15,4 +15,5 @@ final kBackgroundGrey = [
 
 final kTextPrimary = TextStyle(color: Color(0xFFFFFFFF));
 
-final double DELIVERY_FEE = 5000;
+const double DELIVERY_FEE = 5000;
+const UNIBEAN_STORE = 10;

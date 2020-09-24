@@ -58,7 +58,7 @@ class CustomInterceptors extends InterceptorsWrapper {
 
 class MyRequest {
   static BaseOptions options = new BaseOptions(
-    baseUrl: 'https://5f62b7ce67e195001625f17c.mockapi.io/api/',
+    baseUrl: 'http://115.165.166.32:14254/api',
     headers: {
       Headers.contentTypeHeader: "application/json",
     },

@@ -20,7 +20,7 @@ class HomeViewModel extends Model {
   static HomeViewModel _instance;
 
   ProductDAO _dao = ProductDAO();
-
+  dynamic error;
   List<ProductDTO> products;
   Status status;
   bool _isFirstFetch = true;
@@ -45,7 +45,6 @@ class HomeViewModel extends Model {
     return await getCart();
   }
 
-
   static HomeViewModel getInstance() {
     if (_instance == null) {
       _instance = HomeViewModel();
@@ -65,19 +64,21 @@ class HomeViewModel extends Model {
       if (_isFirstFetch) {
         products = await _dao.getProducts();
         _isFirstFetch = false;
-        notifyListeners();
       } else {
         // change filter
         // do something with products
         print("Fetch prodyuct with filter");
         products = products.sublist(2)..shuffle();
-        notifyListeners();
       }
-    } on Exception catch (e) {
-      print("EXCEPTION $e");
-    } finally {
       status = Status.Completed;
       notifyListeners();
+    } catch (e) {
+      print("EXCEPTION $e");
+      status = Status.Error;
+      error = e.toString();
+      notifyListeners();
+    } finally {
+      // notifyListeners();
     }
 
     return products;

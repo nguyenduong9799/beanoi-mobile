@@ -25,5 +25,9 @@ class OrderHistoryViewModel extends Model {
     notifyListeners();
   }
 
+  Future<void> getOrderDetail(int orderId) async {
+    // get order detail
+  }
+
   void normalizeOrders(List<OrderDTO> orders) {}
 }

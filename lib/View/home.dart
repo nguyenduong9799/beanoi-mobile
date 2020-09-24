@@ -2,6 +2,7 @@ import 'package:animator/animator.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_countdown_timer/countdown_timer.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_page_indicator/flutter_page_indicator.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -61,58 +62,45 @@ class _HomeScreenState extends State<HomeScreen> {
         floatingActionButton: ScopedModelDescendant<HomeViewModel>(
             rebuildOnChange: true,
             builder: (context, child, model) {
-          return FutureBuilder(
-              future: model.cart,
-              builder: (context, snapshot) {
-                Cart cart = snapshot.data;
-                if (cart == null) return SizedBox.shrink();
-                bool hasItemInCart = cart.isEmpty;
-                int quantity = cart?.itemQuantity();
+              return FutureBuilder(
+                  future: model.cart,
+                  builder: (context, snapshot) {
+                    Cart cart = snapshot.data;
+                    if (cart == null) return SizedBox.shrink();
+                    bool hasItemInCart = cart.isEmpty;
+                    int quantity = cart?.itemQuantity();
 
-                return FloatingActionButton(
-                  backgroundColor: Colors.transparent,
-                  onPressed: () async {
-                    print('Tap order');
-                    bool result =
-                        await Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => OrderScreen(),
-                    ));
+                    return Container(
+                      margin: EdgeInsets.only(bottom: 50),
+                      child: FloatingActionButton(
+                        backgroundColor: Colors.transparent,
+                        onPressed: () async {
+                          print('Tap order');
+                          bool result = await Navigator.of(context)
+                              .push(MaterialPageRoute(
+                            builder: (context) => OrderScreen(),
+                          ));
 
-                    model.notifyListeners();
+                          model.notifyListeners();
 
-                    if (result != null) {
-                      if (result) {
-                        showLoadingDialog();
-                      }
-                    }
-                  },
-                  child: Stack(
-                    overflow: Overflow.visible,
-                    children: [
-                      Container(
-                        width: 48,
-                        height: 48,
-                        decoration: BoxDecoration(
-                          color: kPrimary,
-                          borderRadius: BorderRadius.circular(48),
-                        ),
-                        child: Icon(Icons.shopping_cart, color: Colors.white),
-                      ),
-                      Positioned(
-                        top: -12,
-                        left: 36,
-                        child: Container(
-                          width: 24,
-                          height: 24,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colors.amber,
-                          ),
-                          child: Center(
-                            child: Text(
-                              quantity.toString(),
-                              style: kTextPrimary.copyWith(
-                                  fontWeight: FontWeight.bold),
+                          if (result != null) {
+                            if (result) {
+                              showLoadingDialog();
+                            }
+                          }
+                        },
+                        child: Stack(
+                          overflow: Overflow.visible,
+                          children: [
+                            Container(
+                              width: 48,
+                              height: 48,
+                              decoration: BoxDecoration(
+                                color: kPrimary,
+                                borderRadius: BorderRadius.circular(48),
+                              ),
+                              child: Icon(Icons.shopping_cart,
+                                  color: Colors.white),
                             ),
                             Positioned(
                               top: -12,
@@ -178,8 +166,19 @@ class _HomeScreenState extends State<HomeScreen> {
                                   List<ProductDTO> products = model.products;
                                   Status status = model.status;
                                   switch (status) {
+                                    case Status.Error:
+                                      return AspectRatio(
+                                        aspectRatio: 1,
+                                        child: Center(
+                                            child: Text(
+                                                "Có gì sai sai... \n ${model.error.toString()}")),
+                                      );
                                     case Status.Loading:
-                                      return CircularProgressIndicator();
+                                      return AspectRatio(
+                                          aspectRatio: 1,
+                                          child: Center(
+                                              child:
+                                                  CircularProgressIndicator()));
                                     case Status.Empty:
                                       return Center(
                                         child: Text("Empty list"),
@@ -611,7 +610,7 @@ class _FoodItemState extends State<FoodItem> {
                         child: AspectRatio(
                           aspectRatio: 1.1,
                           child: CachedNetworkImage(
-                            imageUrl: imageURL,
+                            imageUrl: imageURL ?? "",
                             imageBuilder: (context, imageProvider) => Container(
                               decoration: BoxDecoration(
                                 image: DecorationImage(
@@ -642,8 +641,10 @@ class _FoodItemState extends State<FoodItem> {
                             //     child: SizedBox.shrink(),
                             //   ),
                             // ),
-                            errorWidget: (context, url, error) =>
-                                Icon(Icons.error),
+                            errorWidget: (context, url, error) => Icon(
+                              MaterialIcons.broken_image,
+                              color: kPrimary.withOpacity(0.5),
+                            ),
                           ),
                           // FadeInImage(
                           //   image: NetworkImage(imageURL),
