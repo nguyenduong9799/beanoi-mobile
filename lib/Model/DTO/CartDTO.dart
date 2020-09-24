@@ -39,6 +39,15 @@ class Cart {
     };
   }
 
+  Map<String, dynamic> toJsonAPi() {
+    List listCartItem = items.map((e) => e.toJsonApi()).toList();
+    print("Items: " + listCartItem.toString());
+    return {
+      "products_list": listCartItem,
+      "note": orderNote,
+    };
+  }
+
   bool get isEmpty => items != null && items.isEmpty;
   int itemQuantity() {
     int quantity = 0;
@@ -73,11 +82,13 @@ class Cart {
 }
 
 class CartItem {
+
+  String masterId;
   List<ProductDTO> products;
   String description;
   int quantity;
 
-  CartItem(this.products, this.description, this.quantity);
+  CartItem(this.masterId, this.products, this.description, this.quantity);
 
   bool findCartItem(CartItem item) {
     bool found = true;
@@ -100,6 +111,7 @@ class CartItem {
       list = itemJson.map((e) => ProductDTO.fromJson(e)).toList();
     }
     return CartItem(
+      json['masterId'] as String,
       list,
       json['description'] as String,
       json['quantity'] as int,
@@ -110,7 +122,18 @@ class CartItem {
     List listProducts = products.map((e) => e.toJson()).toList();
     print("Products: " + listProducts.toString());
     return {
+      "masterId": masterId,
       "products": listProducts,
+      "description": description,
+      "quantity": quantity
+    };
+  }
+
+  Map<String, dynamic> toJsonApi() {
+    List productsId = products.map((e) => e.id).toList();
+    return {
+      "master_product": masterId,
+      "product_childs": productsId,
       "description": description,
       "quantity": quantity
     };

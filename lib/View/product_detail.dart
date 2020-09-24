@@ -343,51 +343,37 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                   .unaffectPriceContent.keys
                   .elementAt(model.unaffectIndex)];
               for (int i = 0; i < listOptions.length; i++) {
-                attributes.add(Row(
-                  children: [
-                    Radio(
-                      groupValue: model.unaffectPriceChoice[model
-                          .unaffectPriceContent.keys
-                          .elementAt(model.unaffectIndex)],
-                      value: listOptions[i],
-                      onChanged: (e) {
-                        model.changeUnAffectPriceAtrribute(e);
-                      },
-                    ),
-                    SizedBox(
-                      width: 5,
-                    ),
-                    Text(listOptions[i])
-                  ],
+                attributes.add(RadioListTile(
+                  title: Text(listOptions[i]),
+                  groupValue: model.unaffectPriceChoice[model
+                      .unaffectPriceContent.keys
+                      .elementAt(model.unaffectIndex)],
+                  value: listOptions[i],
+                  onChanged: (e) {
+                    model.changeUnAffectPriceAtrribute(e);
+                  },
                 ));
               }
             }
           } else {
             attributes = new List();
             for (int i = 0; i < model.extra.keys.toList().length; i++) {
-              attributes.add(Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Checkbox(
-                        value: model.extra[model.extra.keys.elementAt(i)],
-                        onChanged: (value) {
-                          model.changExtra(value, i);
-                        },
-                      ),
-                      SizedBox(
-                        width: 5,
-                      ),
-                      Text(model.extra.keys.elementAt(i).name)
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(right: 8.0),
-                    child: Text(NumberFormat.simpleCurrency(locale: "vi")
-                        .format(model.extra.keys.elementAt(i).price)),
-                  )
-                ],
+              attributes.add(CheckboxListTile(
+                title: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(model.extra.keys.elementAt(i).name),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      child: Text(NumberFormat.simpleCurrency(locale: "vi")
+                          .format(model.extra.keys.elementAt(i).price)),
+                    )
+                  ],
+                ),
+                value: model.extra[model.extra.keys.elementAt(i)],
+                onChanged: (value) {
+                  model.changExtra(value, i);
+                },
               ));
             }
           }
@@ -483,7 +469,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                             "\n";
                       }
                       CartItem item =
-                          new CartItem(listChoices, description, model.count);
+                          new CartItem(widget.dto.id, listChoices, description, model.count);
                       await addItemToCart(item);
                       await pr.hide();
                       Navigator.pop(context);
