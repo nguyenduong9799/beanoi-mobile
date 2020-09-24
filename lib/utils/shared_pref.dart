@@ -26,7 +26,8 @@ Future<String> getToken() async {
 
 Future<Cart> setCart(Cart cart) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  prefs.setString('CART', jsonEncode(cart));
+  print("Cart: " + cart.toString());
+  prefs.setString('CART', jsonEncode(cart.toJson()));
   return cart;
 }
 
@@ -34,28 +35,50 @@ Future<Cart> getCart() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   String encodedCart = prefs.getString('CART');
   if(encodedCart != null){
-    Cart cart = jsonDecode(encodedCart);
+    Cart cart = Cart.fromJson(jsonDecode(encodedCart));
     return cart;
   }
   return null;
 }
 
-Future<void> addItemToCart(List<ProductDTO> products, int quantity, String description) async {
+Future<void> addItemToCart(CartItem item) async {
   Cart cart = await getCart();
   if(cart == null){
     cart = new Cart();
   }
-  cart.addItem(CartItem(products, description, quantity));
+  cart.addItem(item);
   setCart(cart);
 }
 
-Future<void> removeItemFromCart(List<ProductDTO> products, int quantity, String description) async {
+Future<bool> removeItemFromCart(CartItem item) async {
+  Cart cart = await getCart();
+  if(cart == null){
+    return false;
+  }
+  cart.removeItem(item);
+
+  if(cart.items.length == 0){
+    deleteCart();
+    return true;
+  }else{
+    setCart(cart);
+    return false;
+  }
+}
+
+Future<void> deleteCart() async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  prefs.remove("CART");
+}
+
+Future<void> updateItemFromCart(CartItem item) async {
   Cart cart = await getCart();
   if(cart == null){
     return;
   }
-  cart.removeItem(CartItem(products, description, quantity));
+  cart.updateQuantity(item);
   setCart(cart);
+  print("Cart: " + cart.items[0].quantity.toString());
 }
 
 

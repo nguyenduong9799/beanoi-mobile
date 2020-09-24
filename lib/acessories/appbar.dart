@@ -30,16 +30,11 @@ class _AppBarSate extends State<DefaultAppBar> {
     return AppBar(
       elevation: 5.0,
       centerTitle: true,
+      iconTheme: IconThemeData(color: Colors.white),
       title: Text(
         widget.title,
         style: TextStyle(color: Colors.white),
       ),
-      actions: <Widget>[
-        IconButton(
-          icon: actionIcon,
-          onPressed: () {},
-        )
-      ],
     );
   }
 }
@@ -52,25 +47,12 @@ class HomeAppBar extends StatefulWidget {
 }
 
 class _HomeAppBarSate extends State<HomeAppBar> {
-  String _timeString = "";
-  double _appBarRadius = 10;
-  double _imageRadius = 5;
-  double _elevation = 5;
-  Color _appBarColor = Color(0xFF438029);
-  Color _primeColor = Color(0xFF619a46);
-  TextStyle _title =
-      TextStyle(fontSize: 20, fontWeight: FontWeight.w100, color: Colors.white);
-  TextStyle _heading =
-      TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white);
-  TextStyle _content =
-      TextStyle(fontSize: 15, fontWeight: FontWeight.w100, color: Colors.white);
-  TextStyle _time =
-      TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white);
-
   @override
   void initState() {
     super.initState();
   }
+
+  Color _primeColor = Color(0xFF619a46);
 
   @override
   Widget build(BuildContext context) {
@@ -110,7 +92,7 @@ class _HomeAppBarSate extends State<HomeAppBar> {
                     decoration: BoxDecoration(
                         color: _primeColor,
                         borderRadius: BorderRadius.all(
-                          Radius.circular(_imageRadius),
+                          Radius.circular(10),
                         )),
                     child: GestureDetector(
                       onTap: () async {
@@ -175,14 +157,26 @@ class _HomeAppBarSate extends State<HomeAppBar> {
                           width: 10,
                         ),
                         Flexible(
-                            child: Text(
-                          "Bạn có 100.000đ",
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w100,
-                            color: Colors.white,
+                          child: RichText(
+                            text: TextSpan(
+                                text: "Bạn có ",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  // fontWeight: FontWeight.w100,
+                                  color: Colors.black45,
+                                ),
+                                children: <TextSpan>[
+                                  TextSpan(
+                                    text: "100.000đ",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ]),
                           ),
-                        )),
+                        ),
                       ],
                     )
                   ],
@@ -218,33 +212,5 @@ class _HomeAppBarSate extends State<HomeAppBar> {
         ],
       ),
     );
-  }
-
-  void _getTime() {
-    final now = DateTime.now();
-    final orderTime = DateTime(now.year, now.month, now.day, 11);
-    int milisecond;
-    if (now.isAfter(orderTime)) {
-      milisecond = -1;
-    } else {
-      milisecond =
-          orderTime.millisecondsSinceEpoch - now.millisecondsSinceEpoch;
-    }
-
-    setState(() {
-      if (milisecond == -1) {
-        _timeString = "Hết giờ";
-      } else {
-        final String formattedDateTime = _formatDateTime(milisecond);
-        print(milisecond);
-        _timeString = formattedDateTime;
-      }
-    });
-  }
-
-  String _formatDateTime(int mili) {
-    int min = ((mili / (1000 * 60)) % 60).toInt();
-    int hr = ((mili / (1000 * 60 * 60)) % 24).toInt();
-    return hr.toString() + ":" + min.toString();
   }
 }

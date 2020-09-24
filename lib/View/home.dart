@@ -1,17 +1,23 @@
 import 'package:animator/animator.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_countdown_timer/countdown_timer.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_page_indicator/flutter_page_indicator.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:unidelivery_mobile/Model/DTO/AccountDTO.dart';
+import 'package:unidelivery_mobile/Model/DTO/CartDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/ProductDTO.dart';
 import 'package:unidelivery_mobile/View/order.dart';
 import 'package:unidelivery_mobile/View/product_detail.dart';
 import 'package:unidelivery_mobile/ViewModel/home_viewModel.dart';
 import 'package:unidelivery_mobile/acessories/appbar.dart';
-import 'package:unidelivery_mobile/acessories/bottomnavigator.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/utils/enum.dart';
+
+const ORDER_TIME = 9;
 
 class HomeScreen extends StatefulWidget {
   final AccountDTO user;
@@ -25,11 +31,26 @@ class _HomeScreenState extends State<HomeScreen> {
   bool switcher = false;
   PageController _scrollController = new PageController();
   HomeViewModel model = HomeViewModel();
+  DateTime now = DateTime.now();
+  DateTime orderTime = DateTime(
+    DateTime.now().year,
+    DateTime.now().month,
+    DateTime.now().day,
+    ORDER_TIME,
+  );
+  // int endTime = DateTime.now().millisecondsSinceEpoch + 1000 * 60 * 60;
+
+  bool _endOrderTime = false;
 
   @override
   void initState() {
     super.initState();
     model.getProducts();
+    if (orderTime.isBefore(DateTime.now())) {
+      setState(() {
+        _endOrderTime = true;
+      });
+    }
   }
 
   @override
@@ -39,64 +60,73 @@ class _HomeScreenState extends State<HomeScreen> {
       model: model,
       child: Scaffold(
         floatingActionButton: ScopedModelDescendant<HomeViewModel>(
+            rebuildOnChange: true,
             builder: (context, child, model) {
-          bool hasItemInCart = !model.cart.isEmpty;
-          int quantity = model.cart.itemQuantity;
+              return FutureBuilder(
+                  future: model.cart,
+                  builder: (context, snapshot) {
+                    Cart cart = snapshot.data;
+                    if (cart == null) return SizedBox.shrink();
+                    bool hasItemInCart = cart.isEmpty;
+                    int quantity = cart?.itemQuantity();
 
-          return hasItemInCart
-              ? FloatingActionButton(
-                  backgroundColor: Colors.transparent,
-                  onPressed: () {
-                    print('Tap order');
-                    Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => OrderScreen(),
-                    ));
-                  },
-                  child: Stack(
-                    overflow: Overflow.visible,
-                    children: [
-                      Container(
-                        width: 48,
-                        height: 48,
-                        decoration: BoxDecoration(
-                          color: kPrimary,
-                          borderRadius: BorderRadius.circular(48),
-                        ),
-                        child: Icon(Icons.shopping_cart, color: Colors.white),
-                      ),
-                      Positioned(
-                        top: -12,
-                        left: 36,
-                        child: Container(
-                          width: 24,
-                          height: 24,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colors.amber,
-                          ),
-                          child: Center(
-                            child: Text(
-                              quantity.toString(),
-                              style: kTextPrimary.copyWith(
-                                  fontWeight: FontWeight.bold),
+                    return Container(
+                      margin: EdgeInsets.only(bottom: 50),
+                      child: FloatingActionButton(
+                        backgroundColor: Colors.transparent,
+                        onPressed: () async {
+                          print('Tap order');
+                          bool result = await Navigator.of(context)
+                              .push(MaterialPageRoute(
+                            builder: (context) => OrderScreen(),
+                          ));
+
+                          model.notifyListeners();
+
+                          if (result != null) {
+                            if (result) {
+                              showLoadingDialog();
+                            }
+                          }
+                        },
+                        child: Stack(
+                          overflow: Overflow.visible,
+                          children: [
+                            Container(
+                              width: 48,
+                              height: 48,
+                              decoration: BoxDecoration(
+                                color: kPrimary,
+                                borderRadius: BorderRadius.circular(48),
+                              ),
+                              child: Icon(Icons.shopping_cart,
+                                  color: Colors.white),
                             ),
-                          ),
+                            Positioned(
+                              top: -12,
+                              left: 36,
+                              child: Container(
+                                width: 24,
+                                height: 24,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: Colors.amber,
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    quantity.toString(),
+                                    style: kTextPrimary.copyWith(
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ),
+                            )
+                          ],
                         ),
-                      )
-                    ],
-                  ),
-                )
-              : SizedBox();
-        }),
-        bottomNavigationBar: ListView(
-          shrinkWrap: true,
-          children: [
-            tag(),
-            DefaultNavigatorBar(
-              selectedIndex: 0,
-            ),
-          ],
-        ),
+                      ),
+                    );
+                  });
+            }),
         backgroundColor: Colors.white,
         //bottomNavigationBar: bottomBar(),
         body: SafeArea(
@@ -136,8 +166,19 @@ class _HomeScreenState extends State<HomeScreen> {
                                   List<ProductDTO> products = model.products;
                                   Status status = model.status;
                                   switch (status) {
+                                    case Status.Error:
+                                      return AspectRatio(
+                                        aspectRatio: 1,
+                                        child: Center(
+                                            child: Text(
+                                                "Có gì sai sai... \n ${model.error.toString()}")),
+                                      );
                                     case Status.Loading:
-                                      return CircularProgressIndicator();
+                                      return AspectRatio(
+                                          aspectRatio: 1,
+                                          child: Center(
+                                              child:
+                                                  CircularProgressIndicator()));
                                     case Status.Empty:
                                       return Center(
                                         child: Text("Empty list"),
@@ -184,7 +225,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: RotatedBox(
                   quarterTurns: -1,
                   child: Container(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
                     decoration: BoxDecoration(
                       color: const Color(0xFFE8581C),
                       borderRadius: BorderRadius.only(
@@ -192,13 +233,30 @@ class _HomeScreenState extends State<HomeScreen> {
                         topRight: Radius.circular(5),
                       ),
                     ),
-                    child: const Text(
-                      '11:07',
-                      style: TextStyle(color: Colors.white),
+                    child: Column(
+                      children: [
+                        // Text("Còn lại"),
+                        !_endOrderTime
+                            ? CountdownTimer(
+                                endTime: orderTime.millisecondsSinceEpoch,
+                                onEnd: () {
+                                  setState(() {
+                                    _endOrderTime = true;
+                                  });
+                                },
+                              )
+                            : Text(
+                                "Bạn quay lại sau nhé :(",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                ),
+                              ),
+                      ],
                     ),
                   ),
                 ),
-              )
+              ),
+              Positioned(left: 0, bottom: 0, child: tag()),
             ],
           ),
         ),
@@ -229,17 +287,15 @@ class _HomeScreenState extends State<HomeScreen> {
         data: ThemeData(
           backgroundColor: Colors.grey,
           scaffoldBackgroundColor: Colors.grey,
+          primaryColor: kPrimary,
         ),
         child: Swiper(
-          loop: true,
+          loop: false,
           fade: 0.2,
-
-          // itemWidth: MediaQuery.of(context).size.width - 60,
-          // itemHeight: 370,
           scrollDirection: Axis.horizontal,
           itemBuilder: (BuildContext context, index) => listContents[index],
           itemCount: listContents.length,
-          indicatorLayout: PageIndicatorLayout.SCALE,
+          indicatorLayout: PageIndicatorLayout.WARM,
           pagination: new SwiperPagination(),
           // viewportFraction: 0.85,
           scale: 0.7,
@@ -443,6 +499,62 @@ class _HomeScreenState extends State<HomeScreen> {
       }),
     );
   }
+
+  void showLoadingDialog() {
+    showDialog<dynamic>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return Dialog(
+            backgroundColor: Colors.white,
+            elevation: 8.0,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(8.0))),
+            child: Container(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.check_circle_outline,
+                    color: Colors.green,
+                    size: 60,
+                  ),
+                  Center(
+                      child: Text(
+                    "Thành công",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  )),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text("Đơn hàng của bạn sẽ được giao trong vòng 20 phút nữa"),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  ButtonTheme(
+                    minWidth: double.infinity,
+                    child: FlatButton(
+                      color: kPrimary,
+                      textColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(5))),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text("OK"),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  )
+                ],
+              ),
+            ));
+      },
+    );
+    // Delaying the function for 200 milliseconds
+  }
 }
 
 class FoodItem extends StatefulWidget {
@@ -483,6 +595,7 @@ class _FoodItemState extends State<FoodItem> {
               await Navigator.of(context).push(MaterialPageRoute(
                 builder: (BuildContext context) => ProductDetailScreen(product),
               ));
+              model.notifyListeners();
             },
             child: Opacity(
               opacity: 1,
@@ -496,11 +609,48 @@ class _FoodItemState extends State<FoodItem> {
                         opacity: 1,
                         child: AspectRatio(
                           aspectRatio: 1.1,
-                          child: FadeInImage(
-                            image: NetworkImage(imageURL),
-                            placeholder: AssetImage('assets/images/avatar.png'),
-                            fit: BoxFit.fill,
+                          child: CachedNetworkImage(
+                            imageUrl: imageURL ?? "",
+                            imageBuilder: (context, imageProvider) => Container(
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image: imageProvider,
+                                  fit: BoxFit.fill,
+                                ),
+                              ),
+                            ),
+                            progressIndicatorBuilder:
+                                (context, url, downloadProgress) =>
+                                    Shimmer.fromColors(
+                              baseColor: Colors.grey[300],
+                              highlightColor: Colors.grey[100],
+                              enabled: true,
+                              child: Container(
+                                width: 100,
+                                height: 100,
+                                color: Colors.grey,
+                              ),
+                            ),
+                            // placeholder: (context, url) => Container(
+                            //   width: 100,
+                            //   height: 100,
+                            //   child: Shimmer.fromColors(
+                            //     baseColor: Colors.grey[300],
+                            //     highlightColor: Colors.grey[100],
+                            //     enabled: true,
+                            //     child: SizedBox.shrink(),
+                            //   ),
+                            // ),
+                            errorWidget: (context, url, error) => Icon(
+                              MaterialIcons.broken_image,
+                              color: kPrimary.withOpacity(0.5),
+                            ),
                           ),
+                          // FadeInImage(
+                          //   image: NetworkImage(imageURL),
+                          //   placeholder: AssetImage('assets/images/avatar.png'),
+                          //   fit: BoxFit.fill,
+                          // ),
                         ),
                       ),
                     ),

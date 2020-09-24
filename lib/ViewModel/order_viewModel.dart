@@ -1,17 +1,19 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 
-class QuantityViewModel extends Model{
-  int _count = 1;
-  Color _minusColor = kBackgroundGrey[5];
-  Color _addColor = kPrimary;
+class OrderViewModel extends Model {
+  int _count;
+  Color _minusColor;
+  Color _addColor;
   double _price, total;
 
-
-  QuantityViewModel(this._price){
+  OrderViewModel(this._price, this._count) {
+    if (count > 1) {
+      _minusColor = kPrimary;
+    } else
+      _minusColor = kBackgroundGrey[5];
+    _addColor = kPrimary;
     total = _price * count;
   }
 
@@ -27,15 +29,14 @@ class QuantityViewModel extends Model{
     _count = value;
   }
 
-
   Color get minusColor => _minusColor;
 
   set minusColor(Color value) {
     _minusColor = value;
   }
 
-  void addQuantity(){
-    if(count == 1){
+  void addQuantity() {
+    if (count == 1) {
       _minusColor = kPrimary;
     }
     count++;
@@ -43,15 +44,15 @@ class QuantityViewModel extends Model{
     notifyListeners();
   }
 
-  void deleteQuantity(){
+  void deleteQuantity() {
     count = 0;
     notifyListeners();
   }
 
-  void minusQuantity(){
-    if(count > 1){
+  void minusQuantity() {
+    if (count > 1) {
       count--;
-      if(count == 1){
+      if (count == 1) {
         _minusColor = kBackgroundGrey[5];
       }
       total = price * count;
