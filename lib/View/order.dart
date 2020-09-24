@@ -6,11 +6,13 @@ import 'package:intl/intl.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:unidelivery_mobile/Model/DAO/OrderDAO.dart';
 import 'package:unidelivery_mobile/Model/DTO/CartDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/ProductDTO.dart';
 import 'package:unidelivery_mobile/ViewModel/order_viewModel.dart';
 import 'package:unidelivery_mobile/acessories/appbar.dart';
 import 'package:unidelivery_mobile/acessories/dash_border.dart';
+import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/utils/shared_pref.dart';
 
@@ -23,6 +25,7 @@ class _OrderScreenState extends State<OrderScreen> {
   double total;
 
   ProgressDialog pr;
+  String orderNote = "";
 
   @override
   void initState() {
@@ -111,7 +114,7 @@ class _OrderScreenState extends State<OrderScreen> {
                     ],
                   ),
                 ),
-                layoutStore(snapshot.data.storeName, snapshot.data.items),
+                layoutStore(snapshot.data.items),
               ],
             );
           }
@@ -122,8 +125,9 @@ class _OrderScreenState extends State<OrderScreen> {
     );
   }
 
-  Widget layoutStore(String store, List<CartItem> list) {
+  Widget layoutStore(List<CartItem> list) {
     List<Widget> card = new List();
+
     for (CartItem item in list) {
       card.add(productCard(item));
     }
@@ -140,49 +144,70 @@ class _OrderScreenState extends State<OrderScreen> {
       }
     }
 
-    return Container(
-      color: kBackgroundGrey[0],
-      padding: const EdgeInsets.only(bottom: 8, top: 8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return FutureBuilder(
+      future: getStore(),
+      builder:
+          (BuildContext context, AsyncSnapshot<Map<String, dynamic>> snapshot) {
+        if (snapshot.hasData) {
+          return Container(
+            color: kBackgroundGrey[0],
+            padding: const EdgeInsets.only(bottom: 8, top: 8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  store,
-                  style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.red),
+                Padding(
+                  padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        snapshot.data['name'],
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
+                ...card
               ],
             ),
-          ),
-          ...card
-        ],
-      ),
+          );
+        }
+        return Container();
+      },
     );
   }
 
   Widget productCard(CartItem item) {
     List<Widget> list = new List();
-    list.add(Text(item.products[0].name,
-        style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)));
+    double price = item.master.price;
 
-    double price = item.products[0].price;
-
-    for (int i = 1; i < item.products.length; i++) {
-      list.add(SizedBox(
-        height: 10,
-      ));
-      list.add(Text(item.products[i].name, style: TextStyle(fontSize: 14)));
-      price += item.products[i].price;
+    if (item.master.type == MASTER_PRODUCT) {
+      list.add(Text(item.products[0].name,
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)));
+      price = item.products[0].price;
+      for (int i = 1; i < item.products.length; i++) {
+        list.add(SizedBox(
+          height: 10,
+        ));
+        list.add(Text(item.products[i].name, style: TextStyle(fontSize: 14)));
+        price += item.products[i].price;
+      }
+    } else {
+      list.add(Text(item.master.name,
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)));
+      for (int i = 0; i < item.products.length; i++) {
+        list.add(SizedBox(
+          height: 10,
+        ));
+        list.add(Text(item.products[i].name, style: TextStyle(fontSize: 14)));
+        price += item.products[i].price;
+      }
     }
 
-    if (item.description.isNotEmpty) {
+    if (item.description != null && item.description.isNotEmpty) {
       list.add(SizedBox(
         height: 8,
       ));
@@ -219,7 +244,9 @@ class _OrderScreenState extends State<OrderScreen> {
                                 height:
                                     MediaQuery.of(context).size.width * 0.25,
                                 fit: BoxFit.fill,
-                                imageUrl: item.products[0].imageURL,
+                                imageUrl: item.master.imageURL != null
+                                    ? item.master.imageURL
+                                    : defaultImage,
                                 imageBuilder: (context, imageProvider) =>
                                     Container(
                                   decoration: BoxDecoration(
@@ -251,7 +278,7 @@ class _OrderScreenState extends State<OrderScreen> {
                               Container(
                                 width:
                                     MediaQuery.of(context).size.width * 0.65 -
-                                        120,
+                                        110,
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -263,7 +290,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                       NumberFormat.simpleCurrency(locale: 'vi')
                                           .format(model.total),
                                       style: TextStyle(
-                                          fontSize: 14,
+                                          fontSize: 16,
                                           fontWeight: FontWeight.bold),
                                     )
                                   ],
@@ -280,7 +307,7 @@ class _OrderScreenState extends State<OrderScreen> {
               ),
               secondaryActions: [
                 IconSlideAction(
-                    color: kBackgroundGrey[3],
+                    color: kBackgroundGrey[2],
                     foregroundColor: Colors.red,
                     icon: Icons.delete,
                     onTap: () async {
@@ -333,6 +360,9 @@ class _OrderScreenState extends State<OrderScreen> {
             child: Material(
               color: kBackgroundGrey[2],
               child: TextFormField(
+                onFieldSubmitted: (value) {
+                  orderNote = value;
+                },
                 decoration: InputDecoration(
                     prefixIcon: Icon(Icons.description), hintText: "Ghi chú"),
               ),
@@ -460,9 +490,23 @@ class _OrderScreenState extends State<OrderScreen> {
           FlatButton(
             onPressed: () async {
               await pr.show();
-              await deleteCart();
-              await pr.hide();
-              Navigator.pop(context, true);
+              OrderDAO dao = new OrderDAO();
+              bool result = await dao.createOrders(orderNote);
+              if (result) {
+                await deleteCart();
+                await pr.hide();
+                Navigator.pop(context, true);
+              } else {
+                await pr.hide();
+                showStatusDialog(
+                    context,
+                    Icon(
+                      Icons.error_outline,
+                      color: kFail,
+                    ),
+                    "Thất bại :(",
+                    "Vui lòng thử lại sau");
+              }
 
               // pr.hide();
               // showStateDialog();
@@ -550,7 +594,7 @@ class _OrderScreenState extends State<OrderScreen> {
     double total = 0;
     Cart cart = await getCart();
     for (CartItem item in cart.items) {
-      double subTotal = 0;
+      double subTotal = item.master.price;
       for (ProductDTO dto in item.products) {
         subTotal += dto.price;
       }

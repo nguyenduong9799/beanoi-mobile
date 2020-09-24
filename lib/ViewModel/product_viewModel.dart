@@ -3,10 +3,11 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Model/DAO/ProductDAO.dart';
 import 'package:unidelivery_mobile/Model/DTO/ProductDTO.dart';
 import 'package:unidelivery_mobile/constraints.dart';
+import 'package:unidelivery_mobile/utils/enum.dart';
 
 class ProductDetailViewModel extends Model {
   int unaffectIndex = 0;
-
+  Status status;
   int affectIndex = 0;
   //List product không ảnh hưởng giá
   Map<String, List<String>> unaffectPriceContent;
@@ -19,7 +20,7 @@ class ProductDetailViewModel extends Model {
   int count = 1;
   Color minusColor = kBackgroundGrey[5];
   Color addColor = kBackgroundGrey[5];
-  double price, total, fixTotal, extraTotal = 0;
+  double total, fixTotal, extraTotal = 0;
   bool order = false;
   //List choice option
   Map<ProductDTO, bool> extra;
@@ -30,7 +31,6 @@ class ProductDetailViewModel extends Model {
 
   ProductDetailViewModel(ProductDTO dto) {
     isExtra = false;
-
     this.extra = new Map<ProductDTO, bool>();
 
     this.unaffectPriceContent = new Map<String, List<String>>();
@@ -39,9 +39,8 @@ class ProductDetailViewModel extends Model {
     this.unaffectPriceChoice = new Map<String, String>();
     this.affectPriceChoice = new Map<String, ProductDTO>();
     //
-    if (dto.type != 6) {
-      this.price = dto.price;
-      this.fixTotal = price * count;
+    if (dto.type != MASTER_PRODUCT) {
+      this.fixTotal = dto.price * count;
     } else {
       for (String s in dto.atrributes) {
         if (s.toUpperCase() == "ĐÁ" || s.toUpperCase() == "ĐƯỜNG") {
@@ -54,25 +53,34 @@ class ProductDetailViewModel extends Model {
       }
     }
 
-    if (unaffectPriceContent.keys.toList().length == 0 && dto.extra) {
+    if (unaffectPriceContent.keys.toList().length == 0 &&
+        dto.catergoryId != null) {
       isExtra = true;
+    }
+
+    if (fixTotal != null) {
+      total = (fixTotal + extraTotal) * count;
     }
 
     verifyOrder();
   }
 
-  Future<void> getExtra() async {
-    isLoading = true;
+  Future<void> getExtra(int cat_id) async {
+    status = Status.Loading;
     notifyListeners();
-
-    ProductDAO dao = new ProductDAO();
-    List<ProductDTO> products = await dao.getProducts();
-    for (ProductDTO dto in products) {
-      extra[dto] = false;
+    try {
+      ProductDAO dao = new ProductDAO();
+      List<ProductDTO> products = await dao.getExtraProducts(cat_id);
+      for (ProductDTO dto in products) {
+        extra[dto] = false;
+      }
+      status = Status.Completed;
+    } catch (e) {
+      print("EXCEPTION $e");
+      status = Status.Error;
+    } finally {
+      notifyListeners();
     }
-
-    isLoading = false;
-    notifyListeners();
   }
 
   void addQuantity() {
@@ -103,19 +111,17 @@ class ProductDetailViewModel extends Model {
   }
 
   void changeAffectPriceAtrribute(ProductDTO e) {
-    price = 0;
+    fixTotal = 0;
     affectPriceChoice[affectPriceContent.keys.elementAt(affectIndex)] = e;
 
     for (int i = 0; i < affectPriceContent.keys.toList().length; i++) {
       for (ProductDTO dto
           in affectPriceContent[affectPriceContent.keys.elementAt(i)]) {
         if (dto.id == e.id) {
-          price += dto.price;
+          fixTotal += dto.price;
         }
       }
     }
-
-    fixTotal = price;
     total = (fixTotal + extraTotal) * count;
 
     verifyOrder();
@@ -163,14 +169,13 @@ class ProductDetailViewModel extends Model {
   }
 
   void changExtra(bool value, int i) {
-    double extraPrice = 0;
+    extraTotal = 0;
     extra[extra.keys.elementAt(i)] = value;
     for (int j = 0; j < extra.keys.toList().length; j++) {
       if (extra[extra.keys.elementAt(j)]) {
-        extraPrice += extra.keys.elementAt(j).price;
+        extraTotal += extra.keys.elementAt(j).price;
       }
     }
-    extraTotal = extraPrice;
     total = (fixTotal + extraTotal) * count;
     notifyListeners();
   }

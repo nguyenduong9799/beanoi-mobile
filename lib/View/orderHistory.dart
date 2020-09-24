@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Model/DTO/OrderDTO.dart';
 import 'package:unidelivery_mobile/ViewModel/orderHistory_viewModel.dart';
+import 'package:unidelivery_mobile/acessories/appbar.dart';
 import 'package:unidelivery_mobile/acessories/dash_border.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/utils/enum.dart';
@@ -39,21 +40,8 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
     return ScopedModel<OrderHistoryViewModel>(
       model: model,
       child: Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back_ios, color: Colors.white),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-          title: Text(
-            "Lịch sử",
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
+        appBar: DefaultAppBar(
+          title: "Lịch sử",
         ),
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
