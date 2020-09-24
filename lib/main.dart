@@ -7,6 +7,7 @@ import 'package:unidelivery_mobile/View/nav_screen.dart';
 import 'package:unidelivery_mobile/View/orderHistory.dart';
 import 'package:unidelivery_mobile/View/signup.dart';
 import 'package:unidelivery_mobile/constraints.dart';
+import 'package:unidelivery_mobile/utils/request.dart';
 import 'package:unidelivery_mobile/utils/shared_pref.dart';
 
 void main() async {
@@ -31,7 +32,7 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: Color(0xFFF0F2F5),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: NavScreen(),
+      home: checkAuthorize(),
     );
   }
 
@@ -42,6 +43,7 @@ class MyApp extends StatelessWidget {
         builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
           // AccountDAO dao = AccountDAO();
           String token = snapshot.data;
+          requestObj.setToken = token;
           // cho nay co can gui token lai cho server khong
           // neu khong thi lay thong tin user tu token ma thoi
           return token != null ? NavScreen() : LoginScreen();
