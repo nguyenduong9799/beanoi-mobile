@@ -1,19 +1,14 @@
-import 'dart:convert';
-
-import 'package:flutter/cupertino.dart';
 import 'package:unidelivery_mobile/Model/DTO/ProductDTO.dart';
 
 class Cart {
   List<CartItem> items;
   // User info
   String orderNote;
-  String storeName;
 
-  Cart.get({this.items, this.orderNote, this.storeName});
+  Cart.get({this.items, this.orderNote});
 
   Cart() {
     items = List();
-    storeName = "Uni Delivery";
   }
 
   factory Cart.fromJson(dynamic json) {
@@ -24,7 +19,6 @@ class Cart {
     }
     return Cart.get(
       items: list,
-      storeName: json['storeName'] as String,
       orderNote: json['orderNote'] as String,
     );
   }
@@ -34,18 +28,18 @@ class Cart {
     print("Items: " + listCartItem.toString());
     return {
       "items": listCartItem,
-      "storeName": storeName,
       "orderNote": orderNote,
     };
   }
 
   Map<String, dynamic> toJsonAPi() {
     List listCartItem = items.map((e) => e.toJsonApi()).toList();
-    print("Items: " + listCartItem.toString());
-    return {
+    Map<String, dynamic> map = {
       "products_list": listCartItem,
       "note": orderNote,
     };
+    print("Order: " + map.toString());
+    return map;
   }
 
   bool get isEmpty => items != null && items.isEmpty;
@@ -82,16 +76,21 @@ class Cart {
 }
 
 class CartItem {
-
-  String masterId;
+  ProductDTO master;
   List<ProductDTO> products;
   String description;
   int quantity;
 
-  CartItem(this.masterId, this.products, this.description, this.quantity);
+  CartItem(this.master, this.products, this.description, this.quantity);
 
   bool findCartItem(CartItem item) {
     bool found = true;
+
+    if (this.master.id != item.master.id ||
+        this.master.type != item.master.type) {
+      return false;
+    }
+
     if (this.products.length != item.products.length) {
       return false;
     }
@@ -111,7 +110,7 @@ class CartItem {
       list = itemJson.map((e) => ProductDTO.fromJson(e)).toList();
     }
     return CartItem(
-      json['masterId'] as String,
+      ProductDTO.fromJson(json['master']),
       list,
       json['description'] as String,
       json['quantity'] as int,
@@ -122,7 +121,7 @@ class CartItem {
     List listProducts = products.map((e) => e.toJson()).toList();
     print("Products: " + listProducts.toString());
     return {
-      "masterId": masterId,
+      "master": master.toJson(),
       "products": listProducts,
       "description": description,
       "quantity": quantity
@@ -132,7 +131,7 @@ class CartItem {
   Map<String, dynamic> toJsonApi() {
     List productsId = products.map((e) => e.id).toList();
     return {
-      "master_product": masterId,
+      "master_product": master.id,
       "product_childs": productsId,
       "description": description,
       "quantity": quantity

@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:unidelivery_mobile/Model/DTO/CartDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/OrderDTO.dart';
 import 'package:unidelivery_mobile/ViewModel/orderHistory_viewModel.dart';
+import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/utils/request.dart';
 import 'package:unidelivery_mobile/utils/shared_pref.dart';
 
@@ -17,12 +18,12 @@ class OrderDAO {
     return orders;
   }
 
-  Future<bool> createOrders() async {
+  Future<bool> createOrders(String note) async {
     Cart cart = await getCart();
-    if(cart != null){
-      final res = await request.post(
-          '/api/orders', queryParameters: {"brand-id": },data: cart.toJsonAPi()
-      );
+    if (cart != null) {
+      cart.orderNote = note;
+      final res = await request.post('/orders',
+          queryParameters: {"brand-id": UNIBEAN_STORE}, data: cart.toJsonAPi());
       if (res.statusCode == 200) {
         return true;
       }

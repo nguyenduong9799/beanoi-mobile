@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:intl/intl.dart';
 import 'package:progress_dialog/progress_dialog.dart';
@@ -11,6 +12,9 @@ import 'package:unidelivery_mobile/Model/DTO/ProductDTO.dart';
 import 'package:unidelivery_mobile/View/order.dart';
 import 'package:unidelivery_mobile/ViewModel/product_viewModel.dart';
 import 'package:unidelivery_mobile/constraints.dart';
+import 'package:unidelivery_mobile/utils/enum.dart';
+import 'package:unidelivery_mobile/utils/enum.dart';
+import 'package:unidelivery_mobile/utils/enum.dart';
 import 'package:unidelivery_mobile/utils/shared_pref.dart';
 
 class ProductDetailScreen extends StatefulWidget {
@@ -37,6 +41,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
   @override
   void initState() {
     super.initState();
+    print("Product: " + widget.dto.toString());
     productDetailViewModel = new ProductDetailViewModel(widget.dto);
 
     pr = new ProgressDialog(
@@ -46,7 +51,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
       isDismissible: false,
     );
 
-    if (widget.dto.type == 6) {
+    if (widget.dto.type == MASTER_PRODUCT) {
       affectPriceTabs = new List<Tab>();
       List<String> affectkeys =
           productDetailViewModel.affectPriceContent.keys.toList();
@@ -73,8 +78,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
       ));
     }
 
-    if (widget.dto.extra) {
-      productDetailViewModel.getExtra();
+    if (widget.dto.catergoryId != null) {
+      productDetailViewModel.getExtra(widget.dto.catergoryId);
       unaffectPriceTabs.add(Tab(child: Text("Thêm ")));
     }
 
@@ -107,9 +112,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
               margin: EdgeInsets.only(left: 8),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: kBackgroundGrey[4],
+                color: kPrimary.withOpacity(0.8),
               ),
-              child: BackButton(color: Colors.black),
+              child: BackButton(color: Colors.white),
             ),
             backgroundColor: kBackgroundGrey[0],
             elevation: 0,
@@ -144,7 +149,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                           color: Colors.grey,
                         ),
                       ),
-                      errorWidget: (context, url, error) => Icon(Icons.error),
+                      errorWidget: (context, url, error) => Icon(
+                        MaterialIcons.broken_image,
+                        color: kPrimary.withOpacity(0.5),
+                      ),
                     ),
                   ),
                 ),
@@ -193,7 +201,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                 widget.dto.name,
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
               )),
-              widget.dto.type != 6
+              widget.dto.type != MASTER_PRODUCT
                   ? Flexible(
                       child: Text(
                       NumberFormat.simpleCurrency(locale: 'vi')
@@ -207,10 +215,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
           SizedBox(
             height: 16,
           ),
-          Text(
-            " " + widget.dto.description,
-            style: TextStyle(color: Colors.grey, fontSize: 16),
-          ),
+          // Text(
+          //   " " + widget.dto.description,
+          //   style: TextStyle(color: Colors.grey, fontSize: 16),
+          // ),
           SizedBox(
             height: 8,
           )
@@ -220,7 +228,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
   }
 
   Widget tabAffectAtritbute() {
-    if (widget.dto.type == 6) {
+    if (widget.dto.type == MASTER_PRODUCT) {
       return Container(
         decoration: BoxDecoration(
             border:
@@ -244,7 +252,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
   Widget AffectAtributeContent() {
     List<Widget> attributes;
     List<ProductDTO> listOptions;
-    if (widget.dto.type == 6) {
+    if (widget.dto.type == MASTER_PRODUCT) {
       return ScopedModelDescendant(
         builder:
             (BuildContext context, Widget child, ProductDetailViewModel model) {
@@ -255,33 +263,26 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
           for (int i = 0; i < listOptions.length; i++) {
             attributes.add(Container(
               padding: EdgeInsets.only(right: 8),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Radio(
-                        groupValue: model.affectPriceChoice[model
-                            .affectPriceContent.keys
-                            .elementAt(model.affectIndex)],
-                        value: listOptions[i],
-                        onChanged: (e) {
-                          model.changeAffectPriceAtrribute(e);
-                        },
-                      ),
-                      SizedBox(
-                        width: 5,
-                      ),
-                      Text(listOptions[i].name)
-                    ],
-                  ),
-                  Flexible(
-                      child: Text(
-                    NumberFormat.simpleCurrency(locale: 'vi')
-                        .format(listOptions[i].price),
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                  ))
-                ],
+              child: RadioListTile(
+                title: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(listOptions[i].name),
+                    Flexible(
+                        child: Text(
+                      NumberFormat.simpleCurrency(locale: 'vi')
+                          .format(listOptions[i].price),
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ))
+                  ],
+                ),
+                groupValue: model.affectPriceChoice[
+                    model.affectPriceContent.keys.elementAt(model.affectIndex)],
+                value: listOptions[i],
+                onChanged: (e) {
+                  model.changeAffectPriceAtrribute(e);
+                },
               ),
             ));
           }
@@ -329,61 +330,71 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
     return ScopedModelDescendant(
       builder:
           (BuildContext context, Widget child, ProductDetailViewModel model) {
-        if (model.isLoading) {
-          return Padding(
-            padding: const EdgeInsets.only(top: 16.0),
-            child: Center(child: CircularProgressIndicator()),
-          );
-        } else {
-          if (!model.isExtra) {
-            attributes = new List();
-            if (widget.dto.type == 6) {
-              listOptions = model.unaffectPriceContent[model
-                  .unaffectPriceContent.keys
-                  .elementAt(model.unaffectIndex)];
-              for (int i = 0; i < listOptions.length; i++) {
-                attributes.add(RadioListTile(
-                  title: Text(listOptions[i]),
-                  groupValue: model.unaffectPriceChoice[model
-                      .unaffectPriceContent.keys
-                      .elementAt(model.unaffectIndex)],
-                  value: listOptions[i],
-                  onChanged: (e) {
-                    model.changeUnAffectPriceAtrribute(e);
+        switch (model.status) {
+          case Status.Error:
+            return Center(child: Text("Có gì sai sai... \n"));
+          case Status.Loading:
+            return Padding(
+              padding: const EdgeInsets.only(top: 16.0),
+              child: Center(child: CircularProgressIndicator()),
+            );
+          case Status.Empty:
+            return Center(
+              child: Text("Empty list"),
+            );
+          case Status.Completed:
+            if (!model.isExtra) {
+              attributes = new List();
+              if (widget.dto.type == MASTER_PRODUCT) {
+                listOptions = model.unaffectPriceContent[model
+                    .unaffectPriceContent.keys
+                    .elementAt(model.unaffectIndex)];
+                for (int i = 0; i < listOptions.length; i++) {
+                  attributes.add(RadioListTile(
+                    title: Text(listOptions[i]),
+                    groupValue: model.unaffectPriceChoice[model
+                        .unaffectPriceContent.keys
+                        .elementAt(model.unaffectIndex)],
+                    value: listOptions[i],
+                    onChanged: (e) {
+                      model.changeUnAffectPriceAtrribute(e);
+                    },
+                  ));
+                }
+              }
+            } else {
+              attributes = new List();
+              for (int i = 0; i < model.extra.keys.toList().length; i++) {
+                attributes.add(CheckboxListTile(
+                  title: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(model.extra.keys.elementAt(i).name),
+                      Flexible(
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: Text(NumberFormat.simpleCurrency(locale: "vi")
+                              .format(model.extra.keys.elementAt(i).price)),
+                        ),
+                      )
+                    ],
+                  ),
+                  value: model.extra[model.extra.keys.elementAt(i)],
+                  onChanged: (value) {
+                    model.changExtra(value, i);
                   },
                 ));
               }
             }
-          } else {
-            attributes = new List();
-            for (int i = 0; i < model.extra.keys.toList().length; i++) {
-              attributes.add(CheckboxListTile(
-                title: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(model.extra.keys.elementAt(i).name),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 8.0),
-                      child: Text(NumberFormat.simpleCurrency(locale: "vi")
-                          .format(model.extra.keys.elementAt(i).price)),
-                    )
-                  ],
-                ),
-                value: model.extra[model.extra.keys.elementAt(i)],
-                onChanged: (value) {
-                  model.changExtra(value, i);
-                },
-              ));
-            }
-          }
+            return Container(
+              color: kBackgroundGrey[0],
+              child: Column(
+                children: [...attributes],
+              ),
+            );
+          default:
+            return Container();
         }
-
-        return Container(
-          color: kBackgroundGrey[0],
-          child: Column(
-            children: [...attributes],
-          ),
-        );
       },
     );
   }
@@ -432,23 +443,21 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                     padding: EdgeInsets.all(8),
                     onPressed: () async {
                       await pr.show();
-                      List<ProductDTO> listChoices = new List();
-                      if (widget.dto.type == 6) {
+                      List<ProductDTO> listChoices = new List<ProductDTO>();
+                      if (widget.dto.type == MASTER_PRODUCT) {
                         for (int i = 0;
                             i < model.affectPriceChoice.keys.toList().length;
                             i++) {
-                          model
-                              .affectPriceChoice[
-                                  model.affectPriceChoice.keys.elementAt(i)]
-                              .imageURL = widget.dto.imageURL;
+                          print("Save product: " +
+                              model.affectPriceChoice[
+                                      model.affectPriceChoice.keys.elementAt(i)]
+                                  .toString());
                           listChoices.add(model.affectPriceChoice[
                               model.affectPriceChoice.keys.elementAt(i)]);
                         }
-                      } else {
-                        listChoices.add(widget.dto);
                       }
 
-                      if (widget.dto.extra) {
+                      if (widget.dto.catergoryId != null) {
                         for (int i = 0; i < model.extra.keys.length; i++) {
                           if (model.extra[model.extra.keys.elementAt(i)]) {
                             listChoices.add(model.extra.keys.elementAt(i));
@@ -467,11 +476,13 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                                 model.unaffectPriceChoice.keys.elementAt(i)] +
                             "\n";
                       }
-                      CartItem item =
-                          new CartItem(widget.dto.id, listChoices, description, model.count);
+                      CartItem item = new CartItem(
+                          widget.dto, listChoices, description, model.count);
+
+                      print("Save product: " + widget.dto.toString());
                       await addItemToCart(item);
                       await pr.hide();
-                      Navigator.pop(context);
+                      Navigator.pop(context, true);
                     },
                     textColor: kBackgroundGrey[0],
                     color: kPrimary,

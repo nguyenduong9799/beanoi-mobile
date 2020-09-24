@@ -14,6 +14,7 @@ import 'package:unidelivery_mobile/View/order.dart';
 import 'package:unidelivery_mobile/View/product_detail.dart';
 import 'package:unidelivery_mobile/ViewModel/home_viewModel.dart';
 import 'package:unidelivery_mobile/acessories/appbar.dart';
+import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/utils/enum.dart';
 
@@ -80,14 +81,20 @@ class _HomeScreenState extends State<HomeScreen> {
                               .push(MaterialPageRoute(
                             builder: (context) => OrderScreen(),
                           ));
-
-                          model.notifyListeners();
-
                           if (result != null) {
                             if (result) {
-                              showLoadingDialog();
+                              showStatusDialog(
+                                  context,
+                                  Icon(
+                                    Icons.check_circle_outline,
+                                    color: kSuccess,
+                                    size: DIALOG_ICON_SIZE,
+                                  ),
+                                  "Thành công",
+                                  "Đon hàng của bạn sẽ được giao trong 20 phút nữa");
                             }
                           }
+                          model.notifyListeners();
                         },
                         child: Stack(
                           overflow: Overflow.visible,
@@ -499,62 +506,6 @@ class _HomeScreenState extends State<HomeScreen> {
       }),
     );
   }
-
-  void showLoadingDialog() {
-    showDialog<dynamic>(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return Dialog(
-            backgroundColor: Colors.white,
-            elevation: 8.0,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(8.0))),
-            child: Container(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    Icons.check_circle_outline,
-                    color: Colors.green,
-                    size: 60,
-                  ),
-                  Center(
-                      child: Text(
-                    "Thành công",
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  )),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Text("Đơn hàng của bạn sẽ được giao trong vòng 20 phút nữa"),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  ButtonTheme(
-                    minWidth: double.infinity,
-                    child: FlatButton(
-                      color: kPrimary,
-                      textColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(5))),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text("OK"),
-                      ),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                  )
-                ],
-              ),
-            ));
-      },
-    );
-    // Delaying the function for 200 milliseconds
-  }
 }
 
 class FoodItem extends StatefulWidget {
@@ -592,9 +543,22 @@ class _FoodItemState extends State<FoodItem> {
             onTap: () async {
               print('Add item to cart');
               // TODO: Change by receive result from Navigator
-              await Navigator.of(context).push(MaterialPageRoute(
+              bool result = await Navigator.of(context).push(MaterialPageRoute(
                 builder: (BuildContext context) => ProductDetailScreen(product),
               ));
+              if (result != null) {
+                if (result) {
+                  final snackBar = SnackBar(
+                    backgroundColor: kPrimary,
+                    content: Text(
+                      'Thêm món thành công',
+                      style: kTextPrimary,
+                    ),
+                    duration: Duration(seconds: 2),
+                  );
+                  Scaffold.of(context).showSnackBar(snackBar);
+                }
+              }
               model.notifyListeners();
             },
             child: Opacity(

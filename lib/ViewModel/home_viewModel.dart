@@ -72,8 +72,8 @@ class HomeViewModel extends Model {
       }
       status = Status.Completed;
       notifyListeners();
-    } catch (e) {
-      print("EXCEPTION $e");
+    } catch (e, stacktrace) {
+      print("EXCEPTION $stacktrace");
       status = Status.Error;
       error = e.toString();
       notifyListeners();

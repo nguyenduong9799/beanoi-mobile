@@ -34,7 +34,7 @@ Future<Cart> setCart(Cart cart) async {
 Future<Cart> getCart() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   String encodedCart = prefs.getString('CART');
-  if(encodedCart != null){
+  if (encodedCart != null) {
     Cart cart = Cart.fromJson(jsonDecode(encodedCart));
     return cart;
   }
@@ -43,7 +43,7 @@ Future<Cart> getCart() async {
 
 Future<void> addItemToCart(CartItem item) async {
   Cart cart = await getCart();
-  if(cart == null){
+  if (cart == null) {
     cart = new Cart();
   }
   cart.addItem(item);
@@ -52,15 +52,15 @@ Future<void> addItemToCart(CartItem item) async {
 
 Future<bool> removeItemFromCart(CartItem item) async {
   Cart cart = await getCart();
-  if(cart == null){
+  if (cart == null) {
     return false;
   }
   cart.removeItem(item);
 
-  if(cart.items.length == 0){
+  if (cart.items.length == 0) {
     deleteCart();
     return true;
-  }else{
+  } else {
     setCart(cart);
     return false;
   }
@@ -73,7 +73,7 @@ Future<void> deleteCart() async {
 
 Future<void> updateItemFromCart(CartItem item) async {
   Cart cart = await getCart();
-  if(cart == null){
+  if (cart == null) {
     return;
   }
   cart.updateQuantity(item);
@@ -81,7 +81,19 @@ Future<void> updateItemFromCart(CartItem item) async {
   print("Cart: " + cart.items[0].quantity.toString());
 }
 
+Future<void> setStore(Map<String, dynamic> store) async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  prefs.setString('STORE', jsonEncode(store));
+}
 
+Future<Map<String, dynamic>> getStore() async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  String encodedCart = prefs.getString('STORE');
+  if (encodedCart != null) {
+    return jsonDecode(encodedCart);
+  }
+  return null;
+}
 
 // Future<bool> setUser(A value) async {
 //   final SharedPreferences prefs = await SharedPreferences.getInstance();

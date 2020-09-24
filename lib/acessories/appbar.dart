@@ -30,10 +30,18 @@ class _AppBarSate extends State<DefaultAppBar> {
     return AppBar(
       elevation: 5.0,
       centerTitle: true,
-      iconTheme: IconThemeData(color: Colors.white),
+      leading: IconButton(
+        icon: Icon(Icons.arrow_back_ios, color: Colors.white),
+        onPressed: () {
+          Navigator.pop(context);
+        },
+      ),
       title: Text(
         widget.title,
-        style: TextStyle(color: Colors.white),
+        style: TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+        ),
       ),
     );
   }
@@ -56,8 +64,6 @@ class _HomeAppBarSate extends State<HomeAppBar> {
 
   @override
   Widget build(BuildContext context) {
-    double _screenHeight = MediaQuery.of(context).size.height;
-    double _screenWidth = MediaQuery.of(context).size.width;
     // TODO: implement build
     return Container(
       height: 70,
