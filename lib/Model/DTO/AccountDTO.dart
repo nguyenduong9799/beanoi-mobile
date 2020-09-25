@@ -33,7 +33,7 @@ class AccountDTO {
       "name": name,
       "email": email,
       "phone": phone,
-      "gender": gender,
+      "gender": gender == 'nam',
       "birth_day": DateFormat('dd/MM/yyyy').format(birthdate),
       "pic_url": "https://randomuser.me/api/portraits/women/28.jpg",
     };

@@ -32,7 +32,7 @@ class SignUpViewModel extends Model {
       final updatedUser = await dao.updateUser(userDTO);
       await Future.delayed(Duration(seconds: 3));
       return updatedUser;
-    } on Exception catch (e) {
+    } catch (e) {
       print(e.toString());
       rethrow;
     }

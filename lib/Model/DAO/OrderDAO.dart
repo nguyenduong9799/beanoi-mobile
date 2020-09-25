@@ -7,15 +7,26 @@ import 'package:unidelivery_mobile/utils/request.dart';
 import 'package:unidelivery_mobile/utils/shared_pref.dart';
 
 class OrderDAO {
-  Future<List<OrderDTO>> getOrders(OrderFilter filter) async {
+  Future<List<OrderListDTO>> getOrders(OrderFilter filter) async {
     final res = await request.get(
       '/orders',
     );
-    List<OrderDTO> orders;
+    List<OrderListDTO> orderSummaryList;
     if (res.statusCode == 200) {
-      orders = OrderDTO.fromList(res.data);
+      orderSummaryList = OrderListDTO.fromList(res.data['data']);
     }
-    return orders;
+    return orderSummaryList;
+  }
+
+  Future<OrderDTO> getOrderDetail(int orderId) async {
+    final res = await request.get(
+      '/orders/$orderId',
+    );
+    OrderDTO orderDetail;
+    if (res.statusCode == 200) {
+      orderDetail = OrderDTO.fromJSON(res.data['data']);
+    }
+    return orderDetail;
   }
 
   Future<bool> createOrders(String note) async {

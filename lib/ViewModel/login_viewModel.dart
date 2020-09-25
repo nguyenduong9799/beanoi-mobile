@@ -33,7 +33,7 @@ class LoginViewModel extends Model {
     // lay thong tin user tu sereer
     // TODO: Thay uid = idToken
     final userInfo = await dao.getUser(await userCredential.user.getIdToken());
-    await setToken(userInfo.toString());
+    // await setToken(userInfo.toString());
     return userInfo;
   }
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Model/DTO/OrderDTO.dart';
 import 'package:unidelivery_mobile/ViewModel/orderHistory_viewModel.dart';
@@ -110,7 +111,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
     return ScopedModelDescendant<OrderHistoryViewModel>(
         builder: (context, child, model) {
       final status = model.status;
-      final orders = model.orders;
+      final orderSummaryList = model.orderThumbnail;
       if (status == Status.Loading)
         return Center(
           child: Container(
@@ -121,7 +122,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
             ),
           ),
         );
-      else if (status == Status.Empty)
+      else if (status == Status.Empty || orderSummaryList == null)
         return Expanded(
           child: SvgPicture.asset(
             'assets/images/order_history.svg',
@@ -129,23 +130,21 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
             fit: BoxFit.cover,
           ),
         );
+      if (status == Status.Error)
+        return Center(
+          child: AspectRatio(
+            aspectRatio: 1,
+            child: Text(model.error.toString()),
+          ),
+        );
 
       return Expanded(
         child: ListView(
           padding: EdgeInsets.all(8),
           children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 24, bottom: 16),
-              child: Text(
-                "12/02/2020",
-                style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                ),
-              ),
-            ),
-            ...orders.map((e) => _buildOrderItem(e, context)).toList(),
+            ...orderSummaryList
+                .map((orderSummary) => _buildOrderSummary(orderSummary))
+                .toList(),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Center(
@@ -155,31 +154,33 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                 ),
               ),
             ),
-            // Container(
-            //   height: 300,
-            //   child: ListView.separated(
-            //       padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
-            //       itemCount: orders?.length + 1,
-            //       separatorBuilder: (context, index) =>
-            //           Divider(color: kPrimary, height: 16),
-            //       itemBuilder: (context, index) {
-            //         return index == orders?.length
-            //             ? Padding(
-            //                 padding: const EdgeInsets.all(8.0),
-            //                 child: Center(
-            //                   child: Text(
-            //                     "Bạn đã xem hết rồi đây :)",
-            //                     style: TextStyle(color: Colors.grey),
-            //                   ),
-            //                 ),
-            //               )
-            //             : _buildOrderItem(orders[index], context);
-            //       }),
-            // ),
           ],
         ),
       );
     });
+  }
+
+  Widget _buildOrderSummary(OrderListDTO orderSummary) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 24, bottom: 16),
+          child: Text(
+            DateFormat('dd/MM/yyyy')
+                .format(DateTime.parse(orderSummary.checkInDate)),
+            style: TextStyle(
+              color: Colors.black,
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+            ),
+          ),
+        ),
+        ...orderSummary.orders
+            .map((order) => _buildOrderItem(order, context))
+            .toList(),
+      ],
+    );
   }
 
   Widget _buildOrderItem(OrderDTO order, BuildContext context) {
@@ -200,7 +201,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
           children: [
             ListTile(
               onTap: () {
-                _settingModalBottomSheet(context);
+                _settingModalBottomSheet(context, order.id);
               },
               contentPadding: EdgeInsets.fromLTRB(16, 8, 16, 8),
               title: Column(
@@ -246,7 +247,9 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
     );
   }
 
-  void _settingModalBottomSheet(context) {
+  void _settingModalBottomSheet(context, orderId) {
+    // get orderDetail
+
     showModalBottomSheet(
         context: context,
         shape: RoundedRectangleBorder(
@@ -256,15 +259,41 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
           ),
         ),
         builder: (BuildContext bc) {
-          return OrderDetailBottomSheet();
+          // final status = model.status;
+
+          // if (status == Status.Loading)
+          //   return AspectRatio(
+          //     aspectRatio: 1,
+          //     child: Center(child: CircularProgressIndicator()),
+          //   );
+
+          // final orderDetail = model.orderDetail;
+          return OrderDetailBottomSheet(
+            orderId: orderId,
+          );
         });
   }
 }
 
-class OrderDetailBottomSheet extends StatelessWidget {
+class OrderDetailBottomSheet extends StatefulWidget {
+  final int orderId;
   const OrderDetailBottomSheet({
     Key key,
+    this.orderId,
   }) : super(key: key);
+
+  @override
+  _OrderDetailBottomSheetState createState() => _OrderDetailBottomSheetState();
+}
+
+class _OrderDetailBottomSheetState extends State<OrderDetailBottomSheet> {
+  final orderDetailModel = OrderHistoryViewModel();
+
+  @override
+  void initState() {
+    super.initState();
+    orderDetailModel.getOrderDetail(widget.orderId);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -278,64 +307,114 @@ class OrderDetailBottomSheet extends StatelessWidget {
         // color: Colors.grey,
       ),
       height: 450,
-      child: Column(
-        children: <Widget>[
-          Row(
-            children: [
-              Text(
-                'Menu',
-                style: TextStyle(color: Colors.black45),
-              ),
-              Expanded(
-                child: Padding(
-                  padding: EdgeInsets.only(left: 8, right: 8),
-                  child: Divider(),
-                ),
-              ),
-              Text(
-                '22/02/2020',
-                style: TextStyle(color: Colors.black45),
-              ),
-            ],
-          ),
-          SizedBox(height: 16),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ListView.separated(
-                itemBuilder: (context, index) => Column(
+      child: ScopedModel<OrderHistoryViewModel>(
+        model: orderDetailModel,
+        child: ScopedModelDescendant<OrderHistoryViewModel>(
+          builder: (context, child, model) {
+            final status = model.status;
+            if (status == Status.Loading)
+              return AspectRatio(
+                aspectRatio: 1,
+                child: Center(child: CircularProgressIndicator()),
+              );
+
+            final orderDetail = model.orderDetail;
+            return Column(
+              children: <Widget>[
+                Row(
                   children: [
-                    Row(
-                      children: [
-                        Text(
-                          "${index + 1}x",
-                          style: TextStyle(color: Colors.grey),
-                        ),
-                        SizedBox(width: 4),
-                        Expanded(
-                            child: Text(
-                          "Món ${index + 1}",
-                          style: TextStyle(
-                            fontSize: 18,
-                          ),
-                        )),
-                        Text("${(index + 1) * 15000}đ"),
-                      ],
+                    Text(orderDetail.status == OrderFilter.ORDERING
+                        ? 'Đang giao...'
+                        : 'Đã nhận hàng'),
+                    Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 8, right: 8),
+                        child: Divider(),
+                      ),
+                    ),
+                    Text(
+                      'Menu',
+                      style: TextStyle(color: Colors.black45),
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 8, right: 8),
+                        child: Divider(),
+                      ),
+                    ),
+                    Text(
+                      DateFormat('H:m dd/MM')
+                          .format(DateTime.parse(orderDetail.orderTime)),
+                      style: TextStyle(color: Colors.black45),
                     ),
                   ],
                 ),
-                separatorBuilder: (context, index) => Divider(),
-                itemCount: 8,
-              ),
-            ),
-          ),
-          layoutSubtotal(context),
-        ],
+                SizedBox(height: 16),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ListView.separated(
+                      itemBuilder: (context, index) {
+                        final orderMaster = orderDetail.orderItems[index];
+                        final orderChilds = orderMaster.productChilds;
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "${orderMaster.quantity}x",
+                                  style: TextStyle(color: Colors.grey),
+                                ),
+                                SizedBox(width: 4),
+                                Expanded(
+                                  child: Container(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "${orderMaster.masterProductName}",
+                                          textAlign: TextAlign.start,
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        ...orderChilds
+                                            .map(
+                                              (child) => Text(
+                                                child.masterProductName,
+                                                style: TextStyle(fontSize: 12),
+                                              ),
+                                            )
+                                            .toList(),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                Text("${orderMaster.amount} đ"),
+                              ],
+                            ),
+                          ],
+                        );
+                      },
+                      separatorBuilder: (context, index) => Divider(),
+                      itemCount: orderDetail.orderItems.length,
+                    ),
+                  ),
+                ),
+                layoutSubtotal(orderDetail),
+              ],
+            );
+          },
+        ),
       ),
     );
   }
 
-  Widget layoutSubtotal(BuildContext context) {
+  Widget layoutSubtotal(OrderDTO orderDetail) {
     return Container(
       width: MediaQuery.of(context).size.width,
       padding: const EdgeInsets.all(8),
@@ -368,7 +447,7 @@ class OrderDetailBottomSheet extends StatelessWidget {
                         "Tạm tính",
                         style: TextStyle(),
                       ),
-                      Text("27.000 VND", style: TextStyle()),
+                      Text("${orderDetail.total - 5000} VND"),
                     ],
                   ),
                 ),
@@ -379,7 +458,7 @@ class OrderDetailBottomSheet extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text("Phí vận chuyển", style: TextStyle()),
-                      Text("10.000 VND", style: TextStyle()),
+                      Text("5.000 VND", style: TextStyle()),
                     ],
                   ),
                 ),
@@ -389,10 +468,14 @@ class OrderDetailBottomSheet extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text("Tổng cộng",
-                          style: TextStyle(fontWeight: FontWeight.bold)),
-                      Text("50.000 VND",
-                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      Text(
+                        "Tổng cộng",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        "${orderDetail.total} VND",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
                     ],
                   ),
                 )

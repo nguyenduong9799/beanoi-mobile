@@ -72,8 +72,7 @@ class _SignUpState extends State<SignUp> {
         print('Updated User ${updatedUser.name}');
         updateSucces = true;
       } catch (e) {
-        pr.style(message: e.toString());
-        await pr.show();
+        await _showMyDialog("Lỗi", e.toString());
       } finally {
         if (pr.isShowing()) await pr.hide();
         // Chuyen trang
@@ -84,6 +83,33 @@ class _SignUpState extends State<SignUp> {
         }
       }
     }
+  }
+
+  Future<void> _showMyDialog(String title, String content) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('$title'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('$content'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Approve'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
