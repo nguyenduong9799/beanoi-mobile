@@ -268,8 +268,6 @@ class _LoginWithPhoneOTPState extends State<LoginWithPhoneOTP> {
           await Navigator.of(context).pushAndRemoveUntil(
               MaterialPageRoute(builder: (context) => NavScreen()),
               (route) => false);
-          print("Login Success");
-          // chuyen sang trang home
         }
       }
     } on FirebaseAuthException catch (e) {

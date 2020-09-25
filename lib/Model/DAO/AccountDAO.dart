@@ -8,11 +8,11 @@ class AccountDAO {
     Response response =
         await request.post("/login", data: {"id_token": idToken});
     // set access token
-    final accessToken = response.data["data"]["access_token"] as String;
+    final accessToken = response.data["data"]["data"]["access_token"] as String;
     requestObj.setToken = accessToken;
     setToken(accessToken);
     final user = response.data["data"];
-    return AccountDTO.fromJson(user);
+    return AccountDTO.fromJson(user['data']);
     // return AccountDTO(uid: idToken, name: "Default Name");
   }
 
