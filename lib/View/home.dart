@@ -91,7 +91,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     size: DIALOG_ICON_SIZE,
                                   ),
                                   "Thành công",
-                                  "Đon hàng của bạn sẽ được giao trong 20 phút nữa");
+                                  "Đơn hàng của bạn sẽ được giao vào lúc $TIME");
                             }
                           }
                           model.notifyListeners();

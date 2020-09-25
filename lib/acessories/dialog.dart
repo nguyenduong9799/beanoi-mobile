@@ -55,3 +55,42 @@ void showStatusDialog(
   );
   // Delaying the function for 200 milliseconds
 }
+
+Future<int> getOption(BuildContext context, String text) async {
+  int option;
+  await showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Center(child: Text(text)),
+          content: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                FlatButton(
+                  splashColor: kBackgroundGrey[3],
+                  child: Text(
+                    "Có",
+                    style: TextStyle(color: kPrimary),
+                  ),
+                  onPressed: () {
+                    option = 1;
+                    Navigator.of(context).pop();
+                  },
+                ),
+                FlatButton(
+                  splashColor: kBackgroundGrey[3],
+                  child: Text("Không", style: TextStyle(color: kPrimary)),
+                  onPressed: () {
+                    option = 0;
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            )
+          ]),
+        );
+      });
+  return option;
+}
