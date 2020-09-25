@@ -11,11 +11,13 @@ class AccountDAO {
     final accessToken = response.data["data"]["access_token"] as String;
     requestObj.setToken = accessToken;
     setToken(accessToken);
-    return AccountDTO.fromJson(response.data["data"]);
+    final user = response.data["data"];
+    return AccountDTO.fromJson(user);
     // return AccountDTO(uid: idToken, name: "Default Name");
   }
 
   Future<AccountDTO> updateUser(AccountDTO updateUser) async {
+    final updateJSON = updateUser.toJson();
     Response res = await request.put(
       "/me",
       data: updateUser.toJson(),

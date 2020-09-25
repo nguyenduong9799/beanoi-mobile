@@ -30,11 +30,14 @@ class SignUpViewModel extends Model {
         gender: user["gender"],
       );
       final updatedUser = await dao.updateUser(userDTO);
-      await Future.delayed(Duration(seconds: 3));
+      // await Future.delayed(Duration(seconds: 3));
       return updatedUser;
     } catch (e) {
       print(e.toString());
       rethrow;
+    } finally {
+      isUpdating = false;
+      notifyListeners();
     }
   }
 }

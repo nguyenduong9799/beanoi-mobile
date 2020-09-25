@@ -1,7 +1,8 @@
 import 'package:intl/intl.dart';
 
 class AccountDTO {
-  final String uid, name, phone, gender, email;
+  final int uid;
+  final String name, phone, gender, email;
   final DateTime birthdate;
   // balance. point;
   final bool isFirstLogin;
@@ -16,7 +17,7 @@ class AccountDTO {
   });
 
   factory AccountDTO.fromJson(dynamic json) => AccountDTO(
-        uid: json["userId"] as String,
+        uid: json["customer_id"],
         name: json['name'] as String,
         email: json['email'] as String,
         phone: json['phone'] as String,
@@ -29,12 +30,12 @@ class AccountDTO {
 
   Map<String, dynamic> toJson() {
     return {
-      "userId": uid,
+      "userId": uid.toString(),
       "name": name,
       "email": email,
       "phone": phone,
       "gender": gender == 'nam',
-      "birth_day": DateFormat('dd/MM/yyyy').format(birthdate),
+      "birth_day": birthdate.toString(),
       "pic_url": "https://randomuser.me/api/portraits/women/28.jpg",
     };
   }

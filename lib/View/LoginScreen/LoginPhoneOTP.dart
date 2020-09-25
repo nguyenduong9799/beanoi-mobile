@@ -275,7 +275,7 @@ class _LoginWithPhoneOTPState extends State<LoginWithPhoneOTP> {
     } on FirebaseAuthException catch (e) {
       print("=====OTP Fail: ${e.message}  ");
       await _showMyDialog("Error", e.message);
-    } on Exception catch (e) {
+    } catch (e) {
       await _showMyDialog("Error", e.toString());
     } finally {
       await pr.hide();
