@@ -22,7 +22,6 @@ class OrderScreen extends StatefulWidget {
 }
 
 class _OrderScreenState extends State<OrderScreen> {
-
   OrderViewModel orderViewModel;
   ProgressDialog pr;
   String orderNote = "";
@@ -41,17 +40,17 @@ class _OrderScreenState extends State<OrderScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return  ScopedModel(
+    return ScopedModel(
       model: orderViewModel,
       child: ScopedModelDescendant(
         builder: (BuildContext context, Widget child, OrderViewModel model) {
           return FutureBuilder(
             future: model.cart,
             builder: (BuildContext context, AsyncSnapshot<Cart> snapshot) {
-              if(snapshot.hasData){
-                if(snapshot.data != null){
+              if (snapshot.hasData) {
+                if (snapshot.data != null) {
                   double total = countPrice(snapshot.data);
-                  return  Scaffold(
+                  return Scaffold(
                     bottomNavigationBar: bottomBar(total),
                     appBar: DefaultAppBar(title: "Đơn hàng của bạn"),
                     body: SingleChildScrollView(
@@ -72,8 +71,7 @@ class _OrderScreenState extends State<OrderScreen> {
                       ),
                     ),
                   );
-                }
-                else{
+                } else {
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Center(child: Text("Không có đơn hàng nào")),
@@ -228,8 +226,7 @@ class _OrderScreenState extends State<OrderScreen> {
       actionExtentRatio: 0.25,
       child: Container(
         color: kBackgroundGrey[0],
-        padding:
-        EdgeInsets.only(right: 5, left: 5, top: 10, bottom: 10),
+        padding: EdgeInsets.only(right: 5, left: 5, top: 10, bottom: 10),
         child: InkWell(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -242,44 +239,38 @@ class _OrderScreenState extends State<OrderScreen> {
                     children: [
                       CachedNetworkImage(
                         width: MediaQuery.of(context).size.width * 0.25,
-                        height:
-                        MediaQuery.of(context).size.width * 0.25,
+                        height: MediaQuery.of(context).size.width * 0.25,
                         fit: BoxFit.fill,
                         imageUrl: item.master.imageURL != null
                             ? item.master.imageURL
                             : defaultImage,
-                        imageBuilder: (context, imageProvider) =>
-                            Container(
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  image: imageProvider,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
+                        imageBuilder: (context, imageProvider) => Container(
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: imageProvider,
+                              fit: BoxFit.cover,
                             ),
+                          ),
+                        ),
                         progressIndicatorBuilder:
                             (context, url, downloadProgress) =>
-                            Shimmer.fromColors(
-                              baseColor: Colors.grey[300],
-                              highlightColor: Colors.grey[100],
-                              enabled: true,
-                              child: Container(
-                                width: MediaQuery.of(context).size.width *
-                                    0.25,
-                                // height: 100,
-                                color: Colors.grey,
-                              ),
-                            ),
-                        errorWidget: (context, url, error) =>
-                            Icon(Icons.error),
+                                Shimmer.fromColors(
+                          baseColor: Colors.grey[300],
+                          highlightColor: Colors.grey[100],
+                          enabled: true,
+                          child: Container(
+                            width: MediaQuery.of(context).size.width * 0.25,
+                            // height: 100,
+                            color: Colors.grey,
+                          ),
+                        ),
+                        errorWidget: (context, url, error) => Icon(Icons.error),
                       ),
                       SizedBox(
                         width: 10,
                       ),
                       Container(
-                        width:
-                        MediaQuery.of(context).size.width * 0.65 -
-                            110,
+                        width: MediaQuery.of(context).size.width * 0.65 - 110,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -291,8 +282,7 @@ class _OrderScreenState extends State<OrderScreen> {
                               NumberFormat.simpleCurrency(locale: 'vi')
                                   .format(price * item.quantity),
                               style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold),
+                                  fontSize: 16, fontWeight: FontWeight.bold),
                             )
                           ],
                         ),
@@ -516,7 +506,7 @@ class _OrderScreenState extends State<OrderScreen> {
                 ),
                 Text("Chốt đơn",
                     style:
-                    TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
                 SizedBox(
                   height: 16,
                 )
@@ -533,7 +523,7 @@ class _OrderScreenState extends State<OrderScreen> {
 
   Widget selectQuantity(CartItem item) {
     Color minusColor = kBackgroundGrey[3];
-    if(item.quantity > 1){
+    if (item.quantity > 1) {
       minusColor = kPrimary;
     }
     Color plusColor = kPrimary;
@@ -575,7 +565,7 @@ class _OrderScreenState extends State<OrderScreen> {
     );
   }
 
-  double countPrice(Cart cart){
+  double countPrice(Cart cart) {
     double total = 0;
     for (CartItem item in cart.items) {
       double subTotal = item.master.price;

@@ -5,12 +5,9 @@ import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/utils/shared_pref.dart';
 
 class OrderViewModel extends Model {
-
-  OrderViewModel() {
-  }
+  OrderViewModel() {}
 
   Future<Cart> get cart async {
     return await getCart();
   }
-
 }
