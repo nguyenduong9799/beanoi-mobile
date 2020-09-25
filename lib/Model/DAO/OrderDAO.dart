@@ -32,6 +32,7 @@ class OrderDAO {
   Future<bool> createOrders(String note) async {
     Cart cart = await getCart();
     if (cart != null) {
+      print("Request Note: " + note);
       cart.orderNote = note;
       final res = await request.post('/orders',
           queryParameters: {"brand-id": UNIBEAN_STORE}, data: cart.toJsonAPi());

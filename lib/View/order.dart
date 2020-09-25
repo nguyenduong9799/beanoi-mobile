@@ -343,8 +343,9 @@ class _OrderScreenState extends State<OrderScreen> {
             child: Material(
               color: kBackgroundGrey[2],
               child: TextFormField(
-                onFieldSubmitted: (value) {
+                onChanged: (value) {
                   orderNote = value;
+                  print("Note: " + orderNote);
                 },
                 decoration: InputDecoration(
                     prefixIcon: Icon(Icons.description), hintText: "Ghi chú"),
@@ -522,7 +523,7 @@ class _OrderScreenState extends State<OrderScreen> {
   }
 
   Widget selectQuantity(CartItem item) {
-    Color minusColor = kBackgroundGrey[3];
+    Color minusColor = kBackgroundGrey[4];
     if (item.quantity > 1) {
       minusColor = kPrimary;
     }
