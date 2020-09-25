@@ -9,7 +9,7 @@ import 'package:shimmer/shimmer.dart';
 import 'package:unidelivery_mobile/Model/DAO/OrderDAO.dart';
 import 'package:unidelivery_mobile/Model/DTO/CartDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/ProductDTO.dart';
-import 'package:unidelivery_mobile/ViewModel/order_viewModel.dart';
+import 'package:unidelivery_mobile/ViewModel/orderTotal_viewModel.dart';
 import 'package:unidelivery_mobile/acessories/appbar.dart';
 import 'package:unidelivery_mobile/acessories/dash_border.dart';
 import 'package:unidelivery_mobile/acessories/dialog.dart';
@@ -22,16 +22,15 @@ class OrderScreen extends StatefulWidget {
 }
 
 class _OrderScreenState extends State<OrderScreen> {
-  double total;
 
+  OrderViewModel orderViewModel;
   ProgressDialog pr;
   String orderNote = "";
 
   @override
   void initState() {
     super.initState();
-
-    total = DELIVERY_FEE;
+    orderViewModel = new OrderViewModel();
     pr = new ProgressDialog(
       context,
       showLogs: true,
@@ -42,86 +41,93 @@ class _OrderScreenState extends State<OrderScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: countPrice(),
-      builder: (BuildContext context, AsyncSnapshot<double> snapshot) {
-        if (snapshot.hasData) {
-          total = snapshot.data;
-          return Scaffold(
-            bottomNavigationBar: bottomBar(),
-            appBar: DefaultAppBar(title: "Đơn hàng của bạn"),
-            body: SingleChildScrollView(
-              child: Center(
-                child: Column(
-                  children: [
-                    Container(
-                        margin: const EdgeInsets.only(top: 8),
-                        child: layoutAddress()),
-                    Container(
-                        margin: const EdgeInsets.only(top: 8),
-                        child: layoutOrder()),
-                    Container(
-                        margin: const EdgeInsets.only(top: 8),
-                        child: layoutSubtotal())
-                  ],
-                ),
-              ),
-            ),
+    return  ScopedModel(
+      model: orderViewModel,
+      child: ScopedModelDescendant(
+        builder: (BuildContext context, Widget child, OrderViewModel model) {
+          return FutureBuilder(
+            future: model.cart,
+            builder: (BuildContext context, AsyncSnapshot<Cart> snapshot) {
+              if(snapshot.hasData){
+                if(snapshot.data != null){
+                  double total = countPrice(snapshot.data);
+                  return  Scaffold(
+                    bottomNavigationBar: bottomBar(total),
+                    appBar: DefaultAppBar(title: "Đơn hàng của bạn"),
+                    body: SingleChildScrollView(
+                      child: Center(
+                        child: Column(
+                          children: [
+                            Container(
+                                margin: const EdgeInsets.only(top: 8),
+                                child: layoutAddress()),
+                            Container(
+                                margin: const EdgeInsets.only(top: 8),
+                                child: layoutOrder(snapshot.data)),
+                            Container(
+                                margin: const EdgeInsets.only(top: 8),
+                                child: layoutSubtotal(total))
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                }
+                else{
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Center(child: Text("Không có đơn hàng nào")),
+                  );
+                }
+              }
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Center(child: CircularProgressIndicator()),
+              );
+            },
           );
-        }
-        return CircularProgressIndicator();
-      },
+        },
+      ),
     );
   }
 
-  Widget layoutOrder() {
-    return FutureBuilder(
-      future: getCart(),
-      builder: (BuildContext context, AsyncSnapshot<Cart> snapshot) {
-        if (snapshot.hasData) {
-          if (snapshot.data != null) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  color: kBackgroundGrey[0],
-                  padding: const EdgeInsets.all(8),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Các món đã đặt",
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          OutlineButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            borderSide: BorderSide(color: Colors.black),
-                            child: Text(
-                              "Thêm",
-                              style: TextStyle(color: Colors.black),
-                            ),
-                          )
-                        ],
-                      ),
-                      Divider(
-                        color: Colors.black,
-                        thickness: 2,
-                      )
-                    ],
+  Widget layoutOrder(Cart cart) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          color: kBackgroundGrey[0],
+          padding: const EdgeInsets.all(8),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Các món đã đặt",
+                    style: TextStyle(fontWeight: FontWeight.bold),
                   ),
-                ),
-                layoutStore(snapshot.data.items),
-              ],
-            );
-          }
-          return Text("Chưa có đơn nào");
-        }
-        return CircularProgressIndicator();
-      },
+                  OutlineButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    borderSide: BorderSide(color: Colors.black),
+                    child: Text(
+                      "Thêm",
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  )
+                ],
+              ),
+              Divider(
+                color: Colors.black,
+                thickness: 2,
+              )
+            ],
+          ),
+        ),
+        layoutStore(cart.items),
+      ],
     );
   }
 
@@ -217,119 +223,106 @@ class _OrderScreenState extends State<OrderScreen> {
       ));
     }
 
-    return ScopedModel(
-      model: new OrderViewModel(price, item.quantity),
-      child: ScopedModelDescendant(
-        builder: (BuildContext context, Widget child, OrderViewModel model) {
-          if (model.count > 0)
-            return Slidable(
-              actionPane: SlidableDrawerActionPane(),
-              actionExtentRatio: 0.25,
-              child: Container(
-                color: kBackgroundGrey[0],
-                padding:
-                    EdgeInsets.only(right: 5, left: 5, top: 10, bottom: 10),
-                child: InkWell(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
+    return Slidable(
+      actionPane: SlidableDrawerActionPane(),
+      actionExtentRatio: 0.25,
+      child: Container(
+        color: kBackgroundGrey[0],
+        padding:
+        EdgeInsets.only(right: 5, left: 5, top: 10, bottom: 10),
+        child: InkWell(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              CachedNetworkImage(
-                                width: MediaQuery.of(context).size.width * 0.25,
-                                height:
-                                    MediaQuery.of(context).size.width * 0.25,
-                                fit: BoxFit.fill,
-                                imageUrl: item.master.imageURL != null
-                                    ? item.master.imageURL
-                                    : defaultImage,
-                                imageBuilder: (context, imageProvider) =>
-                                    Container(
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                      image: imageProvider,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                ),
-                                progressIndicatorBuilder:
-                                    (context, url, downloadProgress) =>
-                                        Shimmer.fromColors(
-                                  baseColor: Colors.grey[300],
-                                  highlightColor: Colors.grey[100],
-                                  enabled: true,
-                                  child: Container(
-                                    width: MediaQuery.of(context).size.width *
-                                        0.25,
-                                    // height: 100,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                                errorWidget: (context, url, error) =>
-                                    Icon(Icons.error),
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Container(
-                                width:
-                                    MediaQuery.of(context).size.width * 0.65 -
-                                        110,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    ...list,
-                                    SizedBox(
-                                      height: 10,
-                                    ),
-                                    Text(
-                                      NumberFormat.simpleCurrency(locale: 'vi')
-                                          .format(model.total),
-                                      style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold),
-                                    )
-                                  ],
+                      CachedNetworkImage(
+                        width: MediaQuery.of(context).size.width * 0.25,
+                        height:
+                        MediaQuery.of(context).size.width * 0.25,
+                        fit: BoxFit.fill,
+                        imageUrl: item.master.imageURL != null
+                            ? item.master.imageURL
+                            : defaultImage,
+                        imageBuilder: (context, imageProvider) =>
+                            Container(
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image: imageProvider,
+                                  fit: BoxFit.cover,
                                 ),
                               ),
-                            ],
-                          ),
-                          selectQuantity(item)
-                        ],
+                            ),
+                        progressIndicatorBuilder:
+                            (context, url, downloadProgress) =>
+                            Shimmer.fromColors(
+                              baseColor: Colors.grey[300],
+                              highlightColor: Colors.grey[100],
+                              enabled: true,
+                              child: Container(
+                                width: MediaQuery.of(context).size.width *
+                                    0.25,
+                                // height: 100,
+                                color: Colors.grey,
+                              ),
+                            ),
+                        errorWidget: (context, url, error) =>
+                            Icon(Icons.error),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Container(
+                        width:
+                        MediaQuery.of(context).size.width * 0.65 -
+                            110,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ...list,
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                              NumberFormat.simpleCurrency(locale: 'vi')
+                                  .format(price * item.quantity),
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold),
+                            )
+                          ],
+                        ),
                       ),
                     ],
                   ),
-                ),
+                  selectQuantity(item)
+                ],
               ),
-              secondaryActions: [
-                IconSlideAction(
-                    color: kBackgroundGrey[2],
-                    foregroundColor: Colors.red,
-                    icon: Icons.delete,
-                    onTap: () async {
-                      model.deleteQuantity();
-                      await pr.show();
-                      bool result = await removeItemFromCart(item);
-                      if (result) {
-                        await pr.hide();
-                        Navigator.of(context).pop(false);
-                      } else {
-                        double reTotal = await countPrice();
-                        setState(() {
-                          total = reTotal;
-                        });
-                        await pr.hide();
-                      }
-                    }),
-              ],
-            );
-          return Container();
-        },
+            ],
+          ),
+        ),
       ),
+      secondaryActions: [
+        IconSlideAction(
+            color: kBackgroundGrey[2],
+            foregroundColor: Colors.red,
+            icon: Icons.delete,
+            onTap: () async {
+              await pr.show();
+              bool result = await removeItemFromCart(item);
+              if (result) {
+                await pr.hide();
+                Navigator.of(context).pop(false);
+              } else {
+                orderViewModel.notifyListeners();
+                await pr.hide();
+              }
+            }),
+      ],
     );
   }
 
@@ -373,7 +366,7 @@ class _OrderScreenState extends State<OrderScreen> {
     );
   }
 
-  Widget layoutSubtotal() {
+  Widget layoutSubtotal(double total) {
     return Container(
       width: MediaQuery.of(context).size.width,
       padding: const EdgeInsets.all(10),
@@ -449,7 +442,7 @@ class _OrderScreenState extends State<OrderScreen> {
     );
   }
 
-  Widget bottomBar() {
+  Widget bottomBar(double total) {
     return Container(
       padding: const EdgeInsets.only(left: 8, right: 8),
       decoration: BoxDecoration(
@@ -523,7 +516,7 @@ class _OrderScreenState extends State<OrderScreen> {
                 ),
                 Text("Chốt đơn",
                     style:
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                    TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
                 SizedBox(
                   height: 16,
                 )
@@ -539,60 +532,51 @@ class _OrderScreenState extends State<OrderScreen> {
   }
 
   Widget selectQuantity(CartItem item) {
-    return ScopedModelDescendant(
-      builder: (BuildContext context, Widget child, OrderViewModel model) {
-        return Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            IconButton(
-              icon: Icon(
-                Icons.do_not_disturb_on,
-                size: 20,
-                color: model.minusColor,
-              ),
-              onPressed: () async {
-                int count = model.count;
-                model.minusQuantity();
-                if (model.count != count) {
-                  await pr.show();
-                  item.quantity = model.count;
-                  await updateItemFromCart(item);
-                  double reTotal = await countPrice();
-                  setState(() {
-                    total = reTotal;
-                  });
-                  await pr.hide();
-                }
-              },
-            ),
-            Text(model.count.toString()),
-            IconButton(
-              icon: Icon(
-                Icons.add_circle,
-                size: 20,
-                color: model.addColor,
-              ),
-              onPressed: () async {
-                model.addQuantity();
-                await pr.show();
-                item.quantity = model.count;
-                await updateItemFromCart(item);
-                double reTotal = await countPrice();
-                setState(() {
-                  total = reTotal;
-                });
-                await pr.hide();
-              },
-            )
-          ],
-        );
-      },
+    Color minusColor = kBackgroundGrey[3];
+    if(item.quantity > 1){
+      minusColor = kPrimary;
+    }
+    Color plusColor = kPrimary;
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        IconButton(
+          icon: Icon(
+            Icons.do_not_disturb_on,
+            size: 20,
+            color: minusColor,
+          ),
+          onPressed: () async {
+            if (item.quantity != 1) {
+              await pr.show();
+              item.quantity--;
+              await updateItemFromCart(item);
+              orderViewModel.notifyListeners();
+              await pr.hide();
+            }
+          },
+        ),
+        Text(item.quantity.toString()),
+        IconButton(
+          icon: Icon(
+            Icons.add_circle,
+            size: 20,
+            color: plusColor,
+          ),
+          onPressed: () async {
+            await pr.show();
+            item.quantity++;
+            await updateItemFromCart(item);
+            orderViewModel.notifyListeners();
+            await pr.hide();
+          },
+        )
+      ],
     );
   }
 
-  Future<double> countPrice() async {
+  double countPrice(Cart cart){
     double total = 0;
-    Cart cart = await getCart();
     for (CartItem item in cart.items) {
       double subTotal = item.master.price;
       for (ProductDTO dto in item.products) {
