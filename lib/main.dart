@@ -5,6 +5,7 @@ import 'package:unidelivery_mobile/View/home.dart';
 import 'package:unidelivery_mobile/View/login.dart';
 import 'package:unidelivery_mobile/View/nav_screen.dart';
 import 'package:unidelivery_mobile/View/orderHistory.dart';
+import 'package:unidelivery_mobile/View/profile.dart';
 import 'package:unidelivery_mobile/View/signup.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/utils/request.dart';
@@ -32,7 +33,7 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: Color(0xFFF0F2F5),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: checkAuthorize(),
+      home: ProfileScreen(new AccountDTO(name: "Mít tơ Bin")),
     );
   }
 

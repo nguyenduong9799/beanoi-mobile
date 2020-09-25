@@ -9,11 +9,8 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:unidelivery_mobile/Model/DTO/CartDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/ProductDTO.dart';
-import 'package:unidelivery_mobile/View/order.dart';
 import 'package:unidelivery_mobile/ViewModel/product_viewModel.dart';
 import 'package:unidelivery_mobile/constraints.dart';
-import 'package:unidelivery_mobile/utils/enum.dart';
-import 'package:unidelivery_mobile/utils/enum.dart';
 import 'package:unidelivery_mobile/utils/enum.dart';
 import 'package:unidelivery_mobile/utils/shared_pref.dart';
 
