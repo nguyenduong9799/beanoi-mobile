@@ -2,6 +2,7 @@ import 'package:unidelivery_mobile/ViewModel/orderHistory_viewModel.dart';
 
 class OrderDTO {
   final int id;
+  final int itemQuantity;
 
   final double total;
   final OrderFilter status;
@@ -12,6 +13,7 @@ class OrderDTO {
     this.id, {
     this.orderTime,
     this.total,
+    this.itemQuantity,
     this.status,
     this.orderItems,
   });
@@ -20,6 +22,7 @@ class OrderDTO {
         map["rent_id"],
         total: map["final_amount"],
         orderTime: map["check_in_date"],
+        itemQuantity: map["master_product_quantity"],
         status: (map["delivery_status"]) == 0
             ? OrderFilter.ORDERING
             : OrderFilter.DONE,

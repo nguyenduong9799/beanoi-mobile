@@ -176,7 +176,8 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
             ),
           ),
         ),
-        ...orderSummary.orders
+        ...orderSummary.orders.reversed
+            .toList()
             .map((order) => _buildOrderItem(order, context))
             .toList(),
       ],
@@ -209,7 +210,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "1 món",
+                    "${order.itemQuantity} món",
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.black,

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:unidelivery_mobile/Model/DTO/AccountDTO.dart';
 import 'package:unidelivery_mobile/View/home.dart';
+import 'package:unidelivery_mobile/View/profile.dart';
 import 'package:unidelivery_mobile/acessories/bottomnavigator.dart';
 
 class NavScreen extends StatefulWidget {
@@ -11,7 +13,7 @@ class _NavScreenState extends State<NavScreen> {
   final List<Widget> _screens = [
     HomeScreen(),
     Scaffold(),
-    Scaffold(),
+    ProfileScreen(AccountDTO(name: 'Hung Bui')),
   ];
   final List<IconData> _icons = const [
     Icons.home,

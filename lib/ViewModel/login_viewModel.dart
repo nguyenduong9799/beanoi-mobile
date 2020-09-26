@@ -32,7 +32,7 @@ class LoginViewModel extends Model {
     final userCredential = await AuthService().signIn(authCredential);
     // lay thong tin user tu sereer
     // TODO: Thay uid = idToken
-    final userInfo = await dao.getUser(await userCredential.user.getIdToken());
+    final userInfo = await dao.login(await userCredential.user.getIdToken());
     // await setToken(userInfo.toString());
     return userInfo;
   }
@@ -47,7 +47,7 @@ class LoginViewModel extends Model {
     text = "";
     notifyListeners();
     try {
-      AccountDTO dto = await dao.getUser(uid);
+      AccountDTO dto = await dao.login(uid);
       return dto;
     } on Exception {
       text = "An error has ocured. Please try app later!";
