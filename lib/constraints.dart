@@ -20,7 +20,8 @@ final kTextPrimary = TextStyle(color: Color(0xFFFFFFFF));
 const String CART_TAG = "cartTag";
 
 const double DELIVERY_FEE = 5000;
-const UNIBEAN_STORE = 10;
+const UNIBEAN_STORE = 150;
+const UNIBEAN_BRAND = 10;
 const MASTER_PRODUCT = 6;
 const double DIALOG_ICON_SIZE = 60;
 const String defaultImage =
@@ -30,3 +31,5 @@ const String VERSION = "0.0.1";
 const int SUCCESS = 1;
 const int NOT_ENOUGH_MONEY = 0;
 const int FAIL = -1;
+const int ORDER_NEW_STATUS = 0;
+const int ORDER_DONE_STATUS = 4;
