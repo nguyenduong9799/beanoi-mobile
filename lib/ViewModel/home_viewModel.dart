@@ -68,7 +68,8 @@ class HomeViewModel extends Model {
         // change filter
         // do something with products
         print("Fetch prodyuct with filter");
-        products = products.sublist(2)..shuffle();
+        // products = products.sublist(2)..shuffle();
+        products = products.sublist(0)..shuffle();
       }
       status = Status.Completed;
       notifyListeners();

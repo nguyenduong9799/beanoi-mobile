@@ -148,18 +148,8 @@ class _HomeAppBarSate extends State<HomeAppBar> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Flexible(
-                        child: Text(
-                      "Chào Bean, Đừng để bụng đói nha!",
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    )),
-                    SizedBox(
-                      height: 5,
-                    ),
+                    Flexible(child: _buildWelcome()),
+                    SizedBox(height: 5),
                     Row(
                       children: [
                         Image(
@@ -167,12 +157,8 @@ class _HomeAppBarSate extends State<HomeAppBar> {
                           width: 18,
                           height: 18,
                         ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Flexible(
-                          child: _buildBalance(),
-                        ),
+                        SizedBox(width: 10),
+                        Flexible(child: _buildBalance()),
                       ],
                     )
                   ],
@@ -210,6 +196,48 @@ class _HomeAppBarSate extends State<HomeAppBar> {
     );
   }
 
+  Widget _buildWelcome() {
+    return ScopedModelDescendant<RootViewModel>(
+      builder: (context, child, model) {
+        final status = model.status;
+        final user = model.currentUser;
+        if (status == Status.Loading)
+          return Shimmer.fromColors(
+            baseColor: Colors.grey[300],
+            highlightColor: Colors.grey[100],
+            enabled: true,
+            child: Container(
+              width: MediaQuery.of(context).size.width * 0.45,
+              height: 20,
+              color: Colors.grey,
+            ),
+          );
+        else if (status == Status.Error) return Text("＞﹏＜");
+        return RichText(
+          text: TextSpan(
+              text: "Chào ",
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
+                color: Colors.white,
+              ),
+              children: <TextSpan>[
+                TextSpan(
+                  text: "${user.name}",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontStyle: FontStyle.italic,
+                    fontSize: 14,
+                    // color: Colors.white,
+                  ),
+                ),
+                TextSpan(text: ", Đừng để bụng đói nha!"),
+              ]),
+        );
+      },
+    );
+  }
+
   Widget _buildBalance() {
     return ScopedModelDescendant<RootViewModel>(
       builder: (context, child, model) {
@@ -231,7 +259,7 @@ class _HomeAppBarSate extends State<HomeAppBar> {
           text: TextSpan(
               text: "Bạn có ",
               style: TextStyle(
-                fontSize: 14,
+                fontSize: 12,
                 // fontWeight: FontWeight.w100,
                 color: Colors.black45,
               ),
@@ -240,7 +268,7 @@ class _HomeAppBarSate extends State<HomeAppBar> {
                   text: "${user.balance}đ",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 16,
+                    fontSize: 14,
                     color: Colors.white,
                   ),
                 ),

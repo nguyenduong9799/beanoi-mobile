@@ -17,6 +17,8 @@ final kBackgroundGrey = [
 
 final kTextPrimary = TextStyle(color: Color(0xFFFFFFFF));
 
+const String CART_TAG = "cartTag";
+
 const double DELIVERY_FEE = 5000;
 const UNIBEAN_STORE = 10;
 const MASTER_PRODUCT = 6;

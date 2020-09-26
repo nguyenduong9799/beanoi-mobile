@@ -54,13 +54,14 @@ class _SignUpState extends State<SignUp> {
     );
     final user = widget.user;
     // UPDATE USER INFO INTO FORM
-    form.value = {
-      "name": user.name,
-      "phone": user.phone,
-      "birthdate": user.birthdate,
-      "email": user.email,
-      "gender": user.gender,
-    };
+    if (user != null)
+      form.value = {
+        "name": user.name,
+        "phone": user.phone,
+        "birthdate": user.birthdate,
+        "email": user.email,
+        "gender": user.gender,
+      };
   }
 
   Future<void> _onUpdateUser(SignUpViewModel model) async {
@@ -128,6 +129,17 @@ class _SignUpState extends State<SignUp> {
                 // BACKGROUND
                 Container(
                   color: Color(0xFFddf1ed),
+                ),
+                Positioned(
+                  right: 0,
+                  bottom: 0,
+                  child: Container(
+                    height: screenHeight * 0.35,
+                    // width: 250,
+                    child: Image.asset(
+                      'assets/images/sign_up_character.png',
+                    ),
+                  ),
                 ),
                 // SIGN-UP FORM
                 Stack(
@@ -274,7 +286,7 @@ class _SignUpState extends State<SignUp> {
                           color: Colors.white,
                         ),
                       ),
-                    )
+                    ),
                   ],
                 ),
               ],

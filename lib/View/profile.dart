@@ -58,18 +58,18 @@ class _UpdateAccountState extends State<ProfileScreen> {
                   height: 8,
                 ),
                 userButton("Cập nhật"),
-                SizedBox(
-                  height: 8,
-                ),
-                userButton("Đánh giá"),
-                SizedBox(
-                  height: 8,
-                ),
-                userButton("Hỏi đáp"),
-                SizedBox(
-                  height: 8,
-                ),
-                userButton("Giới thiệu"),
+                // SizedBox(
+                //   height: 8,
+                // ),
+                // userButton("Đánh giá"),
+                // SizedBox(
+                //   height: 8,
+                // ),
+                // userButton("Hỏi đáp"),
+                // SizedBox(
+                //   height: 8,
+                // ),
+                // userButton("Giới thiệu"),
                 SizedBox(
                   height: 8,
                 ),
@@ -183,17 +183,42 @@ class _UpdateAccountState extends State<ProfileScreen> {
 
   Widget systemInfo() {
     return Container(
-      margin: EdgeInsets.all(16),
+      margin: EdgeInsets.only(left: 32, right: 32, bottom: 0, top: 16),
+      padding: EdgeInsets.only(left: 32, right: 32),
       decoration: BoxDecoration(
-          border: Border(top: BorderSide(color: kPrimary, width: 3))),
+        border: Border(top: BorderSide(color: kBackgroundGrey[3], width: 1)),
+      ),
       child: Center(
         child: Column(
           children: <Widget>[
             Text(
               "Version $VERSION",
-              style: TextStyle(),
+              style: TextStyle(
+                fontSize: 12,
+              ),
             ),
-            Text("By Uniteam", style: TextStyle(fontSize: 15)),
+            Container(
+              // height: 40,
+              child: RichText(
+                text: TextSpan(
+                  text: "By - ",
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: kBackgroundGrey[5],
+                    // fontStyle: FontStyle.italic,
+                  ),
+                  children: <TextSpan>[
+                    TextSpan(
+                      text: "UniTeam",
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontStyle: FontStyle.italic,
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
           ],
         ),
       ),

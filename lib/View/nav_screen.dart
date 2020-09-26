@@ -24,17 +24,18 @@ class _RootScreenState extends State<RootScreen> {
     Icons.person,
   ];
   int _selectedIndex = 0;
-
+  RootViewModel _initModel;
   @override
   void initState() {
     super.initState();
     requestObj.context = context;
+    _initModel = RootViewModel();
   }
 
   @override
   Widget build(BuildContext context) {
     return ScopedModel<RootViewModel>(
-      model: RootViewModel(),
+      model: _initModel,
       child: DefaultTabController(
         length: _icons.length,
         child: GestureDetector(

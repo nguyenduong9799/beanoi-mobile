@@ -57,9 +57,12 @@ class _OrderScreenState extends State<OrderScreen> {
                       child: Center(
                         child: Column(
                           children: [
-                            Container(
-                                margin: const EdgeInsets.only(top: 8),
-                                child: layoutAddress()),
+                            Hero(
+                              tag: CART_TAG,
+                              child: Container(
+                                  margin: const EdgeInsets.only(top: 8),
+                                  child: layoutAddress()),
+                            ),
                             Container(
                                 margin: const EdgeInsets.only(top: 8),
                                 child: layoutOrder(snapshot.data)),
