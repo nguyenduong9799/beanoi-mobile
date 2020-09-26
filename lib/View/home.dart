@@ -50,7 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
     model.getProducts();
     if (orderTime.isBefore(DateTime.now())) {
       setState(() {
-        _endOrderTime = true;
+        _endOrderTime = false;
       });
     }
   }

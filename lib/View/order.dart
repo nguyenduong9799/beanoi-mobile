@@ -199,7 +199,11 @@ class _OrderScreenState extends State<OrderScreen> {
         list.add(SizedBox(
           height: 10,
         ));
-        list.add(Text(item.products[i].name, style: TextStyle(fontSize: 14)));
+        list.add(Text(
+            item.products[i].name.contains("Extra")
+                ? item.products[i].name.replaceAll("Extra", "+")
+                : item.products[i].name,
+            style: TextStyle(fontSize: 14)));
         price += item.products[i].price;
       }
     } else {
@@ -209,7 +213,11 @@ class _OrderScreenState extends State<OrderScreen> {
         list.add(SizedBox(
           height: 10,
         ));
-        list.add(Text(item.products[i].name, style: TextStyle(fontSize: 14)));
+        list.add(Text(
+            item.products[i].name.contains("Extra")
+                ? item.products[i].name.replaceAll("Extra", "+")
+                : item.products[i].name,
+            style: TextStyle(fontSize: 14)));
         price += item.products[i].price;
       }
     }

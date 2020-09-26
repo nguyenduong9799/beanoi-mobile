@@ -19,8 +19,11 @@ class ProductDAO {
 
   Future<List<ProductDTO>> getExtraProducts(int cat_id) async {
     print("Category id: " + cat_id.toString());
-    final res = await request.get('/extraproducts',
-        queryParameters: {"brand-id": UNIBEAN_STORE, "cat-id": cat_id});
+    final res = await request.get('/extraproducts', queryParameters: {
+      "brand-id": UNIBEAN_BRAND,
+      "cat-id": cat_id,
+      "store-id": UNIBEAN_STORE
+    });
     final products = ProductDTO.fromList(res.data['data']);
     return products;
   }

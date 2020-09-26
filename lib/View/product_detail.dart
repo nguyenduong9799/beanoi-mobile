@@ -366,7 +366,12 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                   title: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(model.extra.keys.elementAt(i).name),
+                      Text(model.extra.keys.elementAt(i).name.contains("Extra")
+                          ? model.extra.keys
+                              .elementAt(i)
+                              .name
+                              .replaceAll("Extra", "+")
+                          : model.extra.keys.elementAt(i).name),
                       Flexible(
                         child: Padding(
                           padding: const EdgeInsets.only(right: 8.0),

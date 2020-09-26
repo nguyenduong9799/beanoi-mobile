@@ -37,7 +37,10 @@ class OrderDAO {
         print("Request Note: " + note);
         cart.orderNote = note;
         final res = await request.post('/orders',
-            queryParameters: {"brand-id": UNIBEAN_STORE},
+            queryParameters: {
+              "brand-id": UNIBEAN_BRAND,
+              "store-id": UNIBEAN_STORE
+            },
             data: cart.toJsonAPi());
         if (res.statusCode == 200) {
           return SUCCESS;
