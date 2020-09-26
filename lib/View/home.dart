@@ -19,7 +19,7 @@ import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/utils/enum.dart';
 
-const ORDER_TIME = 15;
+const ORDER_TIME = 20;
 
 class HomeScreen extends StatefulWidget {
   final AccountDTO user;
@@ -617,43 +617,49 @@ class _FoodItemState extends State<FoodItem> {
                         opacity: 1,
                         child: AspectRatio(
                           aspectRatio: 1.1,
-                          child: CachedNetworkImage(
-                            imageUrl: imageURL ?? "",
-                            imageBuilder: (context, imageProvider) => Container(
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  image: imageProvider,
-                                  fit: BoxFit.fill,
+                          child: (imageURL == null || imageURL == "")
+                              ? Icon(
+                                  MaterialIcons.broken_image,
+                                  color: kPrimary.withOpacity(0.5),
+                                )
+                              : CachedNetworkImage(
+                                  imageUrl: imageURL,
+                                  imageBuilder: (context, imageProvider) =>
+                                      Container(
+                                    decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                        image: imageProvider,
+                                        fit: BoxFit.fill,
+                                      ),
+                                    ),
+                                  ),
+                                  progressIndicatorBuilder:
+                                      (context, url, downloadProgress) =>
+                                          Shimmer.fromColors(
+                                    baseColor: Colors.grey[300],
+                                    highlightColor: Colors.grey[100],
+                                    enabled: true,
+                                    child: Container(
+                                      width: 100,
+                                      height: 100,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                  // placeholder: (context, url) => Container(
+                                  //   width: 100,
+                                  //   height: 100,
+                                  //   child: Shimmer.fromColors(
+                                  //     baseColor: Colors.grey[300],
+                                  //     highlightColor: Colors.grey[100],
+                                  //     enabled: true,
+                                  //     child: SizedBox.shrink(),
+                                  //   ),
+                                  // ),
+                                  errorWidget: (context, url, error) => Icon(
+                                    MaterialIcons.broken_image,
+                                    color: kPrimary.withOpacity(0.5),
+                                  ),
                                 ),
-                              ),
-                            ),
-                            progressIndicatorBuilder:
-                                (context, url, downloadProgress) =>
-                                    Shimmer.fromColors(
-                              baseColor: Colors.grey[300],
-                              highlightColor: Colors.grey[100],
-                              enabled: true,
-                              child: Container(
-                                width: 100,
-                                height: 100,
-                                color: Colors.grey,
-                              ),
-                            ),
-                            // placeholder: (context, url) => Container(
-                            //   width: 100,
-                            //   height: 100,
-                            //   child: Shimmer.fromColors(
-                            //     baseColor: Colors.grey[300],
-                            //     highlightColor: Colors.grey[100],
-                            //     enabled: true,
-                            //     child: SizedBox.shrink(),
-                            //   ),
-                            // ),
-                            errorWidget: (context, url, error) => Icon(
-                              MaterialIcons.broken_image,
-                              color: kPrimary.withOpacity(0.5),
-                            ),
-                          ),
                           // FadeInImage(
                           //   image: NetworkImage(imageURL),
                           //   placeholder: AssetImage('assets/images/avatar.png'),

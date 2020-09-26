@@ -23,8 +23,7 @@ class ProductDAO {
       "brand-id": UNIBEAN_BRAND,
       "cat-id": cat_id,
       "store-id": UNIBEAN_STORE
-    });
-    final products = ProductDTO.fromList(res.data['data']);
+    });    final products = ProductDTO.fromList(res.data['data']);
     return products;
   }
 
