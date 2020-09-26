@@ -87,6 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                                 onPressed: () async {
                                   print('Tap order');
+                                  Scaffold.of(context).hideCurrentSnackBar();
                                   bool result = await Navigator.of(context)
                                       .push(MaterialPageRoute(
                                     builder: (context) => OrderScreen(),
@@ -586,6 +587,7 @@ class _FoodItemState extends State<FoodItem> {
             ),
             onTap: () async {
               print('Add item to cart');
+              Scaffold.of(context).hideCurrentSnackBar();
               // TODO: Change by receive result from Navigator
               bool result = await Navigator.of(context).push(MaterialPageRoute(
                 builder: (BuildContext context) => ProductDetailScreen(product),
