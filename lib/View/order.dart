@@ -478,12 +478,12 @@ class _OrderScreenState extends State<OrderScreen> {
             onPressed: () async {
               await pr.show();
               OrderDAO dao = new OrderDAO();
-              bool result = await dao.createOrders(orderNote);
-              if (result) {
+              int result = await dao.createOrders(orderNote);
+              if (result == SUCCESS) {
                 await deleteCart();
                 await pr.hide();
                 Navigator.pop(context, true);
-              } else {
+              } else if (result == FAIL) {
                 await pr.hide();
                 showStatusDialog(
                     context,
@@ -493,6 +493,16 @@ class _OrderScreenState extends State<OrderScreen> {
                     ),
                     "Thất bại :(",
                     "Vui lòng thử lại sau");
+              } else {
+                await pr.hide();
+                showStatusDialog(
+                    context,
+                    Icon(
+                      Icons.error_outline,
+                      color: kFail,
+                    ),
+                    "Thất bại :(",
+                    "Có đủ tiền đâu mà mua (>_<)");
               }
 
               // pr.hide();

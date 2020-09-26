@@ -13,6 +13,7 @@ import 'package:unidelivery_mobile/Model/DTO/ProductDTO.dart';
 import 'package:unidelivery_mobile/View/order.dart';
 import 'package:unidelivery_mobile/View/product_detail.dart';
 import 'package:unidelivery_mobile/ViewModel/home_viewModel.dart';
+import 'package:unidelivery_mobile/ViewModel/root_viewModel.dart';
 import 'package:unidelivery_mobile/acessories/appbar.dart';
 import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/constraints.dart';
@@ -57,248 +58,260 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     // print(widget?.user.uid);
-    return ScopedModel(
-      model: model,
-      child: Scaffold(
-        floatingActionButton: ScopedModelDescendant<HomeViewModel>(
-            rebuildOnChange: true,
-            builder: (context, child, model) {
-              return FutureBuilder(
-                  future: model.cart,
-                  builder: (context, snapshot) {
-                    Cart cart = snapshot.data;
-                    if (cart == null) return SizedBox.shrink();
-                    bool hasItemInCart = cart.isEmpty;
-                    int quantity = cart?.itemQuantity();
-
-                    return Container(
-                      margin: EdgeInsets.only(bottom: 40),
-                      child: FloatingActionButton(
-                        backgroundColor: Colors.transparent,
-                        elevation: 20,
-                        heroTag: CART_TAG,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                          // side: BorderSide(color: Colors.red),
-                        ),
-                        onPressed: () async {
-                          print('Tap order');
-                          bool result = await Navigator.of(context)
-                              .push(MaterialPageRoute(
-                            builder: (context) => OrderScreen(),
-                          ));
-                          if (result != null) {
-                            if (result) {
-                              showStatusDialog(
-                                  context,
-                                  Icon(
-                                    Icons.check_circle_outline,
-                                    color: kSuccess,
-                                    size: DIALOG_ICON_SIZE,
-                                  ),
-                                  "Thành công",
-                                  "Đơn hàng của bạn sẽ được giao vào lúc $TIME");
-                            }
-                          }
-                          model.notifyListeners();
-                        },
-                        child: Stack(
-                          overflow: Overflow.visible,
-                          children: [
-                            Container(
-                              width: 48,
-                              height: 48,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Icon(
-                                Icons.shopping_cart,
-                                color: kPrimary,
-                              ),
-                            ),
-                            Positioned(
-                              top: -10,
-                              left: 32,
-                              child: Container(
-                                width: 24,
-                                height: 24,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(16),
-                                  color: Colors.white,
-                                  border: Border.all(color: Colors.grey),
+    return ScopedModelDescendant(
+      builder:
+          (BuildContext context, Widget child, RootViewModel rootViewModel) {
+        return ScopedModel(
+          model: model,
+          child: Scaffold(
+            floatingActionButton: !_endOrderTime
+                ? ScopedModelDescendant(
+                    rebuildOnChange: true,
+                    builder: (context, child, HomeViewModel model) {
+                      return FutureBuilder(
+                          future: model.cart,
+                          builder: (context, snapshot) {
+                            Cart cart = snapshot.data;
+                            if (cart == null) return SizedBox.shrink();
+                            bool hasItemInCart = cart.isEmpty;
+                            int quantity = cart?.itemQuantity();
+                            return Container(
+                              margin: EdgeInsets.only(bottom: 40),
+                              child: FloatingActionButton(
+                                backgroundColor: Colors.transparent,
+                                elevation: 20,
+                                heroTag: CART_TAG,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  // side: BorderSide(color: Colors.red),
                                 ),
-                                child: Center(
-                                  child: Text(
-                                    quantity.toString(),
-                                    style: kTextPrimary.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black87,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    );
-                  });
-            }),
-        backgroundColor: Colors.white,
-        //bottomNavigationBar: bottomBar(),
-        body: SafeArea(
-          child: Container(
-            height: MediaQuery.of(context).size.height,
-            child: Stack(
-              children: [
-                // _endOrderTime
-                //     ? Center(
-                //         child: Text(
-                //           "Đã hết thời gian order rồi. \n Bạn quay lại vào lần sau nhé {{{(>_<)}}}",
-                //           style: TextStyle(
-                //             fontSize: 24,
-                //           ),
-                //           textAlign: TextAlign.center,
-                //         ),
-                //       )
-                //     :
-                Container(
-                  // height: 800,
-                  child: ListView(
-                    children: [
-                      Container(
-                        // height: 750,
-                        child: Center(
-                          child: Padding(
-                            padding: const EdgeInsets.only(top: 80),
-                            child: Column(
-                              children: [
-                                // banner(),
-                                Center(
-                                  child: Container(
-                                    margin: EdgeInsets.all(8),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(16),
-                                      color: Colors.blue[200],
-                                    ),
-                                    height: 80,
-                                    width: double.infinity,
-                                    child: Image.asset(
-                                      'assets/images/banner.png',
-                                      fit: BoxFit.cover,
-                                      // width: double.infinity,
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(height: 16),
-                                ScopedModelDescendant<HomeViewModel>(
-                                  builder: (context, child, model) {
-                                    List<ProductDTO> products = model.products;
-                                    Status status = model.status;
-                                    switch (status) {
-                                      case Status.Error:
-                                        return AspectRatio(
-                                          aspectRatio: 1,
-                                          child: Center(
-                                              child: Text(
-                                                  "Có gì sai sai... \n ${model.error.toString()}")),
-                                        );
-                                      case Status.Loading:
-                                        return AspectRatio(
-                                            aspectRatio: 1,
-                                            child: Center(
-                                                child:
-                                                    CircularProgressIndicator()));
-                                      case Status.Empty:
-                                        return Center(
-                                          child: Text("Empty list"),
-                                        );
-                                      case Status.Completed:
-                                        return productListSection(products);
-                                      default:
-                                        return Text("Some thing wrong");
+                                onPressed: () async {
+                                  print('Tap order');
+                                  bool result = await Navigator.of(context)
+                                      .push(MaterialPageRoute(
+                                    builder: (context) => OrderScreen(),
+                                  ));
+                                  if (result != null) {
+                                    if (result) {
+                                      showStatusDialog(
+                                          context,
+                                          Icon(
+                                            Icons.check_circle_outline,
+                                            color: kSuccess,
+                                            size: DIALOG_ICON_SIZE,
+                                          ),
+                                          "Thành công",
+                                          "Đơn hàng của bạn sẽ được giao vào lúc $TIME");
+                                      await rootViewModel.fetchUser();
                                     }
-                                  },
-                                ),
-                                SizedBox(height: 16),
-                                Center(
-                                  child: Container(
-                                    margin: EdgeInsets.all(8),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(16),
-                                      color: Colors.orange[300],
-                                    ),
-                                    height: 80,
-                                    width: double.infinity,
-                                    child: Center(
-                                        child: Text(
-                                      "Bottom Section",
-                                      style: TextStyle(
-                                        fontSize: 25,
+                                  }
+                                  model.notifyListeners();
+                                },
+                                child: Stack(
+                                  overflow: Overflow.visible,
+                                  children: [
+                                    Container(
+                                      width: 48,
+                                      height: 48,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(8),
                                       ),
-                                    )),
-                                  ),
+                                      child: Icon(
+                                        Icons.shopping_cart,
+                                        color: kPrimary,
+                                      ),
+                                    ),
+                                    Positioned(
+                                      top: -10,
+                                      left: 32,
+                                      child: Container(
+                                        width: 24,
+                                        height: 24,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(16),
+                                          color: Colors.white,
+                                          border:
+                                              Border.all(color: Colors.grey),
+                                        ),
+                                        child: Center(
+                                          child: Text(
+                                            quantity.toString(),
+                                            style: kTextPrimary.copyWith(
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.black87,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  ],
                                 ),
-                              ],
+                              ),
+                            );
+                          });
+                    })
+                : SizedBox.shrink(),
+            backgroundColor: Colors.white,
+            //bottomNavigationBar: bottomBar(),
+            body: SafeArea(
+              child: Container(
+                height: MediaQuery.of(context).size.height,
+                child: Stack(
+                  children: [
+                    // _endOrderTime
+                    //     ? Center(
+                    //         child: Text(
+                    //           "Đã hết thời gian order rồi. \n Bạn quay lại vào lần sau nhé {{{(>_<)}}}",
+                    //           style: TextStyle(
+                    //             fontSize: 24,
+                    //           ),
+                    //           textAlign: TextAlign.center,
+                    //         ),
+                    //       )
+                    //     :
+                    Container(
+                      // height: 800,
+                      child: ListView(
+                        children: [
+                          Container(
+                            // height: 750,
+                            child: Center(
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 80),
+                                child: Column(
+                                  children: [
+                                    // banner(),
+                                    Center(
+                                      child: Container(
+                                        margin: EdgeInsets.all(8),
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(16),
+                                          color: Colors.blue[200],
+                                        ),
+                                        height: 80,
+                                        width: double.infinity,
+                                        child: Image.asset(
+                                          'assets/images/banner.png',
+                                          fit: BoxFit.cover,
+                                          // width: double.infinity,
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(height: 16),
+                                    ScopedModelDescendant<HomeViewModel>(
+                                      builder: (context, child, model) {
+                                        List<ProductDTO> products =
+                                            model.products;
+                                        Status status = model.status;
+                                        switch (status) {
+                                          case Status.Error:
+                                            return AspectRatio(
+                                              aspectRatio: 1,
+                                              child: Center(
+                                                  child: Text(
+                                                      "Có gì sai sai... \n ${model.error.toString()}")),
+                                            );
+                                          case Status.Loading:
+                                            return AspectRatio(
+                                                aspectRatio: 1,
+                                                child: Center(
+                                                    child:
+                                                        CircularProgressIndicator()));
+                                          case Status.Empty:
+                                            return Center(
+                                              child: Text("Empty list"),
+                                            );
+                                          case Status.Completed:
+                                            return productListSection(products);
+                                          default:
+                                            return Text("Some thing wrong");
+                                        }
+                                      },
+                                    ),
+                                    SizedBox(height: 16),
+                                    Center(
+                                      child: Container(
+                                        margin: EdgeInsets.all(8),
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(16),
+                                          color: Colors.orange[300],
+                                        ),
+                                        height: 80,
+                                        width: double.infinity,
+                                        child: Center(
+                                            child: Text(
+                                          "Bottom Section",
+                                          style: TextStyle(
+                                            fontSize: 25,
+                                          ),
+                                        )),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ),
                           ),
-                        ),
-                      ),
-                      // SizedBox(height: 48),
-                    ],
-                  ),
-                ),
-                HomeAppBar(),
-                Positioned(
-                  top: 150,
-                  right: 0,
-                  child: RotatedBox(
-                    quarterTurns: -1,
-                    child: Container(
-                      padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFE8581C),
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(5),
-                          topRight: Radius.circular(5),
-                        ),
-                      ),
-                      child: Column(
-                        children: [
-                          // Text("Còn lại"),
-                          !_endOrderTime
-                              ? CountdownTimer(
-                                  textStyle: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                  ),
-                                  endTime: orderTime.millisecondsSinceEpoch,
-                                  onEnd: () {
-                                    setState(() {
-                                      _endOrderTime = true;
-                                    });
-                                  },
-                                )
-                              : Text(
-                                  "Bạn quay lại sau nhé :(",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                  ),
-                                ),
+                          // SizedBox(height: 48),
                         ],
                       ),
                     ),
-                  ),
+                    HomeAppBar(),
+                    Positioned(
+                      top: 150,
+                      right: 0,
+                      child: RotatedBox(
+                        quarterTurns: -1,
+                        child: Container(
+                          padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFE8581C),
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(5),
+                              topRight: Radius.circular(5),
+                            ),
+                          ),
+                          child: Column(
+                            children: [
+                              // Text("Còn lại"),
+                              !_endOrderTime
+                                  ? CountdownTimer(
+                                      textStyle: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16,
+                                      ),
+                                      endTime: orderTime.millisecondsSinceEpoch,
+                                      onEnd: () {
+                                        setState(() {
+                                          _endOrderTime = true;
+                                        });
+                                      },
+                                    )
+                                  : Text(
+                                      "Bạn quay lại sau nhé :(",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    !_endOrderTime
+                        ? Positioned(left: 0, bottom: 0, child: tag())
+                        : SizedBox.shrink(),
+                  ],
                 ),
-                !_endOrderTime
-                    ? Positioned(left: 0, bottom: 0, child: tag())
-                    : SizedBox.shrink(),
-              ],
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
