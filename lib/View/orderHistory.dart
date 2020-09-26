@@ -128,7 +128,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
           ),
         );
       else if (status == Status.Empty || orderSummaryList == null)
-        return Expanded(
+        return Container(
           child: SvgPicture.asset(
             'assets/images/order_history.svg',
             semanticsLabel: 'Acme Logo',
@@ -143,7 +143,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
           ),
         );
 
-      return Expanded(
+      return Container(
         child: ListView(
           padding: EdgeInsets.all(8),
           children: [

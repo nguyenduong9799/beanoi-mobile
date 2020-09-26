@@ -18,7 +18,7 @@ import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/utils/enum.dart';
 
-const ORDER_TIME = 15;
+const ORDER_TIME = 20;
 
 class HomeScreen extends StatefulWidget {
   final AccountDTO user;
@@ -60,93 +60,91 @@ class _HomeScreenState extends State<HomeScreen> {
     return ScopedModel(
       model: model,
       child: Scaffold(
-        floatingActionButton: !_endOrderTime
-            ? ScopedModelDescendant<HomeViewModel>(
-                rebuildOnChange: true,
-                builder: (context, child, model) {
-                  return FutureBuilder(
-                      future: model.cart,
-                      builder: (context, snapshot) {
-                        Cart cart = snapshot.data;
-                        if (cart == null) return SizedBox.shrink();
-                        bool hasItemInCart = cart.isEmpty;
-                        int quantity = cart?.itemQuantity();
+        floatingActionButton: ScopedModelDescendant<HomeViewModel>(
+            rebuildOnChange: true,
+            builder: (context, child, model) {
+              return FutureBuilder(
+                  future: model.cart,
+                  builder: (context, snapshot) {
+                    Cart cart = snapshot.data;
+                    if (cart == null) return SizedBox.shrink();
+                    bool hasItemInCart = cart.isEmpty;
+                    int quantity = cart?.itemQuantity();
 
-                        return Container(
-                          margin: EdgeInsets.only(bottom: 40),
-                          child: FloatingActionButton(
-                            backgroundColor: Colors.transparent,
-                            elevation: 20,
-                            heroTag: CART_TAG,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8.0),
-                              // side: BorderSide(color: Colors.red),
-                            ),
-                            onPressed: () async {
-                              print('Tap order');
-                              bool result = await Navigator.of(context)
-                                  .push(MaterialPageRoute(
-                                builder: (context) => OrderScreen(),
-                              ));
-                              if (result != null) {
-                                if (result) {
-                                  showStatusDialog(
-                                      context,
-                                      Icon(
-                                        Icons.check_circle_outline,
-                                        color: kSuccess,
-                                        size: DIALOG_ICON_SIZE,
-                                      ),
-                                      "Thành công",
-                                      "Đơn hàng của bạn sẽ được giao vào lúc $TIME");
-                                }
-                              }
-                              model.notifyListeners();
-                            },
-                            child: Stack(
-                              overflow: Overflow.visible,
-                              children: [
-                                Container(
-                                  width: 48,
-                                  height: 48,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(8),
+                    return Container(
+                      margin: EdgeInsets.only(bottom: 40),
+                      child: FloatingActionButton(
+                        backgroundColor: Colors.transparent,
+                        elevation: 20,
+                        heroTag: CART_TAG,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                          // side: BorderSide(color: Colors.red),
+                        ),
+                        onPressed: () async {
+                          print('Tap order');
+                          bool result = await Navigator.of(context)
+                              .push(MaterialPageRoute(
+                            builder: (context) => OrderScreen(),
+                          ));
+                          if (result != null) {
+                            if (result) {
+                              showStatusDialog(
+                                  context,
+                                  Icon(
+                                    Icons.check_circle_outline,
+                                    color: kSuccess,
+                                    size: DIALOG_ICON_SIZE,
                                   ),
-                                  child: Icon(
-                                    Icons.shopping_cart,
-                                    color: kPrimary,
+                                  "Thành công",
+                                  "Đơn hàng của bạn sẽ được giao vào lúc $TIME");
+                            }
+                          }
+                          model.notifyListeners();
+                        },
+                        child: Stack(
+                          overflow: Overflow.visible,
+                          children: [
+                            Container(
+                              width: 48,
+                              height: 48,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Icon(
+                                Icons.shopping_cart,
+                                color: kPrimary,
+                              ),
+                            ),
+                            Positioned(
+                              top: -10,
+                              left: 32,
+                              child: Container(
+                                width: 24,
+                                height: 24,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(16),
+                                  color: Colors.white,
+                                  border: Border.all(color: Colors.grey),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    quantity.toString(),
+                                    style: kTextPrimary.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black87,
+                                    ),
                                   ),
                                 ),
-                                Positioned(
-                                  top: -10,
-                                  left: 32,
-                                  child: Container(
-                                    width: 24,
-                                    height: 24,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(16),
-                                      color: Colors.white,
-                                      border: Border.all(color: Colors.grey),
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                        quantity.toString(),
-                                        style: kTextPrimary.copyWith(
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black87,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
-                        );
-                      });
-                })
-            : SizedBox.shrink(),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    );
+                  });
+            }),
         backgroundColor: Colors.white,
         //bottomNavigationBar: bottomBar(),
         body: SafeArea(
@@ -606,43 +604,49 @@ class _FoodItemState extends State<FoodItem> {
                         opacity: 1,
                         child: AspectRatio(
                           aspectRatio: 1.1,
-                          child: CachedNetworkImage(
-                            imageUrl: imageURL ?? "",
-                            imageBuilder: (context, imageProvider) => Container(
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  image: imageProvider,
-                                  fit: BoxFit.fill,
+                          child: (imageURL == null || imageURL == "")
+                              ? Icon(
+                                  MaterialIcons.broken_image,
+                                  color: kPrimary.withOpacity(0.5),
+                                )
+                              : CachedNetworkImage(
+                                  imageUrl: imageURL,
+                                  imageBuilder: (context, imageProvider) =>
+                                      Container(
+                                    decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                        image: imageProvider,
+                                        fit: BoxFit.fill,
+                                      ),
+                                    ),
+                                  ),
+                                  progressIndicatorBuilder:
+                                      (context, url, downloadProgress) =>
+                                          Shimmer.fromColors(
+                                    baseColor: Colors.grey[300],
+                                    highlightColor: Colors.grey[100],
+                                    enabled: true,
+                                    child: Container(
+                                      width: 100,
+                                      height: 100,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                  // placeholder: (context, url) => Container(
+                                  //   width: 100,
+                                  //   height: 100,
+                                  //   child: Shimmer.fromColors(
+                                  //     baseColor: Colors.grey[300],
+                                  //     highlightColor: Colors.grey[100],
+                                  //     enabled: true,
+                                  //     child: SizedBox.shrink(),
+                                  //   ),
+                                  // ),
+                                  errorWidget: (context, url, error) => Icon(
+                                    MaterialIcons.broken_image,
+                                    color: kPrimary.withOpacity(0.5),
+                                  ),
                                 ),
-                              ),
-                            ),
-                            progressIndicatorBuilder:
-                                (context, url, downloadProgress) =>
-                                    Shimmer.fromColors(
-                              baseColor: Colors.grey[300],
-                              highlightColor: Colors.grey[100],
-                              enabled: true,
-                              child: Container(
-                                width: 100,
-                                height: 100,
-                                color: Colors.grey,
-                              ),
-                            ),
-                            // placeholder: (context, url) => Container(
-                            //   width: 100,
-                            //   height: 100,
-                            //   child: Shimmer.fromColors(
-                            //     baseColor: Colors.grey[300],
-                            //     highlightColor: Colors.grey[100],
-                            //     enabled: true,
-                            //     child: SizedBox.shrink(),
-                            //   ),
-                            // ),
-                            errorWidget: (context, url, error) => Icon(
-                              MaterialIcons.broken_image,
-                              color: kPrimary.withOpacity(0.5),
-                            ),
-                          ),
                           // FadeInImage(
                           //   image: NetworkImage(imageURL),
                           //   placeholder: AssetImage('assets/images/avatar.png'),
