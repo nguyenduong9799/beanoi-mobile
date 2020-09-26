@@ -29,18 +29,27 @@ class OrderDAO {
     return orderDetail;
   }
 
-  Future<bool> createOrders(String note) async {
-    Cart cart = await getCart();
-    if (cart != null) {
-      print("Request Note: " + note);
-      cart.orderNote = note;
-      final res = await request.post('/orders',
-          queryParameters: {"brand-id": UNIBEAN_STORE}, data: cart.toJsonAPi());
-      if (res.statusCode == 200) {
-        return true;
+  Future<int> createOrders(String note) async {
+    try {
+      Cart cart = await getCart();
+      if (cart != null) {
+        print("Request Note: " + note);
+        cart.orderNote = note;
+        final res = await request.post('/orders',
+            queryParameters: {"brand-id": UNIBEAN_STORE},
+            data: cart.toJsonAPi());
+        if (res.statusCode == 200) {
+          return SUCCESS;
+        }
       }
+    } on DioError catch (e) {
+      if (e.response.statusCode == 400) {
+        return NOT_ENOUGH_MONEY;
+      }
+
+      return FAIL;
     }
 
-    return false;
+    return FAIL;
   }
 }
