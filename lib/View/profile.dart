@@ -1,9 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:scoped_model/scoped_model.dart';
+import 'package:shimmer/shimmer.dart';
 
 import 'package:unidelivery_mobile/Model/DTO/AccountDTO.dart';
 import 'package:unidelivery_mobile/View/login.dart';
+import 'package:unidelivery_mobile/ViewModel/root_viewModel.dart';
 import 'package:unidelivery_mobile/acessories/dialog.dart';
+import 'package:unidelivery_mobile/utils/enum.dart';
+import 'package:unidelivery_mobile/utils/index.dart';
 
 import '../constraints.dart';
 
@@ -104,24 +109,49 @@ class _UpdateAccountState extends State<ProfileScreen> {
   }
 
   Widget userAccount() {
-    return Container(
-      child: Center(
-        child: Column(
-          children: <Widget>[
-            Text(
-              widget.dto != null ? widget.dto.name : "Bean",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+    return ScopedModelDescendant<RootViewModel>(
+      builder: (context, child, model) {
+        final status = model.status;
+        final user = model.currentUser;
+        if (status == Status.Loading)
+          return Shimmer.fromColors(
+            baseColor: Colors.grey[300],
+            highlightColor: Colors.grey[100],
+            enabled: true,
+            child: Container(
+              width: MediaQuery.of(context).size.width * 0.45,
+              height: 20,
+              color: Colors.grey,
             ),
-            SizedBox(
-              height: 8,
+          );
+        else if (status == Status.Error) return Text("＞﹏＜");
+        return Container(
+          child: Center(
+            child: Column(
+              children: <Widget>[
+                Text(
+                  user.name,
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(
+                  height: 8,
+                ),
+                Text(
+                  "Bạn có ${formatPrice(user.balance)} trong ví",
+                  style: TextStyle(fontSize: 15),
+                ),
+                Text(
+                  "Và ${user.point} bean",
+                  style: TextStyle(fontSize: 15),
+                ),
+                SizedBox(
+                  height: 8,
+                ),
+              ],
             ),
-            Text("Bạn có 100.000 đ trong ví", style: TextStyle(fontSize: 15)),
-            SizedBox(
-              height: 8,
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 

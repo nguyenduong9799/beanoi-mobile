@@ -7,9 +7,11 @@ class AccountDAO {
   Future<AccountDTO> login(String idToken) async {
     Response response =
         await request.post("/login", data: {"id_token": idToken});
+    print('idToken $idToken');
     // set access token
     final user = response.data["data"];
     final accessToken = user["access_token"] as String;
+    print("accessToken    $accessToken");
     requestObj.setToken = accessToken;
     setToken(accessToken);
     return AccountDTO.fromJson(user);

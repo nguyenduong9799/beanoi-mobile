@@ -378,65 +378,7 @@ class _OrderDetailBottomSheetState extends State<OrderDetailBottomSheet> {
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: ListView.separated(
-                      itemBuilder: (context, index) {
-                        final orderMaster = orderDetail.orderItems[index];
-                        final orderChilds = orderMaster.productChilds;
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "${orderMaster.quantity}x",
-                                  style: TextStyle(color: Colors.grey),
-                                ),
-                                SizedBox(width: 4),
-                                Expanded(
-                                  child: Container(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          orderMaster.masterProductName
-                                                  .contains("Extra")
-                                              ? orderMaster.masterProductName
-                                                  .replaceAll("Extra", "+")
-                                              : orderMaster.masterProductName,
-                                          textAlign: TextAlign.start,
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        ...orderChilds
-                                            .map(
-                                              (child) => Text(
-                                                child.masterProductName
-                                                        .contains("Extra")
-                                                    ? child.masterProductName
-                                                        .replaceAll(
-                                                            "Extra", "+")
-                                                    : child.masterProductName,
-                                                style: TextStyle(fontSize: 12),
-                                              ),
-                                            )
-                                            .toList(),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                Text("${formatPrice(orderMaster.amount)}"),
-                              ],
-                            ),
-                          ],
-                        );
-                      },
-                      separatorBuilder: (context, index) => Divider(),
-                      itemCount: orderDetail.orderItems.length,
-                    ),
+                    child: buildOrderSummaryList(orderDetail),
                   ),
                 ),
                 layoutSubtotal(orderDetail),
@@ -445,6 +387,70 @@ class _OrderDetailBottomSheetState extends State<OrderDetailBottomSheet> {
           },
         ),
       ),
+    );
+  }
+
+  ListView buildOrderSummaryList(OrderDTO orderDetail) {
+    return ListView.separated(
+      itemBuilder: (context, index) {
+        final orderMaster = orderDetail.orderItems[index];
+        final orderChilds = orderMaster.productChilds;
+
+        double orderItemPrice = orderMaster.amount;
+        orderChilds?.forEach((element) {
+          orderItemPrice += element.amount;
+        });
+        // orderItemPrice *= orderMaster.quantity;
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text(
+                  "${orderMaster.quantity}x",
+                  style: TextStyle(color: Colors.grey),
+                ),
+                SizedBox(width: 4),
+                Expanded(
+                  child: Container(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          orderMaster.masterProductName.contains("Extra")
+                              ? orderMaster.masterProductName
+                                  .replaceAll("Extra", "+")
+                              : orderMaster.masterProductName,
+                          textAlign: TextAlign.start,
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        ...orderChilds
+                            .map(
+                              (child) => Text(
+                                child.masterProductName.contains("Extra")
+                                    ? child.masterProductName
+                                        .replaceAll("Extra", "+")
+                                    : child.masterProductName,
+                                style: TextStyle(fontSize: 12),
+                              ),
+                            )
+                            .toList(),
+                      ],
+                    ),
+                  ),
+                ),
+                Text("${formatPrice(orderItemPrice)}"),
+              ],
+            ),
+          ],
+        );
+      },
+      separatorBuilder: (context, index) => Divider(),
+      itemCount: orderDetail.orderItems.length,
     );
   }
 

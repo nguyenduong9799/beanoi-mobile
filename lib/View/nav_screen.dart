@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Model/DTO/AccountDTO.dart';
+import 'package:unidelivery_mobile/View/gift.dart';
 import 'package:unidelivery_mobile/View/home.dart';
 import 'package:unidelivery_mobile/View/profile.dart';
 import 'package:unidelivery_mobile/ViewModel/root_viewModel.dart';
@@ -15,7 +16,7 @@ class RootScreen extends StatefulWidget {
 class _RootScreenState extends State<RootScreen> {
   final List<Widget> _screens = [
     HomeScreen(),
-    Scaffold(),
+    GiftScreen(),
     ProfileScreen(AccountDTO(name: 'Hung Bui')),
   ];
   final List<IconData> _icons = const [

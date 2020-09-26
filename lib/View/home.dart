@@ -19,7 +19,7 @@ import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/utils/enum.dart';
 
-const ORDER_TIME = 20;
+const ORDER_TIME = 23;
 
 class HomeScreen extends StatefulWidget {
   final AccountDTO user;
