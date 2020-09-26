@@ -235,7 +235,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "${formatPrice(order.total)}",
+                    "${formatPrice(order.total + 5000)}",
                     textAlign: TextAlign.right,
                     style: TextStyle(
                       color: kPrimary,
@@ -368,7 +368,7 @@ class _OrderDetailBottomSheetState extends State<OrderDetailBottomSheet> {
                       ),
                     ),
                     Text(
-                      DateFormat('H:m dd/MM')
+                      DateFormat('HH:mm dd/MM')
                           .format(DateTime.parse(orderDetail.orderTime)),
                       style: TextStyle(color: Colors.black45),
                     ),
@@ -400,7 +400,11 @@ class _OrderDetailBottomSheetState extends State<OrderDetailBottomSheet> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          "${orderMaster.masterProductName}",
+                                          orderMaster.masterProductName
+                                                  .contains("Extra")
+                                              ? orderMaster.masterProductName
+                                                  .replaceAll("Extra", "+")
+                                              : orderMaster.masterProductName,
                                           textAlign: TextAlign.start,
                                           style: TextStyle(
                                             fontSize: 14,
@@ -410,7 +414,12 @@ class _OrderDetailBottomSheetState extends State<OrderDetailBottomSheet> {
                                         ...orderChilds
                                             .map(
                                               (child) => Text(
-                                                child.masterProductName,
+                                                child.masterProductName
+                                                        .contains("Extra")
+                                                    ? child.masterProductName
+                                                        .replaceAll(
+                                                            "Extra", "+")
+                                                    : child.masterProductName,
                                                 style: TextStyle(fontSize: 12),
                                               ),
                                             )
@@ -472,7 +481,7 @@ class _OrderDetailBottomSheetState extends State<OrderDetailBottomSheet> {
                         "Tạm tính",
                         style: TextStyle(),
                       ),
-                      Text("${formatPrice(orderDetail.total - 5000)}"),
+                      Text("${formatPrice(orderDetail.total)}"),
                     ],
                   ),
                 ),
@@ -498,7 +507,7 @@ class _OrderDetailBottomSheetState extends State<OrderDetailBottomSheet> {
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       Text(
-                        "${formatPrice(orderDetail.total)}",
+                        "${formatPrice(orderDetail.total + 5000)}",
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ],
