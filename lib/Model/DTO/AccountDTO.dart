@@ -1,5 +1,3 @@
-import 'package:intl/intl.dart';
-
 class AccountDTO {
   final int uid;
   final String name, phone, gender, email;
