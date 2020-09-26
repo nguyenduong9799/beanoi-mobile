@@ -11,6 +11,7 @@ import 'package:unidelivery_mobile/View/orderHistory.dart';
 import 'package:unidelivery_mobile/ViewModel/root_viewModel.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/utils/enum.dart';
+import 'package:unidelivery_mobile/utils/index.dart';
 import 'package:unidelivery_mobile/utils/request.dart';
 import 'package:unidelivery_mobile/utils/shared_pref.dart';
 
@@ -265,7 +266,7 @@ class _HomeAppBarSate extends State<HomeAppBar> {
               ),
               children: <TextSpan>[
                 TextSpan(
-                  text: "${user.balance}đ",
+                  text: "${formatPrice(user.balance)}",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 14,

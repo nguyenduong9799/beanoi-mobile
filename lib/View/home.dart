@@ -154,106 +154,103 @@ class _HomeScreenState extends State<HomeScreen> {
             height: MediaQuery.of(context).size.height,
             child: Stack(
               children: [
-                _endOrderTime
-                    ? Center(
-                        child: Text(
-                          "Đã hết thời gian order rồi. \n Bạn quay lại vào lần sau nhé {{{(>_<)}}}",
-                          style: TextStyle(
-                            fontSize: 24,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      )
-                    : Container(
-                        // height: 800,
-                        child: ListView(
-                          children: [
-                            Container(
-                              // height: 750,
-                              child: Center(
-                                child: Padding(
-                                  padding: const EdgeInsets.only(top: 80),
-                                  child: Column(
-                                    children: [
-                                      // banner(),
-                                      Center(
-                                        child: Container(
-                                          margin: EdgeInsets.all(8),
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(16),
-                                            color: Colors.blue[200],
-                                          ),
-                                          height: 80,
-                                          width: double.infinity,
-                                          child: Image.asset(
-                                            'assets/images/banner.png',
-                                            fit: BoxFit.cover,
-                                            // width: double.infinity,
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(height: 16),
-                                      ScopedModelDescendant<HomeViewModel>(
-                                        builder: (context, child, model) {
-                                          List<ProductDTO> products =
-                                              model.products;
-                                          Status status = model.status;
-                                          switch (status) {
-                                            case Status.Error:
-                                              return AspectRatio(
-                                                aspectRatio: 1,
-                                                child: Center(
-                                                    child: Text(
-                                                        "Có gì sai sai... \n ${model.error.toString()}")),
-                                              );
-                                            case Status.Loading:
-                                              return AspectRatio(
-                                                  aspectRatio: 1,
-                                                  child: Center(
-                                                      child:
-                                                          CircularProgressIndicator()));
-                                            case Status.Empty:
-                                              return Center(
-                                                child: Text("Empty list"),
-                                              );
-                                            case Status.Completed:
-                                              return productListSection(
-                                                  products);
-                                            default:
-                                              return Text("Some thing wrong");
-                                          }
-                                        },
-                                      ),
-                                      SizedBox(height: 16),
-                                      Center(
-                                        child: Container(
-                                          margin: EdgeInsets.all(8),
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(16),
-                                            color: Colors.orange[300],
-                                          ),
-                                          height: 80,
-                                          width: double.infinity,
-                                          child: Center(
-                                              child: Text(
-                                            "Bottom Section",
-                                            style: TextStyle(
-                                              fontSize: 25,
-                                            ),
-                                          )),
-                                        ),
-                                      ),
-                                    ],
+                // _endOrderTime
+                //     ? Center(
+                //         child: Text(
+                //           "Đã hết thời gian order rồi. \n Bạn quay lại vào lần sau nhé {{{(>_<)}}}",
+                //           style: TextStyle(
+                //             fontSize: 24,
+                //           ),
+                //           textAlign: TextAlign.center,
+                //         ),
+                //       )
+                //     :
+                Container(
+                  // height: 800,
+                  child: ListView(
+                    children: [
+                      Container(
+                        // height: 750,
+                        child: Center(
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 80),
+                            child: Column(
+                              children: [
+                                // banner(),
+                                Center(
+                                  child: Container(
+                                    margin: EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(16),
+                                      color: Colors.blue[200],
+                                    ),
+                                    height: 80,
+                                    width: double.infinity,
+                                    child: Image.asset(
+                                      'assets/images/banner.png',
+                                      fit: BoxFit.cover,
+                                      // width: double.infinity,
+                                    ),
                                   ),
                                 ),
-                              ),
+                                SizedBox(height: 16),
+                                ScopedModelDescendant<HomeViewModel>(
+                                  builder: (context, child, model) {
+                                    List<ProductDTO> products = model.products;
+                                    Status status = model.status;
+                                    switch (status) {
+                                      case Status.Error:
+                                        return AspectRatio(
+                                          aspectRatio: 1,
+                                          child: Center(
+                                              child: Text(
+                                                  "Có gì sai sai... \n ${model.error.toString()}")),
+                                        );
+                                      case Status.Loading:
+                                        return AspectRatio(
+                                            aspectRatio: 1,
+                                            child: Center(
+                                                child:
+                                                    CircularProgressIndicator()));
+                                      case Status.Empty:
+                                        return Center(
+                                          child: Text("Empty list"),
+                                        );
+                                      case Status.Completed:
+                                        return productListSection(products);
+                                      default:
+                                        return Text("Some thing wrong");
+                                    }
+                                  },
+                                ),
+                                SizedBox(height: 16),
+                                Center(
+                                  child: Container(
+                                    margin: EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(16),
+                                      color: Colors.orange[300],
+                                    ),
+                                    height: 80,
+                                    width: double.infinity,
+                                    child: Center(
+                                        child: Text(
+                                      "Bottom Section",
+                                      style: TextStyle(
+                                        fontSize: 25,
+                                      ),
+                                    )),
+                                  ),
+                                ),
+                              ],
                             ),
-                            // SizedBox(height: 48),
-                          ],
+                          ),
                         ),
                       ),
+                      // SizedBox(height: 48),
+                    ],
+                  ),
+                ),
                 HomeAppBar(),
                 Positioned(
                   top: 150,

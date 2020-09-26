@@ -1,3 +1,4 @@
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
@@ -8,6 +9,7 @@ import 'package:unidelivery_mobile/acessories/appbar.dart';
 import 'package:unidelivery_mobile/acessories/dash_border.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/utils/enum.dart';
+import 'package:unidelivery_mobile/utils/index.dart';
 
 class OrderHistoryScreen extends StatefulWidget {
   OrderHistoryScreen({Key key}) : super(key: key);
@@ -114,12 +116,15 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
       final orderSummaryList = model.orderThumbnail;
       if (status == Status.Loading)
         return Center(
-          child: Container(
-            width: 50,
-            height: 50,
-            child: CircularProgressIndicator(
-              backgroundColor: kPrimary,
+          child: TextLiquidFill(
+            text: 'Đang tải',
+            waveColor: kPrimary,
+            boxBackgroundColor: kBackgroundGrey[3],
+            textStyle: TextStyle(
+              fontSize: 45.0,
+              fontWeight: FontWeight.bold,
             ),
+            boxHeight: 300.0,
           ),
         );
       else if (status == Status.Empty || orderSummaryList == null)
@@ -230,7 +235,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "${order.total} đ",
+                    "${formatPrice(order.total)}",
                     textAlign: TextAlign.right,
                     style: TextStyle(
                       color: kPrimary,
@@ -324,9 +329,28 @@ class _OrderDetailBottomSheetState extends State<OrderDetailBottomSheet> {
               children: <Widget>[
                 Row(
                   children: [
-                    Text(orderDetail.status == OrderFilter.ORDERING
-                        ? 'Đang giao...'
-                        : 'Đã nhận hàng'),
+                    Container(
+                      width: 85,
+                      child: orderDetail.status == OrderFilter.ORDERING
+                          ? TyperAnimatedTextKit(
+                              speed: Duration(milliseconds: 100),
+                              onTap: () {
+                                print("Tap Event");
+                              },
+                              text: ['Đang giao...'],
+                              textStyle: TextStyle(
+                                  fontFamily: "Bobbers", color: Colors.amber),
+                              textAlign: TextAlign.start,
+                              alignment: AlignmentDirectional
+                                  .topStart // or Alignment.topLeft
+                              )
+                          : Text(
+                              'Đã nhận hàng',
+                              style: TextStyle(
+                                color: kPrimary,
+                              ),
+                            ),
+                    ),
                     Expanded(
                       child: Padding(
                         padding: EdgeInsets.only(left: 8, right: 8),
@@ -395,7 +419,7 @@ class _OrderDetailBottomSheetState extends State<OrderDetailBottomSheet> {
                                     ),
                                   ),
                                 ),
-                                Text("${orderMaster.amount} đ"),
+                                Text("${formatPrice(orderMaster.amount)}"),
                               ],
                             ),
                           ],
@@ -448,7 +472,7 @@ class _OrderDetailBottomSheetState extends State<OrderDetailBottomSheet> {
                         "Tạm tính",
                         style: TextStyle(),
                       ),
-                      Text("${orderDetail.total - 5000} VND"),
+                      Text("${formatPrice(orderDetail.total - 5000)}"),
                     ],
                   ),
                 ),
@@ -459,7 +483,7 @@ class _OrderDetailBottomSheetState extends State<OrderDetailBottomSheet> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text("Phí vận chuyển", style: TextStyle()),
-                      Text("5.000 VND", style: TextStyle()),
+                      Text("${formatPrice(5000)}", style: TextStyle()),
                     ],
                   ),
                 ),
@@ -474,7 +498,7 @@ class _OrderDetailBottomSheetState extends State<OrderDetailBottomSheet> {
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       Text(
-                        "${orderDetail.total} VND",
+                        "${formatPrice(orderDetail.total)}",
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ],
