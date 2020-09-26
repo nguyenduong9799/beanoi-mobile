@@ -42,13 +42,13 @@ class _UpdateAccountState extends State<ProfileScreen> {
   Widget userInfo(AccountDTO dto) {
     return Container(
       color: kBackgroundGrey[0],
+      margin: EdgeInsets.only(top: 16),
       child: Column(
         children: [
           Expanded(
             child: ListView(
               shrinkWrap: true,
               children: <Widget>[
-                backButton(),
                 userImage(),
                 SizedBox(
                   height: 8,
@@ -58,18 +58,6 @@ class _UpdateAccountState extends State<ProfileScreen> {
                   height: 8,
                 ),
                 userButton("Cập nhật"),
-                // SizedBox(
-                //   height: 8,
-                // ),
-                // userButton("Đánh giá"),
-                // SizedBox(
-                //   height: 8,
-                // ),
-                // userButton("Hỏi đáp"),
-                // SizedBox(
-                //   height: 8,
-                // ),
-                // userButton("Giới thiệu"),
                 SizedBox(
                   height: 8,
                 ),
@@ -110,7 +98,7 @@ class _UpdateAccountState extends State<ProfileScreen> {
         decoration: BoxDecoration(
             border: Border.all(width: 5.0, color: kPrimary),
             shape: BoxShape.circle),
-        child: ClipOval(child: _userImage),
+        child: ClipOval(child: Image.asset('assets/images/avatar.png')),
       ),
     );
   }
