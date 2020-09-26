@@ -48,7 +48,7 @@ class MyApp extends StatelessWidget {
           requestObj.setToken = token;
           // cho nay co can gui token lai cho server khong
           // neu khong thi lay thong tin user tu token ma thoi
-          return token != null ? NavScreen() : LoginScreen();
+          return token != null ? RootScreen() : LoginScreen();
         });
     // return FutureBuilder<SharedPreferences>(
     //   future: SharedPreferences.getInstance(),

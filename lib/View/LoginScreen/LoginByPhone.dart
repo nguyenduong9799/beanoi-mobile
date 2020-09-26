@@ -286,7 +286,7 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
 
       await pr.hide();
       return Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => NavScreen()),
+          MaterialPageRoute(builder: (context) => RootScreen()),
           (route) => false);
     } on FirebaseAuthException catch (e) {
       print("=====OTP Fail: ${e.message}  ");
@@ -314,7 +314,7 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
               (route) => false);
         } else {
           await Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(builder: (context) => NavScreen()),
+              MaterialPageRoute(builder: (context) => RootScreen()),
               (route) => false);
           print("Login Success");
           // chuyen sang trang home

@@ -79,7 +79,7 @@ class _SignUpState extends State<SignUp> {
         if (updateSucces) {
           print('Update Success');
           Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (context) => NavScreen()));
+              MaterialPageRoute(builder: (context) => RootScreen()));
         }
       }
     }

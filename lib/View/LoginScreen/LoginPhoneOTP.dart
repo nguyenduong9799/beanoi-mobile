@@ -266,7 +266,7 @@ class _LoginWithPhoneOTPState extends State<LoginWithPhoneOTP> {
             duration: Duration(seconds: 3),
           ));
           await Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(builder: (context) => NavScreen()),
+              MaterialPageRoute(builder: (context) => RootScreen()),
               (route) => false);
         }
       }

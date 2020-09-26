@@ -16,6 +16,15 @@ class AccountDAO {
     // return AccountDTO(uid: idToken, name: "Default Name");
   }
 
+  Future<AccountDTO> getUser() async {
+    Response response = await request.get("/me");
+    // set access token
+    final user = response.data["data"];
+
+    return AccountDTO.fromJson(user);
+    // return AccountDTO(uid: idToken, name: "Default Name");
+  }
+
   Future<AccountDTO> updateUser(AccountDTO updateUser) async {
     final updateJSON = updateUser.toJson();
     print('updateUser');
