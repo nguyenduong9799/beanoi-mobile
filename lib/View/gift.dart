@@ -11,23 +11,28 @@ class GiftScreen extends StatelessWidget {
       backgroundColor: Colors.black54,
       body: Center(
         child: Container(
+          height: MediaQuery.of(context).size.height,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Container(
-                height: 70,
-                child: Text(
-                  "COMING SOON",
-                  style: TextStyle(
-                    fontSize: 30,
-                    color: kPrimary,
+              Expanded(
+                child: Center(
+                  child: Container(
+                    height: 70,
+                    child: Text(
+                      "COMING SOON",
+                      style: TextStyle(
+                        fontSize: 30,
+                        color: kPrimary,
+                      ),
+                    ),
                   ),
                 ),
               ),
               SizedBox(height: 32),
               SizedBox(
                 width: 250.0,
-                height: 250,
+                height: 100,
                 child: FadeAnimatedTextKit(
                     duration: Duration(seconds: 3),
                     // isRepeatingAnimation: true,
@@ -48,13 +53,15 @@ class GiftScreen extends StatelessWidget {
                         AlignmentDirectional.topStart // or Alignment.topLeft
                     ),
               ),
-              // Text(
-              //   "Tính năng đổi quà đang được phát triển \n Hãy Tích điểm thật nhiều để đổi thật nhiều quà nhá \n^0^",
-              //   textAlign: TextAlign.center,
-              //   style: TextStyle(
-              //     color: Colors.white,
-              //   ),
-              // ),
+              Container(
+                // color: Colors.amber,
+                height: 200,
+                width: MediaQuery.of(context).size.width * 0.9,
+                child: Image.asset(
+                  'assets/images/new-idea.png',
+                  fit: BoxFit.cover,
+                ),
+              )
             ],
           ),
         ),

@@ -174,29 +174,33 @@ class _UpdateAccountState extends State<ProfileScreen> {
   }
 
   Widget signoutButton() {
-    return Container(
-      margin: const EdgeInsets.only(left: 80.0, right: 80.0),
-      child: FlatButton(
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(8))),
-        textColor: kBackgroundGrey[0],
-        color: kBackgroundGrey[0],
-        splashColor: kBackgroundGrey[3],
-        child: Text(
-          "Đăng xuất",
-          style: TextStyle(
-              fontSize: 16, fontWeight: FontWeight.bold, color: kFail),
+    return ScopedModelDescendant<RootViewModel>(
+        builder: (context, child, model) {
+      return Container(
+        margin: const EdgeInsets.only(left: 80.0, right: 80.0),
+        child: FlatButton(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8))),
+          textColor: kBackgroundGrey[0],
+          color: kBackgroundGrey[0],
+          splashColor: kBackgroundGrey[3],
+          child: Text(
+            "Đăng xuất",
+            style: TextStyle(
+                fontSize: 16, fontWeight: FontWeight.bold, color: kFail),
+          ),
+          onPressed: () async {
+            int choice = await getOption(context, "Bạn có chắc không?");
+            if (choice == 1) {
+              await model.signOut();
+              Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (context) => LoginScreen()),
+                  (Route<dynamic> route) => false);
+            }
+          },
         ),
-        onPressed: () async {
-          int choice = await getOption(context, "Bạn có chắc không?");
-          if (choice == 1) {
-            Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(builder: (context) => LoginScreen()),
-                (Route<dynamic> route) => false);
-          }
-        },
-      ),
-    );
+      );
+    });
   }
 
   Widget systemInfo() {

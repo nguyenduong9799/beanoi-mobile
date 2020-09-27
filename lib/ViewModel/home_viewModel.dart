@@ -63,6 +63,7 @@ class HomeViewModel extends Model {
       notifyListeners();
       if (_isFirstFetch) {
         products = await _dao.getProducts();
+        // products.insertAll(0, products);
         _isFirstFetch = false;
       } else {
         // change filter
@@ -72,7 +73,11 @@ class HomeViewModel extends Model {
         products = products.sublist(0)..shuffle();
       }
       // check truong hop product tra ve rong (do khong co menu nao trong TG do)
-      status = Status.Completed;
+      if (products.isEmpty || products == null) {
+        status = Status.Empty;
+      } else {
+        status = Status.Completed;
+      }
       notifyListeners();
     } catch (e, stacktrace) {
       print("EXCEPTION $stacktrace");

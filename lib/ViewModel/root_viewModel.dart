@@ -29,4 +29,8 @@ class RootViewModel extends Model {
       notifyListeners();
     } finally {}
   }
+
+  Future<void> signOut() async {
+    await _dao.logOut();
+  }
 }

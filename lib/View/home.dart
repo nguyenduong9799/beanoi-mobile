@@ -1,3 +1,4 @@
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:animator/animator.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -202,39 +203,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       ),
                                     ),
                                     SizedBox(height: 16),
-                                    ScopedModelDescendant<HomeViewModel>(
-                                      builder: (context, child, model) {
-                                        List<ProductDTO> products =
-                                            model.products;
-                                        Status status = model.status;
-                                        switch (status) {
-                                          case Status.Error:
-                                            return AspectRatio(
-                                              aspectRatio: 1,
-                                              child: Center(
-                                                  child: Text(
-                                                      "Có gì sai sai... \n ${model.error.toString()}")),
-                                            );
-                                          case Status.Loading:
-                                            return AspectRatio(
-                                                aspectRatio: 1,
-                                                child: Center(
-                                                    child:
-                                                        CircularProgressIndicator()));
-                                          case Status.Empty:
-                                            return AspectRatio(
-                                              aspectRatio: 1,
-                                              child: Center(
-                                                child: Text("Empty list"),
-                                              ),
-                                            );
-                                          case Status.Completed:
-                                            return productListSection(products);
-                                          default:
-                                            return Text("Some thing wrong");
-                                        }
-                                      },
-                                    ),
+                                    buildProducts(),
                                     SizedBox(height: 16),
                                     Center(
                                       child: Container(
@@ -242,17 +211,17 @@ class _HomeScreenState extends State<HomeScreen> {
                                         decoration: BoxDecoration(
                                           borderRadius:
                                               BorderRadius.circular(16),
-                                          color: Colors.orange[300],
+                                          // color: Colors.orange[300],
                                         ),
                                         height: 80,
                                         width: double.infinity,
-                                        child: Center(
-                                            child: Text(
-                                          "Bottom Section",
-                                          style: TextStyle(
-                                            fontSize: 25,
-                                          ),
-                                        )),
+                                        // child: Center(
+                                        //     child: Text(
+                                        //   "Bottom Section",
+                                        //   style: TextStyle(
+                                        //     fontSize: 25,
+                                        //   ),
+                                        // )),
                                       ),
                                     ),
                                   ],
@@ -265,47 +234,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     HomeAppBar(),
-                    Positioned(
-                      top: 150,
-                      right: 0,
-                      child: RotatedBox(
-                        quarterTurns: -1,
-                        child: Container(
-                          padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFE8581C),
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(5),
-                              topRight: Radius.circular(5),
-                            ),
-                          ),
-                          child: Column(
-                            children: [
-                              // Text("Còn lại"),
-                              !_endOrderTime
-                                  ? CountdownTimer(
-                                      textStyle: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16,
-                                      ),
-                                      endTime: orderTime.millisecondsSinceEpoch,
-                                      onEnd: () {
-                                        setState(() {
-                                          _endOrderTime = true;
-                                        });
-                                      },
-                                    )
-                                  : Text(
-                                      "Bạn quay lại sau nhé :(",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
+                    buildCountDown(),
                     !_endOrderTime
                         ? Positioned(left: 0, bottom: 0, child: tag())
                         : SizedBox.shrink(),
@@ -315,6 +244,117 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         );
+      },
+    );
+  }
+
+  Positioned buildCountDown() {
+    return Positioned(
+      top: 150,
+      right: 0,
+      child: RotatedBox(
+        quarterTurns: -1,
+        child: Container(
+          padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
+          decoration: BoxDecoration(
+            color: const Color(0xFFE8581C),
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(5),
+              topRight: Radius.circular(5),
+            ),
+          ),
+          child: Column(
+            children: [
+              // Text("Còn lại"),
+              !_endOrderTime
+                  ? CountdownTimer(
+                      textStyle: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
+                      endTime: orderTime.millisecondsSinceEpoch,
+                      onEnd: () {
+                        setState(() {
+                          _endOrderTime = true;
+                        });
+                      },
+                    )
+                  : Text(
+                      "Bạn quay lại sau nhé :(",
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  ScopedModelDescendant<HomeViewModel> buildProducts() {
+    return ScopedModelDescendant<HomeViewModel>(
+      builder: (context, child, model) {
+        List<ProductDTO> products = model.products;
+        Status status = model.status;
+        // status = Status.Loading;
+        switch (status) {
+          case Status.Error:
+            return AspectRatio(
+              aspectRatio: 1,
+              child: Center(
+                  child: Text("Có gì sai sai... \n ${model.error.toString()}")),
+            );
+          case Status.Loading:
+            return AspectRatio(
+                aspectRatio: 1,
+                child: Center(
+                  child: TextLiquidFill(
+                    text: 'Đang tải',
+                    waveColor: kPrimary,
+                    boxBackgroundColor: kBackgroundGrey[1],
+                    textStyle: TextStyle(
+                      fontSize: 45.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    boxHeight: 300.0,
+                  ),
+                ));
+          case Status.Empty:
+            return Container(
+              padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
+              color: Colors.black45,
+              height: 400,
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      child: AspectRatio(
+                        aspectRatio: 1.5,
+                        child: Image.asset(
+                          'assets/images/empty-product.png',
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                    ),
+                    Text(
+                      "Aaa, các món ăn hiện tại đã hết rồi, bạn vui lòng quay lại sau nhé",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          case Status.Completed:
+            return productListSection(products);
+          default:
+            return Text("Some thing wrong");
+        }
       },
     );
   }

@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
+import 'package:unidelivery_mobile/Services/firebase.dart';
 import 'package:unidelivery_mobile/utils/request.dart';
 import 'package:unidelivery_mobile/utils/shared_pref.dart';
 
@@ -25,6 +26,11 @@ class AccountDAO {
 
     return AccountDTO.fromJson(user);
     // return AccountDTO(uid: idToken, name: "Default Name");
+  }
+
+  Future<void> logOut() async {
+    await AuthService().signOut();
+    await setToken(null);
   }
 
   Future<AccountDTO> updateUser(AccountDTO updateUser) async {
