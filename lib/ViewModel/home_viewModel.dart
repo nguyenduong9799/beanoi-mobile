@@ -71,6 +71,7 @@ class HomeViewModel extends Model {
         // products = products.sublist(2)..shuffle();
         products = products.sublist(0)..shuffle();
       }
+      // check truong hop product tra ve rong (do khong co menu nao trong TG do)
       status = Status.Completed;
       notifyListeners();
     } catch (e, stacktrace) {

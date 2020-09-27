@@ -222,8 +222,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     child:
                                                         CircularProgressIndicator()));
                                           case Status.Empty:
-                                            return Center(
-                                              child: Text("Empty list"),
+                                            return AspectRatio(
+                                              aspectRatio: 1,
+                                              child: Center(
+                                                child: Text("Empty list"),
+                                              ),
                                             );
                                           case Status.Completed:
                                             return productListSection(products);
