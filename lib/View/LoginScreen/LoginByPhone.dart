@@ -107,25 +107,29 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
         child: ReactiveForm(
           formGroup: this.form,
           child: Container(
-            child: Stack(
+            child: Column(
               // crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                SizedBox(
-                  height: screenHeight * 0.1,
-                ),
-                Container(
-                  // color: Colors.blue,
-                  padding: EdgeInsets.all(0),
-                  child: Image.asset(
-                    'assets/images/bi.png',
-                    alignment: Alignment.topRight,
-                    fit: BoxFit.fitHeight,
-                    // scale: 0.4,
+                // SizedBox(
+                //   height: screenHeight * 0.1,
+                // ),
+                Expanded(
+                  child: Container(
+                    // color: Colors.blue,
+                    // height: screenHeight * 0.5,
+                    padding: EdgeInsets.all(0),
+                    child: Image.asset(
+                      'assets/images/bi.png',
+                      alignment: Alignment.topRight,
+                      fit: BoxFit.fitHeight,
+                      // scale: 0.4,
+                    ),
                   ),
                 ),
                 // PHONE FORM
-                Align(
-                  alignment: Alignment.bottomCenter,
+                Expanded(
+                  // alignment: Alignment.bottomCenter,
+                  flex: 2,
                   child: Container(
                     decoration: BoxDecoration(
                       color: kPrimary,
@@ -136,9 +140,9 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
                     ),
                     padding: EdgeInsets.fromLTRB(48, 24, 48, 16),
                     width: screenWidth,
-                    height: screenHeight * 0.5,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                    // height: screenHeight * 0.5,
+                    child: ListView(
+                      // crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Text(
                           "Nhập số điện thoại",
@@ -286,7 +290,7 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
 
       await pr.hide();
       return Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => NavScreen()),
+          MaterialPageRoute(builder: (context) => RootScreen()),
           (route) => false);
     } on FirebaseAuthException catch (e) {
       print("=====OTP Fail: ${e.message}  ");
@@ -314,7 +318,7 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
               (route) => false);
         } else {
           await Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(builder: (context) => NavScreen()),
+              MaterialPageRoute(builder: (context) => RootScreen()),
               (route) => false);
           print("Login Success");
           // chuyen sang trang home

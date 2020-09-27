@@ -3,10 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:intl/intl.dart';
+import 'package:scoped_model/scoped_model.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:unidelivery_mobile/Services/firebase.dart';
 import 'package:unidelivery_mobile/View/login.dart';
 import 'package:unidelivery_mobile/View/orderHistory.dart';
+import 'package:unidelivery_mobile/ViewModel/root_viewModel.dart';
 import 'package:unidelivery_mobile/constraints.dart';
+import 'package:unidelivery_mobile/utils/enum.dart';
+import 'package:unidelivery_mobile/utils/index.dart';
+import 'package:unidelivery_mobile/utils/request.dart';
+import 'package:unidelivery_mobile/utils/shared_pref.dart';
 
 class DefaultAppBar extends StatefulWidget implements PreferredSizeWidget {
   String title;
@@ -30,10 +37,18 @@ class _AppBarSate extends State<DefaultAppBar> {
     return AppBar(
       elevation: 5.0,
       centerTitle: true,
-      iconTheme: IconThemeData(color: Colors.white),
+      leading: IconButton(
+        icon: Icon(Icons.arrow_back_ios, color: Colors.white),
+        onPressed: () {
+          Navigator.pop(context);
+        },
+      ),
       title: Text(
         widget.title,
-        style: TextStyle(color: Colors.white),
+        style: TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+        ),
       ),
     );
   }
@@ -56,8 +71,6 @@ class _HomeAppBarSate extends State<HomeAppBar> {
 
   @override
   Widget build(BuildContext context) {
-    double _screenHeight = MediaQuery.of(context).size.height;
-    double _screenWidth = MediaQuery.of(context).size.width;
     // TODO: implement build
     return Container(
       height: 70,
@@ -96,12 +109,14 @@ class _HomeAppBarSate extends State<HomeAppBar> {
                         )),
                     child: GestureDetector(
                       onTap: () async {
-                        await AuthService().signOut();
-                        Navigator.of(context).pushAndRemoveUntil(
-                            MaterialPageRoute(
-                              builder: (context) => LoginScreen(),
-                            ),
-                            (route) => false);
+                        // await AuthService().signOut();
+                        // Navigator.of(context).pushAndRemoveUntil(
+                        //     MaterialPageRoute(
+                        //       builder: (context) => LoginScreen(),
+                        //     ),
+                        //     (route) => false);
+                        // await setToken(null);
+                        requestObj.setToken = null;
                       },
                       child: Align(
                         alignment: Alignment.bottomCenter,
@@ -134,18 +149,8 @@ class _HomeAppBarSate extends State<HomeAppBar> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Flexible(
-                        child: Text(
-                      "Chào Bean, Đừng để bụng đói nha!",
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    )),
-                    SizedBox(
-                      height: 5,
-                    ),
+                    Flexible(child: _buildWelcome()),
+                    SizedBox(height: 5),
                     Row(
                       children: [
                         Image(
@@ -153,30 +158,8 @@ class _HomeAppBarSate extends State<HomeAppBar> {
                           width: 18,
                           height: 18,
                         ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Flexible(
-                          child: RichText(
-                            text: TextSpan(
-                                text: "Bạn có ",
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  // fontWeight: FontWeight.w100,
-                                  color: Colors.black45,
-                                ),
-                                children: <TextSpan>[
-                                  TextSpan(
-                                    text: "100.000đ",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ]),
-                          ),
-                        ),
+                        SizedBox(width: 10),
+                        Flexible(child: _buildBalance()),
                       ],
                     )
                   ],
@@ -211,6 +194,96 @@ class _HomeAppBarSate extends State<HomeAppBar> {
           )
         ],
       ),
+    );
+  }
+
+  Widget _buildWelcome() {
+    return ScopedModelDescendant<RootViewModel>(
+      builder: (context, child, model) {
+        final status = model.status;
+        final user = model.currentUser;
+        if (status == Status.Loading)
+          return Shimmer.fromColors(
+            baseColor: Colors.grey[300],
+            highlightColor: Colors.grey[100],
+            enabled: true,
+            child: Container(
+              width: MediaQuery.of(context).size.width * 0.45,
+              height: 20,
+              color: Colors.grey,
+            ),
+          );
+        else if (status == Status.Error) return Text("＞﹏＜");
+        return RichText(
+          text: TextSpan(
+              text: "Chào ",
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
+                color: Colors.white,
+              ),
+              children: <TextSpan>[
+                TextSpan(
+                  text: "${user.name}",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontStyle: FontStyle.italic,
+                    fontSize: 14,
+                    // color: Colors.white,
+                  ),
+                ),
+                TextSpan(text: ", Đừng để bụng đói nha!"),
+              ]),
+        );
+      },
+    );
+  }
+
+  Widget _buildBalance() {
+    return ScopedModelDescendant<RootViewModel>(
+      builder: (context, child, model) {
+        final status = model.status;
+        final user = model.currentUser;
+        if (status == Status.Loading)
+          return Shimmer.fromColors(
+            baseColor: Colors.grey[300],
+            highlightColor: Colors.grey[100],
+            enabled: true,
+            child: Container(
+              width: MediaQuery.of(context).size.width * 0.3,
+              height: 20,
+              color: Colors.grey,
+            ),
+          );
+        else if (status == Status.Error) return Text("＞﹏＜");
+        return RichText(
+          text: TextSpan(
+              text: "Bạn có ",
+              style: TextStyle(
+                fontSize: 12,
+                // fontWeight: FontWeight.w100,
+                color: Colors.black45,
+              ),
+              children: <TextSpan>[
+                TextSpan(
+                  text: "${formatPrice(user.balance)}",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                    color: Colors.white,
+                  ),
+                ),
+                TextSpan(text: " và "),
+                TextSpan(
+                  text: "${user.point} bean",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.deepOrangeAccent,
+                  ),
+                ),
+              ]),
+        );
+      },
     );
   }
 }

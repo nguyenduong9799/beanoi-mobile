@@ -1,3 +1,4 @@
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:animator/animator.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -13,11 +14,13 @@ import 'package:unidelivery_mobile/Model/DTO/ProductDTO.dart';
 import 'package:unidelivery_mobile/View/order.dart';
 import 'package:unidelivery_mobile/View/product_detail.dart';
 import 'package:unidelivery_mobile/ViewModel/home_viewModel.dart';
+import 'package:unidelivery_mobile/ViewModel/root_viewModel.dart';
 import 'package:unidelivery_mobile/acessories/appbar.dart';
+import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/utils/enum.dart';
 
-const ORDER_TIME = 9;
+const ORDER_TIME = 23;
 
 class HomeScreen extends StatefulWidget {
   final AccountDTO user;
@@ -48,7 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
     model.getProducts();
     if (orderTime.isBefore(DateTime.now())) {
       setState(() {
-        _endOrderTime = true;
+        _endOrderTime = false;
       });
     }
   }
@@ -56,211 +59,303 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     // print(widget?.user.uid);
-    return ScopedModel(
-      model: model,
-      child: Scaffold(
-        floatingActionButton: ScopedModelDescendant<HomeViewModel>(
-            rebuildOnChange: true,
-            builder: (context, child, model) {
-              return FutureBuilder(
-                  future: model.cart,
-                  builder: (context, snapshot) {
-                    Cart cart = snapshot.data;
-                    if (cart == null) return SizedBox.shrink();
-                    bool hasItemInCart = cart.isEmpty;
-                    int quantity = cart?.itemQuantity();
-
-                    return Container(
-                      margin: EdgeInsets.only(bottom: 50),
-                      child: FloatingActionButton(
-                        backgroundColor: Colors.transparent,
-                        onPressed: () async {
-                          print('Tap order');
-                          bool result = await Navigator.of(context)
-                              .push(MaterialPageRoute(
-                            builder: (context) => OrderScreen(),
-                          ));
-
-                          model.notifyListeners();
-
-                          if (result != null) {
-                            if (result) {
-                              showLoadingDialog();
-                            }
-                          }
-                        },
-                        child: Stack(
-                          overflow: Overflow.visible,
-                          children: [
-                            Container(
-                              width: 48,
-                              height: 48,
-                              decoration: BoxDecoration(
-                                color: kPrimary,
-                                borderRadius: BorderRadius.circular(48),
-                              ),
-                              child: Icon(Icons.shopping_cart,
-                                  color: Colors.white),
-                            ),
-                            Positioned(
-                              top: -12,
-                              left: 36,
-                              child: Container(
-                                width: 24,
-                                height: 24,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: Colors.amber,
+    return ScopedModelDescendant(
+      builder:
+          (BuildContext context, Widget child, RootViewModel rootViewModel) {
+        return ScopedModel(
+          model: model,
+          child: Scaffold(
+            floatingActionButton: !_endOrderTime
+                ? ScopedModelDescendant(
+                    rebuildOnChange: true,
+                    builder: (context, child, HomeViewModel model) {
+                      return FutureBuilder(
+                          future: model.cart,
+                          builder: (context, snapshot) {
+                            Cart cart = snapshot.data;
+                            if (cart == null) return SizedBox.shrink();
+                            bool hasItemInCart = cart.isEmpty;
+                            int quantity = cart?.itemQuantity();
+                            return Container(
+                              margin: EdgeInsets.only(bottom: 40),
+                              child: FloatingActionButton(
+                                backgroundColor: Colors.transparent,
+                                elevation: 20,
+                                heroTag: CART_TAG,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  // side: BorderSide(color: Colors.red),
                                 ),
-                                child: Center(
-                                  child: Text(
-                                    quantity.toString(),
-                                    style: kTextPrimary.copyWith(
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    );
-                  });
-            }),
-        backgroundColor: Colors.white,
-        //bottomNavigationBar: bottomBar(),
-        body: SafeArea(
-          child: Stack(
-            children: [
-              Container(
-                // height: 800,
-                child: ListView(
-                  children: [
-                    Container(
-                      // height: 750,
-                      child: Center(
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 80),
-                          child: Column(
-                            children: [
-                              // banner(),
-                              Center(
-                                child: Container(
-                                  margin: EdgeInsets.all(8),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(16),
-                                    color: Colors.blue[200],
-                                  ),
-                                  height: 80,
-                                  width: double.infinity,
-                                  child: Image.asset(
-                                    'assets/images/banner.png',
-                                    fit: BoxFit.cover,
-                                    // width: double.infinity,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: 16),
-                              ScopedModelDescendant<HomeViewModel>(
-                                builder: (context, child, model) {
-                                  List<ProductDTO> products = model.products;
-                                  Status status = model.status;
-                                  switch (status) {
-                                    case Status.Error:
-                                      return AspectRatio(
-                                        aspectRatio: 1,
-                                        child: Center(
-                                            child: Text(
-                                                "Có gì sai sai... \n ${model.error.toString()}")),
-                                      );
-                                    case Status.Loading:
-                                      return AspectRatio(
-                                          aspectRatio: 1,
-                                          child: Center(
-                                              child:
-                                                  CircularProgressIndicator()));
-                                    case Status.Empty:
-                                      return Center(
-                                        child: Text("Empty list"),
-                                      );
-                                    case Status.Completed:
-                                      return productListSection(products);
-                                    default:
-                                      return Text("Some thing wrong");
+                                onPressed: () async {
+                                  print('Tap order');
+                                  Scaffold.of(context).hideCurrentSnackBar();
+                                  bool result = await Navigator.of(context)
+                                      .push(MaterialPageRoute(
+                                    builder: (context) => OrderScreen(),
+                                  ));
+                                  if (result != null) {
+                                    if (result) {
+                                      showStatusDialog(
+                                          context,
+                                          Icon(
+                                            Icons.check_circle_outline,
+                                            color: kSuccess,
+                                            size: DIALOG_ICON_SIZE,
+                                          ),
+                                          "Thành công",
+                                          "Đơn hàng của bạn sẽ được giao vào lúc $TIME");
+                                      await rootViewModel.fetchUser();
+                                    }
                                   }
+                                  model.notifyListeners();
                                 },
-                              ),
-                              SizedBox(height: 16),
-                              Center(
-                                child: Container(
-                                  margin: EdgeInsets.all(8),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(16),
-                                    color: Colors.orange[300],
-                                  ),
-                                  height: 80,
-                                  width: double.infinity,
-                                  child: Center(
-                                      child: Text(
-                                    "Bottom Section",
-                                    style: TextStyle(
-                                      fontSize: 25,
+                                child: Stack(
+                                  overflow: Overflow.visible,
+                                  children: [
+                                    Container(
+                                      width: 48,
+                                      height: 48,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Icon(
+                                        Icons.shopping_cart,
+                                        color: kPrimary,
+                                      ),
                                     ),
-                                  )),
+                                    Positioned(
+                                      top: -10,
+                                      left: 32,
+                                      child: Container(
+                                        width: 24,
+                                        height: 24,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(16),
+                                          color: Colors.white,
+                                          border:
+                                              Border.all(color: Colors.grey),
+                                        ),
+                                        child: Center(
+                                          child: Text(
+                                            quantity.toString(),
+                                            style: kTextPrimary.copyWith(
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.black87,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  ],
                                 ),
                               ),
-                            ],
+                            );
+                          });
+                    })
+                : SizedBox.shrink(),
+            backgroundColor: Colors.white,
+            //bottomNavigationBar: bottomBar(),
+            body: SafeArea(
+              child: Container(
+                height: MediaQuery.of(context).size.height,
+                child: Stack(
+                  children: [
+                    // _endOrderTime
+                    //     ? Center(
+                    //         child: Text(
+                    //           "Đã hết thời gian order rồi. \n Bạn quay lại vào lần sau nhé {{{(>_<)}}}",
+                    //           style: TextStyle(
+                    //             fontSize: 24,
+                    //           ),
+                    //           textAlign: TextAlign.center,
+                    //         ),
+                    //       )
+                    //     :
+                    Container(
+                      // height: 800,
+                      child: ListView(
+                        children: [
+                          Container(
+                            // height: 750,
+                            child: Center(
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 80),
+                                child: Column(
+                                  children: [
+                                    // banner(),
+                                    Center(
+                                      child: Container(
+                                        margin: EdgeInsets.all(8),
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(16),
+                                          color: Colors.blue[200],
+                                        ),
+                                        height: 80,
+                                        width: double.infinity,
+                                        child: Image.asset(
+                                          'assets/images/banner.png',
+                                          fit: BoxFit.cover,
+                                          // width: double.infinity,
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(height: 16),
+                                    buildProducts(),
+                                    SizedBox(height: 16),
+                                    Center(
+                                      child: Container(
+                                        margin: EdgeInsets.all(8),
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(16),
+                                          // color: Colors.orange[300],
+                                        ),
+                                        height: 80,
+                                        width: double.infinity,
+                                        // child: Center(
+                                        //     child: Text(
+                                        //   "Bottom Section",
+                                        //   style: TextStyle(
+                                        //     fontSize: 25,
+                                        //   ),
+                                        // )),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
                           ),
-                        ),
+                          // SizedBox(height: 48),
+                        ],
                       ),
                     ),
-                    // SizedBox(height: 48),
+                    HomeAppBar(),
+                    buildCountDown(),
+                    !_endOrderTime
+                        ? Positioned(left: 0, bottom: 0, child: tag())
+                        : SizedBox.shrink(),
                   ],
                 ),
               ),
-              HomeAppBar(),
-              Positioned(
-                top: 150,
-                right: 0,
-                child: RotatedBox(
-                  quarterTurns: -1,
-                  child: Container(
-                    padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFE8581C),
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(5),
-                        topRight: Radius.circular(5),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Positioned buildCountDown() {
+    return Positioned(
+      top: 150,
+      right: 0,
+      child: RotatedBox(
+        quarterTurns: -1,
+        child: Container(
+          padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
+          decoration: BoxDecoration(
+            color: const Color(0xFFE8581C),
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(5),
+              topRight: Radius.circular(5),
+            ),
+          ),
+          child: Column(
+            children: [
+              // Text("Còn lại"),
+              !_endOrderTime
+                  ? CountdownTimer(
+                      textStyle: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
+                      endTime: orderTime.millisecondsSinceEpoch,
+                      onEnd: () {
+                        setState(() {
+                          _endOrderTime = true;
+                        });
+                      },
+                    )
+                  : Text(
+                      "Bạn quay lại sau nhé :(",
+                      style: TextStyle(
+                        color: Colors.white,
                       ),
                     ),
-                    child: Column(
-                      children: [
-                        // Text("Còn lại"),
-                        !_endOrderTime
-                            ? CountdownTimer(
-                                endTime: orderTime.millisecondsSinceEpoch,
-                                onEnd: () {
-                                  setState(() {
-                                    _endOrderTime = true;
-                                  });
-                                },
-                              )
-                            : Text(
-                                "Bạn quay lại sau nhé :(",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                ),
-                              ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              Positioned(left: 0, bottom: 0, child: tag()),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  ScopedModelDescendant<HomeViewModel> buildProducts() {
+    return ScopedModelDescendant<HomeViewModel>(
+      builder: (context, child, model) {
+        List<ProductDTO> products = model.products;
+        Status status = model.status;
+        // status = Status.Loading;
+        switch (status) {
+          case Status.Error:
+            return AspectRatio(
+              aspectRatio: 1,
+              child: Center(
+                  child: Text("Có gì sai sai... \n ${model.error.toString()}")),
+            );
+          case Status.Loading:
+            return AspectRatio(
+                aspectRatio: 1,
+                child: Center(
+                  child: TextLiquidFill(
+                    text: 'Đang tải',
+                    waveColor: kPrimary,
+                    boxBackgroundColor: kBackgroundGrey[1],
+                    textStyle: TextStyle(
+                      fontSize: 45.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    boxHeight: 300.0,
+                  ),
+                ));
+          case Status.Empty:
+            return Container(
+              padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
+              color: Colors.black45,
+              height: 400,
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      child: AspectRatio(
+                        aspectRatio: 1.5,
+                        child: Image.asset(
+                          'assets/images/empty-product.png',
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                    ),
+                    Text(
+                      "Aaa, các món ăn hiện tại đã hết rồi, bạn vui lòng quay lại sau nhé",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          case Status.Completed:
+            return productListSection(products);
+          default:
+            return Text("Some thing wrong");
+        }
+      },
     );
   }
 
@@ -499,62 +594,6 @@ class _HomeScreenState extends State<HomeScreen> {
       }),
     );
   }
-
-  void showLoadingDialog() {
-    showDialog<dynamic>(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return Dialog(
-            backgroundColor: Colors.white,
-            elevation: 8.0,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(8.0))),
-            child: Container(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    Icons.check_circle_outline,
-                    color: Colors.green,
-                    size: 60,
-                  ),
-                  Center(
-                      child: Text(
-                    "Thành công",
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  )),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Text("Đơn hàng của bạn sẽ được giao trong vòng 20 phút nữa"),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  ButtonTheme(
-                    minWidth: double.infinity,
-                    child: FlatButton(
-                      color: kPrimary,
-                      textColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(5))),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text("OK"),
-                      ),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                  )
-                ],
-              ),
-            ));
-      },
-    );
-    // Delaying the function for 200 milliseconds
-  }
 }
 
 class FoodItem extends StatefulWidget {
@@ -591,10 +630,24 @@ class _FoodItemState extends State<FoodItem> {
             ),
             onTap: () async {
               print('Add item to cart');
+              Scaffold.of(context).hideCurrentSnackBar();
               // TODO: Change by receive result from Navigator
-              await Navigator.of(context).push(MaterialPageRoute(
+              bool result = await Navigator.of(context).push(MaterialPageRoute(
                 builder: (BuildContext context) => ProductDetailScreen(product),
               ));
+              if (result != null) {
+                if (result) {
+                  final snackBar = SnackBar(
+                    backgroundColor: kPrimary,
+                    content: Text(
+                      'Thêm món thành công',
+                      style: kTextPrimary,
+                    ),
+                    duration: Duration(seconds: 2),
+                  );
+                  Scaffold.of(context).showSnackBar(snackBar);
+                }
+              }
               model.notifyListeners();
             },
             child: Opacity(
@@ -609,43 +662,49 @@ class _FoodItemState extends State<FoodItem> {
                         opacity: 1,
                         child: AspectRatio(
                           aspectRatio: 1.1,
-                          child: CachedNetworkImage(
-                            imageUrl: imageURL ?? "",
-                            imageBuilder: (context, imageProvider) => Container(
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  image: imageProvider,
-                                  fit: BoxFit.fill,
+                          child: (imageURL == null || imageURL == "")
+                              ? Icon(
+                                  MaterialIcons.broken_image,
+                                  color: kPrimary.withOpacity(0.5),
+                                )
+                              : CachedNetworkImage(
+                                  imageUrl: imageURL,
+                                  imageBuilder: (context, imageProvider) =>
+                                      Container(
+                                    decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                        image: imageProvider,
+                                        fit: BoxFit.fill,
+                                      ),
+                                    ),
+                                  ),
+                                  progressIndicatorBuilder:
+                                      (context, url, downloadProgress) =>
+                                          Shimmer.fromColors(
+                                    baseColor: Colors.grey[300],
+                                    highlightColor: Colors.grey[100],
+                                    enabled: true,
+                                    child: Container(
+                                      width: 100,
+                                      height: 100,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                  // placeholder: (context, url) => Container(
+                                  //   width: 100,
+                                  //   height: 100,
+                                  //   child: Shimmer.fromColors(
+                                  //     baseColor: Colors.grey[300],
+                                  //     highlightColor: Colors.grey[100],
+                                  //     enabled: true,
+                                  //     child: SizedBox.shrink(),
+                                  //   ),
+                                  // ),
+                                  errorWidget: (context, url, error) => Icon(
+                                    MaterialIcons.broken_image,
+                                    color: kPrimary.withOpacity(0.5),
+                                  ),
                                 ),
-                              ),
-                            ),
-                            progressIndicatorBuilder:
-                                (context, url, downloadProgress) =>
-                                    Shimmer.fromColors(
-                              baseColor: Colors.grey[300],
-                              highlightColor: Colors.grey[100],
-                              enabled: true,
-                              child: Container(
-                                width: 100,
-                                height: 100,
-                                color: Colors.grey,
-                              ),
-                            ),
-                            // placeholder: (context, url) => Container(
-                            //   width: 100,
-                            //   height: 100,
-                            //   child: Shimmer.fromColors(
-                            //     baseColor: Colors.grey[300],
-                            //     highlightColor: Colors.grey[100],
-                            //     enabled: true,
-                            //     child: SizedBox.shrink(),
-                            //   ),
-                            // ),
-                            errorWidget: (context, url, error) => Icon(
-                              MaterialIcons.broken_image,
-                              color: kPrimary.withOpacity(0.5),
-                            ),
-                          ),
                           // FadeInImage(
                           //   image: NetworkImage(imageURL),
                           //   placeholder: AssetImage('assets/images/avatar.png'),

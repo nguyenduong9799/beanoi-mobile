@@ -63,17 +63,24 @@ class HomeViewModel extends Model {
       notifyListeners();
       if (_isFirstFetch) {
         products = await _dao.getProducts();
+        // products.insertAll(0, products);
         _isFirstFetch = false;
       } else {
         // change filter
         // do something with products
         print("Fetch prodyuct with filter");
-        products = products.sublist(2)..shuffle();
+        // products = products.sublist(2)..shuffle();
+        products = products.sublist(0)..shuffle();
       }
-      status = Status.Completed;
+      // check truong hop product tra ve rong (do khong co menu nao trong TG do)
+      if (products.isEmpty || products == null) {
+        status = Status.Empty;
+      } else {
+        status = Status.Completed;
+      }
       notifyListeners();
-    } catch (e) {
-      print("EXCEPTION $e");
+    } catch (e, stacktrace) {
+      print("EXCEPTION $stacktrace");
       status = Status.Error;
       error = e.toString();
       notifyListeners();

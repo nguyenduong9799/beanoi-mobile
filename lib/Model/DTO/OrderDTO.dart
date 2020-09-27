@@ -1,25 +1,36 @@
 import 'package:unidelivery_mobile/ViewModel/orderHistory_viewModel.dart';
 
 class OrderDTO {
-  final String id;
+  final int id;
+  final int itemQuantity;
 
   final double total;
   final OrderFilter status;
   final String orderTime;
+  final List<OrderItemDTO> orderItems;
 
-  OrderDTO(this.id, {this.orderTime, this.total, this.status});
+  OrderDTO(
+    this.id, {
+    this.orderTime,
+    this.total,
+    this.itemQuantity,
+    this.status,
+    this.orderItems,
+  });
 
   factory OrderDTO.fromJSON(Map<String, dynamic> map) => OrderDTO(
-        map["id"],
-        total: double.parse(map["total"]),
-        orderTime: map["orderTime"],
-        status: (map["status"] as String) == "ordering"
+        map["rent_id"],
+        total: map["final_amount"],
+        orderTime: map["check_in_date"],
+        itemQuantity: map["master_product_quantity"],
+        status: (map["delivery_status"]) == 0
             ? OrderFilter.ORDERING
             : OrderFilter.DONE,
+        orderItems: OrderItemDTO.fromList(map["list_order_details"]),
       );
 
-  static List<OrderDTO> fromList(List<dynamic> list) =>
-      list.map((e) => OrderDTO.fromJSON(e)).toList();
+  static List<OrderDTO> fromList(List list) =>
+      list?.map((e) => OrderDTO.fromJSON(e))?.toList();
 }
 
 class OrderItemDTO {
@@ -27,7 +38,7 @@ class OrderItemDTO {
   final String masterProductId;
   final double amount;
   final int quantity;
-  final List productChilds;
+  final List<OrderItemDTO> productChilds;
 
   OrderItemDTO({
     this.masterProductName,
@@ -36,4 +47,29 @@ class OrderItemDTO {
     this.productChilds,
     this.quantity,
   });
+
+  factory OrderItemDTO.fromJSON(Map<String, dynamic> map) => OrderItemDTO(
+        masterProductName: map["product_name"],
+        quantity: map["quantity"],
+        amount: map["final_amount"],
+        productChilds: OrderItemDTO.fromList(map["list_of_childs"]),
+      );
+
+  static List<OrderItemDTO> fromList(List list) =>
+      list?.map((e) => OrderItemDTO.fromJSON(e))?.toList();
+}
+
+class OrderListDTO {
+  final checkInDate;
+  final List<OrderDTO> orders;
+
+  OrderListDTO(this.checkInDate, this.orders);
+
+  factory OrderListDTO.fromJSON(Map<String, dynamic> map) => OrderListDTO(
+        map["check_in_date"],
+        OrderDTO.fromList(map["list_of_orders"]),
+      );
+
+  static List<OrderListDTO> fromList(List list) =>
+      list?.map((e) => OrderListDTO.fromJSON(e))?.toList();
 }

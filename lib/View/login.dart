@@ -1,3 +1,4 @@
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
@@ -38,135 +39,173 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Scaffold(
           backgroundColor: Colors.white,
           resizeToAvoidBottomPadding: false,
-          body: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+          body: Stack(
             children: [
-              SizedBox(
-                height: screenHeight * 0.1,
-              ),
-              Expanded(
-                flex: 1,
-                child: Container(
-                  // color: Colors.blue,
-                  padding: EdgeInsets.all(0),
-                  child: Image.asset(
-                    'assets/images/bi.png',
-                    alignment: Alignment.bottomRight,
-                    fit: BoxFit.fitHeight,
-                    // scale: 0.4,
-                  ),
+              Container(
+                height: screenHeight,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    SizedBox(
+                      height: screenHeight * 0.1,
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: Container(
+                        // color: Colors.blue,
+                        padding: EdgeInsets.all(0),
+                        child: Image.asset(
+                          'assets/images/bi.png',
+                          alignment: Alignment.bottomRight,
+                          fit: BoxFit.fitHeight,
+                          // scale: 0.4,
+                        ),
+                      ),
+                    ),
+                    buildLoginButtons(screenHeight, context),
+                  ],
                 ),
               ),
               Container(
-                decoration: BoxDecoration(
-                  color: kPrimary,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(16),
-                    topRight: Radius.circular(16),
-                  ),
-                ),
-                padding: EdgeInsets.fromLTRB(48, 24, 48, 16),
-                height: screenHeight * 0.55,
-                child: ButtonTheme(
-                  minWidth: 200.0,
-                  height: 48,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      RaisedButton(
-                        color: Colors.white,
-                        padding: EdgeInsets.fromLTRB(4, 0, 4, 0),
-                        elevation: 8,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(24.0),
-                          // side: BorderSide(color: Colors.red),
+                margin: EdgeInsets.only(left: 24),
+                width: 140,
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          margin: EdgeInsets.only(left: 24),
+                          width: 2,
+                          height: 14,
+                          color: kPrimary,
                         ),
-                        onPressed: () {
-                          Navigator.of(context).push(CupertinoPageRoute(
-                            builder: (context) => LoginWithPhone(),
-                          ));
-                        },
-                        child: Row(
-                          children: [
-                            Container(
-                              padding: EdgeInsets.all(8),
-                              child: Icon(Icons.phone),
-                              decoration: BoxDecoration(
-                                color: Color(0xffffd24d),
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                            ),
-                            Expanded(
-                              child: Text(
-                                "Đăng nhập bằng số điện thoại",
-                                style: TextStyle(color: kPrimary, fontSize: 16),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          ],
+                        Container(
+                          margin: EdgeInsets.only(right: 24),
+                          width: 2,
+                          height: 14,
+                          color: kPrimary,
+                        ),
+                      ],
+                    ),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: kPrimary,
+                          width: 3,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 3,
+                            blurRadius: 10,
+                            offset: Offset(0, 3), // changes position of shadow
+                          ),
+                        ],
+                      ),
+                      child: Text(
+                        'UniDelivery',
+                        style: TextStyle(
+                          color: kPrimary,
+                          letterSpacing: 2,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(height: 24),
-                      RaisedButton(
-                        color: Colors.white,
-                        padding: EdgeInsets.fromLTRB(4, 0, 4, 0),
-                        elevation: 8,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(24.0),
-                          // side: BorderSide(color: Colors.red),
-                        ),
-                        onPressed: null,
-                        child: Row(
-                          children: [
-                            Container(
-                              padding: EdgeInsets.all(8),
-                              child: Icon(FontAwesome.google),
-                              decoration: BoxDecoration(
-                                color: Color(0xffffd24d),
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                            ),
-                            Expanded(
-                              child: Text(
-                                "Đăng nhập bằng Gmail",
-                                style: TextStyle(color: kPrimary, fontSize: 16),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
-              // Align(
-              //   alignment: Alignment.topCenter,
-              //   child: Container(
-              //     decoration: BoxDecoration(
-              //       color: kPrimary,
-              //       borderRadius: BorderRadius.only(
-              //         topLeft: Radius.circular(16),
-              //         topRight: Radius.circular(16),
-              //       ),
-              //     ),
-              //     width: screenWidth,
-              //     height: screenHeight * 0.55,
-              //     child: Stack(
-              //       children: [
-              //         Container(
-              //           child: ScopedModelDescendant<LoginViewModel>(
-              //             builder: (BuildContext context, Widget child,
-              //                     LoginViewModel model) =>
-              //                 _buildLoginForm(model),
-              //           ),
-              //         )
-              //       ],
-              //     ),
-              //   ),
-              // ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildLoginButtons(double screenHeight, BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: kPrimary,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(16),
+          topRight: Radius.circular(16),
+        ),
+      ),
+      padding: EdgeInsets.fromLTRB(48, 24, 48, 16),
+      height: screenHeight * 0.55,
+      child: ButtonTheme(
+        minWidth: 200.0,
+        height: 48,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            RaisedButton(
+              color: Colors.white,
+              padding: EdgeInsets.fromLTRB(4, 0, 4, 0),
+              elevation: 8,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(24.0),
+                // side: BorderSide(color: Colors.red),
+              ),
+              onPressed: () {
+                Navigator.of(context).push(CupertinoPageRoute(
+                  builder: (context) => LoginWithPhone(),
+                ));
+              },
+              child: Row(
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(8),
+                    child: Icon(Icons.phone),
+                    decoration: BoxDecoration(
+                      color: Color(0xffffd24d),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                  Expanded(
+                    child: Text(
+                      "Đăng nhập bằng số điện thoại",
+                      style: TextStyle(color: kPrimary, fontSize: 16),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 24),
+            RaisedButton(
+              color: Colors.white,
+              padding: EdgeInsets.fromLTRB(4, 0, 4, 0),
+              elevation: 8,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(24.0),
+                // side: BorderSide(color: Colors.red),
+              ),
+              onPressed: null,
+              child: Row(
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(8),
+                    child: Icon(FontAwesome.google),
+                    decoration: BoxDecoration(
+                      color: Color(0xffffd24d),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                  Expanded(
+                    child: Text(
+                      "Đăng nhập bằng Gmail",
+                      style: TextStyle(color: kPrimary, fontSize: 16),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );

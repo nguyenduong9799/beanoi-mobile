@@ -86,23 +86,22 @@ class _LoginWithPhoneOTPState extends State<LoginWithPhoneOTP> {
             ),
           ),
           body: Container(
-            child: Stack(
+            child: Column(
               children: [
-                SizedBox(
-                  height: screenHeight * 0.1,
-                ),
-                Container(
-                  // color: Colors.blue,
-                  padding: EdgeInsets.all(0),
-                  child: Image.asset(
-                    'assets/images/bi_password.png',
-                    alignment: Alignment.bottomRight,
-                    fit: BoxFit.fitHeight,
-                    // scale: 0.4,
+                Expanded(
+                  child: Container(
+                    // color: Colors.blue,
+                    padding: EdgeInsets.all(0),
+                    child: Image.asset(
+                      'assets/images/bi_password.png',
+                      alignment: Alignment.bottomRight,
+                      fit: BoxFit.fitHeight,
+                      // scale: 0.4,
+                    ),
                   ),
                 ),
-                Align(
-                  alignment: Alignment.bottomCenter,
+                Expanded(
+                  flex: 2,
                   child: Container(
                     decoration: BoxDecoration(
                       color: kPrimary,
@@ -117,7 +116,7 @@ class _LoginWithPhoneOTPState extends State<LoginWithPhoneOTP> {
                     child: ScopedModelDescendant<LoginViewModel>(
                       builder:
                           (BuildContext context, Widget child, Model model) {
-                        return Column(
+                        return ListView(
                           children: [
                             Padding(
                               padding:
@@ -164,23 +163,23 @@ class _LoginWithPhoneOTPState extends State<LoginWithPhoneOTP> {
                             SizedBox(
                               height: 20,
                             ),
-                            RichText(
-                              textAlign: TextAlign.center,
-                              text: TextSpan(
-                                  text: "Chưa nhận được code?",
-                                  style: TextStyle(
-                                      color: Colors.black54, fontSize: 15),
-                                  children: [
-                                    TextSpan(
-                                      text: " Gửi lại",
-                                      // recognizer: onTapRecognizer,
-                                      style: TextStyle(
-                                          color: Colors.blue[800],
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16),
-                                    )
-                                  ]),
-                            ),
+                            // RichText(
+                            //   textAlign: TextAlign.center,
+                            //   text: TextSpan(
+                            //       text: "Chưa nhận được code?",
+                            //       style: TextStyle(
+                            //           color: Colors.black54, fontSize: 15),
+                            //       children: [
+                            //         TextSpan(
+                            //           text: " Gửi lại",
+                            //           // recognizer: onTapRecognizer,
+                            //           style: TextStyle(
+                            //               color: Colors.blue[800],
+                            //               fontWeight: FontWeight.bold,
+                            //               fontSize: 16),
+                            //         )
+                            //       ]),
+                            // ),
                             SizedBox(
                               height: 14,
                             ),
@@ -266,16 +265,14 @@ class _LoginWithPhoneOTPState extends State<LoginWithPhoneOTP> {
             duration: Duration(seconds: 3),
           ));
           await Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(builder: (context) => NavScreen()),
+              MaterialPageRoute(builder: (context) => RootScreen()),
               (route) => false);
-          print("Login Success");
-          // chuyen sang trang home
         }
       }
     } on FirebaseAuthException catch (e) {
       print("=====OTP Fail: ${e.message}  ");
       await _showMyDialog("Error", e.message);
-    } on Exception catch (e) {
+    } catch (e) {
       await _showMyDialog("Error", e.toString());
     } finally {
       await pr.hide();

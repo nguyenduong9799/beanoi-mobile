@@ -54,13 +54,14 @@ class _SignUpState extends State<SignUp> {
     );
     final user = widget.user;
     // UPDATE USER INFO INTO FORM
-    form.value = {
-      "name": user.name,
-      "phone": user.phone,
-      "birthdate": user.birthdate,
-      "email": user.email,
-      "gender": user.gender,
-    };
+    if (user != null)
+      form.value = {
+        "name": user.name,
+        "phone": user.phone,
+        "birthdate": user.birthdate,
+        "email": user.email,
+        "gender": user.gender,
+      };
   }
 
   Future<void> _onUpdateUser(SignUpViewModel model) async {
@@ -72,18 +73,44 @@ class _SignUpState extends State<SignUp> {
         print('Updated User ${updatedUser.name}');
         updateSucces = true;
       } catch (e) {
-        pr.style(message: e.toString());
-        await pr.show();
+        await _showMyDialog("Lỗi", e.toString());
       } finally {
         if (pr.isShowing()) await pr.hide();
         // Chuyen trang
         if (updateSucces) {
           print('Update Success');
           Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (context) => NavScreen()));
+              MaterialPageRoute(builder: (context) => RootScreen()));
         }
       }
     }
+  }
+
+  Future<void> _showMyDialog(String title, String content) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('$title'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('$content'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Approve'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -102,6 +129,17 @@ class _SignUpState extends State<SignUp> {
                 // BACKGROUND
                 Container(
                   color: Color(0xFFddf1ed),
+                ),
+                Positioned(
+                  right: 0,
+                  bottom: 0,
+                  child: Container(
+                    height: screenHeight * 0.35,
+                    // width: 250,
+                    child: Image.asset(
+                      'assets/images/sign_up_character.png',
+                    ),
+                  ),
                 ),
                 // SIGN-UP FORM
                 Stack(
@@ -248,7 +286,7 @@ class _SignUpState extends State<SignUp> {
                           color: Colors.white,
                         ),
                       ),
-                    )
+                    ),
                   ],
                 ),
               ],
