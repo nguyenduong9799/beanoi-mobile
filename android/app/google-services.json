@@ -8,9 +8,53 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:868742887756:android:ad79e516cf3787e314b7e9",
+        "mobilesdk_app_id": "1:868742887756:android:c29228a17eec2a3614b7e9",
         "android_client_info": {
           "package_name": "com.example.unidelivery_mobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "868742887756-ro7n3k092oj42lrsv5r8u9pmbfg8ju5p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.unidelivery_mobile",
+            "certificate_hash": "52e74c3efb89a23a0a57c7391e671c898d48b4c2"
+          }
+        },
+        {
+          "client_id": "868742887756-7puthu01nsp8vr1qc0knonbeeb0ie95j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDJ3B-0xSAFDxYRVQdcuqhcnQaWN9dk7P0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "868742887756-7puthu01nsp8vr1qc0knonbeeb0ie95j.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "868742887756-41av2lb069rcupfpabn7j32nd9509i7l.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.unidelivery"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:868742887756:android:ad79e516cf3787e314b7e9",
+        "android_client_info": {
+          "package_name": "unibean.net"
         }
       },
       "oauth_client": [
@@ -30,6 +74,13 @@
             {
               "client_id": "868742887756-7puthu01nsp8vr1qc0knonbeeb0ie95j.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "868742887756-41av2lb069rcupfpabn7j32nd9509i7l.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.unidelivery"
+              }
             }
           ]
         }
