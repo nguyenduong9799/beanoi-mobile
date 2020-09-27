@@ -65,96 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
         return ScopedModel(
           model: model,
           child: Scaffold(
-            floatingActionButton: !_endOrderTime
-                ? ScopedModelDescendant(
-                    rebuildOnChange: true,
-                    builder: (context, child, HomeViewModel model) {
-                      return FutureBuilder(
-                          future: model.cart,
-                          builder: (context, snapshot) {
-                            Cart cart = snapshot.data;
-                            if (cart == null) return SizedBox.shrink();
-                            bool hasItemInCart = cart.isEmpty;
-                            int quantity = cart?.itemQuantity();
-                            return Container(
-                              margin: EdgeInsets.only(bottom: 40),
-                              child: FloatingActionButton(
-                                backgroundColor: Colors.transparent,
-                                elevation: 20,
-                                heroTag: CART_TAG,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8.0),
-                                  // side: BorderSide(color: Colors.red),
-                                ),
-                                onPressed: () async {
-                                  print('Tap order');
-                                  Scaffold.of(context).hideCurrentSnackBar();
-                                  bool result = await Navigator.of(context)
-                                      .push(MaterialPageRoute(
-                                    builder: (context) => OrderScreen(),
-                                  ));
-                                  if (result != null) {
-                                    if (result) {
-                                      showStatusDialog(
-                                          context,
-                                          Icon(
-                                            Icons.check_circle_outline,
-                                            color: kSuccess,
-                                            size: DIALOG_ICON_SIZE,
-                                          ),
-                                          "Thành công",
-                                          "Đơn hàng của bạn sẽ được giao vào lúc $TIME");
-                                      await rootViewModel.fetchUser();
-                                    }
-                                  }
-                                  model.notifyListeners();
-                                },
-                                child: Stack(
-                                  overflow: Overflow.visible,
-                                  children: [
-                                    Container(
-                                      width: 48,
-                                      height: 48,
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      child: Icon(
-                                        Icons.shopping_cart,
-                                        color: kPrimary,
-                                      ),
-                                    ),
-                                    Positioned(
-                                      top: -10,
-                                      left: 32,
-                                      child: Container(
-                                        width: 24,
-                                        height: 24,
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(16),
-                                          color: Colors.white,
-                                          border:
-                                              Border.all(color: Colors.grey),
-                                        ),
-                                        child: Center(
-                                          child: Text(
-                                            quantity.toString(),
-                                            style: kTextPrimary.copyWith(
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.black87,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            );
-                          });
-                    })
-                : SizedBox.shrink(),
+            floatingActionButton: buildCartButton(rootViewModel),
             backgroundColor: Colors.white,
             //bottomNavigationBar: bottomBar(),
             body: SafeArea(
@@ -246,6 +157,97 @@ class _HomeScreenState extends State<HomeScreen> {
         );
       },
     );
+  }
+
+  Widget buildCartButton(rootViewModel) {
+    return !_endOrderTime
+        ? ScopedModelDescendant(
+            rebuildOnChange: true,
+            builder: (context, child, HomeViewModel model) {
+              return FutureBuilder(
+                  future: model.cart,
+                  builder: (context, snapshot) {
+                    Cart cart = snapshot.data;
+                    if (cart == null) return SizedBox.shrink();
+                    bool hasItemInCart = cart.isEmpty;
+                    int quantity = cart?.itemQuantity();
+                    return Container(
+                      margin: EdgeInsets.only(bottom: 40),
+                      child: FloatingActionButton(
+                        backgroundColor: Colors.transparent,
+                        elevation: 20,
+                        heroTag: CART_TAG,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                          // side: BorderSide(color: Colors.red),
+                        ),
+                        onPressed: () async {
+                          print('Tap order');
+                          Scaffold.of(context).hideCurrentSnackBar();
+                          bool result = await Navigator.of(context)
+                              .push(MaterialPageRoute(
+                            builder: (context) => OrderScreen(),
+                          ));
+                          if (result != null) {
+                            if (result) {
+                              showStatusDialog(
+                                  context,
+                                  Icon(
+                                    Icons.check_circle_outline,
+                                    color: kSuccess,
+                                    size: DIALOG_ICON_SIZE,
+                                  ),
+                                  "Thành công",
+                                  "Đơn hàng của bạn sẽ được giao vào lúc $TIME");
+                              await rootViewModel.fetchUser();
+                            }
+                          }
+                          model.notifyListeners();
+                        },
+                        child: Stack(
+                          overflow: Overflow.visible,
+                          children: [
+                            Container(
+                              width: 48,
+                              height: 48,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Icon(
+                                AntDesign.shoppingcart,
+                                color: kPrimary,
+                              ),
+                            ),
+                            Positioned(
+                              top: -10,
+                              left: 32,
+                              child: Container(
+                                width: 24,
+                                height: 24,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(16),
+                                  color: Colors.white,
+                                  border: Border.all(color: Colors.grey),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    quantity.toString(),
+                                    style: kTextPrimary.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black87,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    );
+                  });
+            })
+        : SizedBox.shrink();
   }
 
   Positioned buildCountDown() {

@@ -141,7 +141,7 @@ class _UpdateAccountState extends State<ProfileScreen> {
                   style: TextStyle(fontSize: 15),
                 ),
                 Text(
-                  "Và ${user.point} bean",
+                  "Và ${user.point.round().toString()} bean",
                   style: TextStyle(fontSize: 15),
                 ),
                 SizedBox(

@@ -275,11 +275,11 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
 
   Future<void> _handleLogin(LoginViewModel model) async {
     if (!form.valid) return;
-    await pr.show();
+    // await pr.show();
     String phone = form.value["countryCode"] + form.value["phone"];
-    print("phone $phone");
+    // print("phone $phone");
     await onLoginWithPhone(phone, model);
-    await pr.hide();
+    // await pr.hide();
   }
 
   Future<void> onSignInWithGmail(LoginViewModel model) async {
@@ -323,7 +323,7 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
           print("Login Success");
           // chuyen sang trang home
         }
-      } on Exception catch (e) {
+      } catch (e) {
         _showMyDialog("Lỗi khi đăng nhập", e.toString());
       } finally {
         await pr.hide();
@@ -332,9 +332,9 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
     };
 
     final PhoneVerificationFailed verificationFailed =
-        (FirebaseAuthException authException) {
+        (FirebaseAuthException authException) async {
       print("===== Dang nhap fail: ${authException.message}");
-      _showMyDialog("Error", authException.message);
+      await _showMyDialog("Error", authException.message);
     };
 
     final PhoneCodeSent phoneCodeSent =
@@ -353,7 +353,6 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
       });
     };
 
-    await pr.show();
     await FirebaseAuth.instance.verifyPhoneNumber(
       phoneNumber: phone,
       timeout: Duration(seconds: 50),
@@ -363,7 +362,6 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
       codeAutoRetrievalTimeout: phoneTimeout,
     );
     print("Login Done");
-    await pr.hide();
   }
 
   Future<void> _showMyDialog(String title, String content) async {

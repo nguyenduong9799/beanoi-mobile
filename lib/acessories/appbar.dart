@@ -107,25 +107,22 @@ class _HomeAppBarSate extends State<HomeAppBar> {
                         borderRadius: BorderRadius.all(
                           Radius.circular(10),
                         )),
-                    child: GestureDetector(
-                      onTap: () async {
-                        // await AuthService().signOut();
-                        // Navigator.of(context).pushAndRemoveUntil(
-                        //     MaterialPageRoute(
-                        //       builder: (context) => LoginScreen(),
-                        //     ),
-                        //     (route) => false);
-                        // await setToken(null);
-                        requestObj.setToken = null;
+                    child: ScopedModelDescendant<RootViewModel>(
+                      builder: (context, child, model) {
+                        return GestureDetector(
+                          onTap: () async {
+                            await model.fetchUser();
+                          },
+                          child: Align(
+                            alignment: Alignment.bottomCenter,
+                            child: Image(
+                              image: AssetImage("assets/images/avatar.png"),
+                              width: 40,
+                              height: 40,
+                            ),
+                          ),
+                        );
                       },
-                      child: Align(
-                        alignment: Alignment.bottomCenter,
-                        child: Image(
-                          image: AssetImage("assets/images/avatar.png"),
-                          width: 40,
-                          height: 40,
-                        ),
-                      ),
                     ),
                   ),
                   Positioned(
@@ -275,7 +272,7 @@ class _HomeAppBarSate extends State<HomeAppBar> {
                 ),
                 TextSpan(text: " và "),
                 TextSpan(
-                  text: "${user.point} bean",
+                  text: "${user.point.round()} bean",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.deepOrangeAccent,

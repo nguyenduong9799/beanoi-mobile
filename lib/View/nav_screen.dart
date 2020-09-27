@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Model/DTO/AccountDTO.dart';
 import 'package:unidelivery_mobile/View/gift.dart';
@@ -20,9 +21,9 @@ class _RootScreenState extends State<RootScreen> {
     ProfileScreen(AccountDTO(name: 'Hung Bui')),
   ];
   final List<IconData> _icons = const [
-    Icons.home,
+    MaterialCommunityIcons.food,
     Icons.card_giftcard,
-    Icons.person,
+    MaterialCommunityIcons.face_outline,
   ];
   int _selectedIndex = 0;
   RootViewModel _initModel;

@@ -1,11 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:unidelivery_mobile/Bussiness/BussinessHandler.dart';
 import 'package:unidelivery_mobile/Model/DAO/OrderDAO.dart';
 import 'package:unidelivery_mobile/Model/DTO/CartDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/ProductDTO.dart';
@@ -65,10 +67,14 @@ class _OrderScreenState extends State<OrderScreen> {
                             ),
                             Container(
                                 margin: const EdgeInsets.only(top: 8),
+                                child: buildBeanReward(total)),
+                            Container(
+                                margin: const EdgeInsets.only(top: 8),
                                 child: layoutOrder(snapshot.data)),
                             Container(
                                 margin: const EdgeInsets.only(top: 8),
-                                child: layoutSubtotal(total))
+                                child: layoutSubtotal(total)),
+                            SizedBox(height: 16),
                           ],
                         ),
                       ),
@@ -88,6 +94,57 @@ class _OrderScreenState extends State<OrderScreen> {
             },
           );
         },
+      ),
+    );
+  }
+
+  Widget buildBeanReward(double total) {
+    int bean = BussinessHandler.beanReward(total);
+    return Center(
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        // height: 70,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(4),
+          border: Border.all(
+            color: kPrimary,
+          ),
+          color: Colors.white,
+        ),
+        padding: const EdgeInsets.fromLTRB(8, 12, 8, 12),
+        margin: EdgeInsets.only(left: 4, right: 4),
+        child: Row(
+          children: [
+            Icon(FontAwesome5Solid.fire_alt, color: Colors.red),
+            SizedBox(width: 8),
+            Expanded(
+              child: Container(
+                // height: 50,
+                child: RichText(
+                  maxLines: 2,
+                  text: TextSpan(
+                      text: "WoW\nBạn sẽ nhận được ",
+                      style: TextStyle(
+                        fontSize: 12,
+                        // fontWeight: FontWeight.w100,
+                        color: Colors.black45,
+                      ),
+                      children: <TextSpan>[
+                        TextSpan(
+                          text: "${bean.toString()} bean",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                            color: kPrimary,
+                          ),
+                        ),
+                        TextSpan(text: " cho đơn hàng này đấy!"),
+                      ]),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -112,7 +169,7 @@ class _OrderScreenState extends State<OrderScreen> {
                     onPressed: () {
                       Navigator.pop(context);
                     },
-                    borderSide: BorderSide(color: Colors.black),
+                    borderSide: BorderSide(color: kPrimary),
                     child: Text(
                       "Thêm",
                       style: TextStyle(color: Colors.black),
@@ -359,7 +416,10 @@ class _OrderScreenState extends State<OrderScreen> {
                   print("Note: " + orderNote);
                 },
                 decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.description), hintText: "Ghi chú"),
+                  border: InputBorder.none,
+                  prefixIcon: Icon(Icons.description),
+                  hintText: "Ghi chú",
+                ),
               ),
             ),
           ),
