@@ -7,7 +7,7 @@ import 'package:unidelivery_mobile/utils/request.dart';
 import 'package:unidelivery_mobile/utils/shared_pref.dart';
 
 class Filter {
-  final String id;
+  final int id;
   final String name;
   bool isSelected;
   bool isMultiple;
@@ -22,18 +22,19 @@ class HomeViewModel extends Model {
   ProductDAO _dao = ProductDAO();
   dynamic error;
   List<ProductDTO> products;
+  List<ProductDTO> _cachedProduct;
   Status status;
   bool _isFirstFetch = true;
   List<Filter> filterType = [
-    Filter('All', 'Tất cả', isSelected: true),
-    Filter('Previous', 'Gần đây'),
-    Filter('New', 'Mới'),
+    Filter(47, 'Tất cả', isSelected: true),
+    Filter(48, 'Gần đây'),
+    Filter(49, 'Mới'),
   ];
 
   List<Filter> filterCategories = [
-    Filter('com', 'Cơm', isMultiple: true),
-    Filter('nuoc', 'Món nước', isMultiple: true),
-    Filter('drink', 'Thức uống', isMultiple: true),
+    Filter(44, 'Cơm', isMultiple: true),
+    Filter(45, 'Món nước', isMultiple: true),
+    Filter(46, 'Thức uống', isMultiple: true),
   ];
 
   HomeViewModel() {
@@ -63,14 +64,25 @@ class HomeViewModel extends Model {
       notifyListeners();
       if (_isFirstFetch) {
         products = await _dao.getProducts();
+        _cachedProduct = products.sublist(0);
         // products.insertAll(0, products);
         _isFirstFetch = false;
       } else {
         // change filter
+
+        // 1. Filter by type (All,New,History)
+        // 2. Filter by Categories
+        products = _cachedProduct.where((prod) {
+          if (filterCategories.every((category) => !category.isSelected))
+            return true;
+          bool isInFilter = filterCategories.any((category) =>
+              prod.catergoryId == category.id && category.isSelected);
+          return isInFilter;
+        }).toList();
         // do something with products
         print("Fetch prodyuct with filter");
         // products = products.sublist(2)..shuffle();
-        products = products.sublist(0)..shuffle();
+        // products = products.sublist(0)..shuffle();
       }
       // check truong hop product tra ve rong (do khong co menu nao trong TG do)
       if (products.isEmpty || products == null) {
@@ -93,7 +105,7 @@ class HomeViewModel extends Model {
 
   // 2. Change filter
 
-  Future<void> updateFilter(String filterId, bool isMultiple) async {
+  Future<void> updateFilter(int filterId, bool isMultiple) async {
     if (isMultiple)
       await updateFilterCategories(filterId);
     else
@@ -102,7 +114,7 @@ class HomeViewModel extends Model {
     await getProducts();
   }
 
-  Future<void> updateFilterType(String filterId) async {
+  Future<void> updateFilterType(int filterId) async {
     filterType = filterType.map((filter) {
       if (filter.id == filterId) {
         filter.isSelected = true;
@@ -114,7 +126,7 @@ class HomeViewModel extends Model {
     notifyListeners();
   }
 
-  Future<void> updateFilterCategories(String filterId) async {
+  Future<void> updateFilterCategories(int filterId) async {
     filterCategories = filterCategories.map((filter) {
       if (filter.id == filterId) {
         filter.isSelected = !filter.isSelected;

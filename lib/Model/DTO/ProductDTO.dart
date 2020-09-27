@@ -49,6 +49,7 @@ class ProductDTO {
         imageURL: json['pic_url'] as String,
         atrributes: attributes,
         listChild: listChild,
+        catergoryId: json['category_id'],
       );
     }
 
@@ -59,7 +60,7 @@ class ProductDTO {
       description: json['description'] as String,
       type: type,
       imageURL: json['pic_url'] as String,
-      catergoryId: json['extra_category_id'],
+      catergoryId: json['category_id'],
       storeId: json['storeId'],
       storeName: json['storeName'] as String,
     );

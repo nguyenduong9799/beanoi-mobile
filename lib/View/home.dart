@@ -379,7 +379,7 @@ class _HomeScreenState extends State<HomeScreen> {
       listContents.add(productPage);
     }
     return Container(
-      height: 430,
+      height: 400,
       child: Theme(
         data: ThemeData(
           backgroundColor: Colors.grey,
@@ -407,7 +407,7 @@ class _HomeScreenState extends State<HomeScreen> {
       shrinkWrap: true,
       scrollDirection: Axis.vertical,
       primary: false,
-      crossAxisSpacing: 8,
+      crossAxisSpacing: 12,
       // childAspectRatio: 1 / 2,
       mainAxisSpacing: 8,
       crossAxisCount: 3,
@@ -663,7 +663,7 @@ class _FoodItemState extends State<FoodItem> {
                       child: Opacity(
                         opacity: 1,
                         child: AspectRatio(
-                          aspectRatio: 1.1,
+                          aspectRatio: 1.14,
                           child: (imageURL == null || imageURL == "")
                               ? Icon(
                                   MaterialIcons.broken_image,
@@ -692,26 +692,11 @@ class _FoodItemState extends State<FoodItem> {
                                       color: Colors.grey,
                                     ),
                                   ),
-                                  // placeholder: (context, url) => Container(
-                                  //   width: 100,
-                                  //   height: 100,
-                                  //   child: Shimmer.fromColors(
-                                  //     baseColor: Colors.grey[300],
-                                  //     highlightColor: Colors.grey[100],
-                                  //     enabled: true,
-                                  //     child: SizedBox.shrink(),
-                                  //   ),
-                                  // ),
                                   errorWidget: (context, url, error) => Icon(
                                     MaterialIcons.broken_image,
                                     color: kPrimary.withOpacity(0.5),
                                   ),
                                 ),
-                          // FadeInImage(
-                          //   image: NetworkImage(imageURL),
-                          //   placeholder: AssetImage('assets/images/avatar.png'),
-                          //   fit: BoxFit.fill,
-                          // ),
                         ),
                       ),
                     ),
@@ -719,12 +704,15 @@ class _FoodItemState extends State<FoodItem> {
                   Expanded(
                     child: Container(
                       // color: Colors.blue,
-                      height: 50,
+                      height: 60,
                       child: Text(
                         name,
                         overflow: TextOverflow.ellipsis,
                         maxLines: 2,
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 13,
+                        ),
                       ),
                     ),
                   )
