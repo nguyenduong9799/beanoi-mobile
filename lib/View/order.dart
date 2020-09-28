@@ -16,6 +16,7 @@ import 'package:unidelivery_mobile/acessories/appbar.dart';
 import 'package:unidelivery_mobile/acessories/dash_border.dart';
 import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/constraints.dart';
+import 'package:unidelivery_mobile/enums/order_status.dart';
 import 'package:unidelivery_mobile/utils/shared_pref.dart';
 
 class OrderScreen extends StatefulWidget {
@@ -546,12 +547,12 @@ class _OrderScreenState extends State<OrderScreen> {
             onPressed: () async {
               await pr.show();
               OrderDAO dao = new OrderDAO();
-              int result = await dao.createOrders(orderNote);
-              if (result == SUCCESS) {
+              OrderStatus result = await dao.createOrders(orderNote);
+              if (result == OrderStatus.Success) {
                 await deleteCart();
                 await pr.hide();
                 Navigator.pop(context, true);
-              } else if (result == FAIL) {
+              } else if (result == OrderStatus.Fail) {
                 await pr.hide();
                 showStatusDialog(
                     context,
@@ -561,7 +562,7 @@ class _OrderScreenState extends State<OrderScreen> {
                     ),
                     "Thất bại :(",
                     "Vui lòng thử lại sau");
-              } else if(result == NOT_ENOUGH_MONEY){
+              } else if (result == OrderStatus.NoMoney) {
                 await pr.hide();
                 showStatusDialog(
                     context,

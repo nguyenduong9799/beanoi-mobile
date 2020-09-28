@@ -3,6 +3,7 @@ import 'package:unidelivery_mobile/Model/DTO/CartDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/OrderDTO.dart';
 import 'package:unidelivery_mobile/ViewModel/orderHistory_viewModel.dart';
 import 'package:unidelivery_mobile/constraints.dart';
+import 'package:unidelivery_mobile/enums/order_status.dart';
 import 'package:unidelivery_mobile/utils/request.dart';
 import 'package:unidelivery_mobile/utils/shared_pref.dart';
 
@@ -30,7 +31,7 @@ class OrderDAO {
     return orderDetail;
   }
 
-  Future<int> createOrders(String note) async {
+  Future<OrderStatus> createOrders(String note) async {
     try {
       Cart cart = await getCart();
       if (cart != null) {
@@ -43,19 +44,20 @@ class OrderDAO {
             },
             data: cart.toJsonAPi());
         if (res.statusCode == 200) {
-          return SUCCESS;
+          return OrderStatus.Success;
         }
       }
     } on DioError catch (e) {
       if (e.response.statusCode == 400) {
-        if(e.response.data['code'] == 'ERR_BALANCE')
-          return NOT_ENOUGH_MONEY;
-        return TIME_OUT;
+        if (e.response.data['code'] == 'ERR_BALANCE')
+          return OrderStatus.NoMoney;
+        return OrderStatus.Timeout;
       }
 
-      return FAIL;
+      return OrderStatus.Fail;
     }
 
-    return FAIL;
+    return OrderStatus.Fail;
+    ;
   }
 }
