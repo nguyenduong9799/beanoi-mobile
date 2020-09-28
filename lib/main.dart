@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: Color(0xFFF0F2F5),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: checkNetwork(),
+      home: checkAuthorize(),
       // home: ProfileScreen(new AccountDTO(name: "Mít tơ Bin")),
     );
   }

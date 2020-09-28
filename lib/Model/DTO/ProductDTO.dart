@@ -12,25 +12,25 @@ class ProductDTO {
   int catergoryId;
   int storeId;
   String storeName;
+  int extraId;
 
   @override
   String toString() {
-    return 'ProductDTO{id: $id, name: $name, price: $price, description: $description, type: $type, imageURL: $imageURL, atrributes: $atrributes, listChild: $listChild, catergoryId: $catergoryId, storeId: $storeId, storeName: $storeName}';
+    return 'ProductDTO{id: $id, name: $name, price: $price, description: $description, type: $type, imageURL: $imageURL, atrributes: $atrributes, listChild: $listChild, catergoryId: $catergoryId, storeId: $storeId, storeName: $storeName, extraId: $extraId}';
   }
 
-  ProductDTO(
-    this.id, {
-    this.name,
-    this.imageURL,
-    this.price,
-    this.description,
-    this.type,
-    this.atrributes,
-    this.listChild,
-    this.catergoryId,
-    this.storeId,
-    this.storeName,
-  }); // balance. point;
+  ProductDTO(this.id,
+      {this.name,
+      this.imageURL,
+      this.price,
+      this.description,
+      this.type,
+      this.atrributes,
+      this.listChild,
+      this.catergoryId,
+      this.storeId,
+      this.storeName,
+      this.extraId}); // balance. point;
 
   factory ProductDTO.fromJson(dynamic json) {
     var type = json['product_type'] as int;
@@ -40,30 +40,28 @@ class ProductDTO {
           listChildJson.map((e) => ProductDTO.fromJson(e)).toList();
       var listDynamic = json['attributes'] as List;
       var attributes = listDynamic.cast<String>().toList();
-      return ProductDTO(
-        json["product_in_menu_id"],
+      return ProductDTO(json["product_in_menu_id"],
+          name: json['product_name'] as String,
+          price: double.parse(json['price'].toString()),
+          description: json['description'] as String,
+          type: type,
+          imageURL: json['pic_url'] as String,
+          atrributes: attributes,
+          listChild: listChild,
+          catergoryId: json['category_id'],
+          extraId: json['extra_category_id']);
+    }
+
+    return ProductDTO(json["product_in_menu_id"],
         name: json['product_name'] as String,
         price: double.parse(json['price'].toString()),
         description: json['description'] as String,
         type: type,
         imageURL: json['pic_url'] as String,
-        atrributes: attributes,
-        listChild: listChild,
         catergoryId: json['category_id'],
-      );
-    }
-
-    return ProductDTO(
-      json["product_in_menu_id"],
-      name: json['product_name'] as String,
-      price: double.parse(json['price'].toString()),
-      description: json['description'] as String,
-      type: type,
-      imageURL: json['pic_url'] as String,
-      catergoryId: json['category_id'],
-      storeId: json['storeId'],
-      storeName: json['storeName'] as String,
-    );
+        storeId: json['storeId'],
+        storeName: json['storeName'] as String,
+        extraId: json['extra_category_id']);
   }
 
   Map<String, dynamic> toJson() {
@@ -78,7 +76,8 @@ class ProductDTO {
         "pic_url": imageURL,
         "catergory_id": catergoryId,
         "child_products": listProducts,
-        "attributes": atrributes
+        "attributes": atrributes,
+        "extra_category_id": extraId,
       };
     }
     return {
@@ -89,7 +88,8 @@ class ProductDTO {
       "product_type": type,
       "pic_url": imageURL,
       "catergory_id": catergoryId,
-      "storeName": storeName
+      "storeName": storeName,
+      "extra_category_id": extraId
     };
   }
 
