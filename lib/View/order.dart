@@ -561,7 +561,7 @@ class _OrderScreenState extends State<OrderScreen> {
                     ),
                     "Thất bại :(",
                     "Vui lòng thử lại sau");
-              } else {
+              } else if(result == NOT_ENOUGH_MONEY){
                 await pr.hide();
                 showStatusDialog(
                     context,
@@ -571,6 +571,16 @@ class _OrderScreenState extends State<OrderScreen> {
                     ),
                     "Thất bại :(",
                     "Có đủ tiền đâu mà mua (>_<)");
+              } else {
+                await pr.hide();
+                showStatusDialog(
+                    context,
+                    Icon(
+                      Icons.error_outline,
+                      color: kFail,
+                    ),
+                    "Thất bại :(",
+                    "Hết giờ rồi bạn ơi, mai đặt sớm nhen <3");
               }
 
               // pr.hide();

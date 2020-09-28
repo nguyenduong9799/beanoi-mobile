@@ -48,7 +48,9 @@ class OrderDAO {
       }
     } on DioError catch (e) {
       if (e.response.statusCode == 400) {
-        return NOT_ENOUGH_MONEY;
+        if(e.response.data['code'] == 'ERR_BALANCE')
+          return NOT_ENOUGH_MONEY;
+        return TIME_OUT;
       }
 
       return FAIL;
