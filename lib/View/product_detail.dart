@@ -75,8 +75,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
       ));
     }
 
-    if (widget.dto.catergoryId != null) {
-      productDetailViewModel.getExtra(widget.dto.catergoryId);
+    if (widget.dto.extraId != null) {
+      productDetailViewModel.getExtra(widget.dto.extraId);
       unaffectPriceTabs.add(Tab(child: Text("Thêm ")));
     }
 
@@ -459,7 +459,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                         }
                       }
 
-                      if (widget.dto.catergoryId != null) {
+                      if (widget.dto.extraId != null) {
                         for (int i = 0; i < model.extra.keys.length; i++) {
                           if (model.extra[model.extra.keys.elementAt(i)]) {
                             listChoices.add(model.extra.keys.elementAt(i));

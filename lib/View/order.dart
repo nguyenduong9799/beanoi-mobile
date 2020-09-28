@@ -16,6 +16,7 @@ import 'package:unidelivery_mobile/acessories/appbar.dart';
 import 'package:unidelivery_mobile/acessories/dash_border.dart';
 import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/constraints.dart';
+import 'package:unidelivery_mobile/enums/order_status.dart';
 import 'package:unidelivery_mobile/utils/shared_pref.dart';
 
 class OrderScreen extends StatefulWidget {
@@ -546,12 +547,12 @@ class _OrderScreenState extends State<OrderScreen> {
             onPressed: () async {
               await pr.show();
               OrderDAO dao = new OrderDAO();
-              int result = await dao.createOrders(orderNote);
-              if (result == SUCCESS) {
+              OrderStatus result = await dao.createOrders(orderNote);
+              if (result == OrderStatus.Success) {
                 await deleteCart();
                 await pr.hide();
                 Navigator.pop(context, true);
-              } else if (result == FAIL) {
+              } else if (result == OrderStatus.Fail) {
                 await pr.hide();
                 showStatusDialog(
                     context,
@@ -561,7 +562,7 @@ class _OrderScreenState extends State<OrderScreen> {
                     ),
                     "Thất bại :(",
                     "Vui lòng thử lại sau");
-              } else {
+              } else if (result == OrderStatus.NoMoney) {
                 await pr.hide();
                 showStatusDialog(
                     context,
@@ -571,6 +572,16 @@ class _OrderScreenState extends State<OrderScreen> {
                     ),
                     "Thất bại :(",
                     "Có đủ tiền đâu mà mua (>_<)");
+              } else {
+                await pr.hide();
+                showStatusDialog(
+                    context,
+                    Icon(
+                      Icons.error_outline,
+                      color: kFail,
+                    ),
+                    "Thất bại :(",
+                    "Hết giờ rồi bạn ơi, mai đặt sớm nhen <3");
               }
 
               // pr.hide();

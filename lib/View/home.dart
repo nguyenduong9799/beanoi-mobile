@@ -199,9 +199,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                   "Thành công",
                                   "Đơn hàng của bạn sẽ được giao vào lúc $TIME");
-                              await rootViewModel.fetchUser();
                             }
                           }
+                          await rootViewModel.fetchUser();
                           model.notifyListeners();
                         },
                         child: Stack(
