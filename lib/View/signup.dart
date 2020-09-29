@@ -4,12 +4,10 @@ import 'package:progress_dialog/progress_dialog.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Model/DTO/AccountDTO.dart';
-import 'package:unidelivery_mobile/View/home.dart';
-import 'package:unidelivery_mobile/View/login.dart';
-import 'package:unidelivery_mobile/View/nav_screen.dart';
 import 'package:unidelivery_mobile/ViewModel/signup_viewModel.dart';
-import 'package:unidelivery_mobile/utils/pageNavigation.dart';
 import 'package:unidelivery_mobile/utils/regex.dart';
+
+import '../route_constraint.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({Key key, this.user}) : super(key: key);
@@ -79,8 +77,7 @@ class _SignUpState extends State<SignUp> {
         // Chuyen trang
         if (updateSucces) {
           print('Update Success');
-          Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (context) => RootScreen()));
+          Navigator.of(context).pushReplacementNamed("nav");
         }
       }
     }
@@ -257,9 +254,9 @@ class _SignUpState extends State<SignUp> {
                           Center(
                             child: GestureDetector(
                               onTap: () async {
-                                await Navigator.of(context).pushAndRemoveUntil(
-                                    FadeRoute(page: LoginScreen()),
-                                    (route) => false);
+                                await Navigator.of(context)
+                                    .pushNamedAndRemoveUntil(
+                                        RouteHandler.LOGIN, (route) => false);
                                 print("Back to home");
                               },
                               child: Text(

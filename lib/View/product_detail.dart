@@ -17,7 +17,7 @@ import 'package:unidelivery_mobile/utils/shared_pref.dart';
 class ProductDetailScreen extends StatefulWidget {
   final ProductDTO dto;
 
-  ProductDetailScreen(this.dto);
+  ProductDetailScreen({this.dto});
 
   @override
   _ProductDetailScreenState createState() => _ProductDetailScreenState();

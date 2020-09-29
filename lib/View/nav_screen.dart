@@ -18,7 +18,7 @@ class _RootScreenState extends State<RootScreen> {
   final List<Widget> _screens = [
     HomeScreen(),
     GiftScreen(),
-    ProfileScreen(AccountDTO(name: 'Hung Bui')),
+    ProfileScreen(dto: AccountDTO(name: 'Hung Bui')),
   ];
   final List<IconData> _icons = const [
     MaterialCommunityIcons.food,
