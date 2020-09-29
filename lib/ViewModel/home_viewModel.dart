@@ -2,7 +2,7 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Model/DAO/ProductDAO.dart';
 import 'package:unidelivery_mobile/Model/DTO/CartDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/ProductDTO.dart';
-import 'package:unidelivery_mobile/utils/enum.dart';
+import 'package:unidelivery_mobile/enums/view_status.dart';
 import 'package:unidelivery_mobile/utils/request.dart';
 import 'package:unidelivery_mobile/utils/shared_pref.dart';
 
@@ -23,7 +23,7 @@ class HomeViewModel extends Model {
   dynamic error;
   List<ProductDTO> products;
   List<ProductDTO> _cachedProduct;
-  Status status;
+  ViewStatus status;
   bool _isFirstFetch = true;
   List<Filter> filterType = [
     Filter(47, 'Tất cả', isSelected: true),
@@ -38,7 +38,7 @@ class HomeViewModel extends Model {
   ];
 
   HomeViewModel() {
-    status = Status.Loading;
+    status = ViewStatus.Loading;
     // getProducts();
   }
 
@@ -60,7 +60,7 @@ class HomeViewModel extends Model {
   // 1. Get ProductList with current Filter
   Future<List<ProductDTO>> getProducts() async {
     try {
-      status = Status.Loading;
+      status = ViewStatus.Loading;
       notifyListeners();
       if (_isFirstFetch) {
         products = await _dao.getProducts();
@@ -86,14 +86,14 @@ class HomeViewModel extends Model {
       }
       // check truong hop product tra ve rong (do khong co menu nao trong TG do)
       if (products.isEmpty || products == null) {
-        status = Status.Empty;
+        status = ViewStatus.Empty;
       } else {
-        status = Status.Completed;
+        status = ViewStatus.Completed;
       }
       notifyListeners();
     } catch (e, stacktrace) {
       print("EXCEPTION $stacktrace");
-      status = Status.Error;
+      status = ViewStatus.Error;
       error = e.toString();
       notifyListeners();
     } finally {

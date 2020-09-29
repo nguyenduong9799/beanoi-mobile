@@ -7,7 +7,7 @@ import 'package:unidelivery_mobile/Model/DTO/AccountDTO.dart';
 import 'package:unidelivery_mobile/View/login.dart';
 import 'package:unidelivery_mobile/ViewModel/root_viewModel.dart';
 import 'package:unidelivery_mobile/acessories/dialog.dart';
-import 'package:unidelivery_mobile/utils/enum.dart';
+import 'package:unidelivery_mobile/enums/view_status.dart';
 import 'package:unidelivery_mobile/utils/index.dart';
 
 import '../constraints.dart';
@@ -113,7 +113,7 @@ class _UpdateAccountState extends State<ProfileScreen> {
       builder: (context, child, model) {
         final status = model.status;
         final user = model.currentUser;
-        if (status == Status.Loading)
+        if (status == ViewStatus.Loading)
           return Shimmer.fromColors(
             baseColor: Colors.grey[300],
             highlightColor: Colors.grey[100],
@@ -124,7 +124,7 @@ class _UpdateAccountState extends State<ProfileScreen> {
               color: Colors.grey,
             ),
           );
-        else if (status == Status.Error) return Text("＞﹏＜");
+        else if (status == ViewStatus.Error) return Text("＞﹏＜");
         return Container(
           child: Center(
             child: Column(

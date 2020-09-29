@@ -3,11 +3,11 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Model/DAO/ProductDAO.dart';
 import 'package:unidelivery_mobile/Model/DTO/ProductDTO.dart';
 import 'package:unidelivery_mobile/constraints.dart';
-import 'package:unidelivery_mobile/utils/enum.dart';
+import 'package:unidelivery_mobile/enums/view_status.dart';
 
 class ProductDetailViewModel extends Model {
   int unaffectIndex = 0;
-  Status status;
+  ViewStatus status;
   int affectIndex = 0;
   //List product không ảnh hưởng giá
   Map<String, List<String>> unaffectPriceContent;
@@ -66,7 +66,7 @@ class ProductDetailViewModel extends Model {
   }
 
   Future<void> getExtra(int cat_id) async {
-    status = Status.Loading;
+    status = ViewStatus.Loading;
     notifyListeners();
     try {
       ProductDAO dao = new ProductDAO();
@@ -74,10 +74,10 @@ class ProductDetailViewModel extends Model {
       for (ProductDTO dto in products) {
         extra[dto] = false;
       }
-      status = Status.Completed;
+      status = ViewStatus.Completed;
     } catch (e) {
       print("EXCEPTION $e");
-      status = Status.Error;
+      status = ViewStatus.Error;
     } finally {
       notifyListeners();
     }

@@ -8,7 +8,7 @@ import 'package:unidelivery_mobile/ViewModel/orderHistory_viewModel.dart';
 import 'package:unidelivery_mobile/acessories/appbar.dart';
 import 'package:unidelivery_mobile/acessories/dash_border.dart';
 import 'package:unidelivery_mobile/constraints.dart';
-import 'package:unidelivery_mobile/utils/enum.dart';
+import 'package:unidelivery_mobile/enums/view_status.dart';
 import 'package:unidelivery_mobile/utils/index.dart';
 
 class OrderHistoryScreen extends StatefulWidget {
@@ -114,7 +114,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
         builder: (context, child, model) {
       final status = model.status;
       final orderSummaryList = model.orderThumbnail;
-      if (status == Status.Loading)
+      if (status == ViewStatus.Loading)
         return Center(
           child: TextLiquidFill(
             text: 'Đang tải',
@@ -127,7 +127,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
             boxHeight: 300.0,
           ),
         );
-      else if (status == Status.Empty || orderSummaryList == null)
+      else if (status == ViewStatus.Empty || orderSummaryList == null)
         return Container(
           child: SvgPicture.asset(
             'assets/images/order_history.svg',
@@ -135,7 +135,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
             fit: BoxFit.cover,
           ),
         );
-      if (status == Status.Error)
+      if (status == ViewStatus.Error)
         return Center(
           child: AspectRatio(
             aspectRatio: 1,
@@ -267,7 +267,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
         builder: (BuildContext bc) {
           // final status = model.status;
 
-          // if (status == Status.Loading)
+          // if (status == ViewStatus.Loading)
           //   return AspectRatio(
           //     aspectRatio: 1,
           //     child: Center(child: CircularProgressIndicator()),
@@ -318,7 +318,7 @@ class _OrderDetailBottomSheetState extends State<OrderDetailBottomSheet> {
         child: ScopedModelDescendant<OrderHistoryViewModel>(
           builder: (context, child, model) {
             final status = model.status;
-            if (status == Status.Loading)
+            if (status == ViewStatus.Loading)
               return AspectRatio(
                 aspectRatio: 1,
                 child: Center(child: CircularProgressIndicator()),

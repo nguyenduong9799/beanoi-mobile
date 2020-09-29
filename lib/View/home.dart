@@ -18,7 +18,7 @@ import 'package:unidelivery_mobile/ViewModel/root_viewModel.dart';
 import 'package:unidelivery_mobile/acessories/appbar.dart';
 import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/constraints.dart';
-import 'package:unidelivery_mobile/utils/enum.dart';
+import 'package:unidelivery_mobile/enums/view_status.dart';
 
 const ORDER_TIME = 23;
 
@@ -175,7 +175,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       margin: EdgeInsets.only(bottom: 40),
                       child: FloatingActionButton(
                         backgroundColor: Colors.transparent,
-                        elevation: 20,
+                        elevation: 8,
                         heroTag: CART_TAG,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8.0),
@@ -298,16 +298,16 @@ class _HomeScreenState extends State<HomeScreen> {
     return ScopedModelDescendant<HomeViewModel>(
       builder: (context, child, model) {
         List<ProductDTO> products = model.products;
-        Status status = model.status;
-        // status = Status.Loading;
+        ViewStatus status = model.status;
+        // status = ViewStatus.Loading;
         switch (status) {
-          case Status.Error:
+          case ViewStatus.Error:
             return AspectRatio(
               aspectRatio: 1,
               child: Center(
                   child: Text("Có gì sai sai... \n ${model.error.toString()}")),
             );
-          case Status.Loading:
+          case ViewStatus.Loading:
             return AspectRatio(
                 aspectRatio: 1,
                 child: Center(
@@ -322,7 +322,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     boxHeight: 300.0,
                   ),
                 ));
-          case Status.Empty:
+          case ViewStatus.Empty:
             return Container(
               padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
               color: Colors.black45,
@@ -352,7 +352,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             );
-          case Status.Completed:
+          case ViewStatus.Completed:
             return productListSection(products);
           default:
             return Text("Some thing wrong");

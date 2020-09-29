@@ -577,7 +577,7 @@ class _OrderScreenState extends State<OrderScreen> {
                 showStatusDialog(
                     context,
                     Icon(
-                      Icons.error_outline,
+                      MaterialCommunityIcons.timer_off,
                       color: kFail,
                     ),
                     "Thất bại :(",

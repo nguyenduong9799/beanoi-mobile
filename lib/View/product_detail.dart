@@ -11,8 +11,7 @@ import 'package:unidelivery_mobile/Model/DTO/CartDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/ProductDTO.dart';
 import 'package:unidelivery_mobile/ViewModel/product_viewModel.dart';
 import 'package:unidelivery_mobile/constraints.dart';
-import 'package:unidelivery_mobile/utils/enum.dart';
-import 'package:unidelivery_mobile/utils/shared_pref.dart';
+import 'package:unidelivery_mobile/enums/view_status.dart';
 
 class ProductDetailScreen extends StatefulWidget {
   final ProductDTO dto;
@@ -328,18 +327,18 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
       builder:
           (BuildContext context, Widget child, ProductDetailViewModel model) {
         switch (model.status) {
-          case Status.Error:
+          case ViewStatus.Error:
             return Center(child: Text("Có gì sai sai... \n"));
-          case Status.Loading:
+          case ViewStatus.Loading:
             return Padding(
               padding: const EdgeInsets.only(top: 16.0),
               child: Center(child: CircularProgressIndicator()),
             );
-          case Status.Empty:
+          case ViewStatus.Empty:
             return Center(
               child: Text("Empty list"),
             );
-          case Status.Completed:
+          case ViewStatus.Completed:
             if (!model.isExtra) {
               attributes = new List();
               if (widget.dto.type == MASTER_PRODUCT) {

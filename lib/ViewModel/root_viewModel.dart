@@ -1,30 +1,30 @@
 import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Model/DAO/AccountDAO.dart';
 import 'package:unidelivery_mobile/Model/DTO/AccountDTO.dart';
-import 'package:unidelivery_mobile/utils/enum.dart';
+import 'package:unidelivery_mobile/enums/view_status.dart';
 
 class RootViewModel extends Model {
   AccountDAO _dao;
   AccountDTO currentUser;
-  Status status;
+  ViewStatus status;
   String error;
 
   RootViewModel() {
     _dao = AccountDAO();
-    status = Status.Loading;
+    status = ViewStatus.Loading;
     fetchUser();
   }
 
   Future<void> fetchUser() async {
     try {
-      status = Status.Loading;
+      status = ViewStatus.Loading;
       notifyListeners();
       final user = await _dao.getUser();
       currentUser = user;
-      status = Status.Completed;
+      status = ViewStatus.Completed;
       notifyListeners();
     } catch (e) {
-      status = Status.Error;
+      status = ViewStatus.Error;
       error = e.toString();
       notifyListeners();
     } finally {}
