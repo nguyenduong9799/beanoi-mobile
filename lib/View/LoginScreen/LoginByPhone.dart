@@ -1,19 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Services/firebase.dart';
-import 'package:unidelivery_mobile/View/LoginScreen/LoginPhoneOTP.dart';
-import 'package:unidelivery_mobile/View/home.dart';
-import 'package:unidelivery_mobile/View/nav_screen.dart';
-import 'package:unidelivery_mobile/View/signup.dart';
 import 'package:unidelivery_mobile/ViewModel/login_viewModel.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/countries.dart';
-import 'package:unidelivery_mobile/utils/regex.dart';
+import 'package:unidelivery_mobile/route_constraint.dart';
 
 class LoginWithPhone extends StatefulWidget {
   LoginWithPhone({Key key}) : super(key: key);
@@ -289,9 +284,8 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
       final userInfo = await model.signIn(authCredential);
 
       await pr.hide();
-      return Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => RootScreen()),
-          (route) => false);
+      return Navigator.of(context)
+          .pushNamedAndRemoveUntil(RouteHandler.NAV, (route) => false);
     } on FirebaseAuthException catch (e) {
       print("=====OTP Fail: ${e.message}  ");
       await _showMyDialog("Error", e.message);
@@ -309,17 +303,11 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
         // TODO: Kiem tra xem user moi hay cu
         if (userInfo.isFirstLogin) {
           // Navigate to sign up screen
-          await Navigator.of(context).pushAndRemoveUntil(
-              CupertinoPageRoute(
-                builder: (context) => SignUp(
-                  user: userInfo,
-                ),
-              ),
+          await Navigator.of(context).pushNamedAndRemoveUntil(RouteHandler.SIGN_UP,
               (route) => false);
         } else {
-          await Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(builder: (context) => RootScreen()),
-              (route) => false);
+          await Navigator.of(context)
+              .pushNamedAndRemoveUntil(RouteHandler.NAV, (route) => false);
           print("Login Success");
           // chuyen sang trang home
         }
@@ -339,12 +327,7 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
 
     final PhoneCodeSent phoneCodeSent =
         (String verId, [int forceResend]) async {
-      await Navigator.of(context).push(CupertinoPageRoute(
-        builder: (context) => LoginWithPhoneOTP(
-          verificationId: verId,
-          phoneNumber: phone,
-        ),
-      ));
+      await Navigator.of(context).pushNamed(RouteHandler.LOGIN_OTP);
     };
 
     final PhoneCodeAutoRetrievalTimeout phoneTimeout = (String verId) {

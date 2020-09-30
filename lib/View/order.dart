@@ -185,12 +185,12 @@ class _OrderScreenState extends State<OrderScreen> {
             ],
           ),
         ),
-        layoutStore(cart.items),
+        layoutStore(cart.items, cart.itemQuantity()),
       ],
     );
   }
 
-  Widget layoutStore(List<CartItem> list) {
+  Widget layoutStore(List<CartItem> list, int quantity) {
     List<Widget> card = new List();
 
     for (CartItem item in list) {
@@ -232,6 +232,7 @@ class _OrderScreenState extends State<OrderScreen> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
+                      Text(quantity.toString() + " món")
                     ],
                   ),
                 ),

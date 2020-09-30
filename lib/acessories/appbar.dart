@@ -7,6 +7,7 @@ import 'package:unidelivery_mobile/View/orderHistory.dart';
 import 'package:unidelivery_mobile/ViewModel/root_viewModel.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
+import 'package:unidelivery_mobile/route_constraint.dart';
 import 'package:unidelivery_mobile/utils/index.dart';
 
 class DefaultAppBar extends StatefulWidget implements PreferredSizeWidget {
@@ -176,9 +177,7 @@ class _HomeAppBarSate extends State<HomeAppBar> {
                     // ),
                     ),
                 onTap: () {
-                  Navigator.of(context).push(CupertinoPageRoute(
-                    builder: (context) => OrderHistoryScreen(),
-                  ));
+                  Navigator.of(context).pushNamed(RouteHandler.ORDER_HISTORY);
                 },
               ),
             ),

@@ -4,10 +4,10 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:shimmer/shimmer.dart';
 
 import 'package:unidelivery_mobile/Model/DTO/AccountDTO.dart';
-import 'package:unidelivery_mobile/View/login.dart';
 import 'package:unidelivery_mobile/ViewModel/root_viewModel.dart';
 import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
+import 'package:unidelivery_mobile/route_constraint.dart';
 import 'package:unidelivery_mobile/utils/index.dart';
 
 import '../constraints.dart';
@@ -15,7 +15,7 @@ import '../constraints.dart';
 class ProfileScreen extends StatefulWidget {
   AccountDTO dto;
 
-  ProfileScreen(this.dto);
+  ProfileScreen({this.dto});
 
   @override
   _UpdateAccountState createState() {
@@ -193,9 +193,8 @@ class _UpdateAccountState extends State<ProfileScreen> {
             int choice = await getOption(context, "Bạn có chắc không?");
             if (choice == 1) {
               await model.signOut();
-              Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (context) => LoginScreen()),
-                  (Route<dynamic> route) => false);
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                  RouteHandler.LOGIN, (Route<dynamic> route) => false);
             }
           },
         ),
