@@ -8,11 +8,9 @@ import 'package:progress_dialog/progress_dialog.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Services/firebase.dart';
-import 'package:unidelivery_mobile/View/home.dart';
-import 'package:unidelivery_mobile/View/nav_screen.dart';
-import 'package:unidelivery_mobile/View/signup.dart';
 import 'package:unidelivery_mobile/ViewModel/login_viewModel.dart';
 import 'package:unidelivery_mobile/constraints.dart';
+import 'package:unidelivery_mobile/route_constraint.dart';
 
 class LoginWithPhoneOTP extends StatefulWidget {
   final String verificationId;
@@ -249,13 +247,8 @@ class _LoginWithPhoneOTPState extends State<LoginWithPhoneOTP> {
 
         if (userInfo.isFirstLogin) {
           // Navigate to sign up screen
-          await Navigator.of(context).pushAndRemoveUntil(
-              CupertinoPageRoute(
-                builder: (context) => SignUp(
-                  user: userInfo,
-                ),
-              ),
-              (route) => false);
+          await Navigator.of(context)
+              .pushNamedAndRemoveUntil(RouteHandler.SIGN_UP, (route) => false);
         } else {
           setState(() {
             hasError = false;
@@ -264,9 +257,8 @@ class _LoginWithPhoneOTPState extends State<LoginWithPhoneOTP> {
             content: Text("Đăng nhập thành công!!"),
             duration: Duration(seconds: 3),
           ));
-          await Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(builder: (context) => RootScreen()),
-              (route) => false);
+          await Navigator.of(context)
+              .pushNamedAndRemoveUntil(RouteHandler.NAV, (route) => false);
         }
       }
     } on FirebaseAuthException catch (e) {

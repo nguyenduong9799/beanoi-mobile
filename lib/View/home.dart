@@ -11,13 +11,12 @@ import 'package:shimmer/shimmer.dart';
 import 'package:unidelivery_mobile/Model/DTO/AccountDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/CartDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/ProductDTO.dart';
-import 'package:unidelivery_mobile/View/order.dart';
-import 'package:unidelivery_mobile/View/product_detail.dart';
 import 'package:unidelivery_mobile/ViewModel/home_viewModel.dart';
 import 'package:unidelivery_mobile/ViewModel/root_viewModel.dart';
 import 'package:unidelivery_mobile/acessories/appbar.dart';
 import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/constraints.dart';
+import 'package:unidelivery_mobile/route_constraint.dart';
 import 'package:unidelivery_mobile/utils/enum.dart';
 
 const ORDER_TIME = 23;
@@ -184,10 +183,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         onPressed: () async {
                           print('Tap order');
                           Scaffold.of(context).hideCurrentSnackBar();
-                          bool result = await Navigator.of(context)
-                              .push(MaterialPageRoute(
-                            builder: (context) => OrderScreen(),
-                          ));
+                          bool result =
+                              await Navigator.of(context).pushNamed<bool>(RouteHandler.ORDER);
                           if (result != null) {
                             if (result) {
                               showStatusDialog(
@@ -634,9 +631,8 @@ class _FoodItemState extends State<FoodItem> {
               print('Add item to cart');
               Scaffold.of(context).hideCurrentSnackBar();
               // TODO: Change by receive result from Navigator
-              bool result = await Navigator.of(context).push(MaterialPageRoute(
-                builder: (BuildContext context) => ProductDetailScreen(product),
-              ));
+              bool result = await Navigator.of(context)
+                  .pushNamed<bool>(RouteHandler.PRODUCT_DETAIL, arguments: product);
               if (result != null) {
                 if (result) {
                   final snackBar = SnackBar(
