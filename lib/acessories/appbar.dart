@@ -3,15 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:unidelivery_mobile/View/orderHistory.dart';
-import 'package:unidelivery_mobile/ViewModel/root_viewModel.dart';
+import 'package:unidelivery_mobile/ViewModel/index.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
 import 'package:unidelivery_mobile/route_constraint.dart';
 import 'package:unidelivery_mobile/utils/index.dart';
 
 class DefaultAppBar extends StatefulWidget implements PreferredSizeWidget {
-  String title;
+  final String title;
 
   DefaultAppBar({Key key, this.title}) : super(key: key);
 

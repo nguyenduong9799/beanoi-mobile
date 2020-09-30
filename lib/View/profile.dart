@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shimmer/shimmer.dart';
 
-import 'package:unidelivery_mobile/Model/DTO/AccountDTO.dart';
-import 'package:unidelivery_mobile/ViewModel/root_viewModel.dart';
+import 'package:unidelivery_mobile/Model/DTO/index.dart';
+import 'package:unidelivery_mobile/ViewModel/index.dart';
 import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
 import 'package:unidelivery_mobile/route_constraint.dart';

@@ -1,5 +1,6 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:animator/animator.dart';
+import 'package:stacked_services/stacked_services.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_countdown_timer/countdown_timer.dart';
@@ -8,16 +9,15 @@ import 'package:flutter_page_indicator/flutter_page_indicator.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:unidelivery_mobile/Model/DTO/AccountDTO.dart';
-import 'package:unidelivery_mobile/Model/DTO/CartDTO.dart';
-import 'package:unidelivery_mobile/Model/DTO/ProductDTO.dart';
-import 'package:unidelivery_mobile/ViewModel/home_viewModel.dart';
-import 'package:unidelivery_mobile/ViewModel/root_viewModel.dart';
+import 'package:unidelivery_mobile/Model/DTO/index.dart';
+import 'package:unidelivery_mobile/ViewModel/index.dart';
+
 import 'package:unidelivery_mobile/acessories/appbar.dart';
 import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
 import 'package:unidelivery_mobile/route_constraint.dart';
+import 'package:unidelivery_mobile/locator.dart';
 
 const ORDER_TIME = 23;
 
@@ -43,6 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
   // int endTime = DateTime.now().millisecondsSinceEpoch + 1000 * 60 * 60;
 
   bool _endOrderTime = false;
+  NavigationService _navigationService = locator<NavigationService>();
 
   @override
   void initState() {
@@ -72,17 +73,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 height: MediaQuery.of(context).size.height,
                 child: Stack(
                   children: [
-                    // _endOrderTime
-                    //     ? Center(
-                    //         child: Text(
-                    //           "Đã hết thời gian order rồi. \n Bạn quay lại vào lần sau nhé {{{(>_<)}}}",
-                    //           style: TextStyle(
-                    //             fontSize: 24,
-                    //           ),
-                    //           textAlign: TextAlign.center,
-                    //         ),
-                    //       )
-                    //     :
                     Container(
                       // height: 800,
                       child: ListView(
@@ -95,6 +85,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                 child: Column(
                                   children: [
                                     // banner(),
+                                    FlatButton(
+                                      child: Text("Go to OrderHistory"),
+                                      onPressed: () {
+                                        _navigationService.navigateTo(
+                                            RouteHandler.ORDER_HISTORY);
+                                      },
+                                    ),
                                     Center(
                                       child: Container(
                                         margin: EdgeInsets.all(8),

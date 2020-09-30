@@ -3,8 +3,8 @@ import 'package:intl/intl.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:unidelivery_mobile/Model/DTO/AccountDTO.dart';
-import 'package:unidelivery_mobile/ViewModel/signup_viewModel.dart';
+import 'package:unidelivery_mobile/Model/DTO/index.dart';
+import 'package:unidelivery_mobile/ViewModel/index.dart';
 import 'package:unidelivery_mobile/utils/regex.dart';
 
 import '../route_constraint.dart';

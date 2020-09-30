@@ -1,8 +1,7 @@
 import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:unidelivery_mobile/Model/DTO/CartDTO.dart';
-import 'package:unidelivery_mobile/Model/DTO/ProductDTO.dart';
+import 'package:unidelivery_mobile/Model/DTO/index.dart';
 
 Future<bool> setFCMToken(String value) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();

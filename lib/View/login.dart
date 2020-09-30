@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:unidelivery_mobile/ViewModel/login_viewModel.dart';
+import 'package:unidelivery_mobile/ViewModel/index.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/route_constraint.dart';
 

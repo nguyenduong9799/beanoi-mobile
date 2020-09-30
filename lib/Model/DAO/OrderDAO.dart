@@ -58,6 +58,5 @@ class OrderDAO {
     }
 
     return OrderStatus.Fail;
-    ;
   }
 }

@@ -7,9 +7,9 @@ import 'package:intl/intl.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:unidelivery_mobile/Model/DTO/CartDTO.dart';
-import 'package:unidelivery_mobile/Model/DTO/ProductDTO.dart';
-import 'package:unidelivery_mobile/ViewModel/product_viewModel.dart';
+import 'package:unidelivery_mobile/Model/DTO/index.dart';
+import 'package:unidelivery_mobile/ViewModel/index.dart';
+
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
 import 'package:unidelivery_mobile/utils/shared_pref.dart';
