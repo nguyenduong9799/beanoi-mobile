@@ -53,6 +53,7 @@ dependencies:
   connectivity: ^0.4.9+3
   animated_text_kit: ^2.2.0
   stacked_services: ^0.5.4+4
+  get_it: ^5.0.1
 
 dev_dependencies:
   flutter_test:

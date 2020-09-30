@@ -1,14 +1,11 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:stacked_services/stacked_services.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:unidelivery_mobile/Model/DTO/AccountDTO.dart';
-import 'package:unidelivery_mobile/View/home.dart';
 import 'package:unidelivery_mobile/View/login.dart';
 import 'package:unidelivery_mobile/View/nav_screen.dart';
-import 'package:unidelivery_mobile/View/orderHistory.dart';
-import 'package:unidelivery_mobile/View/profile.dart';
-import 'package:unidelivery_mobile/View/signup.dart';
 import 'package:unidelivery_mobile/constraints.dart';
+import 'package:unidelivery_mobile/locator.dart';
 import 'package:unidelivery_mobile/utils/index.dart';
 import 'package:unidelivery_mobile/utils/request.dart';
 import 'package:unidelivery_mobile/utils/shared_pref.dart';
@@ -16,6 +13,7 @@ import 'package:unidelivery_mobile/utils/shared_pref.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await setupLocator();
   runApp(MyApp());
 }
 
@@ -28,6 +26,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
+      navigatorKey: locator<NavigationService>().navigatorKey,
       theme: ThemeData(
         fontFamily: 'SourceSansPro',
         primarySwatch: Colors.blue,

@@ -12,6 +12,7 @@ import 'package:unidelivery_mobile/Model/DTO/ProductDTO.dart';
 import 'package:unidelivery_mobile/ViewModel/product_viewModel.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
+import 'package:unidelivery_mobile/utils/shared_pref.dart';
 
 class ProductDetailScreen extends StatefulWidget {
   final ProductDTO dto;
