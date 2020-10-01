@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:stacked_services/stacked_services.dart';
 import 'package:unidelivery_mobile/Bussiness/BussinessHandler.dart';
 import 'package:unidelivery_mobile/Model/DAO/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
@@ -16,6 +17,7 @@ import 'package:unidelivery_mobile/acessories/dash_border.dart';
 import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/enums/order_status.dart';
+import 'package:unidelivery_mobile/locator.dart';
 import 'package:unidelivery_mobile/utils/shared_pref.dart';
 
 class OrderScreen extends StatefulWidget {
@@ -24,6 +26,7 @@ class OrderScreen extends StatefulWidget {
 }
 
 class _OrderScreenState extends State<OrderScreen> {
+  NavigationService _navigationService = locator<NavigationService>();
   OrderViewModel orderViewModel;
   ProgressDialog pr;
   String orderNote = "";
@@ -167,7 +170,7 @@ class _OrderScreenState extends State<OrderScreen> {
                   ),
                   OutlineButton(
                     onPressed: () {
-                      Navigator.pop(context);
+                      _navigationService.back();
                     },
                     borderSide: BorderSide(color: kPrimary),
                     child: Text(
@@ -375,7 +378,7 @@ class _OrderScreenState extends State<OrderScreen> {
               bool result = await removeItemFromCart(item);
               if (result) {
                 await pr.hide();
-                Navigator.of(context).pop(false);
+                _navigationService.back(result: false);
               } else {
                 orderViewModel.notifyListeners();
                 await pr.hide();
@@ -551,7 +554,7 @@ class _OrderScreenState extends State<OrderScreen> {
               if (result == OrderStatus.Success) {
                 await deleteCart();
                 await pr.hide();
-                Navigator.pop(context, true);
+                _navigationService.back(result: true);
               } else if (result == OrderStatus.Fail) {
                 await pr.hide();
                 showStatusDialog(

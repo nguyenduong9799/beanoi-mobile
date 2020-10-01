@@ -83,14 +83,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                 padding: const EdgeInsets.only(top: 80),
                                 child: Column(
                                   children: [
-                                    // banner(),
-                                    FlatButton(
-                                      child: Text("Go to OrderHistory"),
-                                      onPressed: () {
-                                        _navigationService.navigateTo(
-                                            RouteHandler.ORDER_HISTORY);
-                                      },
-                                    ),
                                     Center(
                                       child: Container(
                                         margin: EdgeInsets.all(8),
@@ -178,7 +170,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         onPressed: () async {
                           print('Tap order');
-                          Scaffold.of(context).hideCurrentSnackBar();
+                          // Scaffold.of(context).hideCurrentSnackBar();
                           await model.openCart();
                           await rootViewModel.fetchUser();
                         },

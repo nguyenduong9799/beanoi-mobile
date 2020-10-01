@@ -1,7 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:stacked_services/stacked_services.dart';
 import 'package:unidelivery_mobile/View/login.dart';
+import 'package:unidelivery_mobile/locator.dart';
+import 'package:unidelivery_mobile/route_constraint.dart';
 
 class AppException implements Exception {
   final _message;
@@ -60,7 +63,9 @@ class CustomInterceptors extends InterceptorsWrapper {
 // or new Dio with a BaseOptions instance.
 
 class MyRequest {
-  BuildContext _context;
+  NavigationService _navigationService = locator<NavigationService>();
+  DialogService _dialogService = locator<DialogService>();
+
   static BaseOptions options = new BaseOptions(
     baseUrl: 'http://115.165.166.32:14254/api',
     headers: {
@@ -79,30 +84,13 @@ class MyRequest {
       onError: (DioError e) async {
         // Do something with response error
         if (e.response.statusCode == 401) {
-          if (_context != null) {
-            await showDialog(
-              context: _context,
-              builder: (_) => new AlertDialog(
-                title: new Text("Lỗi"),
-                content: new Text("Vui lòng đăng nhập lại"),
-                actions: <Widget>[
-                  FlatButton(
-                    child: Text('Ok!'),
-                    onPressed: () {
-                      Navigator.of(_context).pop();
-                    },
-                  )
-                ],
-              ),
-            );
-            Navigator.of(_context).pushAndRemoveUntil(
-                MaterialPageRoute(
-                  builder: (context) => LoginScreen(),
-                ),
-                (route) => false);
-          }
+          _dialogService.showDialog(
+            title: "Lỗi",
+            description: "Vui lòng đăng nhập lại",
+          );
+
+          _navigationService.clearStackAndShow(RouteHandler.LOGIN);
         }
-        print("Request ERROR ${e.message}");
         return e; //continue
       },
     ));
@@ -111,8 +99,6 @@ class MyRequest {
   Dio get request {
     return _inner;
   }
-
-  set context(context) => _context = context;
 
   set setToken(token) {
     options.headers["Authorization"] = "Bearer $token";

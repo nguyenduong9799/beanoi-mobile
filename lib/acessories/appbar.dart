@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:stacked_services/stacked_services.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
+import 'package:unidelivery_mobile/locator.dart';
 import 'package:unidelivery_mobile/route_constraint.dart';
 import 'package:unidelivery_mobile/utils/index.dart';
 
@@ -34,7 +36,7 @@ class _AppBarSate extends State<DefaultAppBar> {
       leading: IconButton(
         icon: Icon(Icons.arrow_back_ios, color: Colors.white),
         onPressed: () {
-          Navigator.pop(context);
+          locator<NavigationService>().back();
         },
       ),
       title: Text(
@@ -176,7 +178,8 @@ class _HomeAppBarSate extends State<HomeAppBar> {
                     // ),
                     ),
                 onTap: () {
-                  Navigator.of(context).pushNamed(RouteHandler.ORDER_HISTORY);
+                  locator<NavigationService>()
+                      .navigateTo(RouteHandler.ORDER_HISTORY);
                 },
               ),
             ),

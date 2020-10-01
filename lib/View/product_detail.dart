@@ -7,11 +7,13 @@ import 'package:intl/intl.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:stacked_services/stacked_services.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
 
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
+import 'package:unidelivery_mobile/locator.dart';
 import 'package:unidelivery_mobile/utils/shared_pref.dart';
 
 class ProductDetailScreen extends StatefulWidget {
@@ -27,7 +29,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
     with TickerProviderStateMixin {
   List<Tab> affectPriceTabs;
   List<Tab> unaffectPriceTabs;
-
+  NavigationService _navigationService = locator<NavigationService>();
   TabController _unaffectPriceController;
   TabController _affectPriceController;
 
@@ -484,7 +486,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                       print("Save product: " + widget.dto.toString());
                       await addItemToCart(item);
                       await pr.hide();
-                      Navigator.pop(context, true);
+                      _navigationService.back(result: true);
                     },
                     textColor: kBackgroundGrey[0],
                     color: kPrimary,

@@ -3,8 +3,10 @@ import 'package:intl/intl.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:stacked_services/stacked_services.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
+import 'package:unidelivery_mobile/locator.dart';
 import 'package:unidelivery_mobile/utils/regex.dart';
 
 import '../route_constraint.dart';
@@ -19,6 +21,7 @@ class SignUp extends StatefulWidget {
 
 class _SignUpState extends State<SignUp> {
   ProgressDialog pr;
+  NavigationService _navigationService = locator<NavigationService>();
 
   final form = FormGroup({
     'name': FormControl(validators: [
@@ -77,7 +80,7 @@ class _SignUpState extends State<SignUp> {
         // Chuyen trang
         if (updateSucces) {
           print('Update Success');
-          Navigator.of(context).pushReplacementNamed("nav");
+          _navigationService.replaceWith(RouteHandler.NAV);
         }
       }
     }
@@ -101,7 +104,7 @@ class _SignUpState extends State<SignUp> {
             FlatButton(
               child: Text('Approve'),
               onPressed: () {
-                Navigator.of(context).pop();
+                _navigationService.back();
               },
             ),
           ],
@@ -254,9 +257,8 @@ class _SignUpState extends State<SignUp> {
                           Center(
                             child: GestureDetector(
                               onTap: () async {
-                                await Navigator.of(context)
-                                    .pushNamedAndRemoveUntil(
-                                        RouteHandler.LOGIN, (route) => false);
+                                await _navigationService
+                                    .clearStackAndShow(RouteHandler.LOGIN);
                                 print("Back to home");
                               },
                               child: Text(
