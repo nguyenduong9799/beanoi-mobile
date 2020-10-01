@@ -10,7 +10,7 @@ import 'package:unidelivery_mobile/utils/request.dart';
 class RootScreen extends StatefulWidget {
   final int initScreenIndex;
 
-  const RootScreen({Key key, this.initScreenIndex}) : super(key: key);
+  const RootScreen({Key key, this.initScreenIndex = 0}) : super(key: key);
 
   @override
   _RootScreenState createState() => _RootScreenState();
@@ -33,7 +33,6 @@ class _RootScreenState extends State<RootScreen> {
   void initState() {
     super.initState();
     _selectedIndex = widget.initScreenIndex;
-    requestObj.context = context;
     _initModel = RootViewModel();
   }
 

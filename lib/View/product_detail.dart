@@ -1,18 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
-import 'package:hexcolor/hexcolor.dart';
 import 'package:intl/intl.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
-
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
-import 'package:unidelivery_mobile/utils/shared_pref.dart';
 
 class ProductDetailScreen extends StatefulWidget {
   final ProductDTO dto;
@@ -33,20 +29,13 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
 
   ProductDetailViewModel productDetailViewModel;
 
-  ProgressDialog pr;
+
 
   @override
   void initState() {
     super.initState();
     print("Product: " + widget.dto.toString());
     productDetailViewModel = new ProductDetailViewModel(widget.dto);
-
-    pr = new ProgressDialog(
-      context,
-      showLogs: true,
-      type: ProgressDialogType.Normal,
-      isDismissible: false,
-    );
 
     if (widget.dto.type == MASTER_PRODUCT) {
       affectPriceTabs = new List<Tab>();
@@ -229,7 +218,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
       return Container(
         decoration: BoxDecoration(
             border:
-                Border(top: BorderSide(color: Hexcolor("ffc500"), width: 2))),
+                Border(top: BorderSide(color: kPrimary, width: 2))),
         width: MediaQuery.of(context).size.width,
         child: TabBar(
           labelStyle: TextStyle(fontWeight: FontWeight.bold),

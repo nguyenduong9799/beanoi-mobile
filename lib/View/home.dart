@@ -15,7 +15,6 @@ import 'package:unidelivery_mobile/ViewModel/index.dart';
 import 'package:unidelivery_mobile/acessories/appbar.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
-import 'package:unidelivery_mobile/route_constraint.dart';
 import 'package:unidelivery_mobile/locator.dart';
 
 const ORDER_TIME = 23;
@@ -84,13 +83,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                 child: Column(
                                   children: [
                                     // banner(),
-                                    FlatButton(
-                                      child: Text("Go to OrderHistory"),
-                                      onPressed: () {
-                                        _navigationService.navigateTo(
-                                            RouteHandler.ORDER_HISTORY);
-                                      },
-                                    ),
                                     Center(
                                       child: Container(
                                         margin: EdgeInsets.all(8),
@@ -608,8 +600,6 @@ class _FoodItemState extends State<FoodItem> {
             ),
             onTap: () async {
               print('Add item to cart');
-              Scaffold.of(context).hideCurrentSnackBar();
-              // TODO: Change by receive result from Navigator
               model.openProductDetail(product);
             },
             child: Opacity(

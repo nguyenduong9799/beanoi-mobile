@@ -48,7 +48,10 @@ class MyApp extends StatelessWidget {
                 builder: (context) => HomeScreen(), settings: settings);
           case RouteHandler.NAV:
             return CupertinoPageRoute(
-                builder: (context) => RootScreen(), settings: settings);
+                builder: (context) => RootScreen(
+                      initScreenIndex: settings.arguments,
+                    ),
+                settings: settings);
           case RouteHandler.ORDER:
             return CupertinoPageRoute<bool>(
                 builder: (context) => OrderScreen(), settings: settings);

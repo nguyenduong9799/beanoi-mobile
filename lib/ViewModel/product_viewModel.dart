@@ -3,6 +3,7 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:unidelivery_mobile/Model/DAO/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
+import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
 import 'package:unidelivery_mobile/utils/shared_pref.dart';
@@ -190,6 +191,7 @@ class ProductDetailViewModel extends Model {
   }
 
   Future<void> addProductToCart() async {
+    showLoadingDialog();
     List<ProductDTO> listChoices = new List<ProductDTO>();
     if (master.type == MASTER_PRODUCT) {
       for (int i = 0;
@@ -228,6 +230,7 @@ class ProductDetailViewModel extends Model {
 
     print("Save product: " + master.toString());
     await addItemToCart(item);
+    hideDialog();
     await _navigationService.back(result: true);
   }
 }

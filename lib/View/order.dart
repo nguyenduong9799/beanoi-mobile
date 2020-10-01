@@ -4,18 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
-import 'package:progress_dialog/progress_dialog.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:stacked_services/stacked_services.dart';
 import 'package:unidelivery_mobile/Bussiness/BussinessHandler.dart';
-import 'package:unidelivery_mobile/Model/DAO/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
 import 'package:unidelivery_mobile/acessories/appbar.dart';
 import 'package:unidelivery_mobile/acessories/dash_border.dart';
 import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/constraints.dart';
-import 'package:unidelivery_mobile/enums/order_status.dart';
+import 'package:unidelivery_mobile/locator.dart';
 import 'package:unidelivery_mobile/utils/shared_pref.dart';
 
 class OrderScreen extends StatefulWidget {
@@ -24,20 +23,15 @@ class OrderScreen extends StatefulWidget {
 }
 
 class _OrderScreenState extends State<OrderScreen> {
+  NavigationService _navigationService = locator<NavigationService>();
   OrderViewModel orderViewModel;
-  ProgressDialog pr;
   String orderNote = "";
 
   @override
   void initState() {
     super.initState();
     orderViewModel = new OrderViewModel();
-    pr = new ProgressDialog(
-      context,
-      showLogs: true,
-      type: ProgressDialogType.Normal,
-      isDismissible: false,
-    );
+
   }
 
   @override
@@ -167,7 +161,7 @@ class _OrderScreenState extends State<OrderScreen> {
                   ),
                   OutlineButton(
                     onPressed: () {
-                      Navigator.pop(context);
+                      _navigationService.back();
                     },
                     borderSide: BorderSide(color: kPrimary),
                     child: Text(
@@ -371,14 +365,14 @@ class _OrderScreenState extends State<OrderScreen> {
             foregroundColor: Colors.red,
             icon: Icons.delete,
             onTap: () async {
-              await pr.show();
+              showLoadingDialog();
               bool result = await removeItemFromCart(item);
               if (result) {
-                await pr.hide();
-                Navigator.of(context).pop(false);
+                hideDialog();
+                _navigationService.back(result: false);
               } else {
                 orderViewModel.notifyListeners();
-                await pr.hide();
+                hideDialog();
               }
             }),
       ],
@@ -545,45 +539,7 @@ class _OrderScreenState extends State<OrderScreen> {
           ),
           FlatButton(
             onPressed: () async {
-              await pr.show();
-              OrderDAO dao = new OrderDAO();
-              OrderStatus result = await dao.createOrders(orderNote);
-              if (result == OrderStatus.Success) {
-                await deleteCart();
-                await pr.hide();
-                Navigator.pop(context, true);
-              } else if (result == OrderStatus.Fail) {
-                await pr.hide();
-                showStatusDialog(
-                    context,
-                    Icon(
-                      Icons.error_outline,
-                      color: kFail,
-                    ),
-                    "Thất bại :(",
-                    "Vui lòng thử lại sau");
-              } else if (result == OrderStatus.NoMoney) {
-                await pr.hide();
-                showStatusDialog(
-                    context,
-                    Icon(
-                      Icons.error_outline,
-                      color: kFail,
-                    ),
-                    "Thất bại :(",
-                    "Có đủ tiền đâu mà mua (>_<)");
-              } else {
-                await pr.hide();
-                showStatusDialog(
-                    context,
-                    Icon(
-                      MaterialCommunityIcons.timer_off,
-                      color: kFail,
-                    ),
-                    "Thất bại :(",
-                    "Hết giờ rồi bạn ơi, mai đặt sớm nhen <3");
-              }
-
+              await orderViewModel.orderCart(orderNote);
               // pr.hide();
               // showStateDialog();
             },
@@ -631,11 +587,11 @@ class _OrderScreenState extends State<OrderScreen> {
           ),
           onPressed: () async {
             if (item.quantity != 1) {
-              await pr.show();
+              showLoadingDialog();
               item.quantity--;
               await updateItemFromCart(item);
               orderViewModel.notifyListeners();
-              await pr.hide();
+              hideDialog();
             }
           },
         ),
@@ -647,11 +603,11 @@ class _OrderScreenState extends State<OrderScreen> {
             color: plusColor,
           ),
           onPressed: () async {
-            await pr.show();
+            showLoadingDialog();
             item.quantity++;
             await updateItemFromCart(item);
             orderViewModel.notifyListeners();
-            await pr.hide();
+            hideDialog();
           },
         )
       ],

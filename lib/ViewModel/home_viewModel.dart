@@ -49,6 +49,12 @@ class HomeViewModel extends Model {
     // getProducts();
   }
 
+
+
+
+
+
+
   Future<void> openProductDetail(ProductDTO product) async {
     bool result = await _navigationService
         .navigateTo(RouteHandler.PRODUCT_DETAIL, arguments: product);

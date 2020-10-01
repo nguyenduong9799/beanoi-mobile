@@ -54,6 +54,7 @@ dependencies:
   animated_text_kit: ^2.2.0
   stacked_services: ^0.5.4+4
   get_it: ^5.0.1
+  get: ^3.12.1
 
 dev_dependencies:
   flutter_test:

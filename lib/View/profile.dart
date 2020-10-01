@@ -2,11 +2,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:stacked_services/stacked_services.dart';
 
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
 import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
+import 'package:unidelivery_mobile/locator.dart';
 import 'package:unidelivery_mobile/route_constraint.dart';
 import 'package:unidelivery_mobile/utils/index.dart';
 
@@ -72,25 +74,6 @@ class _UpdateAccountState extends State<ProfileScreen> {
           ),
           systemInfo()
         ],
-      ),
-    );
-  }
-
-  Widget backButton() {
-    return Align(
-      alignment: Alignment.topLeft,
-      child: Container(
-        margin: EdgeInsets.only(left: 8),
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: kPrimary.withOpacity(0.8),
-        ),
-        child: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: Colors.white),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
       ),
     );
   }
@@ -190,12 +173,7 @@ class _UpdateAccountState extends State<ProfileScreen> {
                 fontSize: 16, fontWeight: FontWeight.bold, color: kFail),
           ),
           onPressed: () async {
-            int choice = await getOption(context, "Bạn có chắc không?");
-            if (choice == 1) {
-              await model.signOut();
-              Navigator.of(context).pushNamedAndRemoveUntil(
-                  RouteHandler.LOGIN, (Route<dynamic> route) => false);
-            }
+            await model.processSignout();
           },
         ),
       );
