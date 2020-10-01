@@ -1,8 +1,14 @@
 import 'package:scoped_model/scoped_model.dart';
+import 'package:stacked_services/stacked_services.dart';
 import 'package:unidelivery_mobile/Model/DAO/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
+import 'package:unidelivery_mobile/ViewModel/index.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
+import 'package:unidelivery_mobile/locator.dart';
+import 'package:unidelivery_mobile/route_constraint.dart';
 import 'package:unidelivery_mobile/utils/shared_pref.dart';
+
+import '../constraints.dart';
 
 class Filter {
   final int id;
@@ -16,6 +22,9 @@ class Filter {
 
 class HomeViewModel extends Model {
   static HomeViewModel _instance;
+  NavigationService _navigationService = locator<NavigationService>();
+  SnackbarService _snackbarService = locator<SnackbarService>();
+  DialogService _dialogService = locator<DialogService>();
 
   ProductDAO _dao = ProductDAO();
   dynamic error;
@@ -38,6 +47,41 @@ class HomeViewModel extends Model {
   HomeViewModel() {
     status = ViewStatus.Loading;
     // getProducts();
+  }
+
+  Future<void> openProductDetail(ProductDTO product) async {
+    bool result = await _navigationService
+        .navigateTo(RouteHandler.PRODUCT_DETAIL, arguments: product);
+    if (result != null) {
+      if (result) {
+        _snackbarService.showSnackbar(
+            message: "Thêm món thành công", duration: Duration(seconds: 2));
+      }
+    }
+    notifyListeners();
+  }
+
+  Future<void> openCart(RootViewModel rootViewModel) async {
+    bool result = await _navigationService.navigateTo(RouteHandler.ORDER);
+    if (result != null) {
+      if (result) {
+        // showStatusDialog(
+        //     context,
+        //     Icon(
+        //       Icons.check_circle_outline,
+        //       color: kSuccess,
+        //       size: DIALOG_ICON_SIZE,
+        //     ),
+        //     "Thành công",
+        //     "Đơn hàng của bạn sẽ được giao vào lúc $TIME");
+        _dialogService.showDialog(
+          title: "Thành công",
+          description: "Đơn hàng của bạn sẽ được giao vào lúc $TIME",
+        );
+        await rootViewModel.fetchUser();
+      }
+    }
+    notifyListeners();
   }
 
   Future<Cart> get cart async {

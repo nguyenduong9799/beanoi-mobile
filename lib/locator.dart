@@ -6,4 +6,5 @@ GetIt locator = GetIt.instance;
 Future setupLocator() async {
   locator.registerLazySingleton(() => NavigationService());
   locator.registerLazySingleton(() => DialogService());
+  locator.registerLazySingleton(() => SnackbarService());
 }

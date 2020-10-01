@@ -13,7 +13,6 @@ import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
 
 import 'package:unidelivery_mobile/acessories/appbar.dart';
-import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
 import 'package:unidelivery_mobile/route_constraint.dart';
@@ -179,24 +178,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         onPressed: () async {
                           print('Tap order');
-                          Scaffold.of(context).hideCurrentSnackBar();
-                          bool result = await Navigator.of(context)
-                              .pushNamed<bool>(RouteHandler.ORDER);
-                          if (result != null) {
-                            if (result) {
-                              showStatusDialog(
-                                  context,
-                                  Icon(
-                                    Icons.check_circle_outline,
-                                    color: kSuccess,
-                                    size: DIALOG_ICON_SIZE,
-                                  ),
-                                  "Thành công",
-                                  "Đơn hàng của bạn sẽ được giao vào lúc $TIME");
-                            }
-                          }
-                          await rootViewModel.fetchUser();
-                          model.notifyListeners();
+                          await model.openCart(rootViewModel);
                         },
                         child: Stack(
                           overflow: Overflow.visible,
@@ -628,23 +610,7 @@ class _FoodItemState extends State<FoodItem> {
               print('Add item to cart');
               Scaffold.of(context).hideCurrentSnackBar();
               // TODO: Change by receive result from Navigator
-              bool result = await Navigator.of(context).pushNamed<bool>(
-                  RouteHandler.PRODUCT_DETAIL,
-                  arguments: product);
-              if (result != null) {
-                if (result) {
-                  final snackBar = SnackBar(
-                    backgroundColor: kPrimary,
-                    content: Text(
-                      'Thêm món thành công',
-                      style: kTextPrimary,
-                    ),
-                    duration: Duration(seconds: 2),
-                  );
-                  Scaffold.of(context).showSnackBar(snackBar);
-                }
-              }
-              model.notifyListeners();
+              model.openProductDetail(product);
             },
             child: Opacity(
               opacity: 1,

@@ -444,47 +444,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                 ? FlatButton(
                     padding: EdgeInsets.all(8),
                     onPressed: () async {
-                      await pr.show();
-                      List<ProductDTO> listChoices = new List<ProductDTO>();
-                      if (widget.dto.type == MASTER_PRODUCT) {
-                        for (int i = 0;
-                            i < model.affectPriceChoice.keys.toList().length;
-                            i++) {
-                          print("Save product: " +
-                              model.affectPriceChoice[
-                                      model.affectPriceChoice.keys.elementAt(i)]
-                                  .toString());
-                          listChoices.add(model.affectPriceChoice[
-                              model.affectPriceChoice.keys.elementAt(i)]);
-                        }
-                      }
-
-                      if (widget.dto.extraId != null) {
-                        for (int i = 0; i < model.extra.keys.length; i++) {
-                          if (model.extra[model.extra.keys.elementAt(i)]) {
-                            listChoices.add(model.extra.keys.elementAt(i));
-                          }
-                        }
-                      }
-
-                      String description = "";
-                      for (int i = 0;
-                          i < model.unaffectPriceChoice.keys.toList().length;
-                          i++) {
-                        description += model.unaffectPriceChoice.keys
-                                .elementAt(i) +
-                            ": " +
-                            model.unaffectPriceChoice[
-                                model.unaffectPriceChoice.keys.elementAt(i)] +
-                            "\n";
-                      }
-                      CartItem item = new CartItem(
-                          widget.dto, listChoices, description, model.count);
-
-                      print("Save product: " + widget.dto.toString());
-                      await addItemToCart(item);
-                      await pr.hide();
-                      Navigator.pop(context, true);
+                      await model.addProductToCart();
                     },
                     textColor: kBackgroundGrey[0],
                     color: kPrimary,

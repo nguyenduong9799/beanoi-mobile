@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:unidelivery_mobile/Model/DAO/ProductDAO.dart';
-import 'package:unidelivery_mobile/Model/DTO/ProductDTO.dart';
+import 'package:stacked_services/stacked_services.dart';
+import 'package:unidelivery_mobile/Model/DAO/index.dart';
+import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
+import 'package:unidelivery_mobile/utils/shared_pref.dart';
+
+import '../locator.dart';
 
 class ProductDetailViewModel extends Model {
+  NavigationService _navigationService = locator<NavigationService>();
+  SnackbarService _snackbarService = locator<SnackbarService>();
+  DialogService _dialogService = locator<DialogService>();
   int unaffectIndex = 0;
   ViewStatus status;
   int affectIndex = 0;
@@ -28,8 +35,10 @@ class ProductDetailViewModel extends Model {
   bool isExtra;
   //List size
   bool isLoading = false;
+  ProductDTO master;
 
   ProductDetailViewModel(ProductDTO dto) {
+    master = dto;
     isExtra = false;
     this.extra = new Map<ProductDTO, bool>();
 
@@ -39,10 +48,10 @@ class ProductDetailViewModel extends Model {
     this.unaffectPriceChoice = new Map<String, String>();
     this.affectPriceChoice = new Map<String, ProductDTO>();
     //
-    if (dto.type != MASTER_PRODUCT) {
-      this.fixTotal = dto.price * count;
+    if (master.type != MASTER_PRODUCT) {
+      this.fixTotal = master.price * count;
     } else {
-      for (String s in dto.atrributes) {
+      for (String s in master.atrributes) {
         if (s.toUpperCase() == "ĐÁ" || s.toUpperCase() == "ĐƯỜNG") {
           unaffectPriceContent[s] = ["0%", "25%", "50%", "75%", "100%"];
           unaffectPriceChoice[s] = "";
@@ -178,5 +187,47 @@ class ProductDetailViewModel extends Model {
     }
     total = (fixTotal + extraTotal) * count;
     notifyListeners();
+  }
+
+  Future<void> addProductToCart() async {
+    List<ProductDTO> listChoices = new List<ProductDTO>();
+    if (master.type == MASTER_PRODUCT) {
+      for (int i = 0;
+      i < affectPriceChoice.keys.toList().length;
+      i++) {
+        print("Save product: " +
+            affectPriceChoice[
+            affectPriceChoice.keys.elementAt(i)]
+                .toString());
+        listChoices.add(affectPriceChoice[
+        affectPriceChoice.keys.elementAt(i)]);
+      }
+    }
+
+    if (master.extraId != null) {
+      for (int i = 0; i < extra.keys.length; i++) {
+        if (extra[extra.keys.elementAt(i)]) {
+          listChoices.add(extra.keys.elementAt(i));
+        }
+      }
+    }
+
+    String description = "";
+    for (int i = 0;
+    i < unaffectPriceChoice.keys.toList().length;
+    i++) {
+      description += unaffectPriceChoice.keys
+          .elementAt(i) +
+          ": " +
+          unaffectPriceChoice[
+          unaffectPriceChoice.keys.elementAt(i)] +
+          "\n";
+    }
+    CartItem item = new CartItem(
+        master, listChoices, description, count);
+
+    print("Save product: " + master.toString());
+    await addItemToCart(item);
+    await _navigationService.back(result: true);
   }
 }
