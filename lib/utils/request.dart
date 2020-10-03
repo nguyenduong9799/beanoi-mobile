@@ -1,10 +1,11 @@
+import 'package:connectivity/connectivity.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:stacked_services/stacked_services.dart';
-import 'package:unidelivery_mobile/View/login.dart';
-import 'package:unidelivery_mobile/locator.dart';
+import 'package:get/get.dart';
+import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/route_constraint.dart';
+import 'package:unidelivery_mobile/utils/index.dart';
+import '../constraints.dart';
 
 class AppException implements Exception {
   final _message;
@@ -63,15 +64,12 @@ class CustomInterceptors extends InterceptorsWrapper {
 // or new Dio with a BaseOptions instance.
 
 class MyRequest {
-  NavigationService _navigationService = locator<NavigationService>();
-  DialogService _dialogService = locator<DialogService>();
-
   static BaseOptions options = new BaseOptions(
-    baseUrl: 'http://115.165.166.32:14254/api',
-    headers: {
-      Headers.contentTypeHeader: "application/json",
-    },
-  );
+      baseUrl: 'http://115.165.166.32:14254/api',
+      headers: {
+        Headers.contentTypeHeader: "application/json",
+      },
+      connectTimeout: 10000);
   Dio _inner;
   MyRequest() {
     _inner = new Dio(options);
@@ -81,15 +79,20 @@ class MyRequest {
         // Do something with response data
         return response; // continue
       },
-      onError: (DioError e) async {
+      onError: (DioError e) {
         // Do something with response error
-        if (e.response.statusCode == 401) {
-          _dialogService.showDialog(
-            title: "Lỗi",
-            description: "Vui lòng đăng nhập lại",
-          );
+        if (e.response == null) {
+          Get.toNamed(RouteHandler.NETWORK_ERROR);
+        } else if (e.response.statusCode == 401) {
+          showStatusDialog(
+              Icon(
+                Icons.error_outline,
+                color: kFail,
+              ),
+              "Lỗi",
+              "Vui lòng đang nhập lại");
 
-          _navigationService.clearStackAndShow(RouteHandler.LOGIN);
+          Get.offAllNamed(RouteHandler.LOGIN);
         }
         return e; //continue
       },

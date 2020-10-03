@@ -1,34 +1,30 @@
-import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Model/DAO/OrderDAO.dart';
 import 'package:unidelivery_mobile/Model/DTO/OrderDTO.dart';
+import 'package:unidelivery_mobile/ViewModel/base_model.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
 
 enum OrderFilter { ORDERING, DONE }
 
-class OrderHistoryViewModel extends Model {
+class OrderHistoryViewModel extends BaseModel {
   List<OrderListDTO> orderThumbnail;
-  ViewStatus status;
   OrderDAO _orderDAO;
   dynamic error;
   OrderDTO orderDetail;
 
   OrderHistoryViewModel() {
-    status = ViewStatus.Loading;
+    setState(ViewStatus.Loading);
     _orderDAO = OrderDAO();
   }
 
   Future<void> getOrders(OrderFilter filter) async {
     try {
-      status = ViewStatus.Loading;
-      notifyListeners();
+      setState(ViewStatus.Loading);
       final data = await _orderDAO.getOrders(filter);
 
       orderThumbnail = data;
-      status = ViewStatus.Completed;
-      notifyListeners();
+      setState(ViewStatus.Completed);
     } catch (e) {
-      status = ViewStatus.Error;
-      error = e.toString();
+      setState(ViewStatus.Error);
       notifyListeners();
     } finally {}
   }
@@ -36,16 +32,13 @@ class OrderHistoryViewModel extends Model {
   Future<void> getOrderDetail(int orderId) async {
     // get order detail
     try {
-      status = ViewStatus.Loading;
-      notifyListeners();
+      setState(ViewStatus.Loading);
       final data = await _orderDAO.getOrderDetail(orderId);
 
       orderDetail = data;
-      status = ViewStatus.Completed;
-      notifyListeners();
+      setState(ViewStatus.Completed);
     } catch (e) {
-      status = ViewStatus.Error;
-      error = e.toString();
+      setState(ViewStatus.Error);
       notifyListeners();
     } finally {}
   }

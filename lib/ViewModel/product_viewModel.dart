@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:scoped_model/scoped_model.dart';
-import 'package:stacked_services/stacked_services.dart';
+import 'package:get/get.dart';
+
 import 'package:unidelivery_mobile/Model/DAO/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/acessories/dialog.dart';
@@ -8,14 +8,11 @@ import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
 import 'package:unidelivery_mobile/utils/shared_pref.dart';
 
-import '../locator.dart';
+import 'base_model.dart';
 
-class ProductDetailViewModel extends Model {
-  NavigationService _navigationService = locator<NavigationService>();
-  SnackbarService _snackbarService = locator<SnackbarService>();
-  DialogService _dialogService = locator<DialogService>();
+class ProductDetailViewModel extends BaseModel {
+
   int unaffectIndex = 0;
-  ViewStatus status;
   int affectIndex = 0;
   //List product không ảnh hưởng giá
   Map<String, List<String>> unaffectPriceContent;
@@ -76,20 +73,17 @@ class ProductDetailViewModel extends Model {
   }
 
   Future<void> getExtra(int cat_id) async {
-    status = ViewStatus.Loading;
-    notifyListeners();
+    setState(ViewStatus.Loading);
     try {
       ProductDAO dao = new ProductDAO();
       List<ProductDTO> products = await dao.getExtraProducts(cat_id);
       for (ProductDTO dto in products) {
         extra[dto] = false;
       }
-      status = ViewStatus.Completed;
+      setState(ViewStatus.Completed);
     } catch (e) {
       print("EXCEPTION $e");
-      status = ViewStatus.Error;
-    } finally {
-      notifyListeners();
+      setState(ViewStatus.Error);
     }
   }
 
@@ -231,6 +225,6 @@ class ProductDetailViewModel extends Model {
     print("Save product: " + master.toString());
     await addItemToCart(item);
     hideDialog();
-    await _navigationService.back(result: true);
+    await Get.back(result: true);
   }
 }

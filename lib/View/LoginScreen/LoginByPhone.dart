@@ -1,15 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:stacked_services/stacked_services.dart';
 import 'package:unidelivery_mobile/Services/firebase.dart';
 import 'package:unidelivery_mobile/ViewModel/login_viewModel.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/countries.dart';
-import 'package:unidelivery_mobile/locator.dart';
 import 'package:unidelivery_mobile/route_constraint.dart';
 
 class LoginWithPhone extends StatefulWidget {
@@ -24,7 +23,6 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
   String verificationId;
   bool smsSent = false;
   String smsCode;
-  NavigationService _navigationService = locator<NavigationService>();
 
   ProgressDialog pr;
 
@@ -71,7 +69,7 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
+
 
     return Scaffold(
       resizeToAvoidBottomInset: true,
@@ -97,7 +95,7 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
             ),
             child: Icon(Icons.arrow_back, color: Colors.white),
           ),
-          onPressed: () => _navigationService.back(),
+          onPressed: () => Get.back(),
         ),
       ),
       body: ScopedModel<LoginViewModel>(
@@ -284,10 +282,9 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
     try {
       final authCredential = await AuthService().signInWithGoogle();
       if (authCredential == null) return;
-      final userInfo = await model.signIn(authCredential);
 
       await pr.hide();
-      return _navigationService.clearStackAndShow(RouteHandler.NAV);
+      return Get.offAllNamed(RouteHandler.NAV);
     } on FirebaseAuthException catch (e) {
       print("=====OTP Fail: ${e.message}  ");
       await _showMyDialog("Error", e.message);
@@ -305,9 +302,9 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
         // TODO: Kiem tra xem user moi hay cu
         if (userInfo.isFirstLogin) {
           // Navigate to sign up screen
-          await _navigationService.clearStackAndShow(RouteHandler.SIGN_UP);
+          await Get.offAllNamed(RouteHandler.SIGN_UP);
         } else {
-          await _navigationService.clearStackAndShow(RouteHandler.NAV);
+          await Get.offAllNamed(RouteHandler.NAV);
           // chuyen sang trang home
         }
       } catch (e) {
@@ -326,7 +323,7 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
 
     final PhoneCodeSent phoneCodeSent =
         (String verId, [int forceResend]) async {
-      await _navigationService.navigateTo(RouteHandler.LOGIN_OTP);
+      await Get.toNamed(RouteHandler.LOGIN_OTP);
     };
 
     final PhoneCodeAutoRetrievalTimeout phoneTimeout = (String verId) {
@@ -364,7 +361,7 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
             FlatButton(
               child: Text('Approve'),
               onPressed: () {
-                _navigationService.back();
+                Get.back();
               },
             ),
           ],

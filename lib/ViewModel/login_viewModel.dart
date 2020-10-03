@@ -1,11 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/Model/DAO/index.dart';
 import 'package:unidelivery_mobile/Services/firebase.dart';
+import 'package:unidelivery_mobile/ViewModel/base_model.dart';
 import 'package:unidelivery_mobile/utils/shared_pref.dart';
 
-class LoginViewModel extends Model {
+class LoginViewModel extends BaseModel {
   static LoginViewModel _instance;
   AccountDAO dao = AccountDAO();
 
@@ -19,9 +19,6 @@ class LoginViewModel extends Model {
   static void destroyInstance() {
     _instance = null;
   }
-
-  bool isLoading = false;
-  String text;
 
   AccountDTO user;
 
@@ -40,20 +37,5 @@ class LoginViewModel extends Model {
   Future<void> signOut() async {
     await AuthService().signOut();
     await setToken(null);
-  }
-
-  Future<AccountDTO> changeEventLogin(String uid) async {
-    isLoading = true;
-    text = "";
-    notifyListeners();
-    try {
-      AccountDTO dto = await dao.login(uid);
-      return dto;
-    } on Exception {
-      text = "An error has ocured. Please try app later!";
-    } finally {
-      isLoading = false;
-      notifyListeners();
-    }
   }
 }

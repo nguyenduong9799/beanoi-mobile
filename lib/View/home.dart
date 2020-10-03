@@ -1,6 +1,5 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:animator/animator.dart';
-import 'package:stacked_services/stacked_services.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_countdown_timer/countdown_timer.dart';
@@ -15,7 +14,6 @@ import 'package:unidelivery_mobile/ViewModel/index.dart';
 import 'package:unidelivery_mobile/acessories/appbar.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
-import 'package:unidelivery_mobile/locator.dart';
 
 const ORDER_TIME = 23;
 
@@ -39,9 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
     ORDER_TIME,
   );
   // int endTime = DateTime.now().millisecondsSinceEpoch + 1000 * 60 * 60;
-
   bool _endOrderTime = false;
-  NavigationService _navigationService = locator<NavigationService>();
 
   @override
   void initState() {
@@ -156,7 +152,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   builder: (context, snapshot) {
                     Cart cart = snapshot.data;
                     if (cart == null) return SizedBox.shrink();
-                    bool hasItemInCart = cart.isEmpty;
                     int quantity = cart?.itemQuantity();
                     return Container(
                       margin: EdgeInsets.only(bottom: 40),
@@ -575,6 +570,7 @@ class FoodItem extends StatefulWidget {
 }
 
 class _FoodItemState extends State<FoodItem> {
+
   @override
   Widget build(BuildContext context) {
     final product = widget.product;

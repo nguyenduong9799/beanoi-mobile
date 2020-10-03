@@ -3,10 +3,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:stacked_services/stacked_services.dart';
 import 'package:unidelivery_mobile/Bussiness/BussinessHandler.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
@@ -14,7 +14,6 @@ import 'package:unidelivery_mobile/acessories/appbar.dart';
 import 'package:unidelivery_mobile/acessories/dash_border.dart';
 import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/constraints.dart';
-import 'package:unidelivery_mobile/locator.dart';
 import 'package:unidelivery_mobile/utils/shared_pref.dart';
 
 class OrderScreen extends StatefulWidget {
@@ -23,7 +22,6 @@ class OrderScreen extends StatefulWidget {
 }
 
 class _OrderScreenState extends State<OrderScreen> {
-  NavigationService _navigationService = locator<NavigationService>();
   OrderViewModel orderViewModel;
   String orderNote = "";
 
@@ -161,7 +159,7 @@ class _OrderScreenState extends State<OrderScreen> {
                   ),
                   OutlineButton(
                     onPressed: () {
-                      _navigationService.back();
+                      Get.back();
                     },
                     borderSide: BorderSide(color: kPrimary),
                     child: Text(
@@ -369,7 +367,7 @@ class _OrderScreenState extends State<OrderScreen> {
               bool result = await removeItemFromCart(item);
               if (result) {
                 hideDialog();
-                _navigationService.back(result: false);
+                Get.back(result: false);
               } else {
                 orderViewModel.notifyListeners();
                 hideDialog();

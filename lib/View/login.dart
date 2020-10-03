@@ -1,11 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:get/get.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:stacked_services/stacked_services.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
 import 'package:unidelivery_mobile/constraints.dart';
-import 'package:unidelivery_mobile/locator.dart';
 import 'package:unidelivery_mobile/route_constraint.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -16,8 +15,6 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  NavigationService _navigationService = locator<NavigationService>();
-
   @override
   void initState() {
     super.initState();
@@ -32,9 +29,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
-    final formWidth = screenWidth - 30 - 60;
     return ScopedModel(
       model: LoginViewModel(),
       child: SafeArea(
@@ -154,7 +149,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 // side: BorderSide(color: Colors.red),
               ),
               onPressed: () {
-                _navigationService.navigateTo(RouteHandler.LOGIN_PHONE);
+                Get.toNamed(RouteHandler.LOGIN_PHONE);
               },
               child: Row(
                 children: [
