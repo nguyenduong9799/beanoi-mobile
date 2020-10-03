@@ -1,6 +1,7 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
@@ -207,7 +208,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
           children: [
             ListTile(
               onTap: () {
-                _settingModalBottomSheet(context, order.id);
+                _settingModalBottomSheet(order.id);
               },
               contentPadding: EdgeInsets.fromLTRB(16, 8, 16, 8),
               title: Column(
@@ -253,31 +254,21 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
     );
   }
 
-  void _settingModalBottomSheet(context, orderId) {
+  void _settingModalBottomSheet(orderId) {
     // get orderDetail
-
-    showModalBottomSheet(
-        context: context,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(16),
-            topRight: Radius.circular(16),
-          ),
+    Get.bottomSheet(
+      OrderDetailBottomSheet(
+        orderId: orderId,
+      ),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(16),
+          topRight: Radius.circular(16),
         ),
-        builder: (BuildContext bc) {
-          // final status = model.status;
-
-          // if (status == ViewStatus.Loading)
-          //   return AspectRatio(
-          //     aspectRatio: 1,
-          //     child: Center(child: CircularProgressIndicator()),
-          //   );
-
-          // final orderDetail = model.orderDetail;
-          return OrderDetailBottomSheet(
-            orderId: orderId,
-          );
-        });
+        // side: BorderSide(color: Colors.orange),
+      ),
+      backgroundColor: kBackgroundGrey[2],
+    );
   }
 }
 
@@ -304,7 +295,7 @@ class _OrderDetailBottomSheetState extends State<OrderDetailBottomSheet> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.fromLTRB(16, 8, 16, 16),
+      padding: EdgeInsets.fromLTRB(16, 8, 16, 0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(16),
@@ -312,7 +303,7 @@ class _OrderDetailBottomSheetState extends State<OrderDetailBottomSheet> {
         ),
         // color: Colors.grey,
       ),
-      height: 450,
+      height: 500,
       child: ScopedModel<OrderHistoryViewModel>(
         model: orderDetailModel,
         child: ScopedModelDescendant<OrderHistoryViewModel>(
@@ -357,9 +348,13 @@ class _OrderDetailBottomSheetState extends State<OrderDetailBottomSheet> {
                         child: Divider(),
                       ),
                     ),
-                    Text(
-                      'Menu',
-                      style: TextStyle(color: Colors.black45),
+                    Column(
+                      children: [
+                        Text(
+                          '${orderDetail.invoiceId}',
+                          style: TextStyle(color: Colors.black45),
+                        ),
+                      ],
                     ),
                     Expanded(
                       child: Padding(
@@ -374,7 +369,8 @@ class _OrderDetailBottomSheetState extends State<OrderDetailBottomSheet> {
                     ),
                   ],
                 ),
-                SizedBox(height: 16),
+                SizedBox(height: 8),
+                SizedBox(height: 8),
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -466,9 +462,18 @@ class _OrderDetailBottomSheetState extends State<OrderDetailBottomSheet> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            "Tổng tiền",
-            style: TextStyle(fontWeight: FontWeight.bold),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "Tổng tiền",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              Text(
+                "${orderDetail.itemQuantity} món",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ],
           ),
           Container(
             margin: EdgeInsets.only(top: 15),
