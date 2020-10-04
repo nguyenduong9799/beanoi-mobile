@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:unidelivery_mobile/View/index.dart';
+import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/utils/index.dart';
 import 'package:unidelivery_mobile/utils/request.dart';
 import 'package:unidelivery_mobile/utils/shared_pref.dart';
@@ -32,3 +33,4 @@ Widget checkAuthorize() {
     },
   );
 }
+

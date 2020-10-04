@@ -1,7 +1,7 @@
-import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Model/DAO/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/AccountDTO.dart';
 import 'package:unidelivery_mobile/ViewModel/base_model.dart';
+import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
 
 class SignUpViewModel extends BaseModel {
@@ -31,13 +31,15 @@ class SignUpViewModel extends BaseModel {
         gender: user["gender"],
       );
       final updatedUser = await dao.updateUser(userDTO);
+      setState(ViewStatus.Completed);
       // await Future.delayed(Duration(seconds: 3));
       return updatedUser;
     } catch (e) {
-      print(e.toString());
-      rethrow;
-    } finally {
-      setState(ViewStatus.Completed);
-    }
+      bool result = await showErrorDialog();
+      if (result) {
+        await updateUser(user);
+      } else
+        setState(ViewStatus.Error);
+    } finally {}
   }
 }

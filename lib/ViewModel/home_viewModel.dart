@@ -49,20 +49,27 @@ class HomeViewModel extends BaseModel {
   Future<void> openProductDetail(ProductDTO product) async {
     bool result =
         await Get.toNamed(RouteHandler.PRODUCT_DETAIL, arguments: product);
+    hideSnackbar();
     if (result != null) {
       if (result) {
-        Get.rawSnackbar(message: "Thêm món thành công", duration: Duration(seconds: 2), snackPosition: SnackPosition.BOTTOM, margin: EdgeInsets.only(left: 8, right: 8, bottom: 32),
-            backgroundColor: kPrimary, borderRadius: 8);
+        Get.rawSnackbar(
+            message: "Thêm món thành công",
+            duration: Duration(seconds: 2),
+            snackPosition: SnackPosition.BOTTOM,
+            margin: EdgeInsets.only(left: 8, right: 8, bottom: 32),
+            backgroundColor: kPrimary,
+            borderRadius: 8);
       }
     }
     notifyListeners();
   }
 
   Future<void> openCart(RootViewModel rootViewModel) async {
+    hideSnackbar();
     bool result = await Get.toNamed(RouteHandler.ORDER);
     if (result != null) {
       if (result) {
-        showStatusDialog(
+        await showStatusDialog(
             Icon(
               Icons.check_circle_outline,
               color: kSuccess,
@@ -126,9 +133,11 @@ class HomeViewModel extends BaseModel {
       }
       notifyListeners();
     } catch (e, stacktrace) {
-      print("EXCEPTION $stacktrace");
-      error = e.toString();
-      setState(ViewStatus.Error);
+      bool result = await showErrorDialog();
+      if (result) {
+        await getProducts();
+      } else
+        setState(ViewStatus.Error);
     } finally {
       // notifyListeners();
     }

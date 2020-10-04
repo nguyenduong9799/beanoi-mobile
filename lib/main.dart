@@ -92,7 +92,7 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: Color(0xFFF0F2F5),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: checkNetwork(),
+      home: checkAuthorize(),
       // home: ProfileScreen(new AccountDTO(name: "Mít tơ Bin")),
     );
   }
@@ -104,41 +104,13 @@ class NetworkErrorScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Container(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                "Không có kết nối Internet vui lòng thử lại",
-                style: TextStyle(
-                  color: kPrimary,
-                  fontSize: 18,
-                ),
-              ),
-              FlatButton(
-                onPressed: () {
-                  print("Hello mọi người");
-                  Get.off(checkNetwork());
-                },
-                child: Container(
-                  child: Text(
-                    "Thử lại",
-                    style: TextStyle(color: kBackgroundGrey[0]),
-                  ),
-                  alignment: Alignment.center,
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  decoration: BoxDecoration(
-                    color: kPrimary,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-              )
-            ],
-          ),
-        ),
-      ),
+      body: FutureBuilder(
+        future: showErrorDialog(),
+        builder: (BuildContext context, snapshot) {
+          // AccountDAO dao = AccountDAO();
+          return Container();
+        },
+      )
     );
   }
 }

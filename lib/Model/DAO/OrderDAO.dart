@@ -1,17 +1,11 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:unidelivery_mobile/Model/DTO/CartDTO.dart';
-import 'package:unidelivery_mobile/Model/DTO/OrderDTO.dart';
+import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/ViewModel/orderHistory_viewModel.dart';
-import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/enums/order_status.dart';
-import 'package:unidelivery_mobile/utils/index.dart';
 import 'package:unidelivery_mobile/utils/request.dart';
 import 'package:unidelivery_mobile/utils/shared_pref.dart';
 
-import '../../route_constraint.dart';
 
 class OrderDAO {
   Future<List<OrderListDTO>> getOrders(OrderFilter filter) async {
@@ -54,25 +48,12 @@ class OrderDAO {
         }
       }
     } on DioError catch (e) {
-      if(e.response == null) {
-        return OrderStatus.Network;
-      } else if (e.response.statusCode == 401) {
-        await showStatusDialog(
-            Icon(
-              Icons.error_outline,
-              color: kFail,
-            ),
-            "Lỗi",
-            "Vui lòng đang nhập lại");
-
-        Get.offAllNamed(RouteHandler.LOGIN);
-      }
-      else if (e.response.statusCode == 400) {
+     if (e.response.statusCode == 400) {
         if (e.response.data['code'] == 'ERR_BALANCE')
           return OrderStatus.NoMoney;
         return OrderStatus.Timeout;
       }
-      return OrderStatus.Network;
+      return OrderStatus.Fail;
     }
     return OrderStatus.Fail;
   }
