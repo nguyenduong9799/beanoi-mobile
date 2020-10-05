@@ -1,96 +1,116 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../constraints.dart';
 
-void showStatusDialog(
-    BuildContext context, Icon icon, String status, String content) {
-  showDialog<dynamic>(
-    context: context,
-    barrierDismissible: false,
-    builder: (BuildContext context) {
-      return Dialog(
-          backgroundColor: Colors.white,
-          elevation: 8.0,
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(8.0))),
-          child: Container(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                icon,
-                Center(
-                    child: Text(
-                  status,
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                )),
-                SizedBox(
-                  height: 10,
-                ),
-                Text(content),
-                SizedBox(
-                  height: 20,
-                ),
-                ButtonTheme(
-                  minWidth: double.infinity,
-                  child: FlatButton(
-                    color: kPrimary,
-                    textColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(5))),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text("OK"),
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                )
-              ],
+void showStatusDialog(Icon icon, String status, String content) {
+  Get.dialog(WillPopScope(
+    onWillPop: () {},
+    child: Dialog(
+      backgroundColor: Colors.white,
+      elevation: 8.0,
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(8.0))),
+      child: Container(
+        padding: const EdgeInsets.all(8),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            icon,
+            SizedBox(
+              height: 8,
             ),
-          ));
-    },
-  );
-  // Delaying the function for 200 milliseconds
+            Text(
+              status,
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+            ),
+            SizedBox(
+              height: 8,
+            ),
+            Text(
+              content,
+              style: TextStyle(
+                fontSize: 16,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(
+              height: 16,
+            ),
+            GestureDetector(
+              // Complete the dialog when you're done with it to return some data
+              onTap: () => Get.back(),
+              child: Container(
+                child: Text("OK"),
+                alignment: Alignment.center,
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                decoration: BoxDecoration(
+                  color: kPrimary,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    ),
+  ));
 }
 
-Future<int> getOption(BuildContext context, String text) async {
+void showLoadingDialog() {
+  Get.defaultDialog(barrierDismissible: false, title: "Đợi tý má ơi...", content: WillPopScope(
+    onWillPop: (){},
+    child: Container(
+      padding: const EdgeInsets.all(8),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Image(
+            width: 72,
+            height: 72,
+            image: AssetImage("assets/images/loading.gif"),
+          ),
+        ],
+      ),
+    ),
+  ), titleStyle: TextStyle(fontSize: 16));
+}
+
+Future<int> showOptionDialog(String text) async {
   int option;
-  await showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Center(child: Text(text)),
-          content: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                FlatButton(
-                  splashColor: kBackgroundGrey[3],
-                  child: Text(
-                    "Có",
-                    style: TextStyle(color: kPrimary),
-                  ),
-                  onPressed: () {
-                    option = 1;
-                    Navigator.of(context).pop();
-                  },
-                ),
-                FlatButton(
-                  splashColor: kBackgroundGrey[3],
-                  child: Text("Không", style: TextStyle(color: kPrimary)),
-                  onPressed: () {
-                    option = 0;
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            )
-          ]),
-        );
-      });
+  Get.dialog(AlertDialog(
+    title: Center(child: Text(text)),
+    content: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          FlatButton(
+            splashColor: kBackgroundGrey[3],
+            child: Text(
+              "Có",
+              style: TextStyle(color: kPrimary),
+            ),
+            onPressed: () {
+              option = 1;
+              Get.back();
+            },
+          ),
+          FlatButton(
+            splashColor: kBackgroundGrey[3],
+            child: Text("Không", style: TextStyle(color: kPrimary)),
+            onPressed: () {
+              option = 0;
+              Get.back();
+            },
+          ),
+        ],
+      )
+    ]),
+  ));
   return option;
+}
+
+void hideDialog() {
+  Get.back();
 }

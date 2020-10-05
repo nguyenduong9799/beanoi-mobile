@@ -1,11 +1,13 @@
 import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Model/DAO/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/AccountDTO.dart';
+import 'package:unidelivery_mobile/ViewModel/base_model.dart';
+import 'package:unidelivery_mobile/enums/view_status.dart';
 
-class SignUpViewModel extends Model {
+class SignUpViewModel extends BaseModel {
   static SignUpViewModel _instance;
   AccountDAO dao = AccountDAO();
-  bool isUpdating = false;
+
   SignUpViewModel() {}
   static SignUpViewModel getInstance() {
     if (_instance == null) {
@@ -20,8 +22,7 @@ class SignUpViewModel extends Model {
 
   Future<AccountDTO> updateUser(Map<String, dynamic> user) async {
     try {
-      isUpdating = true;
-      notifyListeners();
+      setState(ViewStatus.Loading);
       final userDTO = AccountDTO(
         name: user["name"],
         email: user["email"],
@@ -36,8 +37,7 @@ class SignUpViewModel extends Model {
       print(e.toString());
       rethrow;
     } finally {
-      isUpdating = false;
-      notifyListeners();
+      setState(ViewStatus.Completed);
     }
   }
 }

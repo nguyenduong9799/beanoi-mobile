@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:scoped_model/scoped_model.dart';
-import 'package:unidelivery_mobile/Model/DAO/ProductDAO.dart';
-import 'package:unidelivery_mobile/Model/DTO/ProductDTO.dart';
-import 'package:unidelivery_mobile/constraints.dart';
-import 'package:unidelivery_mobile/utils/enum.dart';
+import 'package:get/get.dart';
 
-class ProductDetailViewModel extends Model {
+import 'package:unidelivery_mobile/Model/DAO/index.dart';
+import 'package:unidelivery_mobile/Model/DTO/index.dart';
+import 'package:unidelivery_mobile/acessories/dialog.dart';
+import 'package:unidelivery_mobile/constraints.dart';
+import 'package:unidelivery_mobile/enums/view_status.dart';
+import 'package:unidelivery_mobile/utils/shared_pref.dart';
+
+import 'base_model.dart';
+
+class ProductDetailViewModel extends BaseModel {
+
   int unaffectIndex = 0;
-  Status status;
   int affectIndex = 0;
   //List product không ảnh hưởng giá
   Map<String, List<String>> unaffectPriceContent;
@@ -28,8 +33,10 @@ class ProductDetailViewModel extends Model {
   bool isExtra;
   //List size
   bool isLoading = false;
+  ProductDTO master;
 
   ProductDetailViewModel(ProductDTO dto) {
+    master = dto;
     isExtra = false;
     this.extra = new Map<ProductDTO, bool>();
 
@@ -39,10 +46,10 @@ class ProductDetailViewModel extends Model {
     this.unaffectPriceChoice = new Map<String, String>();
     this.affectPriceChoice = new Map<String, ProductDTO>();
     //
-    if (dto.type != MASTER_PRODUCT) {
-      this.fixTotal = dto.price * count;
+    if (master.type != MASTER_PRODUCT) {
+      this.fixTotal = master.price * count;
     } else {
-      for (String s in dto.atrributes) {
+      for (String s in master.atrributes) {
         if (s.toUpperCase() == "ĐÁ" || s.toUpperCase() == "ĐƯỜNG") {
           unaffectPriceContent[s] = ["0%", "25%", "50%", "75%", "100%"];
           unaffectPriceChoice[s] = "";
@@ -66,20 +73,17 @@ class ProductDetailViewModel extends Model {
   }
 
   Future<void> getExtra(int cat_id) async {
-    status = Status.Loading;
-    notifyListeners();
+    setState(ViewStatus.Loading);
     try {
       ProductDAO dao = new ProductDAO();
       List<ProductDTO> products = await dao.getExtraProducts(cat_id);
       for (ProductDTO dto in products) {
         extra[dto] = false;
       }
-      status = Status.Completed;
+      setState(ViewStatus.Completed);
     } catch (e) {
       print("EXCEPTION $e");
-      status = Status.Error;
-    } finally {
-      notifyListeners();
+      setState(ViewStatus.Error);
     }
   }
 
@@ -178,5 +182,49 @@ class ProductDetailViewModel extends Model {
     }
     total = (fixTotal + extraTotal) * count;
     notifyListeners();
+  }
+
+  Future<void> addProductToCart() async {
+    showLoadingDialog();
+    List<ProductDTO> listChoices = new List<ProductDTO>();
+    if (master.type == MASTER_PRODUCT) {
+      for (int i = 0;
+      i < affectPriceChoice.keys.toList().length;
+      i++) {
+        print("Save product: " +
+            affectPriceChoice[
+            affectPriceChoice.keys.elementAt(i)]
+                .toString());
+        listChoices.add(affectPriceChoice[
+        affectPriceChoice.keys.elementAt(i)]);
+      }
+    }
+
+    if (master.extraId != null) {
+      for (int i = 0; i < extra.keys.length; i++) {
+        if (extra[extra.keys.elementAt(i)]) {
+          listChoices.add(extra.keys.elementAt(i));
+        }
+      }
+    }
+
+    String description = "";
+    for (int i = 0;
+    i < unaffectPriceChoice.keys.toList().length;
+    i++) {
+      description += unaffectPriceChoice.keys
+          .elementAt(i) +
+          ": " +
+          unaffectPriceChoice[
+          unaffectPriceChoice.keys.elementAt(i)] +
+          "\n";
+    }
+    CartItem item = new CartItem(
+        master, listChoices, description, count);
+
+    print("Save product: " + master.toString());
+    await addItemToCart(item);
+    hideDialog();
+    await Get.back(result: true);
   }
 }

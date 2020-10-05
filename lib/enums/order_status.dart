@@ -1,1 +1,1 @@
-enum OrderStatus { Success, Fail, NoMoney, Timeout }
+enum OrderStatus { Success, Fail, NoMoney, Timeout, Network }

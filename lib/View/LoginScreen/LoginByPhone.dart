@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -68,7 +69,7 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
+
 
     return Scaffold(
       resizeToAvoidBottomInset: true,
@@ -94,7 +95,7 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
             ),
             child: Icon(Icons.arrow_back, color: Colors.white),
           ),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => Get.back(),
         ),
       ),
       body: ScopedModel<LoginViewModel>(
@@ -281,11 +282,9 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
     try {
       final authCredential = await AuthService().signInWithGoogle();
       if (authCredential == null) return;
-      final userInfo = await model.signIn(authCredential);
 
       await pr.hide();
-      return Navigator.of(context)
-          .pushNamedAndRemoveUntil(RouteHandler.NAV, (route) => false);
+      return Get.offAllNamed(RouteHandler.NAV);
     } on FirebaseAuthException catch (e) {
       print("=====OTP Fail: ${e.message}  ");
       await _showMyDialog("Error", e.message);
@@ -303,12 +302,9 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
         // TODO: Kiem tra xem user moi hay cu
         if (userInfo.isFirstLogin) {
           // Navigate to sign up screen
-          await Navigator.of(context).pushNamedAndRemoveUntil(RouteHandler.SIGN_UP,
-              (route) => false);
+          await Get.offAllNamed(RouteHandler.SIGN_UP);
         } else {
-          await Navigator.of(context)
-              .pushNamedAndRemoveUntil(RouteHandler.NAV, (route) => false);
-          print("Login Success");
+          await Get.offAllNamed(RouteHandler.NAV);
           // chuyen sang trang home
         }
       } catch (e) {
@@ -327,7 +323,7 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
 
     final PhoneCodeSent phoneCodeSent =
         (String verId, [int forceResend]) async {
-      await Navigator.of(context).pushNamed(RouteHandler.LOGIN_OTP);
+      await Get.toNamed(RouteHandler.LOGIN_OTP);
     };
 
     final PhoneCodeAutoRetrievalTimeout phoneTimeout = (String verId) {
@@ -365,7 +361,7 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
             FlatButton(
               child: Text('Approve'),
               onPressed: () {
-                Navigator.of(context).pop();
+                Get.back();
               },
             ),
           ],

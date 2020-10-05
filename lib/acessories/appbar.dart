@@ -1,23 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
-import 'package:flutter_icons/flutter_icons.dart';
-import 'package:intl/intl.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:unidelivery_mobile/Services/firebase.dart';
-import 'package:unidelivery_mobile/View/login.dart';
-import 'package:unidelivery_mobile/View/orderHistory.dart';
-import 'package:unidelivery_mobile/ViewModel/root_viewModel.dart';
+import 'package:unidelivery_mobile/ViewModel/index.dart';
 import 'package:unidelivery_mobile/constraints.dart';
+import 'package:unidelivery_mobile/enums/view_status.dart';
+import 'package:get/get.dart';
 import 'package:unidelivery_mobile/route_constraint.dart';
-import 'package:unidelivery_mobile/utils/enum.dart';
 import 'package:unidelivery_mobile/utils/index.dart';
-import 'package:unidelivery_mobile/utils/request.dart';
-import 'package:unidelivery_mobile/utils/shared_pref.dart';
 
 class DefaultAppBar extends StatefulWidget implements PreferredSizeWidget {
-  String title;
+  final String title;
 
   DefaultAppBar({Key key, this.title}) : super(key: key);
 
@@ -41,7 +35,7 @@ class _AppBarSate extends State<DefaultAppBar> {
       leading: IconButton(
         icon: Icon(Icons.arrow_back_ios, color: Colors.white),
         onPressed: () {
-          Navigator.pop(context);
+          Get.back();
         },
       ),
       title: Text(
@@ -183,7 +177,7 @@ class _HomeAppBarSate extends State<HomeAppBar> {
                     // ),
                     ),
                 onTap: () {
-                  Navigator.of(context).pushNamed(RouteHandler.ORDER_HISTORY);
+                  Get.toNamed(RouteHandler.ORDER_HISTORY);
                 },
               ),
             ),
@@ -198,7 +192,7 @@ class _HomeAppBarSate extends State<HomeAppBar> {
       builder: (context, child, model) {
         final status = model.status;
         final user = model.currentUser;
-        if (status == Status.Loading)
+        if (status == ViewStatus.Loading)
           return Shimmer.fromColors(
             baseColor: Colors.grey[300],
             highlightColor: Colors.grey[100],
@@ -209,7 +203,7 @@ class _HomeAppBarSate extends State<HomeAppBar> {
               color: Colors.grey,
             ),
           );
-        else if (status == Status.Error) return Text("＞﹏＜");
+        else if (status == ViewStatus.Error) return Text("＞﹏＜");
         return RichText(
           text: TextSpan(
               text: "Chào ",
@@ -240,7 +234,7 @@ class _HomeAppBarSate extends State<HomeAppBar> {
       builder: (context, child, model) {
         final status = model.status;
         final user = model.currentUser;
-        if (status == Status.Loading)
+        if (status == ViewStatus.Loading)
           return Shimmer.fromColors(
             baseColor: Colors.grey[300],
             highlightColor: Colors.grey[100],
@@ -251,7 +245,7 @@ class _HomeAppBarSate extends State<HomeAppBar> {
               color: Colors.grey,
             ),
           );
-        else if (status == Status.Error) return Text("＞﹏＜");
+        else if (status == ViewStatus.Error) return Text("＞﹏＜");
         return RichText(
           text: TextSpan(
               text: "Bạn có ",

@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:unidelivery_mobile/Model/DTO/AccountDTO.dart';
-import 'package:unidelivery_mobile/View/gift.dart';
-import 'package:unidelivery_mobile/View/home.dart';
-import 'package:unidelivery_mobile/View/profile.dart';
-import 'package:unidelivery_mobile/ViewModel/root_viewModel.dart';
+import 'package:unidelivery_mobile/Model/DTO/index.dart';
+import 'package:unidelivery_mobile/View/index.dart';
+import 'package:unidelivery_mobile/ViewModel/index.dart';
 import 'package:unidelivery_mobile/acessories/bottomnavigator.dart';
 import 'package:unidelivery_mobile/utils/request.dart';
 
 class RootScreen extends StatefulWidget {
+  final int initScreenIndex;
+
+  const RootScreen({Key key, this.initScreenIndex = 0}) : super(key: key);
+
   @override
   _RootScreenState createState() => _RootScreenState();
 }
@@ -30,7 +32,7 @@ class _RootScreenState extends State<RootScreen> {
   @override
   void initState() {
     super.initState();
-    requestObj.context = context;
+    _selectedIndex = widget.initScreenIndex;
     _initModel = RootViewModel();
   }
 

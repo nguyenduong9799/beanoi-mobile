@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:unidelivery_mobile/Model/DTO/AccountDTO.dart';
-import 'package:unidelivery_mobile/ViewModel/signup_viewModel.dart';
+import 'package:unidelivery_mobile/Model/DTO/index.dart';
+import 'package:unidelivery_mobile/ViewModel/index.dart';
+import 'package:unidelivery_mobile/enums/view_status.dart';
 import 'package:unidelivery_mobile/utils/regex.dart';
 
 import '../route_constraint.dart';
@@ -77,7 +79,7 @@ class _SignUpState extends State<SignUp> {
         // Chuyen trang
         if (updateSucces) {
           print('Update Success');
-          Navigator.of(context).pushReplacementNamed("nav");
+          Get.offAndToNamed(RouteHandler.NAV);
         }
       }
     }
@@ -101,7 +103,7 @@ class _SignUpState extends State<SignUp> {
             FlatButton(
               child: Text('Approve'),
               onPressed: () {
-                Navigator.of(context).pop();
+                Get.back();
               },
             ),
           ],
@@ -112,7 +114,6 @@ class _SignUpState extends State<SignUp> {
 
   @override
   Widget build(BuildContext context) {
-    final user = widget.user;
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     return ScopedModel(
@@ -225,12 +226,12 @@ class _SignUpState extends State<SignUp> {
                                         ? Color(0xFF00d286)
                                         : Colors.grey,
                                     onPressed: () async {
-                                      if (!model.isUpdating)
+                                      if (model.status == ViewStatus.Completed)
                                         await _onUpdateUser(model);
                                     },
                                     child: Padding(
                                       padding: const EdgeInsets.all(10.0),
-                                      child: model.isUpdating
+                                      child: model.status == ViewStatus.Loading
                                           ? CircularProgressIndicator(
                                               backgroundColor:
                                                   Color(0xFFFFFFFF))
@@ -254,9 +255,7 @@ class _SignUpState extends State<SignUp> {
                           Center(
                             child: GestureDetector(
                               onTap: () async {
-                                await Navigator.of(context)
-                                    .pushNamedAndRemoveUntil(
-                                        RouteHandler.LOGIN, (route) => false);
+                                Get.offAllNamed(RouteHandler.LOGIN);
                                 print("Back to home");
                               },
                               child: Text(

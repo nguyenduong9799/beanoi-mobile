@@ -8,16 +8,12 @@ import 'package:flutter_page_indicator/flutter_page_indicator.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:unidelivery_mobile/Model/DTO/AccountDTO.dart';
-import 'package:unidelivery_mobile/Model/DTO/CartDTO.dart';
-import 'package:unidelivery_mobile/Model/DTO/ProductDTO.dart';
-import 'package:unidelivery_mobile/ViewModel/home_viewModel.dart';
-import 'package:unidelivery_mobile/ViewModel/root_viewModel.dart';
+import 'package:unidelivery_mobile/Model/DTO/index.dart';
+import 'package:unidelivery_mobile/ViewModel/index.dart';
+
 import 'package:unidelivery_mobile/acessories/appbar.dart';
-import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/constraints.dart';
-import 'package:unidelivery_mobile/route_constraint.dart';
-import 'package:unidelivery_mobile/utils/enum.dart';
+import 'package:unidelivery_mobile/enums/view_status.dart';
 
 const ORDER_TIME = 23;
 
@@ -41,7 +37,6 @@ class _HomeScreenState extends State<HomeScreen> {
     ORDER_TIME,
   );
   // int endTime = DateTime.now().millisecondsSinceEpoch + 1000 * 60 * 60;
-
   bool _endOrderTime = false;
 
   @override
@@ -72,17 +67,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 height: MediaQuery.of(context).size.height,
                 child: Stack(
                   children: [
-                    // _endOrderTime
-                    //     ? Center(
-                    //         child: Text(
-                    //           "Đã hết thời gian order rồi. \n Bạn quay lại vào lần sau nhé {{{(>_<)}}}",
-                    //           style: TextStyle(
-                    //             fontSize: 24,
-                    //           ),
-                    //           textAlign: TextAlign.center,
-                    //         ),
-                    //       )
-                    //     :
                     Container(
                       // height: 800,
                       child: ListView(
@@ -168,13 +152,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   builder: (context, snapshot) {
                     Cart cart = snapshot.data;
                     if (cart == null) return SizedBox.shrink();
-                    bool hasItemInCart = cart.isEmpty;
                     int quantity = cart?.itemQuantity();
                     return Container(
                       margin: EdgeInsets.only(bottom: 40),
                       child: FloatingActionButton(
                         backgroundColor: Colors.transparent,
-                        elevation: 20,
+                        elevation: 8,
                         heroTag: CART_TAG,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8.0),
@@ -182,24 +165,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         onPressed: () async {
                           print('Tap order');
-                          Scaffold.of(context).hideCurrentSnackBar();
-                          bool result =
-                              await Navigator.of(context).pushNamed<bool>(RouteHandler.ORDER);
-                          if (result != null) {
-                            if (result) {
-                              showStatusDialog(
-                                  context,
-                                  Icon(
-                                    Icons.check_circle_outline,
-                                    color: kSuccess,
-                                    size: DIALOG_ICON_SIZE,
-                                  ),
-                                  "Thành công",
-                                  "Đơn hàng của bạn sẽ được giao vào lúc $TIME");
-                            }
-                          }
-                          await rootViewModel.fetchUser();
-                          model.notifyListeners();
+                          await model.openCart(rootViewModel);
                         },
                         child: Stack(
                           overflow: Overflow.visible,
@@ -295,16 +261,16 @@ class _HomeScreenState extends State<HomeScreen> {
     return ScopedModelDescendant<HomeViewModel>(
       builder: (context, child, model) {
         List<ProductDTO> products = model.products;
-        Status status = model.status;
-        // status = Status.Loading;
+        ViewStatus status = model.status;
+        // status = ViewStatus.Loading;
         switch (status) {
-          case Status.Error:
+          case ViewStatus.Error:
             return AspectRatio(
               aspectRatio: 1,
               child: Center(
                   child: Text("Có gì sai sai... \n ${model.error.toString()}")),
             );
-          case Status.Loading:
+          case ViewStatus.Loading:
             return AspectRatio(
                 aspectRatio: 1,
                 child: Center(
@@ -319,7 +285,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     boxHeight: 300.0,
                   ),
                 ));
-          case Status.Empty:
+          case ViewStatus.Empty:
             return Container(
               padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
               color: Colors.black45,
@@ -349,7 +315,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             );
-          case Status.Completed:
+          case ViewStatus.Completed:
             return productListSection(products);
           default:
             return Text("Some thing wrong");
@@ -604,6 +570,7 @@ class FoodItem extends StatefulWidget {
 }
 
 class _FoodItemState extends State<FoodItem> {
+
   @override
   Widget build(BuildContext context) {
     final product = widget.product;
@@ -629,24 +596,7 @@ class _FoodItemState extends State<FoodItem> {
             ),
             onTap: () async {
               print('Add item to cart');
-              Scaffold.of(context).hideCurrentSnackBar();
-              // TODO: Change by receive result from Navigator
-              bool result = await Navigator.of(context)
-                  .pushNamed<bool>(RouteHandler.PRODUCT_DETAIL, arguments: product);
-              if (result != null) {
-                if (result) {
-                  final snackBar = SnackBar(
-                    backgroundColor: kPrimary,
-                    content: Text(
-                      'Thêm món thành công',
-                      style: kTextPrimary,
-                    ),
-                    duration: Duration(seconds: 2),
-                  );
-                  Scaffold.of(context).showSnackBar(snackBar);
-                }
-              }
-              model.notifyListeners();
+              model.openProductDetail(product);
             },
             child: Opacity(
               opacity: 1,

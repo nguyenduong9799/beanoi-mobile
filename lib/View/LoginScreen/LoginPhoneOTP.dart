@@ -1,8 +1,7 @@
 import 'dart:async';
-
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:reactive_forms/reactive_forms.dart';
@@ -28,6 +27,7 @@ class _LoginWithPhoneOTPState extends State<LoginWithPhoneOTP> {
   StreamController<ErrorAnimationType> errorController;
   bool hasError = false;
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+
 
   final form = FormGroup({
     'otp': FormControl(validators: [
@@ -80,7 +80,7 @@ class _LoginWithPhoneOTPState extends State<LoginWithPhoneOTP> {
                     ]),
                 child: Icon(Icons.arrow_back, color: Colors.white),
               ),
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () => Get.back(),
             ),
           ),
           body: Container(
@@ -247,8 +247,7 @@ class _LoginWithPhoneOTPState extends State<LoginWithPhoneOTP> {
 
         if (userInfo.isFirstLogin) {
           // Navigate to sign up screen
-          await Navigator.of(context)
-              .pushNamedAndRemoveUntil(RouteHandler.SIGN_UP, (route) => false);
+          await Get.offAndToNamed(RouteHandler.SIGN_UP);
         } else {
           setState(() {
             hasError = false;
@@ -257,8 +256,7 @@ class _LoginWithPhoneOTPState extends State<LoginWithPhoneOTP> {
             content: Text("Đăng nhập thành công!!"),
             duration: Duration(seconds: 3),
           ));
-          await Navigator.of(context)
-              .pushNamedAndRemoveUntil(RouteHandler.NAV, (route) => false);
+          await Get.offAllNamed(RouteHandler.NAV);
         }
       }
     } on FirebaseAuthException catch (e) {
@@ -289,7 +287,7 @@ class _LoginWithPhoneOTPState extends State<LoginWithPhoneOTP> {
             FlatButton(
               child: Text('Approve'),
               onPressed: () {
-                Navigator.of(context).pop();
+                Get.back();
               },
             ),
           ],

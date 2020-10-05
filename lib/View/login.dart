@@ -1,8 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:get/get.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:unidelivery_mobile/ViewModel/login_viewModel.dart';
+import 'package:unidelivery_mobile/ViewModel/index.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/route_constraint.dart';
 
@@ -28,9 +29,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
-    final formWidth = screenWidth - 30 - 60;
     return ScopedModel(
       model: LoginViewModel(),
       child: SafeArea(
@@ -150,10 +149,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 // side: BorderSide(color: Colors.red),
               ),
               onPressed: () {
-                // Navigator.of(context).push(CupertinoPageRoute(
-                //   builder: (context) => LoginWithPhone(),
-                // ));
-                Navigator.of(context).pushNamed(RouteHandler.LOGIN_PHONE);
+                Get.toNamed(RouteHandler.LOGIN_PHONE);
               },
               child: Row(
                 children: [

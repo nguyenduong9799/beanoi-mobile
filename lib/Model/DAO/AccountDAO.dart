@@ -38,15 +38,6 @@ class AccountDAO {
     print('updateUser');
     print(updateJSON.toString());
     Response res = await request.put("/me", data: updateUser.toJson());
-    final user = res.data["data"];
     return AccountDTO.fromJson(res.data["data"]);
-    // return AccountDTO(
-    //   uid: updateUser.uid,
-    //   name: "${updateUser.name} Updated Name",
-    //   phone: "0123456789",
-    //   gender: "nam",
-    //   email: "bemail@gmail.com",
-    //   birthdate: DateTime.now(),
-    // );
   }
 }
