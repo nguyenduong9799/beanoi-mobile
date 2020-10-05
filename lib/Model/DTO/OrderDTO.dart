@@ -3,6 +3,7 @@ import 'package:unidelivery_mobile/ViewModel/orderHistory_viewModel.dart';
 class OrderDTO {
   final int id;
   final int itemQuantity;
+  final String invoiceId;
 
   final double total;
   final OrderFilter status;
@@ -16,6 +17,7 @@ class OrderDTO {
     this.itemQuantity,
     this.status,
     this.orderItems,
+    this.invoiceId = "INVOICE-ID-123",
   });
 
   factory OrderDTO.fromJSON(Map<String, dynamic> map) => OrderDTO(
