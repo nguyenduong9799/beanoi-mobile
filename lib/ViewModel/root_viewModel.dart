@@ -26,8 +26,11 @@ class RootViewModel extends BaseModel {
       currentUser = user;
       setState(ViewStatus.Completed);
     } catch (e) {
-      setState(ViewStatus.Error);
-      error = e.toString();
+      bool result = await showErrorDialog();
+      if (result) {
+        await fetchUser();
+      } else
+        setState(ViewStatus.Error);
     } finally {}
   }
 

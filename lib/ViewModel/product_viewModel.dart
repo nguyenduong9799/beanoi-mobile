@@ -11,7 +11,6 @@ import 'package:unidelivery_mobile/utils/shared_pref.dart';
 import 'base_model.dart';
 
 class ProductDetailViewModel extends BaseModel {
-
   int unaffectIndex = 0;
   int affectIndex = 0;
   //List product không ảnh hưởng giá
@@ -82,8 +81,11 @@ class ProductDetailViewModel extends BaseModel {
       }
       setState(ViewStatus.Completed);
     } catch (e) {
-      print("EXCEPTION $e");
-      setState(ViewStatus.Error);
+      bool result = await showErrorDialog();
+      if (result) {
+        await getExtra(cat_id);
+      } else
+        setState(ViewStatus.Error);
     }
   }
 
@@ -188,15 +190,10 @@ class ProductDetailViewModel extends BaseModel {
     showLoadingDialog();
     List<ProductDTO> listChoices = new List<ProductDTO>();
     if (master.type == MASTER_PRODUCT) {
-      for (int i = 0;
-      i < affectPriceChoice.keys.toList().length;
-      i++) {
+      for (int i = 0; i < affectPriceChoice.keys.toList().length; i++) {
         print("Save product: " +
-            affectPriceChoice[
-            affectPriceChoice.keys.elementAt(i)]
-                .toString());
-        listChoices.add(affectPriceChoice[
-        affectPriceChoice.keys.elementAt(i)]);
+            affectPriceChoice[affectPriceChoice.keys.elementAt(i)].toString());
+        listChoices.add(affectPriceChoice[affectPriceChoice.keys.elementAt(i)]);
       }
     }
 
@@ -209,18 +206,13 @@ class ProductDetailViewModel extends BaseModel {
     }
 
     String description = "";
-    for (int i = 0;
-    i < unaffectPriceChoice.keys.toList().length;
-    i++) {
-      description += unaffectPriceChoice.keys
-          .elementAt(i) +
+    for (int i = 0; i < unaffectPriceChoice.keys.toList().length; i++) {
+      description += unaffectPriceChoice.keys.elementAt(i) +
           ": " +
-          unaffectPriceChoice[
-          unaffectPriceChoice.keys.elementAt(i)] +
+          unaffectPriceChoice[unaffectPriceChoice.keys.elementAt(i)] +
           "\n";
     }
-    CartItem item = new CartItem(
-        master, listChoices, description, count);
+    CartItem item = new CartItem(master, listChoices, description, count);
 
     print("Save product: " + master.toString());
     await addItemToCart(item);

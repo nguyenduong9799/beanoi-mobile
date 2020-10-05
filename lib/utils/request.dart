@@ -1,10 +1,8 @@
-import 'package:connectivity/connectivity.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/route_constraint.dart';
-import 'package:unidelivery_mobile/utils/index.dart';
 import '../constraints.dart';
 
 class AppException implements Exception {
@@ -79,22 +77,19 @@ class MyRequest {
         // Do something with response data
         return response; // continue
       },
-      onError: (DioError e) {
+      onError: (DioError e) async {
         // Do something with response error
-        if (e.response == null) {
-          Get.toNamed(RouteHandler.NETWORK_ERROR);
-        } else if (e.response.statusCode == 401) {
-          showStatusDialog(
+        if (e.response.statusCode == 401) {
+          await showStatusDialog(
               Icon(
                 Icons.error_outline,
                 color: kFail,
               ),
               "Lỗi",
               "Vui lòng đang nhập lại");
-
           Get.offAllNamed(RouteHandler.LOGIN);
-        }
-        return e; //continue
+        } else
+          throw e; //continue
       },
     ));
   }
