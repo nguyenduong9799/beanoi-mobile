@@ -49,7 +49,7 @@ class MyApp extends StatelessWidget {
           case RouteHandler.NAV:
             return CupertinoPageRoute(
                 builder: (context) => RootScreen(
-                      initScreenIndex: settings.arguments,
+                      initScreenIndex: settings.arguments ?? 0,
                     ),
                 settings: settings);
           case RouteHandler.ORDER:
@@ -86,7 +86,7 @@ class MyApp extends StatelessWidget {
       },
 
       theme: ThemeData(
-        fontFamily: 'SourceSansPro',
+        fontFamily: 'Gotham',
         primarySwatch: Colors.blue,
         primaryColor: kPrimary,
         scaffoldBackgroundColor: Color(0xFFF0F2F5),
@@ -132,6 +132,7 @@ class LoadingScreen extends StatelessWidget {
               textStyle: TextStyle(
                 fontSize: 45.0,
                 fontWeight: FontWeight.bold,
+
               ),
               boxHeight: 300.0,
             ),

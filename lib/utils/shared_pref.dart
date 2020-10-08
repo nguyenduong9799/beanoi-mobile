@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:unidelivery_mobile/Model/DTO/StoreDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 
 Future<bool> setFCMToken(String value) async {
@@ -80,16 +81,16 @@ Future<void> updateItemFromCart(CartItem item) async {
   print("Cart: " + cart.items[0].quantity.toString());
 }
 
-Future<void> setStore(Map<String, dynamic> store) async {
+Future<void> setStore(StoreDTO dto) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  prefs.setString('STORE', jsonEncode(store));
+  prefs.setString('STORE', jsonEncode(dto.toJson()));
 }
 
-Future<Map<String, dynamic>> getStore() async {
+Future<StoreDTO> getStore() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   String encodedCart = prefs.getString('STORE');
   if (encodedCart != null) {
-    return jsonDecode(encodedCart);
+    return StoreDTO.fromJson(jsonDecode(encodedCart));
   }
   return null;
 }

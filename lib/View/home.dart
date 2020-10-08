@@ -8,10 +8,12 @@ import 'package:flutter_page_indicator/flutter_page_indicator.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:unidelivery_mobile/Model/DTO/StoreDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
 
 import 'package:unidelivery_mobile/acessories/appbar.dart';
+import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
 
@@ -79,6 +81,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 child: Column(
                                   children: [
                                     // banner(),
+                                    location(rootViewModel),
                                     Center(
                                       child: Container(
                                         margin: EdgeInsets.all(8),
@@ -97,7 +100,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       ),
                                     ),
                                     SizedBox(height: 16),
-                                    buildProducts(),
+                                    buildProducts(rootViewModel),
                                     SizedBox(height: 16),
                                     Center(
                                       child: Container(
@@ -139,6 +142,38 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         );
       },
+    );
+  }
+
+  Widget location(RootViewModel rootViewModel) {
+    return ScopedModel(
+      model: rootViewModel,
+      child: ScopedModelDescendant<RootViewModel>(
+        builder: (context, child, root) {
+          String text = "Đợi tý đang load...";
+          if (root.changeAddress) {
+            text = "Đang thay đổi...";
+          } else {
+            if (root.dto != null) {
+              text = root.dto.location;
+            }
+          }
+
+          return ListTile(
+            leading: Icon(
+              Icons.location_on,
+              color: Colors.red,
+            ),
+            title: Text(
+              text,
+              style: kTextSecondary,
+            ),
+            onTap: () async {
+              await root.processChangeAddress(model);
+            },
+          );
+        },
+      ),
     );
   }
 
@@ -190,15 +225,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                 height: 24,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(16),
-                                  color: Colors.white,
-                                  border: Border.all(color: Colors.grey),
+                                  color: Colors.red,
+                                  //border: Border.all(color: Colors.grey),
                                 ),
                                 child: Center(
                                   child: Text(
                                     quantity.toString(),
                                     style: kTextPrimary.copyWith(
                                       fontWeight: FontWeight.bold,
-                                      color: Colors.black87,
+                                      color: Colors.white,
                                     ),
                                   ),
                                 ),
@@ -257,7 +292,8 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  ScopedModelDescendant<HomeViewModel> buildProducts() {
+  ScopedModelDescendant<HomeViewModel> buildProducts(
+      RootViewModel rootViewModel) {
     return ScopedModelDescendant<HomeViewModel>(
       builder: (context, child, model) {
         List<ProductDTO> products = model.products;
@@ -316,6 +352,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             );
           case ViewStatus.Completed:
+            if (rootViewModel.dto == null) rootViewModel.getLocation();
             return productListSection(products);
           default:
             return Text("Some thing wrong");
@@ -570,7 +607,6 @@ class FoodItem extends StatefulWidget {
 }
 
 class _FoodItemState extends State<FoodItem> {
-
   @override
   Widget build(BuildContext context) {
     final product = widget.product;

@@ -1,5 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
+import 'package:scoped_model/scoped_model.dart';
+import 'package:unidelivery_mobile/ViewModel/index.dart';
 
 import '../constraints.dart';
 
@@ -99,27 +103,22 @@ Future<bool> showErrorDialog() async {
             children: [
               Align(
                 alignment: Alignment.topRight,
-                child: InkWell(
-                  onTap: () {
-                    result = false;
-                    hideDialog();
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Image(
-                      width: 32,
-                      height: 32,
-                      image: AssetImage("assets/images/icons/error.png"),
-                    ),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: IconButton(
+                    icon: Icon(AntDesign.closecircleo, color: Colors.red,),
+                    onPressed: (){
+                      hideDialog();
+                    },
                   ),
                 ),
               ),
               Text(
                 "Có một chút trục trặc nhỏ!!",
-                style: TextStyle(fontSize: 18, color: kPrimary),
+                style: kTextSecondary,
               ),
               SizedBox(
-                height: 8,
+                height: 16,
               ),
               Image(
                 width: 72,
@@ -129,22 +128,23 @@ Future<bool> showErrorDialog() async {
               SizedBox(
                 height: 8,
               ),
-              Card(
-                color: kPrimary,
-                elevation: 16,
+              Container(
+                padding: EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                    color: kPrimary,
+                    borderRadius: BorderRadius.only(
+                        bottomRight: Radius.circular(8),
+                        bottomLeft: Radius.circular(8))),
                 child: InkWell(
+                  splashColor: kBackgroundGrey[2],
                   onTap: () {
                     result = true;
                     hideDialog();
                   },
-                  child: Container(
-                    width: double.infinity,
-                    padding: EdgeInsets.all(8),
-                    child: Center(
-                      child: Text(
-                        "Thử lại",
-                        style: kTextPrimary,
-                      ),
+                  child: Center(
+                    child: Text(
+                      "Thử lại",
+                      style: kTextPrimary,
                     ),
                   ),
                 ),
@@ -159,35 +159,83 @@ Future<bool> showErrorDialog() async {
 
 Future<int> showOptionDialog(String text) async {
   int option;
-  await Get.dialog(AlertDialog(
-    title: Center(child: Text(text)),
-    content: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          FlatButton(
-            splashColor: kBackgroundGrey[3],
-            child: Text(
-              "Có",
-              style: TextStyle(color: kPrimary),
-            ),
-            onPressed: () {
-              option = 1;
-              hideDialog();
-            },
+  await Get.dialog(
+      WillPopScope(
+        onWillPop: () {},
+        child: Dialog(
+          backgroundColor: Colors.white,
+          elevation: 8.0,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(16.0))),
+          child: Stack(
+            overflow: Overflow.visible,
+            children: [
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: IconButton(
+                      icon: Icon(AntDesign.closecircleo, color: Colors.red,),
+                      onPressed: (){
+                        option = 0;
+                        hideDialog();
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                    height: 44,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                     text,
+                      style: kTextSecondary,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 16,
+                  ),
+                  Container(
+                    padding: EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                        color: kPrimary,
+                        borderRadius: BorderRadius.only(
+                            bottomRight: Radius.circular(16),
+                            bottomLeft: Radius.circular(16))),
+                    child: InkWell(
+                      splashColor: kBackgroundGrey[2],
+                      child: Center(
+                        child: Text(
+                          "Đồng ý",
+                          style: kTextPrimary,
+                        ),
+                      ),
+                      onTap: () {
+                        option = 1;
+                        hideDialog();
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              Positioned(
+                top: -80,
+                right: -8,
+                child: Image(
+                  image: AssetImage("assets/images/option.png"),
+                  width: 160,
+                  height: 160,
+                ),
+              )
+
+            ],
           ),
-          FlatButton(
-            splashColor: kBackgroundGrey[3],
-            child: Text("Không", style: TextStyle(color: kPrimary)),
-            onPressed: () {
-              option = 0;
-              hideDialog();
-            },
-          ),
-        ],
-      )
-    ]),
-  ));
+        ),
+      ),
+      barrierDismissible: false);
   return option;
 }
 
@@ -201,4 +249,90 @@ void hideSnackbar() {
   if (Get.isSnackbarOpen) {
     Get.back();
   }
+}
+
+Future<void> changeAddressDialog(RootViewModel model, Function function) async {
+  hideDialog();
+  await Get.dialog(
+      WillPopScope(
+        onWillPop: () {},
+        child: ScopedModel(
+          model: model,
+          child: ScopedModelDescendant<RootViewModel>(
+              builder: (context, child, model) {
+            return Dialog(
+              backgroundColor: Colors.white,
+              elevation: 8.0,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(16.0))),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                          padding: const EdgeInsets.fromLTRB(16, 8, 0, 8),
+                          child: Icon(
+                            Icons.location_on,
+                            color: Colors.red,
+                            size: 32,
+                          )),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: IconButton(
+                          icon: Icon(AntDesign.closecircleo, color: Colors.red,),
+                          onPressed: (){
+                            hideDialog();
+                            model.changeAddress = false;
+                            model.notifyListeners();
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 8,
+                  ),
+                  for (int i = 0; i < model.list.length; i++)
+                    RadioListTile(
+                      activeColor: kFail,
+                      groupValue: model.tmp.id,
+                      value: model.list[i].id,
+                      title: Text(
+                        model.list[i].location,
+                        style: kTextSecondary,
+                      ),
+                      onChanged: (value) {
+                        model.changeLocation(value);
+                      },
+                    ),
+                  SizedBox(
+                    height: 8,
+                  ),
+                  Container(
+                    padding: EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                        color: kPrimary,
+                        borderRadius: BorderRadius.only(
+                            bottomRight: Radius.circular(16),
+                            bottomLeft: Radius.circular(16))),
+                    child: InkWell(
+                      splashColor: kBackgroundGrey[2],
+                      onTap: function,
+                      child: Center(
+                        child: Text(
+                          "Xác nhận",
+                          style: kTextPrimary,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }),
+        ),
+      ),
+      barrierDismissible: false);
 }

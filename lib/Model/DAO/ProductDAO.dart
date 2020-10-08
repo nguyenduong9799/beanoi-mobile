@@ -1,4 +1,5 @@
 import 'package:unidelivery_mobile/Model/DTO/ProductDTO.dart';
+import 'package:unidelivery_mobile/Model/DTO/StoreDTO.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/utils/request.dart';
 import 'package:unidelivery_mobile/utils/shared_pref.dart';
@@ -11,8 +12,7 @@ class ProductDAO {
       "store-id": UNIBEAN_STORE,
     });
     final normalizedRes = normalizeProducts(res.data["data"]);
-    await setStore(
-        {"id": res.data["data"]['id'], "name": res.data["data"]['name']});
+    await setStore(StoreDTO.fromJson(res.data['data']));
     final products = ProductDTO.fromList(normalizedRes);
     return products;
   }

@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:unidelivery_mobile/Bussiness/BussinessHandler.dart';
+import 'package:unidelivery_mobile/Model/DTO/StoreDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
 import 'package:unidelivery_mobile/acessories/appbar.dart';
@@ -29,7 +30,6 @@ class _OrderScreenState extends State<OrderScreen> {
   void initState() {
     super.initState();
     orderViewModel = new OrderViewModel();
-
   }
 
   @override
@@ -43,33 +43,46 @@ class _OrderScreenState extends State<OrderScreen> {
             builder: (BuildContext context, AsyncSnapshot<Cart> snapshot) {
               if (snapshot.hasData) {
                 if (snapshot.data != null) {
+                  Cart cart = snapshot.data;
                   double total = countPrice(snapshot.data);
                   return Scaffold(
                     bottomNavigationBar: bottomBar(total),
                     appBar: DefaultAppBar(title: "Đơn hàng của bạn"),
-                    body: SingleChildScrollView(
-                      child: Center(
-                        child: Column(
-                          children: [
-                            Hero(
-                              tag: CART_TAG,
-                              child: Container(
-                                  margin: const EdgeInsets.only(top: 8),
-                                  child: layoutAddress()),
-                            ),
-                            Container(
-                                margin: const EdgeInsets.only(top: 8),
-                                child: buildBeanReward(total)),
-                            Container(
-                                margin: const EdgeInsets.only(top: 8),
-                                child: layoutOrder(snapshot.data)),
-                            Container(
-                                margin: const EdgeInsets.only(top: 8),
-                                child: layoutSubtotal(total)),
-                            SizedBox(height: 16),
-                          ],
-                        ),
-                      ),
+                    body: FutureBuilder(
+                      future: getStore(),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<StoreDTO> snapshot) {
+                        if (snapshot.hasData) {
+                          if (snapshot.data != null) {
+                            StoreDTO dto = snapshot.data;
+                            return SingleChildScrollView(
+                              child: Center(
+                                child: Column(
+                                  children: [
+                                    Hero(
+                                      tag: CART_TAG,
+                                      child: Container(
+                                          margin: const EdgeInsets.only(top: 8),
+                                          child: layoutAddress(dto.location)),
+                                    ),
+                                    Container(
+                                        margin: const EdgeInsets.only(top: 8),
+                                        child: buildBeanReward(total)),
+                                    Container(
+                                        margin: const EdgeInsets.only(top: 8),
+                                        child: layoutOrder(cart, dto.name)),
+                                    Container(
+                                        margin: const EdgeInsets.only(top: 8),
+                                        child: layoutSubtotal(total)),
+                                    SizedBox(height: 16),
+                                  ],
+                                ),
+                              ),
+                            );
+                          }
+                        }
+                        return Container();
+                      },
                     ),
                   );
                 } else {
@@ -141,7 +154,7 @@ class _OrderScreenState extends State<OrderScreen> {
     );
   }
 
-  Widget layoutOrder(Cart cart) {
+  Widget layoutOrder(Cart cart, String store) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -176,12 +189,12 @@ class _OrderScreenState extends State<OrderScreen> {
             ],
           ),
         ),
-        layoutStore(cart.items, cart.itemQuantity()),
+        layoutStore(cart.items, cart.itemQuantity(), store),
       ],
     );
   }
 
-  Widget layoutStore(List<CartItem> list, int quantity) {
+  Widget layoutStore(List<CartItem> list, int quantity, String store) {
     List<Widget> card = new List();
 
     for (CartItem item in list) {
@@ -200,40 +213,31 @@ class _OrderScreenState extends State<OrderScreen> {
       }
     }
 
-    return FutureBuilder(
-      future: getStore(),
-      builder:
-          (BuildContext context, AsyncSnapshot<Map<String, dynamic>> snapshot) {
-        if (snapshot.hasData) {
-          return Container(
-            color: kBackgroundGrey[0],
-            padding: const EdgeInsets.only(bottom: 8, top: 8),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+    return Container(
+      color: kBackgroundGrey[0],
+      padding: const EdgeInsets.only(bottom: 8, top: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        snapshot.data['name'],
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(quantity.toString() + " món")
-                    ],
+                Text(
+                  store,
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-                ...card
+                Text(quantity.toString() + " món")
               ],
             ),
-          );
-        }
-        return Container();
-      },
+          ),
+          ...card
+        ],
+      ),
     );
   }
 
@@ -243,7 +247,7 @@ class _OrderScreenState extends State<OrderScreen> {
 
     if (item.master.type == MASTER_PRODUCT) {
       list.add(Text(item.products[0].name,
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)));
+          style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)));
       price = item.products[0].price;
       for (int i = 1; i < item.products.length; i++) {
         list.add(SizedBox(
@@ -258,7 +262,7 @@ class _OrderScreenState extends State<OrderScreen> {
       }
     } else {
       list.add(Text(item.master.name,
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)));
+          style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)));
       for (int i = 0; i < item.products.length; i++) {
         list.add(SizedBox(
           height: 10,
@@ -343,7 +347,7 @@ class _OrderScreenState extends State<OrderScreen> {
                               NumberFormat.simpleCurrency(locale: 'vi')
                                   .format(price * item.quantity),
                               style: TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.bold),
+                                  fontSize: 15),
                             )
                           ],
                         ),
@@ -377,7 +381,7 @@ class _OrderScreenState extends State<OrderScreen> {
     );
   }
 
-  Widget layoutAddress() {
+  Widget layoutAddress(String location) {
     return Container(
       width: MediaQuery.of(context).size.width,
       padding: const EdgeInsets.all(10),
@@ -394,7 +398,7 @@ class _OrderScreenState extends State<OrderScreen> {
                 width: 10,
               ),
               Text(
-                "FPT University",
+                location,
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
               ),
             ],

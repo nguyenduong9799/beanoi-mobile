@@ -16,6 +16,7 @@ final kBackgroundGrey = [
 ];
 
 final kTextPrimary = TextStyle(color: Color(0xFFFFFFFF));
+final kTextSecondary = TextStyle(color: kPrimary);
 
 const String CART_TAG = "cartTag";
 
@@ -28,6 +29,6 @@ const String defaultImage =
     "https://mcnewsmd1.keeng.net/netnews/archive/images/2020052200/tinngan_120240_510965964_20wap_320.jpg";
 const String TIME = "12:10";
 const String VERSION = "0.0.1";
-
+const TEST_STORE = 69;
 const int ORDER_NEW_STATUS = 0;
 const int ORDER_DONE_STATUS = 4;
