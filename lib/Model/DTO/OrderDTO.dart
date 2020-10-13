@@ -21,7 +21,7 @@ class OrderDTO {
   });
 
   factory OrderDTO.fromJSON(Map<String, dynamic> map) => OrderDTO(
-        map["rent_id"],
+        map["order_id"],
         total: map["final_amount"],
         orderTime: map["check_in_date"],
         itemQuantity: map["master_product_quantity"],

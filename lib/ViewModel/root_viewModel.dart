@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 
 import 'package:unidelivery_mobile/Model/DAO/AccountDAO.dart';
+import 'package:unidelivery_mobile/Model/DAO/StoreDAO.dart';
 import 'package:unidelivery_mobile/Model/DTO/AccountDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/StoreDTO.dart';
 import 'package:unidelivery_mobile/ViewModel/base_model.dart';
@@ -20,11 +21,7 @@ class RootViewModel extends BaseModel {
 
   StoreDTO dto, tmp;
 
-  List<StoreDTO> list = [
-    new StoreDTO(id: 150, name: "Unibean Store", location: "FPT University"),
-    new StoreDTO(id: 999, name: "Co be ban diem", location: "69 Bùi Viện"),
-    new StoreDTO(id: 400, name: "Halloween", location: "Phố đi bộ Nguyễn Huệ"),
-  ];
+  List<StoreDTO> list;
 
   RootViewModel() {
     _dao = AccountDAO();
@@ -49,10 +46,11 @@ class RootViewModel extends BaseModel {
 
   Future<void> signOut() async {
     await _dao.logOut();
+    await removeALL();
   }
 
   Future<void> processSignout() async {
-    int option = await showOptionDialog("Bạn có chắc không");
+    int option = await showOptionDialog("Mình sẽ nhớ bạn lắm ó huhu :'(((");
     if (option == 1) {
       await signOut();
       Get.offAllNamed(RouteHandler.LOGIN);
@@ -65,13 +63,19 @@ class RootViewModel extends BaseModel {
   }
 
   Future<void> processChangeAddress(HomeViewModel homeViewModel) async {
+
     if (dto == null) {
       return;
     }
     changeAddress = true;
     tmp = dto;
     notifyListeners();
+    showLoadingDialog();
 
+    StoreDAO dao = new StoreDAO();
+    list = await dao.getStores();
+
+    hideDialog();
     await changeAddressDialog(this, () async {
       hideDialog();
       if (tmp.id != this.dto.id) {
@@ -82,6 +86,7 @@ class RootViewModel extends BaseModel {
           dto = tmp;
           await deleteCart();
           await setStore(dto);
+          homeViewModel.isFirstFetch = true;
           await homeViewModel.getProducts();
         }
       }

@@ -214,7 +214,7 @@ class _HomeAppBarSate extends State<HomeAppBar> {
               ),
               children: <TextSpan>[
                 TextSpan(
-                  text: "${user.name}",
+                  text: "${user.name.toUpperCase()}",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontStyle: FontStyle.italic,

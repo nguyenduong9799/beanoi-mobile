@@ -71,10 +71,8 @@ class _OrderScreenState extends State<OrderScreen> {
                                     Container(
                                         margin: const EdgeInsets.only(top: 8),
                                         child: layoutOrder(cart, dto.name)),
-                                    Container(
-                                        margin: const EdgeInsets.only(top: 8),
-                                        child: layoutSubtotal(total)),
-                                    SizedBox(height: 16),
+                                    layoutSubtotal(total),
+                                    //SizedBox(height: 16),
                                   ],
                                 ),
                               ),
@@ -167,24 +165,26 @@ class _OrderScreenState extends State<OrderScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "Các món đã đặt",
+                    "Các món trong giỏ",
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   OutlineButton(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(8))),
+                    highlightedBorderColor: kPrimary,
                     onPressed: () {
                       Get.back();
                     },
                     borderSide: BorderSide(color: kPrimary),
                     child: Text(
                       "Thêm",
-                      style: TextStyle(color: Colors.black),
+                      style: TextStyle(color: kPrimary),
                     ),
                   )
                 ],
               ),
               Divider(
                 color: Colors.black,
-                thickness: 2,
               )
             ],
           ),
@@ -245,35 +245,34 @@ class _OrderScreenState extends State<OrderScreen> {
     List<Widget> list = new List();
     double price = item.master.price;
 
-    if (item.master.type == MASTER_PRODUCT) {
-      list.add(Text(item.products[0].name,
-          style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)));
-      price = item.products[0].price;
-      for (int i = 1; i < item.products.length; i++) {
-        list.add(SizedBox(
-          height: 10,
-        ));
-        list.add(Text(
-            item.products[i].name.contains("Extra")
-                ? item.products[i].name.replaceAll("Extra", "+")
-                : item.products[i].name,
-            style: TextStyle(fontSize: 14)));
-        price += item.products[i].price;
-      }
-    } else {
-      list.add(Text(item.master.name,
-          style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)));
-      for (int i = 0; i < item.products.length; i++) {
-        list.add(SizedBox(
-          height: 10,
-        ));
-        list.add(Text(
-            item.products[i].name.contains("Extra")
-                ? item.products[i].name.replaceAll("Extra", "+")
-                : item.products[i].name,
-            style: TextStyle(fontSize: 14)));
-        price += item.products[i].price;
-      }
+    // if (item.master.type == MASTER_PRODUCT) {
+    //   list.add(Text(item.products[0].name,
+    //       style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)));
+    //   price = item.products[0].price;
+    //   for (int i = 1; i < item.products.length; i++) {
+    //     list.add(SizedBox(
+    //       height: 10,
+    //     ));
+    //     list.add(Text(
+    //         item.products[i].name.contains("Extra")
+    //             ? item.products[i].name.replaceAll("Extra", "+")
+    //             : item.products[i].name,
+    //         style: TextStyle(fontSize: 14)));
+    //     price += item.products[i].price;
+    //   }
+    // } else {
+    list.add(Text(item.master.name,
+        style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)));
+    for (int i = 0; i < item.products.length; i++) {
+      list.add(SizedBox(
+        height: 10,
+      ));
+      list.add(Text(
+          item.products[i].name.contains("Extra")
+              ? item.products[i].name.replaceAll("Extra", "+")
+              : item.products[i].name,
+          style: TextStyle(fontSize: 13, color: kBackgroundGrey[5])));
+      price += item.products[i].price;
     }
 
     if (item.description != null && item.description.isNotEmpty) {
@@ -346,8 +345,7 @@ class _OrderScreenState extends State<OrderScreen> {
                             Text(
                               NumberFormat.simpleCurrency(locale: 'vi')
                                   .format(price * item.quantity),
-                              style: TextStyle(
-                                  fontSize: 15),
+                              style: TextStyle(fontSize: 14),
                             )
                           ],
                         ),
@@ -428,24 +426,23 @@ class _OrderScreenState extends State<OrderScreen> {
   Widget layoutSubtotal(double total) {
     return Container(
       width: MediaQuery.of(context).size.width,
-      padding: const EdgeInsets.all(10),
-      margin: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.all(8),
+      // margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
         color: kBackgroundGrey[0],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            "Tổng tiền",
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
+          // Text(
+          //   "Tổng tiền",
+          //   style: TextStyle(fontWeight: FontWeight.bold),
+          // ),
           Container(
-            margin: EdgeInsets.only(top: 15),
-            padding: const EdgeInsets.all(10),
+            padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
                 border: Border.all(color: kBackgroundGrey[4]),
-                borderRadius: BorderRadius.all(Radius.circular(10))),
+                borderRadius: BorderRadius.all(Radius.circular(8))),
             child: Column(
               children: [
                 Padding(

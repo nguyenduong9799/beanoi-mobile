@@ -63,11 +63,11 @@ class CustomInterceptors extends InterceptorsWrapper {
 
 class MyRequest {
   static BaseOptions options = new BaseOptions(
-      baseUrl: 'http://115.165.166.32:14254/api',
+      baseUrl: 'http://192.168.1.199:45455/api/v2',
       headers: {
         Headers.contentTypeHeader: "application/json",
       },
-      connectTimeout: 10000);
+      receiveTimeout: 5000);
   Dio _inner;
   MyRequest() {
     _inner = new Dio(options);

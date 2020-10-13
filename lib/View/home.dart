@@ -8,12 +8,9 @@ import 'package:flutter_page_indicator/flutter_page_indicator.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:unidelivery_mobile/Model/DTO/StoreDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
-
 import 'package:unidelivery_mobile/acessories/appbar.dart';
-import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
 
@@ -69,65 +66,52 @@ class _HomeScreenState extends State<HomeScreen> {
                 height: MediaQuery.of(context).size.height,
                 child: Stack(
                   children: [
-                    Container(
-                      // height: 800,
-                      child: ListView(
-                        children: [
-                          Container(
-                            // height: 750,
-                            child: Center(
-                              child: Padding(
-                                padding: const EdgeInsets.only(top: 80),
-                                child: Column(
-                                  children: [
-                                    // banner(),
-                                    location(rootViewModel),
-                                    Center(
-                                      child: Container(
-                                        margin: EdgeInsets.all(8),
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(16),
-                                          color: Colors.blue[200],
-                                        ),
-                                        height: 80,
-                                        width: double.infinity,
-                                        child: Image.asset(
-                                          'assets/images/banner.png',
-                                          fit: BoxFit.cover,
-                                          // width: double.infinity,
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(height: 16),
-                                    buildProducts(rootViewModel),
-                                    SizedBox(height: 16),
-                                    Center(
-                                      child: Container(
-                                        margin: EdgeInsets.all(8),
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(16),
-                                          // color: Colors.orange[300],
-                                        ),
-                                        height: 80,
-                                        width: double.infinity,
-                                        // child: Center(
-                                        //     child: Text(
-                                        //   "Bottom Section",
-                                        //   style: TextStyle(
-                                        //     fontSize: 25,
-                                        //   ),
-                                        // )),
-                                      ),
-                                    ),
-                                  ],
+                    Center(
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 80),
+                        child: ListView(
+                          children: [
+                            // banner(),
+                            location(rootViewModel),
+                            Center(
+                              child: Container(
+                                margin: EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(16),
+                                  color: Colors.blue[200],
+                                ),
+                                height: 80,
+                                width: double.infinity,
+                                child: Image.asset(
+                                  'assets/images/banner.png',
+                                  fit: BoxFit.cover,
+                                  // width: double.infinity,
                                 ),
                               ),
                             ),
-                          ),
-                          // SizedBox(height: 48),
-                        ],
+                            SizedBox(height: 16),
+                            buildProducts(rootViewModel),
+                            SizedBox(height: 16),
+                            Center(
+                              child: Container(
+                                margin: EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(16),
+                                  // color: Colors.orange[300],
+                                ),
+                                height: 80,
+                                width: double.infinity,
+                                // child: Center(
+                                //     child: Text(
+                                //   "Bottom Section",
+                                //   style: TextStyle(
+                                //     fontSize: 25,
+                                //   ),
+                                // )),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                     HomeAppBar(),
@@ -159,14 +143,24 @@ class _HomeScreenState extends State<HomeScreen> {
             }
           }
 
-          return ListTile(
-            leading: Icon(
-              Icons.location_on,
-              color: Colors.red,
-            ),
-            title: Text(
-              text,
-              style: kTextSecondary,
+          return InkWell(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.location_on,
+                    color: Colors.red,
+                  ),
+                  SizedBox(
+                    width: 8,
+                  ),
+                  Text(
+                    text,
+                    style: kTextSecondary,
+                  ),
+                ],
+              ),
             ),
             onTap: () async {
               await root.processChangeAddress(model);
@@ -379,7 +373,7 @@ class _HomeScreenState extends State<HomeScreen> {
       listContents.add(productPage);
     }
     return Container(
-      height: 400,
+      height: MediaQuery.of(context).size.height * 0.6,
       child: Theme(
         data: ThemeData(
           backgroundColor: Colors.grey,
@@ -658,7 +652,7 @@ class _FoodItemState extends State<FoodItem> {
                                     decoration: BoxDecoration(
                                       image: DecorationImage(
                                         image: imageProvider,
-                                        fit: BoxFit.fill,
+                                        fit: BoxFit.cover,
                                       ),
                                     ),
                                   ),

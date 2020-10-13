@@ -5,10 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/route_constraint.dart';
-import 'package:unidelivery_mobile/utils/index.dart';
 import 'package:unidelivery_mobile/utils/pageNavigation.dart';
-import 'package:unidelivery_mobile/utils/request.dart';
-import 'package:unidelivery_mobile/utils/shared_pref.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 
 import 'package:unidelivery_mobile/View/index.dart';
@@ -36,8 +33,9 @@ class MyApp extends StatelessWidget {
             return CupertinoPageRoute(
                 builder: (context) => LoginWithPhone(), settings: settings);
           case RouteHandler.LOGIN_OTP:
+            Map map = settings.arguments;
             return CupertinoPageRoute(
-                builder: (context) => LoginWithPhoneOTP(), settings: settings);
+                builder: (context) => LoginWithPhoneOTP(phoneNumber: map["phoneNumber"], verificationId:  map["verId"],), settings: settings);
           case RouteHandler.LOGIN:
             return FadeRoute(page: LoginScreen());
           case RouteHandler.GIFT:

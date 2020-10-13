@@ -3,6 +3,7 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
 import 'package:unidelivery_mobile/Model/DAO/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/CartDTO.dart';
+import 'package:unidelivery_mobile/Model/DTO/StoreDTO.dart';
 import 'package:unidelivery_mobile/ViewModel/base_model.dart';
 import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/enums/order_status.dart';
@@ -22,8 +23,9 @@ class OrderViewModel extends BaseModel {
   Future<void> orderCart(String orderNote) async {
     try {
       showLoadingDialog();
+      StoreDTO storeDTO = await getStore();
       OrderDAO dao = new OrderDAO();
-      OrderStatus result = await dao.createOrders(orderNote);
+      OrderStatus result = await dao.createOrders(orderNote, storeDTO.id);
       if (result == OrderStatus.Success) {
         await deleteCart();
         hideDialog();

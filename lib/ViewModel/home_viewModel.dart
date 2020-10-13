@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:unidelivery_mobile/Model/DAO/StoreDAO.dart';
 import 'package:unidelivery_mobile/Model/DAO/index.dart';
+import 'package:unidelivery_mobile/Model/DTO/StoreDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
 import 'package:unidelivery_mobile/acessories/dialog.dart';
@@ -34,6 +36,14 @@ class HomeViewModel extends BaseModel {
     Filter(48, 'Gần đây'),
     Filter(49, 'Mới'),
   ];
+
+
+  bool get isFirstFetch => _isFirstFetch;
+
+
+  set isFirstFetch(bool value) {
+    _isFirstFetch = value;
+  }
 
   List<Filter> filterCategories = [
     Filter(44, 'Cơm', isMultiple: true),
@@ -103,8 +113,20 @@ class HomeViewModel extends BaseModel {
   Future<List<ProductDTO>> getProducts() async {
     try {
       setState(ViewStatus.Loading);
+      StoreDTO store = await getStore();
+      if(store == null){
+        StoreDAO storeDAO = new StoreDAO();
+        List<StoreDTO> listStore = await storeDAO.getStores();
+        for(StoreDTO dto in listStore){
+          if(dto.id == UNIBEAN_STORE){
+            store = dto;
+            await setStore(dto);
+          }
+        }
+      }
+      print("Get products...");
       if (_isFirstFetch) {
-        products = await _dao.getProducts();
+        products = await _dao.getProducts(store.id);
         _cachedProduct = products.sublist(0);
         // products.insertAll(0, products);
         _isFirstFetch = false;
@@ -133,6 +155,7 @@ class HomeViewModel extends BaseModel {
       }
       notifyListeners();
     } catch (e, stacktrace) {
+      print("Excception: " + e.toString() + stacktrace.toString());
       bool result = await showErrorDialog();
       if (result) {
         await getProducts();

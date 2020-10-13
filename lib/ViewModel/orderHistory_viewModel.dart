@@ -23,6 +23,7 @@ class OrderHistoryViewModel extends BaseModel {
       final data = await _orderDAO.getOrders(filter);
 
       orderThumbnail = data;
+
       setState(ViewStatus.Completed);
     } catch (e) {
       bool result = await showErrorDialog();

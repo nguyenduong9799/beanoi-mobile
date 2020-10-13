@@ -9,7 +9,7 @@ class StoreDTO{
     return StoreDTO(
       id: json['id'],
       name: json['name'],
-      location: "FPT University"
+      location: json['address']
     );
   }
 
@@ -17,7 +17,7 @@ class StoreDTO{
     return {
       "id" : id,
       "name" : name,
-      "location": location
+      "address": location
     };
   }
 }

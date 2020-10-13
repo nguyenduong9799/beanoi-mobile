@@ -107,21 +107,28 @@ class _UpdateAccountState extends State<ProfileScreen> {
           child: Center(
             child: Column(
               children: <Widget>[
+                SizedBox(height: 8,),
                 Text(
-                  user.name,
+                  user.name.toUpperCase(),
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(
                   height: 8,
                 ),
-                Text(
-                  "Bạn có ${formatPrice(user.balance)} trong ví",
-                  style: TextStyle(fontSize: 15),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Số tiền trong ví: ${formatPrice(user.balance)}",
+                      style: TextStyle(fontSize: 15),
+                    ),
+                    Text(
+                      "Số đậu trong ví: ${user.point.round().toString()} Bean",
+                      style: TextStyle(fontSize: 15),
+                    ),
+                  ],
                 ),
-                Text(
-                  "Và ${user.point.round().toString()} bean",
-                  style: TextStyle(fontSize: 15),
-                ),
+
                 SizedBox(
                   height: 8,
                 ),
@@ -144,7 +151,7 @@ class _UpdateAccountState extends State<ProfileScreen> {
         splashColor: kSecondary,
         child: Text(
           text,
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 16),
         ),
         onPressed: () {},
       ),
@@ -156,16 +163,17 @@ class _UpdateAccountState extends State<ProfileScreen> {
         builder: (context, child, model) {
       return Container(
         margin: const EdgeInsets.only(left: 80.0, right: 80.0),
-        child: FlatButton(
+        child: OutlineButton(
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(8))),
           textColor: kBackgroundGrey[0],
           color: kBackgroundGrey[0],
+          borderSide: BorderSide(color: Colors.red),
           splashColor: kBackgroundGrey[3],
           child: Text(
             "Đăng xuất",
             style: TextStyle(
-                fontSize: 16, fontWeight: FontWeight.bold, color: kFail),
+                fontSize: 16, color: kFail),
           ),
           onPressed: () async {
             await model.processSignout();
@@ -179,40 +187,45 @@ class _UpdateAccountState extends State<ProfileScreen> {
     return Container(
       margin: EdgeInsets.only(left: 32, right: 32, bottom: 0, top: 16),
       padding: EdgeInsets.only(left: 32, right: 32),
-      decoration: BoxDecoration(
-        border: Border(top: BorderSide(color: kBackgroundGrey[3], width: 1)),
-      ),
+      // decoration: BoxDecoration(
+      //   border: Border(top: BorderSide(color: kBackgroundGrey[3], width: 1)),
+      // ),
+
       child: Center(
         child: Column(
           children: <Widget>[
             Text(
-              "Version $VERSION",
+              "Version $VERSION by UniTeam",
               style: TextStyle(
-                fontSize: 12,
+                fontSize: 13,
+                  color: kBackgroundGrey[5]
               ),
             ),
+            SizedBox(height: 8,),
             Container(
               // height: 40,
               child: RichText(
                 text: TextSpan(
-                  text: "By - ",
+                  text: "Bean delivery ",
                   style: TextStyle(
-                    fontSize: 12,
-                    color: kBackgroundGrey[5],
+                    fontSize: 13,
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold
                     // fontStyle: FontStyle.italic,
                   ),
-                  children: <TextSpan>[
-                    TextSpan(
-                      text: "UniTeam",
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontStyle: FontStyle.italic,
-                      ),
-                    )
-                  ],
+                  // children: <TextSpan>[
+                  //   TextSpan(
+                  //     text: "UniTeam",
+                  //     style: TextStyle(
+                  //       fontSize: 14,
+                  //       fontStyle: FontStyle.italic,
+                  //     ),
+                  //   )
+                  // ],
                 ),
               ),
             ),
+            SizedBox(height: 8,)
           ],
         ),
       ),

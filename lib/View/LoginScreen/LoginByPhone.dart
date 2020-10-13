@@ -1,15 +1,10 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:progress_dialog/progress_dialog.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:unidelivery_mobile/Services/firebase.dart';
 import 'package:unidelivery_mobile/ViewModel/login_viewModel.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/countries.dart';
-import 'package:unidelivery_mobile/route_constraint.dart';
 
 class LoginWithPhone extends StatefulWidget {
   LoginWithPhone({Key key}) : super(key: key);
@@ -20,11 +15,8 @@ class LoginWithPhone extends StatefulWidget {
 
 class _LoginWithPhoneState extends State<LoginWithPhone> {
   List<DropdownMenuItem<dynamic>> _dropdownMenuItems;
-  String verificationId;
   bool smsSent = false;
   String smsCode;
-
-  ProgressDialog pr;
 
   final form = FormGroup({
     'phone': FormControl(validators: [
@@ -42,12 +34,6 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
   @override
   void initState() {
     super.initState();
-    pr = new ProgressDialog(
-      context,
-      showLogs: true,
-      type: ProgressDialogType.Download,
-      isDismissible: false,
-    );
 
     _dropdownMenuItems = countries
         .map(
@@ -69,7 +55,6 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-
 
     return Scaffold(
       resizeToAvoidBottomInset: true,
@@ -243,13 +228,17 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
                                   borderRadius: BorderRadius.circular(24.0),
                                   // side: BorderSide(color: Colors.red),
                                 ),
-                                onPressed: () {
+                                onPressed: () async {
                                   // marks all children as touched
                                   form.touch();
                                   if (form.valid) {
-                                    _handleLogin(model);
+                                    // await pr.show();
+                                    String phone = form.value["countryCode"] +
+                                        form.value["phone"];
+                                    // print("phone $phone");
+                                    model.onLoginWithPhone(phone);
                                   } else {
-                                    print("Nopt valid form ${form.errors}");
+                                    print("Not valid form ${form.errors}");
                                   }
                                 },
                                 child: Text(
@@ -266,107 +255,6 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
           ),
         ),
       ),
-    );
-  }
-
-  Future<void> _handleLogin(LoginViewModel model) async {
-    if (!form.valid) return;
-    // await pr.show();
-    String phone = form.value["countryCode"] + form.value["phone"];
-    // print("phone $phone");
-    await onLoginWithPhone(phone, model);
-    // await pr.hide();
-  }
-
-  Future<void> onSignInWithGmail(LoginViewModel model) async {
-    try {
-      final authCredential = await AuthService().signInWithGoogle();
-      if (authCredential == null) return;
-
-      await pr.hide();
-      return Get.offAllNamed(RouteHandler.NAV);
-    } on FirebaseAuthException catch (e) {
-      print("=====OTP Fail: ${e.message}  ");
-      await _showMyDialog("Error", e.message);
-    } finally {
-      await pr.hide();
-    }
-  }
-
-  Future<void> onLoginWithPhone(String phone, LoginViewModel model) async {
-    final PhoneVerificationCompleted verificationCompleted =
-        (AuthCredential authCredential) async {
-      try {
-        await pr.show();
-        final userInfo = await model.signIn(authCredential);
-        // TODO: Kiem tra xem user moi hay cu
-        if (userInfo.isFirstLogin) {
-          // Navigate to sign up screen
-          await Get.offAllNamed(RouteHandler.SIGN_UP);
-        } else {
-          await Get.offAllNamed(RouteHandler.NAV);
-          // chuyen sang trang home
-        }
-      } catch (e) {
-        _showMyDialog("Lỗi khi đăng nhập", e.toString());
-      } finally {
-        await pr.hide();
-      }
-      // dem authuser cho controller xu ly check user
-    };
-
-    final PhoneVerificationFailed verificationFailed =
-        (FirebaseAuthException authException) async {
-      print("===== Dang nhap fail: ${authException.message}");
-      await _showMyDialog("Error", authException.message);
-    };
-
-    final PhoneCodeSent phoneCodeSent =
-        (String verId, [int forceResend]) async {
-      await Get.toNamed(RouteHandler.LOGIN_OTP);
-    };
-
-    final PhoneCodeAutoRetrievalTimeout phoneTimeout = (String verId) {
-      setState(() {
-        this.verificationId = verId;
-      });
-    };
-
-    await FirebaseAuth.instance.verifyPhoneNumber(
-      phoneNumber: phone,
-      timeout: Duration(seconds: 50),
-      verificationCompleted: verificationCompleted,
-      verificationFailed: verificationFailed,
-      codeSent: phoneCodeSent,
-      codeAutoRetrievalTimeout: phoneTimeout,
-    );
-    print("Login Done");
-  }
-
-  Future<void> _showMyDialog(String title, String content) async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('$title'),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Text('$content'),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            FlatButton(
-              child: Text('Approve'),
-              onPressed: () {
-                Get.back();
-              },
-            ),
-          ],
-        );
-      },
     );
   }
 }

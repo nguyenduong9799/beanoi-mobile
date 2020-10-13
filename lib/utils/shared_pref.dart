@@ -95,6 +95,11 @@ Future<StoreDTO> getStore() async {
   return null;
 }
 
+Future<void> removeALL() async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.clear();
+}
+
 // Future<bool> setUser(A value) async {
 //   final SharedPreferences prefs = await SharedPreferences.getInstance();
 //   return prefs.setString('token', value);

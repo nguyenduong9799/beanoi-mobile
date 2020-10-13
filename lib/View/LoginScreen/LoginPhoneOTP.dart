@@ -1,21 +1,19 @@
 import 'dart:async';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
-import 'package:progress_dialog/progress_dialog.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:unidelivery_mobile/Services/firebase.dart';
 import 'package:unidelivery_mobile/ViewModel/login_viewModel.dart';
 import 'package:unidelivery_mobile/constraints.dart';
-import 'package:unidelivery_mobile/route_constraint.dart';
+import 'package:unidelivery_mobile/enums/view_status.dart';
 
 class LoginWithPhoneOTP extends StatefulWidget {
   final String verificationId;
   final String phoneNumber;
 
-  LoginWithPhoneOTP({Key key, this.verificationId, this.phoneNumber})
+  LoginWithPhoneOTP(
+      {Key key, @required this.verificationId, @required this.phoneNumber})
       : super(key: key);
 
   @override
@@ -23,11 +21,7 @@ class LoginWithPhoneOTP extends StatefulWidget {
 }
 
 class _LoginWithPhoneOTPState extends State<LoginWithPhoneOTP> {
-  ProgressDialog pr;
   StreamController<ErrorAnimationType> errorController;
-  bool hasError = false;
-  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-
 
   final form = FormGroup({
     'otp': FormControl(validators: [
@@ -41,12 +35,6 @@ class _LoginWithPhoneOTPState extends State<LoginWithPhoneOTP> {
     // TODO: implement initState
     super.initState();
     errorController = StreamController<ErrorAnimationType>();
-    pr = new ProgressDialog(
-      context,
-      showLogs: true,
-      type: ProgressDialogType.Normal,
-      isDismissible: false,
-    );
   }
 
   @override
@@ -54,12 +42,14 @@ class _LoginWithPhoneOTPState extends State<LoginWithPhoneOTP> {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
+    print("Verification ID: " + widget.verificationId);
+    print("Phone number: " + widget.phoneNumber);
+
     return SafeArea(
       child: ScopedModel<LoginViewModel>(
         model: LoginViewModel(),
         child: Scaffold(
           backgroundColor: Colors.white,
-          key: scaffoldKey,
           appBar: AppBar(
             backgroundColor: Colors.transparent,
             elevation: 0,
@@ -112,8 +102,8 @@ class _LoginWithPhoneOTPState extends State<LoginWithPhoneOTP> {
                     height: screenHeight * 0.55,
                     width: screenWidth,
                     child: ScopedModelDescendant<LoginViewModel>(
-                      builder:
-                          (BuildContext context, Widget child, Model model) {
+                      builder: (BuildContext context, Widget child,
+                          LoginViewModel model) {
                         return ListView(
                           children: [
                             Padding(
@@ -150,7 +140,9 @@ class _LoginWithPhoneOTPState extends State<LoginWithPhoneOTP> {
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 30.0),
                               child: Text(
-                                hasError ? "Bạn chưa nhập đủ mã OTP :(." : "",
+                                model.status == ViewStatus.Error
+                                    ? "Bạn chưa nhập đủ mã OTP :(."
+                                    : "",
                                 style: TextStyle(
                                   color: Colors.red,
                                   fontSize: 14,
@@ -197,12 +189,17 @@ class _LoginWithPhoneOTPState extends State<LoginWithPhoneOTP> {
                                   if (!form.valid) {
                                     errorController.add(ErrorAnimationType
                                         .shake); // Triggering error shake animation
-                                    setState(() {
-                                      hasError = true;
-                                    });
+                                    model.setState(ViewStatus.Loading);
                                   } else {
-                                    await onsignInWithOTP(form.value["otp"],
-                                        widget.verificationId, model);
+                                    if (form.value["otp"].length != 6) {
+                                      errorController.add(ErrorAnimationType
+                                          .shake); // Triggering error shake animation
+                                      model.setState(ViewStatus.Error);
+                                    } else {
+                                      await model.onsignInWithOTP(
+                                          form.value["otp"],
+                                          widget.verificationId);
+                                    }
                                   }
                                 },
                                 child: Center(
@@ -226,73 +223,6 @@ class _LoginWithPhoneOTPState extends State<LoginWithPhoneOTP> {
           ),
         ),
       ),
-    );
-  }
-
-  Future<void> onsignInWithOTP(
-      smsCode, verificationId, LoginViewModel model) async {
-    print("DN = OTP");
-    await pr.show();
-    try {
-      if (smsCode.length != 6) {
-        errorController
-            .add(ErrorAnimationType.shake); // Triggering error shake animation
-        setState(() {
-          hasError = true;
-        });
-      } else {
-        final authCredential =
-            await AuthService().signInWithOTP(smsCode, verificationId);
-        final userInfo = await model.signIn(authCredential);
-
-        if (userInfo.isFirstLogin) {
-          // Navigate to sign up screen
-          await Get.offAndToNamed(RouteHandler.SIGN_UP);
-        } else {
-          setState(() {
-            hasError = false;
-          });
-          scaffoldKey.currentState.showSnackBar(SnackBar(
-            content: Text("Đăng nhập thành công!!"),
-            duration: Duration(seconds: 3),
-          ));
-          await Get.offAllNamed(RouteHandler.NAV);
-        }
-      }
-    } on FirebaseAuthException catch (e) {
-      print("=====OTP Fail: ${e.message}  ");
-      await _showMyDialog("Error", e.message);
-    } catch (e) {
-      await _showMyDialog("Error", e.toString());
-    } finally {
-      await pr.hide();
-    }
-  }
-
-  Future<void> _showMyDialog(String title, String content) async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('$title'),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Text('$content'),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            FlatButton(
-              child: Text('Approve'),
-              onPressed: () {
-                Get.back();
-              },
-            ),
-          ],
-        );
-      },
     );
   }
 

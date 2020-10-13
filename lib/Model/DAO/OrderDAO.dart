@@ -31,7 +31,7 @@ class OrderDAO {
     return orderDetail;
   }
 
-  Future<OrderStatus> createOrders(String note) async {
+  Future<OrderStatus> createOrders(String note, int store_id) async {
     try {
       Cart cart = await getCart();
       if (cart != null) {
@@ -40,7 +40,7 @@ class OrderDAO {
         final res = await request.post('/orders',
             queryParameters: {
               "brand-id": UNIBEAN_BRAND,
-              "store-id": UNIBEAN_STORE
+              "store-id": store_id
             },
             data: cart.toJsonAPi());
         if (res.statusCode == 200) {
@@ -49,6 +49,7 @@ class OrderDAO {
       }
     } on DioError catch (e) {
      if (e.response.statusCode == 400) {
+       print("Code: " + e.response.data['code'].toString());
         if (e.response.data['code'] == 'ERR_BALANCE')
           return OrderStatus.NoMoney;
         return OrderStatus.Timeout;

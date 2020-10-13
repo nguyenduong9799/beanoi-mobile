@@ -50,10 +50,16 @@ dependencies:
   connectivity: ^0.4.9+3
   animated_text_kit: ^2.2.0
   get: ^3.12.1
+  flutter_launcher_icons: ^0.8.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/icon.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

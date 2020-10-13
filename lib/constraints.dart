@@ -4,7 +4,6 @@ final kPrimary = Color(0xFF4fba6f);
 final kSecondary = Color(0xFF438029);
 final kSuccess = Colors.green;
 final kFail = Colors.red;
-
 final kBackgroundGrey = [
   Color(0xFFFFFFFF),
   Color(0xfffafafa),
@@ -14,6 +13,9 @@ final kBackgroundGrey = [
   Color(0xff9e9e9e),
   Color(0xff757575),
 ];
+final kGreyTitle =  Color(0xFF575757);
+
+
 
 final kTextPrimary = TextStyle(color: Color(0xFFFFFFFF));
 final kTextSecondary = TextStyle(color: kPrimary);
@@ -32,3 +34,4 @@ const String VERSION = "0.0.1";
 const TEST_STORE = 69;
 const int ORDER_NEW_STATUS = 0;
 const int ORDER_DONE_STATUS = 4;
+const int VIRTUAL_STORE_TYPE = 8;

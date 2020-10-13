@@ -7,16 +7,14 @@ class ProductDTO {
   String description;
   int type;
   String imageURL;
-  List<String> atrributes;
-  List<ProductDTO> listChild;
+  List<ProductChild> listChild;
   int catergoryId;
-  int storeId;
-  String storeName;
-  int extraId;
+  List<int> extraId;
+  String supplierId;
 
   @override
   String toString() {
-    return 'ProductDTO{id: $id, name: $name, price: $price, description: $description, type: $type, imageURL: $imageURL, atrributes: $atrributes, listChild: $listChild, catergoryId: $catergoryId, storeId: $storeId, storeName: $storeName, extraId: $extraId}';
+    return 'ProductDTO{id: $id, name: $name, price: $price, description: $description, type: $type, imageURL: $imageURL, listChild: $listChild, catergoryId: $catergoryId, extraId: $extraId}';
   }
 
   ProductDTO(this.id,
@@ -25,31 +23,32 @@ class ProductDTO {
       this.price,
       this.description,
       this.type,
-      this.atrributes,
       this.listChild,
       this.catergoryId,
-      this.storeId,
-      this.storeName,
-      this.extraId}); // balance. point;
+      this.extraId,
+      this.supplierId}); // balance. point;
 
   factory ProductDTO.fromJson(dynamic json) {
     var type = json['product_type'] as int;
+    var jsonExtra = json['extra_category_id'] as List;
+    List<int> listExtra = jsonExtra.cast<int>().toList();
     if (type == MASTER_PRODUCT) {
       var listChildJson = json['child_products'] as List;
-      List<ProductDTO> listChild =
-          listChildJson.map((e) => ProductDTO.fromJson(e)).toList();
-      var listDynamic = json['attributes'] as List;
-      var attributes = listDynamic.cast<String>().toList();
+
+      List<ProductChild> listChild =
+          listChildJson.map((e) => ProductChild.fromJson(e)).toList();
+
       return ProductDTO(json["product_in_menu_id"],
           name: json['product_name'] as String,
           price: double.parse(json['price'].toString()),
           description: json['description'] as String,
           type: type,
           imageURL: json['pic_url'] as String,
-          atrributes: attributes,
           listChild: listChild,
           catergoryId: json['category_id'],
-          extraId: json['extra_category_id']);
+          extraId: listExtra,
+          supplierId: json['supplier_id'] as String
+      );
     }
 
     return ProductDTO(json["product_in_menu_id"],
@@ -59,9 +58,8 @@ class ProductDTO {
         type: type,
         imageURL: json['pic_url'] as String,
         catergoryId: json['category_id'],
-        storeId: json['storeId'],
-        storeName: json['storeName'] as String,
-        extraId: json['extra_category_id']);
+        supplierId: json['supplier_id'] as String,
+        extraId: listExtra);
   }
 
   Map<String, dynamic> toJson() {
@@ -76,8 +74,8 @@ class ProductDTO {
         "pic_url": imageURL,
         "catergory_id": catergoryId,
         "child_products": listProducts,
-        "attributes": atrributes,
         "extra_category_id": extraId,
+        "supplier_id": supplierId
       };
     }
     return {
@@ -88,11 +86,38 @@ class ProductDTO {
       "product_type": type,
       "pic_url": imageURL,
       "catergory_id": catergoryId,
-      "storeName": storeName,
+      "supplier_id": supplierId,
       "extra_category_id": extraId
     };
   }
 
-  static List<ProductDTO> fromList(List list) =>
-      list.map((map) => ProductDTO.fromJson(map)).toList();
+  static List<ProductDTO> fromList(dynamic jsonList){
+    var list = jsonList as List;
+    return list.map((map) => ProductDTO.fromJson(map)).toList();
+  }
+
+}
+
+class ProductChild{
+  String attribute;
+  List<ProductDTO> list;
+
+  ProductChild({this.attribute, this.list});
+
+  Map<String, dynamic> toJson(){
+    List listProducts = list.map((e) => e.toJson()).toList();
+    return {
+      "attribute_name" : attribute,
+      "products": listProducts
+    };
+  }
+
+  factory ProductChild.fromJson(dynamic json){
+    List<ProductDTO> listProducts = ProductDTO.fromList(json['products']);
+    return ProductChild(
+      attribute: json["attribute_name"] as String,
+      list: listProducts,
+    );
+  }
+
 }

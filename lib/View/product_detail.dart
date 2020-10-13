@@ -63,8 +63,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
       ));
     }
 
-    if (widget.dto.extraId != null) {
-      productDetailViewModel.getExtra(widget.dto.extraId);
+    if (widget.dto.extraId != null && widget.dto.extraId.isNotEmpty) {
+      productDetailViewModel.getExtra(widget.dto.extraId, widget.dto.supplierId);
       unaffectPriceTabs.add(Tab(child: Text("Thêm ")));
     }
 
@@ -177,6 +177,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
       color: kBackgroundGrey[0],
       padding: EdgeInsets.all(8),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -198,12 +199,14 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
             ],
           ),
           SizedBox(
-            height: 16,
+            height: 24,
           ),
-          // Text(
-          //   " " + widget.dto.description,
-          //   style: TextStyle(color: Colors.grey, fontSize: 16),
-          // ),
+          Text(
+            " " + widget.dto.description,
+            style: TextStyle(color: Colors.grey, fontSize: 16),
+            overflow: TextOverflow.ellipsis,
+            maxLines: 3,
+          ),
           SizedBox(
             height: 8,
           )
@@ -242,42 +245,48 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
         builder:
             (BuildContext context, Widget child, ProductDetailViewModel model) {
           attributes = new List();
-          listOptions = model.affectPriceContent[
-              model.affectPriceContent.keys.elementAt(model.affectIndex)];
+          if(model.affectPriceContent.keys.length != 0){
+            listOptions = model.affectPriceContent[
+            model.affectPriceContent.keys.elementAt(model.affectIndex)];
 
-          for (int i = 0; i < listOptions.length; i++) {
-            attributes.add(Container(
-              padding: EdgeInsets.only(right: 8),
-              child: RadioListTile(
-                title: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(listOptions[i].name),
-                    Flexible(
-                        child: Text(
-                      NumberFormat.simpleCurrency(locale: 'vi')
-                          .format(listOptions[i].price),
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                    ))
-                  ],
+            for (int i = 0; i < listOptions.length; i++) {
+              attributes.add(Container(
+                padding: EdgeInsets.only(right: 8),
+                child: RadioListTile(
+                  title: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(listOptions[i].name),
+                      Flexible(
+                          child: Text(
+                            NumberFormat.simpleCurrency(locale: 'vi')
+                                .format(listOptions[i].price),
+                            style:
+                            TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                          ))
+                    ],
+                  ),
+                  groupValue: model.affectPriceChoice[
+                  model.affectPriceContent.keys.elementAt(model.affectIndex)],
+                  value: listOptions[i],
+                  onChanged: (e) {
+                    model.changeAffectPriceAtrribute(e);
+                  },
                 ),
-                groupValue: model.affectPriceChoice[
-                    model.affectPriceContent.keys.elementAt(model.affectIndex)],
-                value: listOptions[i],
-                onChanged: (e) {
-                  model.changeAffectPriceAtrribute(e);
-                },
+              ));
+            }
+
+            return Container(
+              color: kBackgroundGrey[0],
+              child: Column(
+                children: [...attributes],
               ),
-            ));
+            );
           }
 
-          return Container(
-            color: kBackgroundGrey[0],
-            child: Column(
-              children: [...attributes],
-            ),
-          );
+          return Container();
+
+
         },
       );
     }
@@ -312,6 +321,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
   Widget unAffectAtributeContent() {
     List<Widget> attributes;
     List<String> listOptions;
+    print("Đây là content");
     return ScopedModelDescendant(
       builder:
           (BuildContext context, Widget child, ProductDetailViewModel model) {
@@ -328,9 +338,12 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
               child: Text("Empty list"),
             );
           case ViewStatus.Completed:
+            print("Complete");
             if (!model.isExtra) {
+              print("Đang add nè");
               attributes = new List();
               if (widget.dto.type == MASTER_PRODUCT) {
+                print("Master ơi");
                 listOptions = model.unaffectPriceContent[model
                     .unaffectPriceContent.keys
                     .elementAt(model.unaffectIndex)];
@@ -496,19 +509,15 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
         return Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Material(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(30))),
-              child: IconButton(
-                icon: Icon(
-                  Icons.remove_circle_outline,
-                  size: 30,
-                  color: model.minusColor,
-                ),
-                onPressed: () {
-                  model.minusQuantity();
-                },
+            IconButton(
+              icon: Icon(
+                Icons.remove_circle_outline,
+                size: 30,
+                color: model.minusColor,
               ),
+              onPressed: () {
+                model.minusQuantity();
+              },
             ),
             SizedBox(
               width: 16,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'package:unidelivery_mobile/Model/DAO/index.dart';
+import 'package:unidelivery_mobile/Model/DTO/StoreDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/constraints.dart';
@@ -24,7 +25,7 @@ class ProductDetailViewModel extends BaseModel {
   int count = 1;
   Color minusColor = kBackgroundGrey[5];
   Color addColor = kBackgroundGrey[5];
-  double total, fixTotal, extraTotal = 0;
+  double total, fixTotal = 0, extraTotal = 0;
   bool order = false;
   //List choice option
   Map<ProductDTO, bool> extra;
@@ -45,17 +46,23 @@ class ProductDetailViewModel extends BaseModel {
     this.unaffectPriceChoice = new Map<String, String>();
     this.affectPriceChoice = new Map<String, ProductDTO>();
     //
-    if (master.type != MASTER_PRODUCT) {
-      this.fixTotal = master.price * count;
-    } else {
-      for (String s in master.atrributes) {
-        if (s.toUpperCase() == "ĐÁ" || s.toUpperCase() == "ĐƯỜNG") {
-          unaffectPriceContent[s] = ["0%", "25%", "50%", "75%", "100%"];
-          unaffectPriceChoice[s] = "";
-        } else {
-          affectPriceContent[s] = dto.listChild;
-          affectPriceChoice[s] = null;
-        }
+
+    this.fixTotal = master.price * count;
+    for (ProductChild child in master.listChild) {
+      if (child.attribute.toUpperCase() == "ĐÁ" ||
+          child.attribute.toUpperCase() == "ĐƯỜNG") {
+        print("Đang thêm đá...");
+        unaffectPriceContent[child.attribute] = [
+          "0%",
+          "25%",
+          "50%",
+          "75%",
+          "100%"
+        ];
+        unaffectPriceChoice[child.attribute] = "";
+      } else {
+        affectPriceContent[child.attribute] = child.list;
+        affectPriceChoice[child.attribute] = null;
       }
     }
 
@@ -64,18 +71,21 @@ class ProductDetailViewModel extends BaseModel {
       isExtra = true;
     }
 
-    if (fixTotal != null) {
-      total = (fixTotal + extraTotal) * count;
-    }
-
+    total = (fixTotal + extraTotal) * count;
     verifyOrder();
   }
 
-  Future<void> getExtra(int cat_id) async {
+  Future<void> getExtra(List<int> cat_id, String sup_id) async {
     setState(ViewStatus.Loading);
     try {
+      StoreDTO store = await getStore();
       ProductDAO dao = new ProductDAO();
-      List<ProductDTO> products = await dao.getExtraProducts(cat_id);
+      List<ProductDTO> products = new List();
+
+      for (int id in cat_id) {
+        products.addAll(await dao.getExtraProducts(id, sup_id, store.id));
+      }
+
       for (ProductDTO dto in products) {
         extra[dto] = false;
       }
@@ -83,7 +93,7 @@ class ProductDetailViewModel extends BaseModel {
     } catch (e) {
       bool result = await showErrorDialog();
       if (result) {
-        await getExtra(cat_id);
+        await getExtra(cat_id, sup_id);
       } else
         setState(ViewStatus.Error);
     }
@@ -117,28 +127,22 @@ class ProductDetailViewModel extends BaseModel {
   }
 
   void changeAffectPriceAtrribute(ProductDTO e) {
-    fixTotal = 0;
-    affectPriceChoice[affectPriceContent.keys.elementAt(affectIndex)] = e;
-
-    for (int i = 0; i < affectPriceContent.keys.toList().length; i++) {
-      for (ProductDTO dto
-          in affectPriceContent[affectPriceContent.keys.elementAt(i)]) {
-        if (dto.id == e.id) {
-          fixTotal += dto.price;
-        }
-      }
+    if (affectPriceChoice[affectPriceContent.keys.elementAt(affectIndex)] !=
+        null) {
+      fixTotal -=
+          affectPriceChoice[affectPriceContent.keys.elementAt(affectIndex)]
+              .price;
     }
+    affectPriceChoice[affectPriceContent.keys.elementAt(affectIndex)] = e;
+    fixTotal += e.price;
     total = (fixTotal + extraTotal) * count;
 
     verifyOrder();
-    notifyListeners();
   }
 
   void changeUnAffectPriceAtrribute(String e) {
     unaffectPriceChoice[unaffectPriceContent.keys.elementAt(unaffectIndex)] = e;
-
     verifyOrder();
-    notifyListeners();
   }
 
   void changeUnAffectIndex(int index) {
@@ -172,6 +176,8 @@ class ProductDetailViewModel extends BaseModel {
     if (order) {
       addColor = kPrimary;
     }
+    // setState(ViewStatus.Completed);
+    notifyListeners();
   }
 
   void changExtra(bool value, int i) {
