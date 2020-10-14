@@ -20,7 +20,7 @@ class _RootScreenState extends State<RootScreen> {
   final List<Widget> _screens = [
     HomeScreen(),
     GiftScreen(),
-    ProfileScreen(dto: AccountDTO(name: 'Hung Bui')),
+    ProfileScreen(),
   ];
   final List<IconData> _icons = const [
     MaterialCommunityIcons.food,
@@ -28,18 +28,16 @@ class _RootScreenState extends State<RootScreen> {
     MaterialCommunityIcons.face_outline,
   ];
   int _selectedIndex = 0;
-  RootViewModel _initModel;
   @override
   void initState() {
     super.initState();
     _selectedIndex = widget.initScreenIndex;
-    _initModel = RootViewModel();
   }
 
   @override
   Widget build(BuildContext context) {
     return ScopedModel<RootViewModel>(
-      model: _initModel,
+      model: RootViewModel.getInstance(),
       child: DefaultTabController(
         length: _icons.length,
         child: GestureDetector(

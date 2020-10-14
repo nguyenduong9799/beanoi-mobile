@@ -27,10 +27,16 @@ class AccountDTO {
         balance: json['balance'],
         point: json['point'],
         isFirstLogin: json['is_first_login'] as bool,
-        birthdate: json['birthdate'] as String != null
-            ? DateTime.parse(json['birthdate'] as String)
+        birthdate: json['birth_day'] as String != null
+            ? DateTime.parse(json['birth_day'] as String)
             : null,
       );
+
+
+  @override
+  String toString() {
+    return 'AccountDTO{uid: $uid, name: $name, phone: $phone, gender: $gender, email: $email, birthdate: $birthdate, balance: $balance, point: $point, isFirstLogin: $isFirstLogin}';
+  }
 
   Map<String, dynamic> toJson() {
     return {

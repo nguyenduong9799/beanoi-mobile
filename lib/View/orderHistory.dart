@@ -260,6 +260,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
       OrderDetailBottomSheet(
         orderId: orderId,
       ),
+      isScrollControlled: true,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(16),

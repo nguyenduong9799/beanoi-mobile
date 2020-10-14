@@ -2,18 +2,27 @@ import 'dart:io';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:unidelivery_mobile/acessories/dialog.dart';
 
 class PushNotificationService {
-  PushNotificationService._();
 
-  factory PushNotificationService() => _instance;
+  static PushNotificationService _instance;
 
-  static final PushNotificationService _instance = PushNotificationService._();
+  static PushNotificationService getInstance() {
+    if (_instance == null) {
+      _instance = PushNotificationService();
+    }
+    return _instance;
+  }
+
+  static void destroyInstance() {
+    _instance = null;
+  }
 
   final FirebaseMessaging _fcm = FirebaseMessaging();
   bool _initialized = false;
 
-  Future<void> init(BuildContext context) async {
+  void init() async {
     if (!_initialized) {
       if (Platform.isIOS) {
         _fcm.requestNotificationPermissions(IosNotificationSettings());
@@ -24,20 +33,7 @@ class PushNotificationService {
         //Called when the app is in the foreground and we receive a push notification
         onMessage: (Map<String, dynamic> message) async {
           print('onMessage: $message');
-          showDialog(context: context, builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text(message['notification']['title']),
-              content: Text(message['notification']['body']),
-              actions: <Widget>[
-                FlatButton(
-                  child: Text("OK"),
-                  onPressed: (){
-                    Navigator.pop(context);
-                  },
-                )
-              ],
-            );
-          },);
+          await showStatusDialog(Icon(Icons.info_outline), message['notification']['title'], message['notification']['body']);
         },
         //Called when the app has been closed completely and its opened
         onLaunch: (Map<String, dynamic> message) async {

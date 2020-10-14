@@ -48,21 +48,23 @@ class ProductDetailViewModel extends BaseModel {
     //
 
     this.fixTotal = master.price * count;
-    for (ProductChild child in master.listChild) {
-      if (child.attribute.toUpperCase() == "ĐÁ" ||
-          child.attribute.toUpperCase() == "ĐƯỜNG") {
-        print("Đang thêm đá...");
-        unaffectPriceContent[child.attribute] = [
-          "0%",
-          "25%",
-          "50%",
-          "75%",
-          "100%"
-        ];
-        unaffectPriceChoice[child.attribute] = "";
-      } else {
-        affectPriceContent[child.attribute] = child.list;
-        affectPriceChoice[child.attribute] = null;
+    if(master.type == MASTER_PRODUCT){
+      for (ProductChild child in master.listChild) {
+        if (child.attribute.toUpperCase() == "ĐÁ" ||
+            child.attribute.toUpperCase() == "ĐƯỜNG") {
+          print("Đang thêm đá...");
+          unaffectPriceContent[child.attribute] = [
+            "0%",
+            "25%",
+            "50%",
+            "75%",
+            "100%"
+          ];
+          unaffectPriceChoice[child.attribute] = "";
+        } else {
+          affectPriceContent[child.attribute] = child.list;
+          affectPriceChoice[child.attribute] = null;
+        }
       }
     }
 

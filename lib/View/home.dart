@@ -373,7 +373,7 @@ class _HomeScreenState extends State<HomeScreen> {
       listContents.add(productPage);
     }
     return Container(
-      height: MediaQuery.of(context).size.height * 0.6,
+      height: MediaQuery.of(context).size.height * 0.55,
       child: Theme(
         data: ThemeData(
           backgroundColor: Colors.grey,

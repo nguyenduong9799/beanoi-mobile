@@ -1,13 +1,15 @@
 import 'package:dio/dio.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/Services/firebase.dart';
+import 'package:unidelivery_mobile/services/push_notification_service.dart';
 import 'package:unidelivery_mobile/utils/request.dart';
 import 'package:unidelivery_mobile/utils/shared_pref.dart';
 
 class AccountDAO {
   Future<AccountDTO> login(String idToken) async {
-    Response response =
-        await request.post("/login", data: {"id_token": idToken});
+    String fcmToken = await PushNotificationService.getInstance().getFcmToken();
+    Response response = await request
+        .post("/login", data: {"id_token": idToken, "fcm_token": fcmToken});
     print('idToken $idToken');
     // set access token
     final user = response.data["data"];

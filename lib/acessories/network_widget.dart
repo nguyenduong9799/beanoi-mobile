@@ -1,25 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:unidelivery_mobile/View/index.dart';
 import 'package:unidelivery_mobile/acessories/dialog.dart';
+import 'package:unidelivery_mobile/services/push_notification_service.dart';
 import 'package:unidelivery_mobile/utils/index.dart';
 import 'package:unidelivery_mobile/utils/request.dart';
 import 'package:unidelivery_mobile/utils/shared_pref.dart';
 
-import '../main.dart';
-
-Widget checkNetwork() {
-  return FutureBuilder(
-    future: checkNetworkAvailable(),
-    builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
-      // AccountDAO dao = AccountDAO();
-      if (!snapshot.hasData) return LoadingScreen();
-      bool hasNetwork = snapshot.data;
-      return hasNetwork ? checkAuthorize() : NetworkErrorScreen();
-    },
-  );
-}
 
 Widget checkAuthorize() {
+  PushNotificationService ps = PushNotificationService.getInstance();
+  ps.init();
   // return token != null ? HomeScreen() : LoginScreen();
   return FutureBuilder(
     future: getToken(),

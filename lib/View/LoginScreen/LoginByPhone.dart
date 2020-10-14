@@ -236,7 +236,7 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
                                     String phone = form.value["countryCode"] +
                                         form.value["phone"];
                                     // print("phone $phone");
-                                    model.onLoginWithPhone(phone);
+                                    await model.onLoginWithPhone(phone);
                                   } else {
                                     print("Not valid form ${form.errors}");
                                   }

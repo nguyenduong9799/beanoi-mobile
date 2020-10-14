@@ -1,18 +1,21 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
+import 'package:unidelivery_mobile/route_constraint.dart';
 import 'package:unidelivery_mobile/utils/index.dart';
 
 import '../constraints.dart';
 
 class ProfileScreen extends StatefulWidget {
-  AccountDTO dto;
 
-  ProfileScreen({this.dto});
+
+
+  ProfileScreen();
 
   @override
   _UpdateAccountState createState() {
@@ -37,38 +40,59 @@ class _UpdateAccountState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-      body: userInfo(widget.dto),
+      body: userInfo(),
     );
   }
 
-  Widget userInfo(AccountDTO dto) {
-    return Container(
-      color: kBackgroundGrey[0],
-      margin: EdgeInsets.only(top: 16),
-      child: Column(
-        children: [
-          Expanded(
-            child: ListView(
-              shrinkWrap: true,
-              children: <Widget>[
-                userImage(),
-                SizedBox(
-                  height: 8,
+  Widget userInfo() {
+    return ScopedModel(
+      model: RootViewModel.getInstance(),
+      child: ScopedModelDescendant<RootViewModel>(
+        builder: (context, child, model) {
+          final status = model.status;
+          if (status == ViewStatus.Loading)
+            return Shimmer.fromColors(
+              baseColor: Colors.grey[300],
+              highlightColor: Colors.grey[100],
+              enabled: true,
+              child: Container(
+                width: MediaQuery.of(context).size.width * 0.45,
+                height: 20,
+                color: Colors.grey,
+              ),
+            );
+          else if (status == ViewStatus.Error) return Text("＞﹏＜");
+
+          return Container(
+            color: kBackgroundGrey[0],
+            margin: EdgeInsets.only(top: 16),
+            child: Column(
+              children: [
+                Expanded(
+                  child: ListView(
+                    shrinkWrap: true,
+                    children: <Widget>[
+                      userImage(),
+                      SizedBox(
+                        height: 8,
+                      ),
+                      userAccount(model.currentUser),
+                      SizedBox(
+                        height: 8,
+                      ),
+                      userButton("Cập nhật", model),
+                      SizedBox(
+                        height: 8,
+                      ),
+                      signoutButton()
+                    ],
+                  ),
                 ),
-                userAccount(),
-                SizedBox(
-                  height: 8,
-                ),
-                userButton("Cập nhật"),
-                SizedBox(
-                  height: 8,
-                ),
-                signoutButton()
+                systemInfo()
               ],
             ),
-          ),
-          systemInfo()
-        ],
+          );
+        },
       ),
     );
   }
@@ -86,61 +110,43 @@ class _UpdateAccountState extends State<ProfileScreen> {
     );
   }
 
-  Widget userAccount() {
-    return ScopedModelDescendant<RootViewModel>(
-      builder: (context, child, model) {
-        final status = model.status;
-        final user = model.currentUser;
-        if (status == ViewStatus.Loading)
-          return Shimmer.fromColors(
-            baseColor: Colors.grey[300],
-            highlightColor: Colors.grey[100],
-            enabled: true,
-            child: Container(
-              width: MediaQuery.of(context).size.width * 0.45,
-              height: 20,
-              color: Colors.grey,
+  Widget userAccount(AccountDTO user) {
+    return Container(
+      child: Center(
+        child: Column(
+          children: <Widget>[
+            SizedBox(height: 8,),
+            Text(
+              user.name.toUpperCase(),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-          );
-        else if (status == ViewStatus.Error) return Text("＞﹏＜");
-        return Container(
-          child: Center(
-            child: Column(
-              children: <Widget>[
-                SizedBox(height: 8,),
+            SizedBox(
+              height: 8,
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
                 Text(
-                  user.name.toUpperCase(),
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  "Số tiền trong ví: ${formatPrice(user.balance)}",
+                  style: TextStyle(fontSize: 15),
                 ),
-                SizedBox(
-                  height: 8,
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Số tiền trong ví: ${formatPrice(user.balance)}",
-                      style: TextStyle(fontSize: 15),
-                    ),
-                    Text(
-                      "Số đậu trong ví: ${user.point.round().toString()} Bean",
-                      style: TextStyle(fontSize: 15),
-                    ),
-                  ],
-                ),
-
-                SizedBox(
-                  height: 8,
+                Text(
+                  "Số đậu trong ví: ${user.point.round().toString()} Bean",
+                  style: TextStyle(fontSize: 15),
                 ),
               ],
             ),
-          ),
-        );
-      },
+
+            SizedBox(
+              height: 8,
+            ),
+          ],
+        ),
+      ),
     );
   }
 
-  Widget userButton(String text) {
+  Widget userButton(String text, RootViewModel model) {
     return Container(
       margin: const EdgeInsets.only(left: 80.0, right: 80.0),
       child: FlatButton(
@@ -153,7 +159,15 @@ class _UpdateAccountState extends State<ProfileScreen> {
           text,
           style: TextStyle(fontSize: 16),
         ),
-        onPressed: () {},
+        onPressed: () async {
+          print("Update: ");
+          bool result = await Get.toNamed(RouteHandler.SIGN_UP, arguments: model.currentUser);
+          if(result != null){
+            if(result){
+              await model.fetchUser();
+            }
+          }
+        },
       ),
     );
   }

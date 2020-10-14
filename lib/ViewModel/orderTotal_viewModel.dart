@@ -5,6 +5,7 @@ import 'package:unidelivery_mobile/Model/DAO/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/CartDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/StoreDTO.dart';
 import 'package:unidelivery_mobile/ViewModel/base_model.dart';
+import 'package:unidelivery_mobile/ViewModel/index.dart';
 import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/enums/order_status.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
@@ -41,6 +42,7 @@ class OrderViewModel extends BaseModel {
             "Vui lòng thử lại sau");
       } else if (result == OrderStatus.NoMoney) {
         hideDialog();
+        await RootViewModel.getInstance().fetchUser();
         await showStatusDialog(
             Icon(
               Icons.error_outline,

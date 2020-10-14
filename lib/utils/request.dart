@@ -63,7 +63,7 @@ class CustomInterceptors extends InterceptorsWrapper {
 
 class MyRequest {
   static BaseOptions options = new BaseOptions(
-      baseUrl: 'http://192.168.1.199:45455/api/v2',
+      baseUrl: 'http://115.165.166.32:14254/api/v2',
       headers: {
         Headers.contentTypeHeader: "application/json",
       },

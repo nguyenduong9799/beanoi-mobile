@@ -16,6 +16,18 @@ class RootViewModel extends BaseModel {
   AccountDAO _dao;
   AccountDTO currentUser;
   String error;
+  static RootViewModel _instance;
+
+  static RootViewModel getInstance() {
+    if (_instance == null) {
+      _instance = RootViewModel();
+    }
+    return _instance;
+  }
+
+  static void destroyInstance() {
+    _instance = null;
+  }
 
   bool changeAddress = false;
 

@@ -46,7 +46,7 @@ Future<void> showStatusDialog(Icon icon, String status, String content) async {
               // Complete the dialog when you're done with it to return some data
               onTap: () => hideDialog(),
               child: Container(
-                child: Text("OK"),
+                child: Text("OK", style: kTextPrimary,),
                 alignment: Alignment.center,
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 decoration: BoxDecoration(

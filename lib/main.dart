@@ -35,7 +35,11 @@ class MyApp extends StatelessWidget {
           case RouteHandler.LOGIN_OTP:
             Map map = settings.arguments;
             return CupertinoPageRoute(
-                builder: (context) => LoginWithPhoneOTP(phoneNumber: map["phoneNumber"], verificationId:  map["verId"],), settings: settings);
+                builder: (context) => LoginWithPhoneOTP(
+                      phoneNumber: map["phoneNumber"],
+                      verificationId: map["verId"],
+                    ),
+                settings: settings);
           case RouteHandler.LOGIN:
             return FadeRoute(page: LoginScreen());
           case RouteHandler.GIFT:
@@ -67,16 +71,13 @@ class MyApp extends StatelessWidget {
                 settings: settings);
           case RouteHandler.PROFILE:
             return CupertinoPageRoute(
-                builder: (context) => ProfileScreen(
-                      dto: settings.arguments,
+                builder: (context) => ProfileScreen(), settings: settings);
+          case RouteHandler.SIGN_UP:
+            return CupertinoPageRoute<bool>(
+                builder: (context) => SignUp(
+                      user: settings.arguments,
                     ),
                 settings: settings);
-          case RouteHandler.SIGN_UP:
-            return CupertinoPageRoute(
-                builder: (context) => SignUp(), settings: settings);
-          case RouteHandler.NETWORK_ERROR:
-            return CupertinoPageRoute(
-                builder: (context) => NetworkErrorScreen(), settings: settings);
           default:
             return CupertinoPageRoute(
                 builder: (context) => NotFoundScreen(), settings: settings);
@@ -96,22 +97,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class NetworkErrorScreen extends StatelessWidget {
-  const NetworkErrorScreen({Key key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: FutureBuilder(
-        future: showErrorDialog(),
-        builder: (BuildContext context, snapshot) {
-          // AccountDAO dao = AccountDAO();
-          return Container();
-        },
-      )
-    );
-  }
-}
 
 class LoadingScreen extends StatelessWidget {
   const LoadingScreen({Key key}) : super(key: key);
@@ -130,7 +115,6 @@ class LoadingScreen extends StatelessWidget {
               textStyle: TextStyle(
                 fontSize: 45.0,
                 fontWeight: FontWeight.bold,
-
               ),
               boxHeight: 300.0,
             ),
