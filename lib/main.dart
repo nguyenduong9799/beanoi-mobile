@@ -1,20 +1,19 @@
-import 'package:animated_text_kit/animated_text_kit.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:unidelivery_mobile/acessories/dialog.dart';
+import 'package:unidelivery_mobile/View/start_up.dart';
 import 'package:unidelivery_mobile/route_constraint.dart';
+import 'package:unidelivery_mobile/setup.dart';
 import 'package:unidelivery_mobile/utils/pageNavigation.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 
 import 'package:unidelivery_mobile/View/index.dart';
 
-import 'acessories/network_widget.dart';
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+
+  await setUp();
+
   runApp(MyApp());
 }
 
@@ -83,7 +82,6 @@ class MyApp extends StatelessWidget {
                 builder: (context) => NotFoundScreen(), settings: settings);
         }
       },
-
       theme: ThemeData(
         fontFamily: 'Gotham',
         primarySwatch: Colors.blue,
@@ -91,36 +89,8 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: Color(0xFFF0F2F5),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: checkAuthorize(),
+      home: StartUpView(),
       // home: ProfileScreen(new AccountDTO(name: "Mít tơ Bin")),
-    );
-  }
-}
-
-
-class LoadingScreen extends StatelessWidget {
-  const LoadingScreen({Key key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: Scaffold(
-        body: Container(
-          // width: 250.0,
-          child: Center(
-            child: TextLiquidFill(
-              text: 'UniDelivery',
-              waveColor: kPrimary,
-              boxBackgroundColor: Colors.white,
-              textStyle: TextStyle(
-                fontSize: 45.0,
-                fontWeight: FontWeight.bold,
-              ),
-              boxHeight: 300.0,
-            ),
-          ),
-        ),
-      ),
     );
   }
 }

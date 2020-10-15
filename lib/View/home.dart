@@ -52,7 +52,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     // print(widget?.user.uid);
-    return ScopedModelDescendant(
+    return ScopedModelDescendant<RootViewModel>(
       builder:
           (BuildContext context, Widget child, RootViewModel rootViewModel) {
         return ScopedModel(
