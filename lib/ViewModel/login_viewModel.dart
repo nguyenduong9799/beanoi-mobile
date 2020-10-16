@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/Model/DAO/index.dart';
+import 'package:unidelivery_mobile/Services/analytic_service.dart';
 import 'package:unidelivery_mobile/Services/firebase.dart';
 import 'package:unidelivery_mobile/ViewModel/base_model.dart';
 import 'package:unidelivery_mobile/acessories/dialog.dart';
@@ -16,7 +17,7 @@ class LoginViewModel extends BaseModel {
   static LoginViewModel _instance;
   AccountDAO dao = AccountDAO();
   String verificationId;
-
+  AnalyticsService _analyticsService;
   static LoginViewModel getInstance() {
     if (_instance == null) {
       _instance = LoginViewModel();
@@ -30,13 +31,17 @@ class LoginViewModel extends BaseModel {
 
   AccountDTO user;
 
-  LoginViewModel() {}
+  LoginViewModel() {
+    _analyticsService = AnalyticsService.getInstance();
+  }
 
   Future<AccountDTO> signIn(AuthCredential authCredential) async {
     try {
       // lay thong tin user tu firebase
       final userCredential = await AuthService().signIn(authCredential);
-      // lay thong tin user tu sereer
+      await _analyticsService.setUserProperties(
+          userId: userCredential.user.uid);
+      await _analyticsService.logLogin(authCredential.signInMethod);
       // TODO: Thay uid = idToken
       final userInfo = await dao.login(await userCredential.user.getIdToken());
       // await setToken(userInfo.toString());
