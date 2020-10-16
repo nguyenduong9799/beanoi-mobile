@@ -68,7 +68,7 @@ class _HomeAppBarSate extends State<HomeAppBar> {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Container(
-      height: 70,
+      height: MediaQuery.of(context).size.height * 0.11,
       padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
       decoration: BoxDecoration(
         color: kPrimary,
