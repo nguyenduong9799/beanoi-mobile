@@ -9,6 +9,7 @@ import 'package:unidelivery_mobile/ViewModel/index.dart';
 import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
 import 'package:unidelivery_mobile/route_constraint.dart';
+import 'package:unidelivery_mobile/services/analytic_service.dart';
 import 'package:unidelivery_mobile/utils/shared_pref.dart';
 
 import '../constraints.dart';
@@ -57,6 +58,7 @@ class HomeViewModel extends BaseModel {
   }
 
   Future<void> openProductDetail(ProductDTO product) async {
+    await AnalyticsService.getInstance().logViewItem(product);
     bool result =
         await Get.toNamed(RouteHandler.PRODUCT_DETAIL, arguments: product);
     hideSnackbar();

@@ -15,6 +15,7 @@ import 'package:unidelivery_mobile/acessories/appbar.dart';
 import 'package:unidelivery_mobile/acessories/dash_border.dart';
 import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/constraints.dart';
+import 'package:unidelivery_mobile/services/analytic_service.dart';
 import 'package:unidelivery_mobile/utils/shared_pref.dart';
 
 class OrderScreen extends StatefulWidget {
@@ -44,7 +45,7 @@ class _OrderScreenState extends State<OrderScreen> {
               if (snapshot.hasData) {
                 if (snapshot.data != null) {
                   Cart cart = snapshot.data;
-                  double total = countPrice(snapshot.data);
+                  double total = model.countPrice(snapshot.data);
                   return Scaffold(
                     bottomNavigationBar: bottomBar(total),
                     appBar: DefaultAppBar(title: "Đơn hàng của bạn"),
@@ -368,6 +369,7 @@ class _OrderScreenState extends State<OrderScreen> {
               showLoadingDialog();
               bool result = await removeItemFromCart(item);
               if (result) {
+                await AnalyticsService.getInstance().logChangeCart(item.master, item.quantity, false);
                 hideDialog();
                 Get.back(result: false);
               } else {
@@ -538,7 +540,7 @@ class _OrderScreenState extends State<OrderScreen> {
           ),
           FlatButton(
             onPressed: () async {
-              await orderViewModel.orderCart(orderNote);
+              await orderViewModel.orderCart(orderNote, total);
               // pr.hide();
               // showStateDialog();
             },
@@ -589,6 +591,7 @@ class _OrderScreenState extends State<OrderScreen> {
               showLoadingDialog();
               item.quantity--;
               await updateItemFromCart(item);
+              //await AnalyticsService.getInstance().logChangeCart(item.master, item.quantity, false);
               orderViewModel.notifyListeners();
               hideDialog();
             }
@@ -605,24 +608,12 @@ class _OrderScreenState extends State<OrderScreen> {
             showLoadingDialog();
             item.quantity++;
             await updateItemFromCart(item);
+            //await AnalyticsService.getInstance().logChangeCart(item.master, item.quantity, true);
             orderViewModel.notifyListeners();
             hideDialog();
           },
         )
       ],
     );
-  }
-
-  double countPrice(Cart cart) {
-    double total = 0;
-    for (CartItem item in cart.items) {
-      double subTotal = item.master.price;
-      for (ProductDTO dto in item.products) {
-        subTotal += dto.price;
-      }
-      total += (subTotal * item.quantity);
-    }
-    total += DELIVERY_FEE;
-    return total;
   }
 }

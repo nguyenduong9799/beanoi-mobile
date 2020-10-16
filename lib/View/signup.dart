@@ -7,6 +7,7 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
+import 'package:unidelivery_mobile/services/analytic_service.dart';
 import 'package:unidelivery_mobile/utils/regex.dart';
 
 import '../route_constraint.dart';
@@ -81,8 +82,10 @@ class _SignUpState extends State<SignUp> {
           print('Update Success');
           if (widget.user != null) {
             Get.back(result: true);
-          } else
+          } else{
             Get.offAndToNamed(RouteHandler.NAV);
+          }
+
         }
       }
     }

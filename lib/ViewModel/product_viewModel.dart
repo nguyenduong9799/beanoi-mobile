@@ -7,6 +7,7 @@ import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
+import 'package:unidelivery_mobile/services/analytic_service.dart';
 import 'package:unidelivery_mobile/utils/shared_pref.dart';
 
 import 'base_model.dart';
@@ -224,6 +225,7 @@ class ProductDetailViewModel extends BaseModel {
 
     print("Save product: " + master.toString());
     await addItemToCart(item);
+    await AnalyticsService.getInstance().logChangeCart(item.master, item.quantity, true);
     hideDialog();
     await Get.back(result: true);
   }

@@ -22,9 +22,11 @@ class AnalyticsService {
       FirebaseAnalyticsObserver(analytics: _analytics);
 
   // User properties tells us what the user is
-  Future setUserProperties({@required String userId, String userRole}) async {
-    await _analytics.setUserId(userId);
-    await _analytics.setUserProperty(name: 'user_role', value: userRole);
+  Future setUserProperties(AccountDTO user) async {
+    await _analytics.setUserId(user.uid.toString());
+    await _analytics.setUserProperty(name: 'name', value: user.name,);
+    await _analytics.setUserProperty(name: 'sex', value: user.gender,);
+    await _analytics.setUserProperty(name: 'birthdate', value: user.birthdate.toString(),);
     // property to indicate if it's a pro paying member
     // property that might tell us it's a regular poster, etc
   }

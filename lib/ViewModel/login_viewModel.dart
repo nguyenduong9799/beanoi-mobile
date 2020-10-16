@@ -39,12 +39,12 @@ class LoginViewModel extends BaseModel {
     try {
       // lay thong tin user tu firebase
       final userCredential = await AuthService().signIn(authCredential);
-      await _analyticsService.setUserProperties(
-          userId: userCredential.user.uid);
+
       await _analyticsService.logLogin(authCredential.signInMethod);
       // TODO: Thay uid = idToken
       final userInfo = await dao.login(await userCredential.user.getIdToken());
       // await setToken(userInfo.toString());
+      await _analyticsService.setUserProperties(userInfo);
       return userInfo;
     } catch (e) {
       bool result = await showErrorDialog();
