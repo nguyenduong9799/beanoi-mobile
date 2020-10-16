@@ -29,7 +29,8 @@ class OrderViewModel extends BaseModel {
       StoreDTO storeDTO = await getStore();
       OrderDAO dao = new OrderDAO();
       // LOG ORDER
-      await _analyticsService.logOrderCreated(total: 120);
+
+      await _analyticsService.logOrderCreated(120);
       OrderStatus result = await dao.createOrders(orderNote, storeDTO.id);
       if (result == OrderStatus.Success) {
         await deleteCart();

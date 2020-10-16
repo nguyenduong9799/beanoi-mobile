@@ -4,6 +4,7 @@ import 'package:unidelivery_mobile/Model/DAO/AccountDAO.dart';
 import 'package:unidelivery_mobile/Model/DAO/StoreDAO.dart';
 import 'package:unidelivery_mobile/Model/DTO/AccountDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/StoreDTO.dart';
+import 'package:unidelivery_mobile/Services/analytic_service.dart';
 import 'package:unidelivery_mobile/ViewModel/base_model.dart';
 import 'package:unidelivery_mobile/ViewModel/home_viewModel.dart';
 import 'package:unidelivery_mobile/acessories/dialog.dart';
@@ -17,6 +18,7 @@ class RootViewModel extends BaseModel {
   AccountDTO currentUser;
   String error;
   static RootViewModel _instance;
+  AnalyticsService _analyticsService;
 
   static RootViewModel getInstance() {
     if (_instance == null) {
@@ -37,6 +39,7 @@ class RootViewModel extends BaseModel {
 
   RootViewModel() {
     _dao = AccountDAO();
+    _analyticsService = AnalyticsService.getInstance();
     setState(ViewStatus.Loading);
     fetchUser();
   }
@@ -75,7 +78,6 @@ class RootViewModel extends BaseModel {
   }
 
   Future<void> processChangeAddress(HomeViewModel homeViewModel) async {
-
     if (dto == null) {
       return;
     }
