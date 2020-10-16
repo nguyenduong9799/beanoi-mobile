@@ -34,14 +34,22 @@ class PushNotificationService {
         //Called when the app is in the foreground and we receive a push notification
         onMessage: (Map<String, dynamic> message) async {
           print('onMessage: $message');
+          hideSnackbar();
           Get.snackbar(
             message['notification']['title'], // title
             message['notification']['body'],
+            colorText: kBackgroundGrey[0],
             icon: Icon(Icons.alarm),
             shouldIconPulse: true,
             backgroundColor: kPrimary,
             isDismissible: true,
-            duration: Duration(seconds: 3),
+            duration: Duration(minutes: 1),
+            mainButton: FlatButton(
+              child: Text("OK", style: kTextPrimary,),
+              onPressed: (){
+              hideSnackbar();
+          },
+            )
           );
           // Get.rawSnackbar(
           //     message: message['notification']['title'],

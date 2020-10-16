@@ -10,6 +10,8 @@ import 'package:unidelivery_mobile/utils/shared_pref.dart';
 class AccountDAO {
   Future<AccountDTO> login(String idToken) async {
     String fcmToken = await PushNotificationService.getInstance().getFcmToken();
+    print("FCM_token: " + fcmToken);
+
     Response response = await request
         .post("/login", data: {"id_token": idToken, "fcm_token": fcmToken});
     print('idToken $idToken');

@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:unidelivery_mobile/Model/DAO/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/CartDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/StoreDTO.dart';
+import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/Services/analytic_service.dart';
 import 'package:unidelivery_mobile/ViewModel/base_model.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
@@ -71,5 +72,18 @@ class OrderViewModel extends BaseModel {
       } else
         setState(ViewStatus.Error);
     }
+  }
+
+  double countPrice(Cart cart) {
+    double total = 0;
+    for (CartItem item in cart.items) {
+      double subTotal = item.master.price;
+      for (ProductDTO dto in item.products) {
+        subTotal += dto.price;
+      }
+      total += (subTotal * item.quantity);
+    }
+    total += DELIVERY_FEE;
+    return total;
   }
 }
