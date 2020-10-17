@@ -68,7 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     Center(
                       child: Padding(
-                        padding: const EdgeInsets.only(top: 80),
+                        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.12),
                         child: ListView(
                           children: [
                             // banner(),
@@ -80,7 +80,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   borderRadius: BorderRadius.circular(16),
                                   color: Colors.blue[200],
                                 ),
-                                height: 80,
+                                height: MediaQuery.of(context).size.height * 0.13,
                                 width: double.infinity,
                                 child: Image.asset(
                                   'assets/images/banner.png',
@@ -99,7 +99,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   borderRadius: BorderRadius.circular(16),
                                   // color: Colors.orange[300],
                                 ),
-                                height: 80,
+                                height: MediaQuery.of(context).size.height * 0.08,
                                 width: double.infinity,
                                 // child: Center(
                                 //     child: Text(
@@ -373,7 +373,7 @@ class _HomeScreenState extends State<HomeScreen> {
       listContents.add(productPage);
     }
     return Container(
-      height: MediaQuery.of(context).size.height * 0.55,
+      height: MediaQuery.of(context).size.height * 0.6,
       child: Theme(
         data: ThemeData(
           backgroundColor: Colors.grey,

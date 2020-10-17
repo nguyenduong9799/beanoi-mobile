@@ -88,4 +88,17 @@ class OrderViewModel extends BaseModel {
         setState(ViewStatus.Error);
     }
   }
+
+  double countPrice(Cart cart) {
+    double total = 0;
+    for (CartItem item in cart.items) {
+      double subTotal = item.master.price;
+      for (ProductDTO dto in item.products) {
+        subTotal += dto.price;
+      }
+      total += (subTotal * item.quantity);
+    }
+    total += DELIVERY_FEE;
+    return total;
+  }
 }
