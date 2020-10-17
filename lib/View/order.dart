@@ -44,7 +44,7 @@ class _OrderScreenState extends State<OrderScreen> {
               if (snapshot.hasData) {
                 if (snapshot.data != null) {
                   Cart cart = snapshot.data;
-                  double total = countPrice(snapshot.data);
+                  double total = model.countPrice(snapshot.data);
                   return Scaffold(
                     bottomNavigationBar: bottomBar(total),
                     appBar: DefaultAppBar(title: "Đơn hàng của bạn"),
@@ -613,16 +613,5 @@ class _OrderScreenState extends State<OrderScreen> {
     );
   }
 
-  double countPrice(Cart cart) {
-    double total = 0;
-    for (CartItem item in cart.items) {
-      double subTotal = item.master.price;
-      for (ProductDTO dto in item.products) {
-        subTotal += dto.price;
-      }
-      total += (subTotal * item.quantity);
-    }
-    total += DELIVERY_FEE;
-    return total;
-  }
+
 }

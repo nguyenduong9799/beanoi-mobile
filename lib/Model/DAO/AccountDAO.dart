@@ -5,9 +5,13 @@ import 'package:unidelivery_mobile/services/push_notification_service.dart';
 import 'package:unidelivery_mobile/utils/request.dart';
 import 'package:unidelivery_mobile/utils/shared_pref.dart';
 
+// TODO: Test Start_up Screen + FCM TOken
+
 class AccountDAO {
   Future<AccountDTO> login(String idToken) async {
     String fcmToken = await PushNotificationService.getInstance().getFcmToken();
+    print("FCM_token: " + fcmToken);
+
     Response response = await request
         .post("/login", data: {"id_token": idToken, "fcm_token": fcmToken});
     print('idToken $idToken');
@@ -19,6 +23,12 @@ class AccountDAO {
     setToken(accessToken);
     return AccountDTO.fromJson(user);
     // return AccountDTO(uid: idToken, name: "Default Name");
+  }
+
+  Future<bool> isUserLoggedIn() async {
+    final token = await getToken();
+    if (token != null) requestObj.setToken = token;
+    return token != null;
   }
 
   Future<AccountDTO> getUser() async {

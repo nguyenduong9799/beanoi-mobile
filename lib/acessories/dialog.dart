@@ -44,9 +44,15 @@ Future<void> showStatusDialog(Icon icon, String status, String content) async {
             ),
             GestureDetector(
               // Complete the dialog when you're done with it to return some data
-              onTap: () => hideDialog(),
+              onTap: () {
+                print("Dong");
+                hideDialog();
+              },
               child: Container(
-                child: Text("OK", style: kTextPrimary,),
+                child: Text(
+                  "OK",
+                  style: kTextPrimary,
+                ),
                 alignment: Alignment.center,
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 decoration: BoxDecoration(

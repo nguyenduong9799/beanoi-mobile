@@ -2,10 +2,11 @@ import 'dart:io';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:unidelivery_mobile/acessories/dialog.dart';
+import 'package:unidelivery_mobile/constraints.dart';
 
 class PushNotificationService {
-
   static PushNotificationService _instance;
 
   static PushNotificationService getInstance() {
@@ -22,7 +23,7 @@ class PushNotificationService {
   final FirebaseMessaging _fcm = FirebaseMessaging();
   bool _initialized = false;
 
-  void init() async {
+  Future init() async {
     if (!_initialized) {
       if (Platform.isIOS) {
         _fcm.requestNotificationPermissions(IosNotificationSettings());
@@ -33,7 +34,34 @@ class PushNotificationService {
         //Called when the app is in the foreground and we receive a push notification
         onMessage: (Map<String, dynamic> message) async {
           print('onMessage: $message');
-          await showStatusDialog(Icon(Icons.info_outline), message['notification']['title'], message['notification']['body']);
+          hideSnackbar();
+          Get.snackbar(
+            message['notification']['title'], // title
+            message['notification']['body'],
+            colorText: kBackgroundGrey[0],
+            icon: Icon(Icons.alarm),
+            shouldIconPulse: true,
+            backgroundColor: kPrimary,
+            isDismissible: true,
+            duration: Duration(minutes: 1),
+            mainButton: FlatButton(
+              child: Text("OK", style: kTextPrimary,),
+              onPressed: (){
+              hideSnackbar();
+          },
+            )
+          );
+          // Get.rawSnackbar(
+          //     message: message['notification']['title'],
+          //     duration: ,
+          //     snackPosition: SnackPosition.TOP,
+          //     margin: EdgeInsets.only(top: 8, left: 8, right: 8, bottom: 32),
+          //     backgroundColor: kPrimary,
+          //     borderRadius: 8);
+          // await showStatusDialog(
+          //     Icon(Icons.info_outline),
+          //     message['notification']['title'],
+          //     message['notification']['body']);
         },
         //Called when the app has been closed completely and its opened
         onLaunch: (Map<String, dynamic> message) async {

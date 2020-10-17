@@ -4,6 +4,8 @@ import 'package:get/get.dart';
 import 'package:unidelivery_mobile/Model/DAO/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/CartDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/StoreDTO.dart';
+import 'package:unidelivery_mobile/Model/DTO/index.dart';
+import 'package:unidelivery_mobile/Services/analytic_service.dart';
 import 'package:unidelivery_mobile/ViewModel/base_model.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
 import 'package:unidelivery_mobile/acessories/dialog.dart';
@@ -13,9 +15,10 @@ import 'package:unidelivery_mobile/utils/shared_pref.dart';
 import '../constraints.dart';
 
 class OrderViewModel extends BaseModel {
-
-
-  OrderViewModel() {}
+  AnalyticsService _analyticsService;
+  OrderViewModel() {
+    _analyticsService = AnalyticsService.getInstance();
+  }
 
   Future<Cart> get cart async {
     return await getCart();
@@ -26,6 +29,8 @@ class OrderViewModel extends BaseModel {
       showLoadingDialog();
       StoreDTO storeDTO = await getStore();
       OrderDAO dao = new OrderDAO();
+      // LOG ORDER
+      await _analyticsService.logOrderCreated(total: 120);
       OrderStatus result = await dao.createOrders(orderNote, storeDTO.id);
       if (result == OrderStatus.Success) {
         await deleteCart();
@@ -64,7 +69,21 @@ class OrderViewModel extends BaseModel {
       bool result = await showErrorDialog();
       if (result) {
         await orderCart(orderNote);
-      } else setState(ViewStatus.Error);
+      } else
+        setState(ViewStatus.Error);
     }
+  }
+
+  double countPrice(Cart cart) {
+    double total = 0;
+    for (CartItem item in cart.items) {
+      double subTotal = item.master.price;
+      for (ProductDTO dto in item.products) {
+        subTotal += dto.price;
+      }
+      total += (subTotal * item.quantity);
+    }
+    total += DELIVERY_FEE;
+    return total;
   }
 }
