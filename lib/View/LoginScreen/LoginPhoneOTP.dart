@@ -110,35 +110,35 @@ class _LoginWithPhoneOTPState extends State<LoginWithPhoneOTP> {
                               padding:
                                   const EdgeInsets.symmetric(vertical: 8.0),
                               child: Text(
-                                'Vui lòng xác nhận mã OTP',
+                                'Nhập mã OTP',
                                 style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 22),
-                                textAlign: TextAlign.center,
+                                    fontWeight: FontWeight.bold, fontSize: 18, color: Colors.white),
+                                textAlign: TextAlign.left,
                               ),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 30.0, vertical: 8),
-                              child: RichText(
-                                text: TextSpan(
-                                    text: "Nhập code được gửi tới số\n",
-                                    children: [
-                                      TextSpan(
-                                          text: widget.phoneNumber,
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 15)),
-                                    ],
-                                    style: TextStyle(
-                                        color: Colors.black54, fontSize: 15)),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
+                            // Padding(
+                            //   padding: const EdgeInsets.symmetric(
+                            //       horizontal: 30.0, vertical: 8),
+                            //   // child: RichText(
+                            //   //   text: TextSpan(
+                            //   //       text: "Nhập code được gửi tới số\n",
+                            //   //       children: [
+                            //   //         TextSpan(
+                            //   //             text: widget.phoneNumber,
+                            //   //             style: TextStyle(
+                            //   //                 color: Colors.white,
+                            //   //                 fontWeight: FontWeight.bold,
+                            //   //                 fontSize: 15)),
+                            //   //       ],
+                            //   //       style: TextStyle(
+                            //   //           color: Colors.black54, fontSize: 15)),
+                            //   //   textAlign: TextAlign.center,
+                            //   // ),
+                            // ),
                             _buildOTPForm(context),
                             Padding(
                               padding:
-                                  const EdgeInsets.symmetric(horizontal: 30.0),
+                                  const EdgeInsets.symmetric(horizontal: 24.0),
                               child: Text(
                                 model.status == ViewStatus.Error
                                     ? "Bạn chưa nhập đủ mã OTP :(."
@@ -206,7 +206,7 @@ class _LoginWithPhoneOTPState extends State<LoginWithPhoneOTP> {
                                     child: Text(
                                   "Xác nhận".toUpperCase(),
                                   style: TextStyle(
-                                      color: Colors.black,
+                                      color: kPrimary,
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold),
                                 )),
@@ -228,20 +228,22 @@ class _LoginWithPhoneOTPState extends State<LoginWithPhoneOTP> {
 
   Widget _buildOTPForm(BuildContext context) {
     return PinCodeTextField(
+      textStyle: kTextSecondary.copyWith(fontSize: 18, fontWeight: FontWeight.bold),
       length: 6,
       animationType: AnimationType.fade,
       obscureText: false,
       pinTheme: PinTheme(
         shape: PinCodeFieldShape.box,
-        inactiveColor: Colors.grey,
+        inactiveColor: kBackgroundGrey[0],
         selectedFillColor: Colors.white,
-        inactiveFillColor: kBackgroundGrey[3],
+        inactiveFillColor: kPrimary,
         activeFillColor: Colors.white,
-        activeColor: Colors.grey,
-        selectedColor: Colors.grey,
-        borderRadius: BorderRadius.circular(5),
+        activeColor: kPrimary,
+        selectedColor: kPrimary,
+        borderRadius: BorderRadius.circular(8),
         fieldHeight: 50,
         fieldWidth: 40,
+
       ),
       animationDuration: Duration(milliseconds: 300),
       backgroundColor: Colors.transparent,

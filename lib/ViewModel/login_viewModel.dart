@@ -61,10 +61,10 @@ class LoginViewModel extends BaseModel {
   }
 
   Future<void> onLoginWithPhone(String phone) async {
+    showLoadingDialog();
     final PhoneVerificationCompleted verificationCompleted =
         (AuthCredential authCredential) async {
       try {
-        showLoadingDialog();
         final userInfo = await signIn(authCredential);
         // TODO: Kiem tra xem user moi hay cu
         if (userInfo.isFirstLogin) {
@@ -120,6 +120,7 @@ class LoginViewModel extends BaseModel {
       codeAutoRetrievalTimeout: phoneTimeout,
     );
     print("Login Done");
+    hideDialog();
   }
 
   Future<void> onSignInWithGmail() async {

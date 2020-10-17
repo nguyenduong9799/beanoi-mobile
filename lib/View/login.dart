@@ -32,92 +32,101 @@ class _LoginScreenState extends State<LoginScreen> {
     final screenHeight = MediaQuery.of(context).size.height;
     return ScopedModel(
       model: LoginViewModel(),
-      child: SafeArea(
-        bottom: false,
-        child: Scaffold(
-          backgroundColor: Colors.white,
-          resizeToAvoidBottomPadding: false,
-          body: Stack(
-            children: [
-              Container(
-                height: screenHeight,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    SizedBox(
-                      height: screenHeight * 0.1,
-                    ),
-                    Expanded(
-                      flex: 1,
-                      child: Container(
-                        // color: Colors.blue,
-                        padding: EdgeInsets.all(0),
-                        child: Image.asset(
-                          'assets/images/bi.png',
-                          alignment: Alignment.bottomRight,
-                          fit: BoxFit.fitHeight,
-                          // scale: 0.4,
-                        ),
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        resizeToAvoidBottomPadding: false,
+        body: Stack(
+          children: [
+            Container(
+              height: screenHeight,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+
+                children: [
+                  SizedBox(
+                    height: screenHeight * 0.1,
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: Container(
+                      // color: Colors.blue,
+                      padding: EdgeInsets.only(right: 24),
+                      child: Image.asset(
+                        'assets/images/bi.png',
+                        alignment: Alignment.bottomRight,
+                        fit: BoxFit.fitHeight,
+                        // scale: 0.4,
                       ),
                     ),
-                    buildLoginButtons(screenHeight, context),
-                  ],
+                  ),
+                  buildLoginButtons(screenHeight, context),
+                ],
+              ),
+            ),
+            // Container(
+            //   margin: EdgeInsets.only(left: 24),
+            //   width: 140,
+            //   child: Column(
+            //     children: [
+            //       Row(
+            //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //         children: [
+            //           Container(
+            //             margin: EdgeInsets.only(left: 24),
+            //             width: 2,
+            //             height: 14,
+            //             color: kPrimary,
+            //           ),
+            //           Container(
+            //             margin: EdgeInsets.only(right: 24),
+            //             width: 2,
+            //             height: 14,
+            //             color: kPrimary,
+            //           ),
+            //         ],
+            //       ),
+            //       Container(
+            //         padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
+            //         decoration: BoxDecoration(
+            //           color: Colors.white,
+            //           borderRadius: BorderRadius.circular(8),
+            //           border: Border.all(
+            //             color: kPrimary,
+            //             width: 3,
+            //           ),
+            //           boxShadow: [
+            //             BoxShadow(
+            //               color: Colors.grey.withOpacity(0.5),
+            //               spreadRadius: 3,
+            //               blurRadius: 10,
+            //               offset: Offset(0, 3), // changes position of shadow
+            //             ),
+            //           ],
+            //         ),
+            //         child: Text(
+            //           'UniDelivery',
+            //           style: TextStyle(
+            //             color: kPrimary,
+            //             letterSpacing: 2,
+            //             fontWeight: FontWeight.bold,
+            //           ),
+            //         ),
+            //       ),
+            //     ],
+            //   ),
+            // ),
+            Align(
+              alignment: Alignment.topLeft,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 8.0),
+                child: Image(
+                  image: AssetImage("assets/images/logo.png"),
+                  width: Get.width * 0.3,
+
                 ),
               ),
-              Container(
-                margin: EdgeInsets.only(left: 24),
-                width: 140,
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          margin: EdgeInsets.only(left: 24),
-                          width: 2,
-                          height: 14,
-                          color: kPrimary,
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(right: 24),
-                          width: 2,
-                          height: 14,
-                          color: kPrimary,
-                        ),
-                      ],
-                    ),
-                    Container(
-                      padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                          color: kPrimary,
-                          width: 3,
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.5),
-                            spreadRadius: 3,
-                            blurRadius: 10,
-                            offset: Offset(0, 3), // changes position of shadow
-                          ),
-                        ],
-                      ),
-                      child: Text(
-                        'UniDelivery',
-                        style: TextStyle(
-                          color: kPrimary,
-                          letterSpacing: 2,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
+            )
+          ],
         ),
       ),
     );
