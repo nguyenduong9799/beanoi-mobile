@@ -24,15 +24,30 @@ class OrderViewModel extends BaseModel {
     return await getCart();
   }
 
-  Future<void> orderCart(String orderNote) async {
+  double countPrice(Cart cart) {
+    double total = 0;
+    for (CartItem item in cart.items) {
+      double subTotal = item.master.price;
+      for (ProductDTO dto in item.products) {
+        subTotal += dto.price;
+      }
+      total += (subTotal * item.quantity);
+    }
+    total += DELIVERY_FEE;
+    return total;
+  }
+
+  Future<void> orderCart(String orderNote, double total) async {
     try {
       showLoadingDialog();
       StoreDTO storeDTO = await getStore();
       OrderDAO dao = new OrderDAO();
       // LOG ORDER
-      await _analyticsService.logOrderCreated(total: 120);
+
+      await _analyticsService.logBeginCheckout(total);
       OrderStatus result = await dao.createOrders(orderNote, storeDTO.id);
       if (result == OrderStatus.Success) {
+        await _analyticsService.logOrderCreated(total);
         await deleteCart();
         hideDialog();
         Get.back(result: true);
@@ -68,7 +83,7 @@ class OrderViewModel extends BaseModel {
     } catch (e) {
       bool result = await showErrorDialog();
       if (result) {
-        await orderCart(orderNote);
+        await orderCart(orderNote, total);
       } else
         setState(ViewStatus.Error);
     }
