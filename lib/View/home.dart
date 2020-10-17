@@ -11,6 +11,7 @@ import 'package:shimmer/shimmer.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
 import 'package:unidelivery_mobile/acessories/appbar.dart';
+import 'package:unidelivery_mobile/acessories/loading.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
 
@@ -68,7 +69,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     Center(
                       child: Padding(
-                        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.12),
+                        padding: EdgeInsets.only(
+                            top: MediaQuery.of(context).size.height * 0.12),
                         child: ListView(
                           children: [
                             // banner(),
@@ -80,7 +82,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                   borderRadius: BorderRadius.circular(16),
                                   color: Colors.blue[200],
                                 ),
-                                height: MediaQuery.of(context).size.height * 0.13,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.13,
                                 width: double.infinity,
                                 child: Image.asset(
                                   'assets/images/banner.png',
@@ -99,7 +102,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                   borderRadius: BorderRadius.circular(16),
                                   // color: Colors.orange[300],
                                 ),
-                                height: MediaQuery.of(context).size.height * 0.08,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.08,
                                 width: double.infinity,
                                 // child: Center(
                                 //     child: Text(
@@ -245,9 +249,9 @@ class _HomeScreenState extends State<HomeScreen> {
   Positioned buildCountDown() {
     return Positioned(
       top: 150,
-      right: 0,
+      left: 0,
       child: RotatedBox(
-        quarterTurns: -1,
+        quarterTurns: 1,
         child: Container(
           padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
           decoration: BoxDecoration(
@@ -259,12 +263,15 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           child: Column(
             children: [
-              // Text("Còn lại"),
+              Text(
+                "Còn lại",
+                style: kTextPrimary.copyWith(fontWeight: FontWeight.bold),
+              ),
               !_endOrderTime
                   ? CountdownTimer(
                       textStyle: TextStyle(
                         color: Colors.white,
-                        fontSize: 16,
+                        fontSize: 14,
                       ),
                       endTime: orderTime.millisecondsSinceEpoch,
                       onEnd: () {
@@ -304,16 +311,7 @@ class _HomeScreenState extends State<HomeScreen> {
             return AspectRatio(
                 aspectRatio: 1,
                 child: Center(
-                  child: TextLiquidFill(
-                    text: 'Đang tải',
-                    waveColor: kPrimary,
-                    boxBackgroundColor: kBackgroundGrey[1],
-                    textStyle: TextStyle(
-                      fontSize: 45.0,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    boxHeight: 300.0,
-                  ),
+                  child: LoadingBean(),
                 ));
           case ViewStatus.Empty:
             return Container(

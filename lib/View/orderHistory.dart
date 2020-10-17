@@ -8,6 +8,7 @@ import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
 import 'package:unidelivery_mobile/acessories/appbar.dart';
 import 'package:unidelivery_mobile/acessories/dash_border.dart';
+import 'package:unidelivery_mobile/acessories/loading.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
 import 'package:unidelivery_mobile/utils/index.dart';
@@ -117,16 +118,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
       final orderSummaryList = model.orderThumbnail;
       if (status == ViewStatus.Loading)
         return Center(
-          child: TextLiquidFill(
-            text: 'Đang tải',
-            waveColor: kPrimary,
-            boxBackgroundColor: kBackgroundGrey[3],
-            textStyle: TextStyle(
-              fontSize: 45.0,
-              fontWeight: FontWeight.bold,
-            ),
-            boxHeight: 300.0,
-          ),
+          child: LoadingBean(),
         );
       else if (status == ViewStatus.Empty || orderSummaryList == null)
         return Container(

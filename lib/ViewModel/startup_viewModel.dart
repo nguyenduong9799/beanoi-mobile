@@ -25,7 +25,7 @@ class StartUpViewModel extends BaseModel {
     AccountDAO _accountDAO = AccountDAO();
     // Register for push notifications
     // await _pushNotificationService.initialise();
-
+    await Future.delayed(Duration(seconds: 5));
     var hasLoggedInUser = await _accountDAO.isUserLoggedIn();
 
     if (hasLoggedInUser) {

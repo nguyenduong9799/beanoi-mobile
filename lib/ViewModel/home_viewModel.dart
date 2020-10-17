@@ -38,9 +38,7 @@ class HomeViewModel extends BaseModel {
     Filter(49, 'Mới'),
   ];
 
-
   bool get isFirstFetch => _isFirstFetch;
-
 
   set isFirstFetch(bool value) {
     _isFirstFetch = value;
@@ -116,11 +114,11 @@ class HomeViewModel extends BaseModel {
     try {
       setState(ViewStatus.Loading);
       StoreDTO store = await getStore();
-      if(store == null){
+      if (store == null) {
         StoreDAO storeDAO = new StoreDAO();
         List<StoreDTO> listStore = await storeDAO.getStores();
-        for(StoreDTO dto in listStore){
-          if(dto.id == UNIBEAN_STORE){
+        for (StoreDTO dto in listStore) {
+          if (dto.id == UNIBEAN_STORE) {
             store = dto;
             await setStore(dto);
           }
@@ -149,13 +147,13 @@ class HomeViewModel extends BaseModel {
         // products = products.sublist(2)..shuffle();
         // products = products.sublist(0)..shuffle();
       }
+      await Future.delayed(Duration(microseconds: 1000));
       // check truong hop product tra ve rong (do khong co menu nao trong TG do)
       if (products.isEmpty || products == null) {
         setState(ViewStatus.Empty);
       } else {
         setState(ViewStatus.Completed);
       }
-      notifyListeners();
     } catch (e, stacktrace) {
       print("Excception: " + e.toString() + stacktrace.toString());
       bool result = await showErrorDialog();
