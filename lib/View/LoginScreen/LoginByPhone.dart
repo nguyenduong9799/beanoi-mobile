@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -15,36 +16,41 @@ class LoginWithPhone extends StatefulWidget {
 
 class _LoginWithPhoneState extends State<LoginWithPhone> {
   List<DropdownMenuItem<dynamic>> _dropdownMenuItems;
-  bool smsSent = false;
-  String smsCode;
+  GlobalKey<FormState> _formKey = new GlobalKey();
+  String _phone, _countryCode = "+84";
+  FocusNode _phoneFocus;
+  String _validatTest;
+  bool isError = false;
 
-  final form = FormGroup({
-    'phone': FormControl(validators: [
-      Validators.required,
-      // Validators.pattern(phoneReg),
-      // Validators.number,
-    ], touched: false),
-    'countryCode': FormControl(validators: [
-      Validators.required,
-      // Validators.pattern(phoneReg),
-      // Validators.number,
-    ], touched: false, value: "+84"),
-  });
+  // final form = FormGroup({
+  //   'phone': FormControl(validators: [
+  //     Validators.required,
+  //     // Validators.pattern(phoneReg),
+  //     // Validators.number,
+  //   ], touched: false),
+  //   'countryCode': FormControl(validators: [
+  //     Validators.required,
+  //     // Validators.pattern(phoneReg),
+  //     // Validators.number,
+  //   ], touched: false, value: "+84"),
+  // });
 
   @override
   void initState() {
     super.initState();
 
+    _phoneFocus = new FocusNode();
+
     _dropdownMenuItems = countries
         .map(
           (country) => DropdownMenuItem(
-            child: SizedBox(
-              width: 72,
-              child: Text(
-                "${country["code"]} (${country["dial_code"]})",
-                textAlign: TextAlign.center,
-                style: kTextPrimary.copyWith(color: Colors.black, fontSize: 12),
-              ),
+            child: Text(
+              " ${country["code"]} (${country["dial_code"]})",
+              textAlign: TextAlign.center,
+              style: kTextPrimary.copyWith(
+                  color: kBackgroundGrey[0],
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold),
             ),
             value: country["dial_code"],
           ),
@@ -85,173 +91,184 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
       ),
       body: ScopedModel<LoginViewModel>(
         model: LoginViewModel(),
-        child: ReactiveForm(
-          formGroup: this.form,
-          child: Container(
-            child: Column(
-              // crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                // SizedBox(
-                //   height: screenHeight * 0.1,
-                // ),
-                Expanded(
-                  child: Container(
-                    // color: Colors.blue,
-                    // height: screenHeight * 0.5,
-                    padding: EdgeInsets.all(0),
-                    child: Image.asset(
-                      'assets/images/bi.png',
-                      alignment: Alignment.topRight,
-                      fit: BoxFit.fitHeight,
-                      // scale: 0.4,
-                    ),
+        child: Container(
+          child: Column(
+            // crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // SizedBox(
+              //   height: screenHeight * 0.1,
+              // ),
+              Expanded(
+                child: Container(
+                  // color: Colors.blue,
+                  // height: screenHeight * 0.5,
+                  child: Image.asset(
+                    'assets/images/phone_input.png',
+                    alignment: Alignment.topRight,
                   ),
                 ),
-                // PHONE FORM
-                Expanded(
-                  // alignment: Alignment.bottomCenter,
-                  flex: 2,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: kPrimary,
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(16),
-                        topRight: Radius.circular(16),
-                      ),
+              ),
+              // PHONE FORM
+              Expanded(
+                // alignment: Alignment.bottomCenter,
+                flex: 2,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: kPrimary,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(16),
+                      topRight: Radius.circular(16),
                     ),
-                    padding: EdgeInsets.fromLTRB(48, 24, 48, 16),
-                    width: screenWidth,
-                    // height: screenHeight * 0.5,
-                    child: ListView(
-                      // crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Text(
-                          "Nhập số điện thoại",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 28,
-                            fontWeight: FontWeight.bold,
-                          ),
+                  ),
+                  padding: EdgeInsets.fromLTRB(32, 24, 32, 16),
+                  width: screenWidth,
+                  // height: screenHeight * 0.5,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Text(
+                        "Nhập số điện thoại",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
                         ),
-                        SizedBox(height: 24),
-                        // INPUT
-                        Container(
-                          width: double.infinity,
-                          // color: Colors.grey[300],
-                          child: Row(
-                            // mainAxisSize: MainAxisSize.max,
-                            children: [
-                              Expanded(
-                                flex: 1,
-                                child: Container(
-                                  // padding: EdgeInsets.all(4),
-                                  height: 48,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(4),
-                                    color: Color(0xFFf4f4f6),
-                                  ),
-                                  child: ReactiveDropdownField(
-                                    formControlName: 'countryCode',
-                                    items: _dropdownMenuItems,
-                                    style: TextStyle(fontSize: 20),
-                                    // onChanged: (value) => setState(() {
-                                    //   countryCode = value;
-                                    // }),
-                                  ),
+                      ),
+                      SizedBox(height: 24),
+                      // INPUT
+                      Row(
+                        // mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Expanded(
+                            flex: 1,
+                            child: Container(
+                              // padding: EdgeInsets.all(4),
+                              height: 48,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(color: kBackgroundGrey[0]),
+                                color: kPrimary,
+                              ),
+                              child: DropdownButtonHideUnderline(
+                                child: DropdownButton(
+                                  dropdownColor: kSecondary,
+                                  iconSize: 20,
+                                  iconEnabledColor: kBackgroundGrey[0],
+                                  style: kTextPrimary.copyWith(
+                                      fontSize: 12, color: kBackgroundGrey[0]),
+                                  items: _dropdownMenuItems,
+                                  value: _countryCode,
+                                  onChanged: (value) => setState(() {
+                                    _countryCode = value;
+                                  }),
                                 ),
                               ),
-                              SizedBox(width: 16),
-                              Expanded(
-                                flex: 1,
-                                child: ReactiveFormConsumer(
-                                    builder: (context, form, child) {
-                                  return Container(
-                                    height: 48,
-                                    // height: 100,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(4),
-                                      color: Color(0xFFf4f4f6),
-                                    ),
-                                    child: ReactiveTextField(
-                                      validationMessages: {
-                                        ValidationMessage.email: ':(',
-                                        ValidationMessage.required: ':(',
-                                        ValidationMessage.number: ':(',
-                                        ValidationMessage.pattern: ':('
-                                      },
-                                      formControlName: 'phone',
-                                      textAlignVertical:
-                                          TextAlignVertical.center,
-                                      decoration: InputDecoration(
-                                        filled: true,
-                                        fillColor: Color(0xFFf4f4f6),
-                                        focusColor: Colors.white,
-                                        focusedBorder: OutlineInputBorder(
-                                          borderSide: new BorderSide(
-                                            color: Color(0xFFc7c3e4),
-                                          ),
-                                          // borderRadius: new BorderRadius.circular(25.7),
+                            ),
+                          ),
+                          SizedBox(width: 8),
+                          Expanded(
+                              flex: 2,
+                              child: Container(
+                                height: 48,
+                                // height: 100,
+                                child: Form(
+                                  key: _formKey,
+                                  child: TextFormField(
+                                    focusNode: _phoneFocus,
+                                    inputFormatters: <TextInputFormatter>[
+                                      WhitelistingTextInputFormatter.digitsOnly
+                                    ],
+                                    keyboardType: TextInputType.number,
+                                    validator: (input) {
+                                      if (input.trim().length < 9 ||
+                                          input.trim().length > 10) {
+                                        setState(() {
+                                          _validatTest =
+                                              "Số diện thoại chưa đúng";
+                                          isError = true;
+                                        });
+                                      }
+                                      return null;
+                                    },
+                                    style: _phoneFocus.hasFocus
+                                        ? kTextSecondary
+                                        : kTextPrimary,
+                                    onSaved: (value) {
+                                      _phone = value;
+                                    },
+                                    onChanged: (value) {
+                                      setState(() {
+                                        isError = false;
+                                        _validatTest = null;
+                                      });
+                                    },
+                                    decoration: InputDecoration(
+                                      errorText: _validatTest,
+                                      filled: true,
+                                      fillColor: _phoneFocus.hasFocus
+                                          ? kBackgroundGrey[0]
+                                          : kPrimary,
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                        borderSide: new BorderSide(
+                                          color: kPrimary,
+                                          style: BorderStyle.solid,
                                         ),
-                                        border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(4),
-                                          borderSide: new BorderSide(
-                                            color: Colors.red,
-                                          ),
-                                        ),
-                                        enabledBorder: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(4),
-                                          borderSide: new BorderSide(
-                                            color: Colors.red,
-                                            style: BorderStyle.none,
-                                          ),
+                                        // borderRadius: new BorderRadius.circular(25.7),
+                                      ),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                        borderSide: new BorderSide(
+                                          color: kBackgroundGrey[0],
+                                          style: BorderStyle.solid,
                                         ),
                                       ),
                                     ),
-                                  );
-                                }),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(height: 16),
-                        ScopedModelDescendant<LoginViewModel>(
-                          builder: (context, child, model) => ButtonTheme(
-                            minWidth: 150.0,
-                            height: 48,
-                            child: RaisedButton(
-                                color: Colors.white,
-                                padding: EdgeInsets.fromLTRB(4, 0, 4, 0),
-                                elevation: 8,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(24.0),
-                                  // side: BorderSide(color: Colors.red),
+                                  ),
                                 ),
-                                onPressed: () async {
-                                  // marks all children as touched
-                                  form.touch();
-                                  if (form.valid) {
+                              )),
+                        ],
+                      ),
+                      SizedBox(height: 16),
+                      ScopedModelDescendant<LoginViewModel>(
+                        builder: (context, child, model) => ButtonTheme(
+                          minWidth: 150.0,
+                          height: 48,
+                          child: RaisedButton(
+                              color: Colors.white,
+                              padding: EdgeInsets.fromLTRB(4, 0, 4, 0),
+                              elevation: 8,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(24.0),
+                                // side: BorderSide(color: Colors.red),
+                              ),
+                              onPressed: () async {
+                                // marks all children as touched
+                                //form.touch();
+                                if (_formKey.currentState.validate()) {
+                                  if (!isError) {
+                                    _formKey.currentState.save();
                                     // await pr.show();
-                                    String phone = form.value["countryCode"] +
-                                        form.value["phone"];
+                                    if (_phone[0].contains("0")) {
+                                      _phone = _phone.substring(1);
+                                    }
+                                    String phone = _countryCode + _phone;
                                     // print("phone $phone");
                                     await model.onLoginWithPhone(phone);
-                                  } else {
-                                    print("Not valid form ${form.errors}");
                                   }
-                                },
-                                child: Text(
-                                  "Xác nhận",
-                                )),
-                          ),
+                                }
+                              },
+                              child: Text(
+                                "Xác nhận",
+                                style: kTextSecondary,
+                              )),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
