@@ -10,6 +10,8 @@ import 'package:get/get.dart';
 import 'package:unidelivery_mobile/route_constraint.dart';
 import 'package:unidelivery_mobile/utils/index.dart';
 
+import 'dialog.dart';
+
 class DefaultAppBar extends StatefulWidget implements PreferredSizeWidget {
   final String title;
 
@@ -107,6 +109,22 @@ class _HomeAppBarSate extends State<HomeAppBar> {
                         return GestureDetector(
                           onTap: () async {
                             await model.fetchUser();
+                            Get.snackbar(
+                               "Olala", // title
+                                "Hello cả nhà",
+                                colorText: kBackgroundGrey[0],
+                                icon: Icon(Icons.alarm),
+                                shouldIconPulse: true,
+                                backgroundColor: kPrimary,
+                                isDismissible: true,
+                                duration: Duration(minutes: 1),
+                                mainButton: FlatButton(
+                                  child: Text("OK", style: kTextPrimary,),
+                                  onPressed: (){
+                                    hideSnackbar();
+                                  },
+                                )
+                            );
                           },
                           child: Align(
                             alignment: Alignment.bottomCenter,

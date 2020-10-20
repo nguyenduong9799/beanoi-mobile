@@ -7,7 +7,7 @@ import 'package:unidelivery_mobile/ViewModel/index.dart';
 
 import '../constraints.dart';
 
-Future<void> showStatusDialog(Icon icon, String status, String content) async {
+Future<void> showStatusDialog(String imageUrl, String status, String content) async {
   hideDialog();
   await Get.dialog(WillPopScope(
     onWillPop: () {},
@@ -22,7 +22,11 @@ Future<void> showStatusDialog(Icon icon, String status, String content) async {
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            icon,
+            Image(
+              image: AssetImage(imageUrl),
+              width: 72,
+              height: 72,
+            ),
             SizedBox(
               height: 8,
             ),

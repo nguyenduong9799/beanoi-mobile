@@ -80,11 +80,7 @@ class HomeViewModel extends BaseModel {
     if (result != null) {
       if (result) {
         await showStatusDialog(
-            Icon(
-              Icons.check_circle_outline,
-              color: kSuccess,
-              size: DIALOG_ICON_SIZE,
-            ),
+            "assets/images/global_sucsess.png",
             "Thành công",
             "Đơn hàng của bạn sẽ được giao vào lúc $TIME");
 
