@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
 import 'package:unidelivery_mobile/Model/DAO/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/CartDTO.dart';
@@ -53,31 +51,16 @@ class OrderViewModel extends BaseModel {
         Get.back(result: true);
       } else if (result == OrderStatus.Fail) {
         hideDialog();
-        await showStatusDialog(
-            Icon(
-              Icons.error_outline,
-              color: kFail,
-            ),
-            "Thất bại :(",
+        await showStatusDialog("assets/images/global_error.png", "Thất bại :(",
             "Vui lòng thử lại sau");
       } else if (result == OrderStatus.NoMoney) {
         hideDialog();
         await RootViewModel.getInstance().fetchUser();
-        await showStatusDialog(
-            Icon(
-              Icons.error_outline,
-              color: kFail,
-            ),
-            "Thất bại :(",
+        await showStatusDialog("assets/images/global_error.png", "Thất bại :(",
             "Có đủ tiền đâu mà mua (>_<)");
       } else if (result == OrderStatus.Timeout) {
         hideDialog();
-        await showStatusDialog(
-            Icon(
-              MaterialCommunityIcons.timer_off,
-              color: kFail,
-            ),
-            "Thất bại :(",
+        await showStatusDialog("assets/images/global_error.png", "Thất bại :(",
             "Hết giờ rồi bạn ơi, mai đặt sớm nhen <3");
       }
     } catch (e) {

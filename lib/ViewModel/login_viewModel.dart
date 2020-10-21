@@ -10,7 +10,6 @@ import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
 import 'package:unidelivery_mobile/utils/shared_pref.dart';
 
-import '../constraints.dart';
 import '../route_constraint.dart';
 
 class LoginViewModel extends BaseModel {
@@ -75,13 +74,8 @@ class LoginViewModel extends BaseModel {
           // chuyen sang trang home
         }
       } catch (e) {
-        await showStatusDialog(
-            Icon(
-              Icons.error_outline,
-              color: kFail,
-            ),
-            "Lỗi khi đăng nhập",
-            e.toString());
+        await showStatusDialog("assets/images/global_error.png",
+            "Lỗi khi đăng nhập", e.toString());
       } finally {
         hideDialog();
       }
@@ -92,12 +86,7 @@ class LoginViewModel extends BaseModel {
         (FirebaseAuthException authException) async {
       print(
           "===== Dang nhap fail: ${authException.toString()} ${authException.message}");
-      await showStatusDialog(
-          Icon(
-            Icons.error_outline,
-            color: kFail,
-          ),
-          "Nhập sai OTP",
+      await showStatusDialog("assets/images/global_error.png", "Nhập sai OTP",
           authException.message);
     };
 
@@ -133,12 +122,7 @@ class LoginViewModel extends BaseModel {
     } on FirebaseAuthException catch (e) {
       print("=====OTP Fail: ${e.message}  ");
       await await showStatusDialog(
-          Icon(
-            Icons.error_outline,
-            color: kFail,
-          ),
-          "Error",
-          e.message);
+          "assets/images/global_error.png", "Error", e.message);
     } finally {
       hideDialog();
     }
@@ -170,21 +154,11 @@ class LoginViewModel extends BaseModel {
       print("Error: " + e.toString());
       print("=====OTP Fail: ${e.message}  ");
       await showStatusDialog(
-          Icon(
-            Icons.error_outline,
-            color: kFail,
-          ),
-          "Error",
-          e.message);
+          "assets/images/global_error.png", "Error", e.message);
     } catch (e, strack) {
       print("Error: " + e.toString() + strack.toString());
       await showStatusDialog(
-          Icon(
-            Icons.error_outline,
-            color: kFail,
-          ),
-          "Error",
-          e.toString());
+          "assets/images/global_error.png", "Error", e.toString());
     } finally {
       hideDialog();
     }

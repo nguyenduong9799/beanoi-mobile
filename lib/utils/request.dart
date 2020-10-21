@@ -81,10 +81,7 @@ class MyRequest {
         // Do something with response error
         if (e.response.statusCode == 401) {
           await showStatusDialog(
-              Icon(
-                Icons.error_outline,
-                color: kFail,
-              ),
+              "assets/images/global_error.png",
               "Lỗi",
               "Vui lòng đang nhập lại");
           Get.offAllNamed(RouteHandler.LOGIN);
