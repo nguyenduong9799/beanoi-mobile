@@ -41,9 +41,12 @@ class LoginViewModel extends BaseModel {
 
       await _analyticsService.logLogin(authCredential.signInMethod);
       // TODO: Thay uid = idToken
-      final userInfo = await dao.login(await userCredential.user.getIdToken());
+      String token = await userCredential.user.getIdToken();
+      print("token: " + token);
+      final userInfo = await dao.login(token);
       // await setToken(userInfo.toString());
       await _analyticsService.setUserProperties(userInfo);
+      print("User: " + userInfo.toString());
       return userInfo;
     } catch (e) {
       bool result = await showErrorDialog();
@@ -60,7 +63,7 @@ class LoginViewModel extends BaseModel {
   }
 
   Future<void> onLoginWithPhone(String phone) async {
-    showLoadingDialog();
+    Get.toNamed(RouteHandler.LOADING);
     final PhoneVerificationCompleted verificationCompleted =
         (AuthCredential authCredential) async {
       try {
@@ -76,8 +79,7 @@ class LoginViewModel extends BaseModel {
       } catch (e) {
         await showStatusDialog("assets/images/global_error.png",
             "Lỗi khi đăng nhập", e.toString());
-      } finally {
-        hideDialog();
+        Get.back();
       }
       // dem authuser cho controller xu ly check user
     };
@@ -88,11 +90,12 @@ class LoginViewModel extends BaseModel {
           "===== Dang nhap fail: ${authException.toString()} ${authException.message}");
       await showStatusDialog("assets/images/global_error.png", "Nhập sai OTP",
           authException.message);
+      Get.back();
     };
 
     final PhoneCodeSent phoneCodeSent =
         (String verId, [int forceResend]) async {
-      await Get.toNamed(RouteHandler.LOGIN_OTP,
+      await Get.offNamed(RouteHandler.LOGIN_OTP,
           arguments: {"verId": verId, "phoneNumber": phone});
     };
 
@@ -109,7 +112,6 @@ class LoginViewModel extends BaseModel {
       codeAutoRetrievalTimeout: phoneTimeout,
     );
     print("Login Done");
-    hideDialog();
   }
 
   Future<void> onSignInWithGmail() async {
@@ -138,7 +140,7 @@ class LoginViewModel extends BaseModel {
 
       print("User info: " + userInfo.toString());
 
-      if (userInfo.isFirstLogin) {
+      if (userInfo.isFirstLogin || userInfo.isFirstLogin == null) {
         // Navigate to sign up screen
         await Get.offAndToNamed(RouteHandler.SIGN_UP);
       } else {

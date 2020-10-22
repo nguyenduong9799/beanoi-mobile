@@ -7,7 +7,8 @@ import 'package:unidelivery_mobile/ViewModel/index.dart';
 
 import '../constraints.dart';
 
-Future<void> showStatusDialog(String imageUrl, String status, String content) async {
+Future<void> showStatusDialog(
+    String imageUrl, String status, String content) async {
   hideDialog();
   await Get.dialog(WillPopScope(
     onWillPop: () {},
@@ -77,7 +78,7 @@ void showLoadingDialog() {
   hideDialog();
   Get.defaultDialog(
       barrierDismissible: false,
-      title: "Đợi tý má ơi...",
+      title: "Chờ mình xý nha...",
       content: WillPopScope(
         onWillPop: () {},
         child: Container(

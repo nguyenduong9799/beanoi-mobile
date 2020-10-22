@@ -12,4 +12,5 @@ class RouteHandler{
   static const String PROFILE = "profile";
   static const String SIGN_UP = "signup";
   static const String NETWORK_ERROR = "network_error";
+  static const String LOADING = "loading";
 }

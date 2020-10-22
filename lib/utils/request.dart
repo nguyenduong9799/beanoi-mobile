@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -63,7 +65,7 @@ class CustomInterceptors extends InterceptorsWrapper {
 
 class MyRequest {
   static BaseOptions options = new BaseOptions(
-      baseUrl: 'http://115.165.166.32:14254/api/v2',
+      baseUrl: 'http://api.dominos.reso.vn/api/v2',
       headers: {
         Headers.contentTypeHeader: "application/json",
       },
@@ -102,3 +104,13 @@ class MyRequest {
 
 final requestObj = new MyRequest();
 final request = requestObj.request;
+
+
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+  }
+}
