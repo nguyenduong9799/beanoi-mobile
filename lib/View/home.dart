@@ -302,10 +302,23 @@ class _HomeScreenState extends State<HomeScreen> {
         // status = ViewStatus.Loading;
         switch (status) {
           case ViewStatus.Error:
-            return AspectRatio(
-              aspectRatio: 1,
+            return Padding(
+              padding: const EdgeInsets.all(40.0),
               child: Center(
-                  child: Text("Có gì sai sai... \n ${model.error.toString()}")),
+                child: Column(
+                  children: [
+                    Image.asset(
+                      'assets/images/global_error.png',
+                      fit: BoxFit.contain,
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      "Có gì đó sai sai..\n Vui lòng thử lại.",
+                      // style: kTextPrimary,
+                    ),
+                  ],
+                ),
+              ),
             );
           case ViewStatus.Loading:
             return AspectRatio(
