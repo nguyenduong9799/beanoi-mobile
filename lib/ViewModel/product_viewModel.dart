@@ -12,6 +12,13 @@ import 'package:unidelivery_mobile/utils/shared_pref.dart';
 
 import 'base_model.dart';
 
+Color minusColor = kBackgroundGrey[5];
+Color addColor = kBackgroundGrey[5];
+
+// TODO: 1. Tach cac attriute tu Product master
+// TODO: 2. Thay doi extra state khi chon xong attribute
+// TODO: 2.1 Viet ham changeAttribute
+
 class ProductDetailViewModel extends BaseModel {
   int unaffectIndex = 0;
   int affectIndex = 0;
@@ -24,8 +31,7 @@ class ProductDetailViewModel extends BaseModel {
   //List choice bắt buộc không ảnh hưởng giá
   Map<String, ProductDTO> affectPriceChoice;
   int count = 1;
-  Color minusColor = kBackgroundGrey[5];
-  Color addColor = kBackgroundGrey[5];
+
   double total, fixTotal = 0, extraTotal = 0;
   bool order = false;
   //List choice option
