@@ -39,35 +39,6 @@ class ProductDetailViewModel extends BaseModel {
   ProductDetailViewModel(ProductDTO dto) {
     master = dto;
     isExtra = false;
-    this.extra = new Map<ProductDTO, bool>();
-
-    this.unaffectPriceContent = new Map<String, List<String>>();
-    this.affectPriceContent = new Map();
-
-    this.unaffectPriceChoice = new Map<String, String>();
-    this.affectPriceChoice = new Map<String, ProductDTO>();
-    //
-
-    this.fixTotal = master.price * count;
-    if(master.type == MASTER_PRODUCT){
-      for (ProductChild child in master.listChild) {
-        if (child.attribute.toUpperCase() == "ĐÁ" ||
-            child.attribute.toUpperCase() == "ĐƯỜNG") {
-          print("Đang thêm đá...");
-          unaffectPriceContent[child.attribute] = [
-            "0%",
-            "25%",
-            "50%",
-            "75%",
-            "100%"
-          ];
-          unaffectPriceChoice[child.attribute] = "";
-        } else {
-          affectPriceContent[child.attribute] = child.list;
-          affectPriceChoice[child.attribute] = null;
-        }
-      }
-    }
 
     if (unaffectPriceContent.keys.toList().length == 0 &&
         dto.catergoryId != null) {
@@ -225,7 +196,8 @@ class ProductDetailViewModel extends BaseModel {
 
     print("Save product: " + master.toString());
     await addItemToCart(item);
-    await AnalyticsService.getInstance().logChangeCart(item.master, item.quantity, true);
+    await AnalyticsService.getInstance()
+        .logChangeCart(item.master, item.quantity, true);
     hideDialog();
     await Get.back(result: true);
   }

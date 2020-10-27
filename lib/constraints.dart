@@ -13,9 +13,7 @@ final kBackgroundGrey = [
   Color(0xff9e9e9e),
   Color(0xff757575),
 ];
-final kGreyTitle =  Color(0xFF575757);
-
-
+final kGreyTitle = Color(0xFF575757);
 
 final kTextPrimary = TextStyle(color: Color(0xFFFFFFFF));
 final kTextSecondary = TextStyle(color: kPrimary);
@@ -35,3 +33,9 @@ const TEST_STORE = 69;
 const int ORDER_NEW_STATUS = 0;
 const int ORDER_DONE_STATUS = 4;
 const int VIRTUAL_STORE_TYPE = 8;
+
+class ProductType {
+  static const int MASTER_PRODUCT = 6;
+  static const int DETAIL_PRODUCT = 7;
+  static const int COMPLEX_PRODUCT = 10;
+}

@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+import 'package:unidelivery_mobile/Bussiness/BussinessHandler.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 
 class ProductDTO {
@@ -7,117 +9,158 @@ class ProductDTO {
   String description;
   int type;
   String imageURL;
-  List<ProductChild> listChild;
+  List<ProductDTO> listChild;
   int catergoryId;
   List<int> extraId;
   String supplierId;
+  List<ProductDTO> extras;
+  // update
+  List<double> prices;
+  bool hasExtra;
+  Map attributes;
+  int defaultQuantity;
+  int min;
+  int max;
+  bool isAnd;
 
   @override
   String toString() {
     return 'ProductDTO{id: $id, name: $name, price: $price, description: $description, type: $type, imageURL: $imageURL, listChild: $listChild, catergoryId: $catergoryId, extraId: $extraId}';
   }
 
-  ProductDTO(this.id,
-      {this.name,
-      this.imageURL,
-      this.price,
-      this.description,
-      this.type,
-      this.listChild,
-      this.catergoryId,
-      this.extraId,
-      this.supplierId}); // balance. point;
+  ProductDTO(
+    this.id, {
+    this.name,
+    this.imageURL,
+    this.price,
+    this.description,
+    this.type,
+    this.listChild,
+    this.catergoryId,
+    this.extraId,
+    this.prices,
+    this.supplierId,
+    this.attributes,
+    this.hasExtra,
+    this.defaultQuantity,
+    this.isAnd,
+    this.max,
+    this.min,
+  }); // balance. point;
 
   factory ProductDTO.fromJson(dynamic json) {
-    var type = json['product_type'] as int;
+    var type = json['product_type_id'] as int;
     var jsonExtra = json['extra_category_id'] as List;
-    List<int> listExtra = jsonExtra.cast<int>().toList();
-    if (type == MASTER_PRODUCT) {
-      var listChildJson = json['child_products'] as List;
+    List<double> prices = List.filled(10, 0);
+    // List<int> listExtra = jsonExtra.cast<int>().toList();
 
-      List<ProductChild> listChild =
-          listChildJson.map((e) => ProductChild.fromJson(e)).toList();
+    ProductDTO product = ProductDTO(
+      json["product_id"],
+      name: json['product_name'] as String,
+      // price: double.parse(json['price'].toString()),
+      description: json['description'] as String,
+      type: type,
+      imageURL: json['pic_url'] as String,
+      catergoryId: json['category_id'],
+      supplierId: json['supplier_id'] as String,
+      // prices: prices,
+      // extraId: listExtra,
+      hasExtra: json['hasExtra'] as bool,
+      attributes: json["attributes"] as Map,
+      defaultQuantity: json["default"] ?? 0,
+      min: json["min"] ?? 0,
+      max: json["max"] ?? 0,
+    );
 
-      return ProductDTO(json["product_in_menu_id"],
-          name: json['product_name'] as String,
-          price: double.parse(json['price'].toString()),
-          description: json['description'] as String,
-          type: type,
-          imageURL: json['pic_url'] as String,
-          listChild: listChild,
-          catergoryId: json['category_id'],
-          extraId: listExtra,
-          supplierId: json['supplier_id'] as String
-      );
+    // prices
+    for (int i = 0; i < BussinessHandler.PRICE_QUANTITY; i++) {
+      prices[i] = (json["price${i + 1}"] as double);
+    }
+    product.prices = prices;
+
+    switch (type) {
+      case ProductType.MASTER_PRODUCT:
+        var listChildJson = json['child_products'] as List;
+
+        List<ProductDTO> listChild =
+            listChildJson.map((e) => ProductDTO.fromJson(e)).toList();
+
+        product.listChild = listChild;
+        break;
+      case ProductType.COMPLEX_PRODUCT:
+        if (product.hasExtra) {
+          var listExtraJson = json['extras'] as List;
+
+          List<ProductDTO> listExtra =
+              listExtraJson?.map((e) => ProductDTO.fromJson(e))?.toList();
+
+          product.extras = listExtra;
+        }
+        break;
+      default:
+        break;
     }
 
-    return ProductDTO(json["product_in_menu_id"],
-        name: json['product_name'] as String,
-        price: double.parse(json['price'].toString()),
-        description: json['description'] as String,
-        type: type,
-        imageURL: json['pic_url'] as String,
-        catergoryId: json['category_id'],
-        supplierId: json['supplier_id'] as String,
-        extraId: listExtra);
+    return product;
   }
 
   Map<String, dynamic> toJson() {
-    if (type == MASTER_PRODUCT) {
-      List listProducts = listChild.map((e) => e.toJson()).toList();
-      return {
-        "product_in_menu_id": id,
-        "product_name": name,
-        "price": price,
-        "description": description,
-        "product_type": type,
-        "pic_url": imageURL,
-        "catergory_id": catergoryId,
-        "child_products": listProducts,
-        "extra_category_id": extraId,
-        "supplier_id": supplierId
-      };
-    }
-    return {
-      "product_in_menu_id": id,
+    Map prodJson = {
+      "product_id": id,
       "product_name": name,
-      "price": price,
+      // price: double.parse(json['price'].toString()),
       "description": description,
       "product_type": type,
       "pic_url": imageURL,
       "catergory_id": catergoryId,
+      "child_products": listChild,
+      "extra_category_id": extraId,
       "supplier_id": supplierId,
-      "extra_category_id": extraId
+      "hasExtra": hasExtra,
+      "attributes": attributes,
+      "default": defaultQuantity,
+      "min": min,
+      "max": max,
+      "extras": extras,
     };
+
+    var pricesMap = {};
+
+    for (var i = 0; i < prices.length; i++) {
+      pricesMap.addAll({"price${i + 1}": prices[i]});
+    }
+
+    return prodJson..addAll(pricesMap);
   }
 
-  static List<ProductDTO> fromList(dynamic jsonList){
+  static List<ProductDTO> fromList(dynamic jsonList) {
     var list = jsonList as List;
     return list.map((map) => ProductDTO.fromJson(map)).toList();
   }
 
+  ProductDTO getChildByAttributes(Map attributes) {
+    return this
+        .listChild
+        .firstWhere((child) => mapEquals(child.attributes, attributes));
+  }
 }
 
-class ProductChild{
+class ProductChild {
   String attribute;
   List<ProductDTO> list;
 
   ProductChild({this.attribute, this.list});
 
-  Map<String, dynamic> toJson(){
+  Map<String, dynamic> toJson() {
     List listProducts = list.map((e) => e.toJson()).toList();
-    return {
-      "attribute_name" : attribute,
-      "products": listProducts
-    };
+    return {"attribute_name": attribute, "products": listProducts};
   }
 
-  factory ProductChild.fromJson(dynamic json){
+  factory ProductChild.fromJson(dynamic json) {
     List<ProductDTO> listProducts = ProductDTO.fromList(json['products']);
     return ProductChild(
       attribute: json["attribute_name"] as String,
       list: listProducts,
     );
   }
-
 }

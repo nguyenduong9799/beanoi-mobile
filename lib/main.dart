@@ -12,10 +12,10 @@ import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/View/index.dart';
 import 'package:unidelivery_mobile/utils/request.dart';
 
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   HttpOverrides.global = new MyHttpOverrides();
+
   await setUp();
 
   runApp(MyApp());
@@ -83,9 +83,7 @@ class MyApp extends StatelessWidget {
                 settings: settings);
           case RouteHandler.LOADING:
             return CupertinoPageRoute<bool>(
-                builder: (context) => LoadingScreen(
-                ),
-                settings: settings);
+                builder: (context) => LoadingScreen(), settings: settings);
           default:
             return CupertinoPageRoute(
                 builder: (context) => NotFoundScreen(), settings: settings);

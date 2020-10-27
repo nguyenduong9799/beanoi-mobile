@@ -79,9 +79,7 @@ class HomeViewModel extends BaseModel {
     bool result = await Get.toNamed(RouteHandler.ORDER);
     if (result != null) {
       if (result) {
-        await showStatusDialog(
-            "assets/images/global_sucsess.png",
-            "Thành công",
+        await showStatusDialog("assets/images/global_sucsess.png", "Thành công",
             "Đơn hàng của bạn sẽ được giao vào lúc $TIME");
 
         await rootViewModel.fetchUser();
@@ -109,17 +107,18 @@ class HomeViewModel extends BaseModel {
   Future<List<ProductDTO>> getProducts() async {
     try {
       setState(ViewStatus.Loading);
-      StoreDTO store = await getStore();
-      if (store == null) {
-        StoreDAO storeDAO = new StoreDAO();
-        List<StoreDTO> listStore = await storeDAO.getStores();
-        for (StoreDTO dto in listStore) {
-          if (dto.id == UNIBEAN_STORE) {
-            store = dto;
-            await setStore(dto);
-          }
-        }
-      }
+      // StoreDTO store = await getStore();
+      StoreDTO store = StoreDTO();
+      // if (store == null) {
+      //   StoreDAO storeDAO = new StoreDAO();
+      //   List<StoreDTO> listStore = await storeDAO.getStores();
+      //   for (StoreDTO dto in listStore) {
+      //     if (dto.id == UNIBEAN_STORE) {
+      //       store = dto;
+      //       await setStore(dto);
+      //     }
+      //   }
+      // }
       print("Get products...");
       if (_isFirstFetch) {
         products = await _dao.getProducts(store.id);
