@@ -16,54 +16,62 @@ Future<void> showStatusDialog(
       backgroundColor: Colors.white,
       elevation: 8.0,
       shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(8.0))),
+          borderRadius: BorderRadius.all(Radius.circular(16.0))),
       child: Container(
-        padding: const EdgeInsets.all(8),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Image(
               image: AssetImage(imageUrl),
-              width: 72,
-              height: 72,
+              width: 96,
+              height: 96,
             ),
             SizedBox(
               height: 8,
             ),
             Text(
               status,
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: kPrimary),
             ),
             SizedBox(
               height: 8,
             ),
-            Text(
-              content,
-              style: TextStyle(
-                fontSize: 16,
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                content,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: kPrimary
+                ),
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.left,
+                maxLines: 2,
               ),
-              textAlign: TextAlign.center,
             ),
             SizedBox(
               height: 16,
             ),
-            GestureDetector(
-              // Complete the dialog when you're done with it to return some data
-              onTap: () {
-                print("Dong");
-                hideDialog();
-              },
-              child: Container(
-                child: Text(
-                  "OK",
-                  style: kTextPrimary,
-                ),
-                alignment: Alignment.center,
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                decoration: BoxDecoration(
-                  color: kPrimary,
-                  borderRadius: BorderRadius.circular(8),
+
+
+            Container(
+              width: double.infinity,
+              child: FlatButton(
+                color: kPrimary,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(
+                        bottomRight: Radius.circular(16),
+                        bottomLeft: Radius.circular(16))),
+                onPressed: () {
+                  hideDialog();
+                },
+                child: Padding(
+                  padding: EdgeInsets.only(top: 16, bottom: 16),
+                  child: Text(
+                    "OK",
+                    style: kTextPrimary,
+                  ),
                 ),
               ),
             ),

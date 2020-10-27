@@ -23,7 +23,7 @@ class AccountDTO {
         name: json['name'] as String,
         email: json['email'] as String,
         phone: json['phone'] as String,
-        gender: (json['gender'] as bool) == true ? 'nam' : 'nu',
+        gender: (json['gender'] as bool) == true ? 'nam' : 'nữ',
         balance: json['balance'],
         point: json['point'],
         isFirstLogin: json['is_first_login'] as bool,

@@ -83,7 +83,10 @@ class MyApp extends StatelessWidget {
                 settings: settings);
           case RouteHandler.LOADING:
             return CupertinoPageRoute<bool>(
-                builder: (context) => LoadingScreen(), settings: settings);
+                builder: (context) => LoadingScreen(
+                      title: settings.arguments ?? "Đang xử lý...",
+                    ),
+                settings: settings);
           default:
             return CupertinoPageRoute(
                 builder: (context) => NotFoundScreen(), settings: settings);

@@ -14,7 +14,24 @@ import '../constraints.dart';
 
 class OrderViewModel extends BaseModel {
   AnalyticsService _analyticsService;
-  OrderViewModel() {
+  String payment = "Tiền mặt";
+  List<String> options = ["Tiền mặt", "Tiền trong ví"];
+
+  static OrderViewModel _instance;
+
+  static OrderViewModel getInstance() {
+    if (_instance == null) {
+      _instance = OrderViewModel();
+    }
+    return _instance;
+  }
+
+  static void destroyInstance() {
+    _instance = null;
+  }
+
+
+  OrderViewModel(){
     _analyticsService = AnalyticsService.getInstance();
   }
 
@@ -70,5 +87,10 @@ class OrderViewModel extends BaseModel {
       } else
         setState(ViewStatus.Error);
     }
+  }
+
+  void changeOption(String option){
+    payment = option;
+    notifyListeners();
   }
 }
