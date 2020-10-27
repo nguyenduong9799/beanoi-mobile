@@ -63,6 +63,7 @@ class ProductDTO {
   }
 
   Map<String, dynamic> toJson() {
+    print('Product: '  + this.toString());
     if (type == MASTER_PRODUCT) {
       List listProducts = listChild.map((e) => e.toJson()).toList();
       return {

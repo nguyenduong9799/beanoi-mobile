@@ -30,7 +30,7 @@ class _OrderScreenState extends State<OrderScreen> {
   @override
   void initState() {
     super.initState();
-    orderViewModel = new OrderViewModel();
+    orderViewModel = OrderViewModel.getInstance();
   }
 
   @override
@@ -73,6 +73,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                         margin: const EdgeInsets.only(top: 8),
                                         child: layoutOrder(cart, dto.name)),
                                     layoutSubtotal(total),
+                                    selectPaymentMethods()
                                     //SizedBox(height: 16),
                                   ],
                                 ),
@@ -302,34 +303,38 @@ class _OrderScreenState extends State<OrderScreen> {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      CachedNetworkImage(
-                        width: MediaQuery.of(context).size.width * 0.25,
-                        height: MediaQuery.of(context).size.width * 0.25,
-                        fit: BoxFit.fill,
-                        imageUrl: item.master.imageURL != null
-                            ? item.master.imageURL
-                            : defaultImage,
-                        imageBuilder: (context, imageProvider) => Container(
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: imageProvider,
-                              fit: BoxFit.cover,
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: CachedNetworkImage(
+
+                          width: MediaQuery.of(context).size.width * 0.25,
+                          height: MediaQuery.of(context).size.width * 0.25,
+                          fit: BoxFit.fill,
+                          imageUrl: item.master.imageURL != null
+                              ? item.master.imageURL
+                              : defaultImage,
+                          imageBuilder: (context, imageProvider) => Container(
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: imageProvider,
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
-                        ),
-                        progressIndicatorBuilder:
-                            (context, url, downloadProgress) =>
-                                Shimmer.fromColors(
-                          baseColor: Colors.grey[300],
-                          highlightColor: Colors.grey[100],
-                          enabled: true,
-                          child: Container(
-                            width: MediaQuery.of(context).size.width * 0.25,
-                            // height: 100,
-                            color: Colors.grey,
+                          progressIndicatorBuilder:
+                              (context, url, downloadProgress) =>
+                                  Shimmer.fromColors(
+                            baseColor: Colors.grey[300],
+                            highlightColor: Colors.grey[100],
+                            enabled: true,
+                            child: Container(
+                              width: MediaQuery.of(context).size.width * 0.25,
+                              // height: 100,
+                              color: Colors.grey,
+                            ),
                           ),
+                          errorWidget: (context, url, error) => Icon(Icons.error),
                         ),
-                        errorWidget: (context, url, error) => Icon(Icons.error),
                       ),
                       SizedBox(
                         width: 10,
@@ -443,7 +448,7 @@ class _OrderScreenState extends State<OrderScreen> {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-                border: Border.all(color: kBackgroundGrey[4]),
+                border: Border.all(color: kPrimary),
                 borderRadius: BorderRadius.all(Radius.circular(8))),
             child: Column(
               children: [
@@ -454,26 +459,26 @@ class _OrderScreenState extends State<OrderScreen> {
                     children: [
                       Text(
                         "Tạm tính",
-                        style: TextStyle(),
+                        style: kTextSecondary,
                       ),
                       Text(
                           NumberFormat.simpleCurrency(locale: 'vi')
                               .format(total - DELIVERY_FEE),
-                          style: TextStyle()),
+                          style: kTextSecondary),
                     ],
                   ),
                 ),
-                MySeparator(),
+                MySeparator(color: kPrimary,),
                 Padding(
                   padding: const EdgeInsets.only(top: 10, bottom: 10),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text("Phí vận chuyển", style: TextStyle()),
+                      Text("Phí vận chuyển", style: kTextSecondary),
                       Text(
                           NumberFormat.simpleCurrency(locale: 'vi')
                               .format(DELIVERY_FEE),
-                          style: TextStyle()),
+                          style: kTextSecondary),
                     ],
                   ),
                 ),
@@ -497,6 +502,52 @@ class _OrderScreenState extends State<OrderScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget selectPaymentMethods(){
+    return ScopedModel(
+      model: orderViewModel,
+      child: ScopedModelDescendant<OrderViewModel>(
+        builder: (context, child, model) {
+
+          List<Widget> listPayments = new List();
+          for(int i = 0; i < model.options.length; i++){
+            listPayments.add(RadioListTile(
+              activeColor: kPrimary,
+              groupValue: model.payment,
+              value: model.options[i],
+              title: Text(model.options[i]),
+              onChanged: (value){
+                model.changeOption(value);
+              },
+            ));
+
+          }
+
+          return  Container(
+            color: kBackgroundGrey[0],
+            padding: const EdgeInsets.only(bottom: 8, top: 8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
+                  child: Text(
+                    "Phương thức thanh toán",
+                    style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: kPrimary
+                    ),
+                  ),
+                ),
+                ...listPayments
+              ],
+            ),
+          );
+        },
+      )
     );
   }
 
@@ -582,7 +633,7 @@ class _OrderScreenState extends State<OrderScreen> {
       children: [
         IconButton(
           icon: Icon(
-            Icons.do_not_disturb_on,
+            AntDesign.minuscircleo,
             size: 20,
             color: minusColor,
           ),
@@ -600,7 +651,7 @@ class _OrderScreenState extends State<OrderScreen> {
         Text(item.quantity.toString()),
         IconButton(
           icon: Icon(
-            Icons.add_circle,
+            AntDesign.pluscircleo,
             size: 20,
             color: plusColor,
           ),

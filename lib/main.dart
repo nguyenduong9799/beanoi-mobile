@@ -12,7 +12,6 @@ import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/View/index.dart';
 import 'package:unidelivery_mobile/utils/request.dart';
 
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   HttpOverrides.global = new MyHttpOverrides();
@@ -84,7 +83,8 @@ class MyApp extends StatelessWidget {
           case RouteHandler.LOADING:
             return CupertinoPageRoute<bool>(
                 builder: (context) => LoadingScreen(
-                ),
+                      title: settings.arguments ?? "Đang xử lý...",
+                    ),
                 settings: settings);
           default:
             return CupertinoPageRoute(

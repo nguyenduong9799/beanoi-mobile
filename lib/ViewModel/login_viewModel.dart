@@ -88,7 +88,7 @@ class LoginViewModel extends BaseModel {
         (FirebaseAuthException authException) async {
       print(
           "===== Dang nhap fail: ${authException.toString()} ${authException.message}");
-      await showStatusDialog("assets/images/global_error.png", "Nhập sai OTP",
+      await showStatusDialog("assets/images/global_error.png", "Xảy ra lỗi",
           authException.message);
       Get.back();
     };
