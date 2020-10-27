@@ -28,8 +28,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
 
   ProductDetailViewModel productDetailViewModel;
 
-
-
   @override
   void initState() {
     super.initState();
@@ -64,7 +62,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
     }
 
     if (widget.dto.extraId != null && widget.dto.extraId.isNotEmpty) {
-      productDetailViewModel.getExtra(widget.dto.extraId, widget.dto.supplierId);
+      productDetailViewModel.getExtra(
+          widget.dto.extraId, widget.dto.supplierId);
       unaffectPriceTabs.add(Tab(child: Text("Thêm ")));
     }
 
@@ -219,8 +218,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
     if (widget.dto.type == MASTER_PRODUCT) {
       return Container(
         decoration: BoxDecoration(
-            border:
-                Border(top: BorderSide(color: kPrimary, width: 2))),
+            border: Border(top: BorderSide(color: kPrimary, width: 2))),
         width: MediaQuery.of(context).size.width,
         child: TabBar(
           labelStyle: TextStyle(fontWeight: FontWeight.bold),
@@ -245,9 +243,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
         builder:
             (BuildContext context, Widget child, ProductDetailViewModel model) {
           attributes = new List();
-          if(model.affectPriceContent.keys.length != 0){
+          if (model.affectPriceContent.keys.length != 0) {
             listOptions = model.affectPriceContent[
-            model.affectPriceContent.keys.elementAt(model.affectIndex)];
+                model.affectPriceContent.keys.elementAt(model.affectIndex)];
 
             for (int i = 0; i < listOptions.length; i++) {
               attributes.add(Container(
@@ -259,15 +257,16 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                       Text(listOptions[i].name),
                       Flexible(
                           child: Text(
-                            NumberFormat.simpleCurrency(locale: 'vi')
-                                .format(listOptions[i].price),
-                            style:
-                            TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                          ))
+                        NumberFormat.simpleCurrency(locale: 'vi')
+                            .format(listOptions[i].price),
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 16),
+                      ))
                     ],
                   ),
-                  groupValue: model.affectPriceChoice[
-                  model.affectPriceContent.keys.elementAt(model.affectIndex)],
+                  groupValue: model.affectPriceChoice[model
+                      .affectPriceContent.keys
+                      .elementAt(model.affectIndex)],
                   value: listOptions[i],
                   onChanged: (e) {
                     model.changeAffectPriceAtrribute(e);
@@ -285,8 +284,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
           }
 
           return Container();
-
-
         },
       );
     }
@@ -513,7 +510,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
               icon: Icon(
                 Icons.remove_circle_outline,
                 size: 30,
-                color: model.minusColor,
+                color: minusColor,
               ),
               onPressed: () {
                 model.minusQuantity();
@@ -533,7 +530,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
               icon: Icon(
                 Icons.add_circle_outline,
                 size: 30,
-                color: model.addColor,
+                color: addColor,
               ),
               onPressed: () {
                 model.addQuantity();
