@@ -21,9 +21,7 @@ class ProductDetailScreen extends StatefulWidget {
 class _ProductDetailScreenState extends State<ProductDetailScreen>
     with TickerProviderStateMixin {
   List<Tab> affectPriceTabs;
-  List<Tab> unaffectPriceTabs;
 
-  TabController _unaffectPriceController;
   TabController _affectPriceController;
 
   ProductDetailViewModel productDetailViewModel;
@@ -50,38 +48,29 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
       _affectPriceController.addListener(_handleAffectTabSelection);
     }
 
-    unaffectPriceTabs = new List<Tab>();
+    // List<String> keys =
+    //     productDetailViewModel.affectPriceContent.keys.toList();
+    // for (int i = 0; i < keys.length; i++) {
+    //   print(keys[i].toString());
+    //   affectPriceTabs.add(Tab(
+    //     child: Text(keys[i].toUpperCase() + " (*)"),
+    //   ));
+    // }
 
-    List<String> keys =
-        productDetailViewModel.unaffectPriceContent.keys.toList();
-    for (int i = 0; i < keys.length; i++) {
-      print(keys[i].toString());
-      unaffectPriceTabs.add(Tab(
-        child: Text(keys[i].toUpperCase() + " (*)"),
-      ));
-    }
+    // if (widget.dto.extraId != null && widget.dto.extraId.isNotEmpty) {
+    //   productDetailViewModel.getExtra(
+    //       widget.dto.extraId, widget.dto.supplierId);
+    //   affectPriceTabs.add(Tab(child: Text("Thêm ")));
+    // }
 
-    if (widget.dto.extraId != null && widget.dto.extraId.isNotEmpty) {
-      productDetailViewModel.getExtra(
-          widget.dto.extraId, widget.dto.supplierId);
-      unaffectPriceTabs.add(Tab(child: Text("Thêm ")));
-    }
-
-    _unaffectPriceController =
-        TabController(vsync: this, length: unaffectPriceTabs.length);
-    _unaffectPriceController.addListener(_handleUnaffectTabSelection);
+    // _affectPriceController =
+    //     TabController(vsync: this, length: affectPriceTabs.length);
+    // _affectPriceController.addListener(_handleAffectTabSelection);
   }
 
   void _handleAffectTabSelection() {
     if (_affectPriceController.indexIsChanging) {
       productDetailViewModel.changeAffectIndex(_affectPriceController.index);
-    }
-  }
-
-  void _handleUnaffectTabSelection() {
-    if (_unaffectPriceController.indexIsChanging) {
-      productDetailViewModel
-          .changeUnAffectIndex(_unaffectPriceController.index);
     }
   }
 
@@ -158,8 +147,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                       productTitle(),
                       tabAffectAtritbute(),
                       AffectAtributeContent(),
-                      tabUnaffectAtritbute(),
-                      unAffectAtributeContent(),
                     ],
                   ),
                 ),
@@ -186,15 +173,17 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                 widget.dto.name,
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
               )),
-              widget.dto.type != MASTER_PRODUCT
-                  ? Flexible(
-                      child: Text(
-                      NumberFormat.simpleCurrency(locale: 'vi')
-                          .format(widget.dto.price),
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                    ))
-                  : Container()
+
+
+              // widget.dto.type != MASTER_PRODUCT
+              //     ? Flexible(
+              //         child: Text(
+              //         NumberFormat.simpleCurrency(locale: 'vi')
+              //             .format(widget.dto.price),
+              //         style:
+              //             TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              //       ))
+              //     : Container()
             ],
           ),
           SizedBox(
@@ -214,108 +203,125 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
     );
   }
 
+  // Widget tabAffectAtritbute() {
+  //   if (widget.dto.type == MASTER_PRODUCT) {
+  //     return Container(
+  //       decoration: BoxDecoration(
+  //           border: Border(top: BorderSide(color: kPrimary, width: 2))),
+  //       width: MediaQuery.of(context).size.width,
+  //       child: TabBar(
+  //         labelStyle: TextStyle(fontWeight: FontWeight.bold),
+  //         labelColor: kSecondary,
+  //         unselectedLabelColor: kSecondary,
+  //         unselectedLabelStyle: TextStyle(fontWeight: FontWeight.bold),
+  //         isScrollable: true,
+  //         tabs: affectPriceTabs,
+  //         indicatorColor: kPrimary,
+  //         controller: _affectPriceController,
+  //       ),
+  //     );
+  //   }
+  //   return Container();
+  // }
+  //
+  // Widget AffectAtributeContent() {
+  //   List<Widget> attributes;
+  //   List<ProductDTO> listOptions;
+  //   if (widget.dto.type == MASTER_PRODUCT) {
+  //     return ScopedModelDescendant(
+  //       builder:
+  //           (BuildContext context, Widget child, ProductDetailViewModel model) {
+  //         attributes = new List();
+  //         if (model.affectPriceContent.keys.length != 0) {
+  //           listOptions = model.affectPriceContent[
+  //               model.affectPriceContent.keys.elementAt(model.affectIndex)];
+  //
+  //           for (int i = 0; i < listOptions.length; i++) {
+  //             attributes.add(Container(
+  //               padding: EdgeInsets.only(right: 8),
+  //               child: RadioListTile(
+  //                 title: Row(
+  //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                   children: [
+  //                     Text(listOptions[i].name),
+  //                     Flexible(
+  //                         child: Text(
+  //                       NumberFormat.simpleCurrency(locale: 'vi')
+  //                           .format(listOptions[i].price),
+  //                       style: TextStyle(
+  //                           fontWeight: FontWeight.bold, fontSize: 16),
+  //                     ))
+  //                   ],
+  //                 ),
+  //                 groupValue: model.affectPriceChoice[model
+  //                     .affectPriceContent.keys
+  //                     .elementAt(model.affectIndex)],
+  //                 value: listOptions[i],
+  //                 onChanged: (e) {
+  //                   model.changeAffectPriceAtrribute(e);
+  //                 },
+  //               ),
+  //             ));
+  //           }
+  //
+  //           return Container(
+  //             color: kBackgroundGrey[0],
+  //             child: Column(
+  //               children: [...attributes],
+  //             ),
+  //           );
+  //         }
+  //
+  //         return Container();
+  //       },
+  //     );
+  //   }
+  //   return Container();
+  // }
+
   Widget tabAffectAtritbute() {
-    if (widget.dto.type == MASTER_PRODUCT) {
-      return Container(
-        decoration: BoxDecoration(
-            border: Border(top: BorderSide(color: kPrimary, width: 2))),
-        width: MediaQuery.of(context).size.width,
-        child: TabBar(
-          labelStyle: TextStyle(fontWeight: FontWeight.bold),
-          labelColor: kSecondary,
-          unselectedLabelColor: kSecondary,
-          unselectedLabelStyle: TextStyle(fontWeight: FontWeight.bold),
-          isScrollable: true,
-          tabs: affectPriceTabs,
-          indicatorColor: kPrimary,
-          controller: _affectPriceController,
-        ),
+    Tab extraTab = Tab(
+      child: Text("Thêm"),
+    );
+
+    if (widget.dto.type == ProductType.MASTER_PRODUCT)
+      return ScopedModelDescendant<ProductDetailViewModel>(
+        builder: (context, child, model) {
+          if(model.extra != null){
+            if(affectPriceTabs.last != extraTab){
+              affectPriceTabs.add(extraTab);
+            }
+          } else {
+            if(affectPriceTabs.last == extraTab){
+              affectPriceTabs.removeLast();
+            }
+          }
+          return Container(
+            width: MediaQuery.of(context).size.width,
+            color: kPrimary,
+            padding: EdgeInsets.only(top: 8),
+            child: TabBar(
+              labelColor: kPrimary,
+              unselectedLabelColor: kBackgroundGrey[0],
+              indicatorSize: TabBarIndicatorSize.tab,
+              indicator: BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(8),
+                    topRight: Radius.circular(8),
+                  ),
+                  color: kBackgroundGrey[0]),
+              isScrollable: true,
+              tabs: affectPriceTabs,
+              indicatorColor: kBackgroundGrey[0],
+              controller: _affectPriceController,
+            ),
+          );
+        },
       );
-    }
     return Container();
   }
 
   Widget AffectAtributeContent() {
-    List<Widget> attributes;
-    List<ProductDTO> listOptions;
-    if (widget.dto.type == MASTER_PRODUCT) {
-      return ScopedModelDescendant(
-        builder:
-            (BuildContext context, Widget child, ProductDetailViewModel model) {
-          attributes = new List();
-          if (model.affectPriceContent.keys.length != 0) {
-            listOptions = model.affectPriceContent[
-                model.affectPriceContent.keys.elementAt(model.affectIndex)];
-
-            for (int i = 0; i < listOptions.length; i++) {
-              attributes.add(Container(
-                padding: EdgeInsets.only(right: 8),
-                child: RadioListTile(
-                  title: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(listOptions[i].name),
-                      Flexible(
-                          child: Text(
-                        NumberFormat.simpleCurrency(locale: 'vi')
-                            .format(listOptions[i].price),
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16),
-                      ))
-                    ],
-                  ),
-                  groupValue: model.affectPriceChoice[model
-                      .affectPriceContent.keys
-                      .elementAt(model.affectIndex)],
-                  value: listOptions[i],
-                  onChanged: (e) {
-                    model.changeAffectPriceAtrribute(e);
-                  },
-                ),
-              ));
-            }
-
-            return Container(
-              color: kBackgroundGrey[0],
-              child: Column(
-                children: [...attributes],
-              ),
-            );
-          }
-
-          return Container();
-        },
-      );
-    }
-    return Container();
-  }
-
-  Widget tabUnaffectAtritbute() {
-    if (unaffectPriceTabs.length != 0)
-      return Container(
-        width: MediaQuery.of(context).size.width,
-        color: kPrimary,
-        padding: EdgeInsets.only(top: 8),
-        child: TabBar(
-          labelColor: kPrimary,
-          unselectedLabelColor: kBackgroundGrey[0],
-          indicatorSize: TabBarIndicatorSize.tab,
-          indicator: BoxDecoration(
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(8),
-                topRight: Radius.circular(8),
-              ),
-              color: kBackgroundGrey[0]),
-          isScrollable: true,
-          tabs: unaffectPriceTabs,
-          indicatorColor: kBackgroundGrey[0],
-          controller: _unaffectPriceController,
-        ),
-      );
-    return Container();
-  }
-
-  Widget unAffectAtributeContent() {
     List<Widget> attributes;
     List<String> listOptions;
     print("Đây là content");
@@ -337,22 +343,20 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
           case ViewStatus.Completed:
             print("Complete");
             if (!model.isExtra) {
-              print("Đang add nè");
               attributes = new List();
               if (widget.dto.type == MASTER_PRODUCT) {
-                print("Master ơi");
-                listOptions = model.unaffectPriceContent[model
-                    .unaffectPriceContent.keys
-                    .elementAt(model.unaffectIndex)];
+                listOptions = model.affectPriceContent[model
+                    .affectPriceContent.keys
+                    .elementAt(model.affectIndex)];
                 for (int i = 0; i < listOptions.length; i++) {
                   attributes.add(RadioListTile(
                     title: Text(listOptions[i]),
-                    groupValue: model.unaffectPriceChoice[model
-                        .unaffectPriceContent.keys
-                        .elementAt(model.unaffectIndex)],
+                    groupValue: model.affectPriceChoice[model
+                        .affectPriceContent.keys
+                        .elementAt(model.affectIndex)],
                     value: listOptions[i],
                     onChanged: (e) {
-                      model.changeUnAffectPriceAtrribute(e);
+                      model.changeAffectPriceAtrribute(e);
                     },
                   ));
                 }
@@ -374,7 +378,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                         child: Padding(
                           padding: const EdgeInsets.only(right: 8.0),
                           child: Text(NumberFormat.simpleCurrency(locale: "vi")
-                              .format(model.extra.keys.elementAt(i).price)),
+                              .format(model.extra.keys.elementAt(i).prices[0])),
                         ),
                       )
                     ],

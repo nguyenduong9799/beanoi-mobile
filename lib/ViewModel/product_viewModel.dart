@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-import 'package:unidelivery_mobile/Model/DAO/index.dart';
-import 'package:unidelivery_mobile/Model/DTO/StoreDTO.dart';
+import 'package:unidelivery_mobile/Bussiness/BussinessHandler.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/constraints.dart';
-import 'package:unidelivery_mobile/enums/view_status.dart';
 import 'package:unidelivery_mobile/services/analytic_service.dart';
 import 'package:unidelivery_mobile/utils/shared_pref.dart';
 
@@ -20,16 +17,11 @@ Color addColor = kBackgroundGrey[5];
 // TODO: 2.1 Viet ham changeAttribute
 
 class ProductDetailViewModel extends BaseModel {
-  int unaffectIndex = 0;
   int affectIndex = 0;
-  //List product không ảnh hưởng giá
-  Map<String, List<String>> unaffectPriceContent;
-  //List choice bắt buộc không ảnh hưởng giá
-  Map<String, String> unaffectPriceChoice;
   //List product ảnh hưởng giá
-  Map<String, List<ProductDTO>> affectPriceContent;
+  Map<String, List<String>> affectPriceContent;
   //List choice bắt buộc không ảnh hưởng giá
-  Map<String, ProductDTO> affectPriceChoice;
+  Map<String, String> affectPriceChoice;
   int count = 1;
 
   double total, fixTotal = 0, extraTotal = 0;
@@ -39,44 +31,62 @@ class ProductDetailViewModel extends BaseModel {
   //Bật cờ để đổi radio thành checkbox
   bool isExtra;
   //List size
-  bool isLoading = false;
   ProductDTO master;
 
   ProductDetailViewModel(ProductDTO dto) {
     master = dto;
     isExtra = false;
 
-    if (unaffectPriceContent.keys.toList().length == 0 &&
-        dto.catergoryId != null) {
-      isExtra = true;
+    this.affectPriceContent = new Map<String, List<String>>();
+
+    this.affectPriceChoice = new Map<String, String>();
+    //
+
+    if (master.type == MASTER_PRODUCT) {
+      for (int i = 0; i < master.attributes.keys.length; i++) {
+        List<String> listContents =
+            master.attributes[master.attributes.keys.elementAt(i)].split(",");
+        affectPriceContent[master.attributes.keys.elementAt(i)] = listContents;
+        affectPriceChoice[master.attributes.keys.elementAt(i)] = null;
+      }
+    } else {
+      fixTotal = BussinessHandler.countPrice(master.prices, count);
     }
 
-    total = (fixTotal + extraTotal) * count;
+    total = fixTotal + extraTotal;
+
     verifyOrder();
+    notifyListeners();
   }
 
-  Future<void> getExtra(List<int> cat_id, String sup_id) async {
-    setState(ViewStatus.Loading);
-    try {
-      StoreDTO store = await getStore();
-      ProductDAO dao = new ProductDAO();
-      List<ProductDTO> products = new List();
-
-      for (int id in cat_id) {
-        products.addAll(await dao.getExtraProducts(id, sup_id, store.id));
-      }
-
-      for (ProductDTO dto in products) {
-        extra[dto] = false;
-      }
-      setState(ViewStatus.Completed);
-    } catch (e) {
-      bool result = await showErrorDialog();
-      if (result) {
-        await getExtra(cat_id, sup_id);
-      } else
-        setState(ViewStatus.Error);
+  Future<void> getExtra(ProductDTO product) async {
+    this.extra = new Map<ProductDTO, bool>();
+    for (ProductDTO dto in product.extras) {
+      extra[dto] = false;
     }
+    notifyListeners();
+
+    // setState(ViewStatus.Loading);
+    // try {
+    //   StoreDTO store = await getStore();
+    //   ProductDAO dao = new ProductDAO();
+    //   List<ProductDTO> products = new List();
+    //
+    //   for (int id in cat_id) {
+    //     products.addAll(await dao.getExtraProducts(id, sup_id, store.id));
+    //   }
+    //
+    //   for (ProductDTO dto in products) {
+    //     extra[dto] = false;
+    //   }
+    //   setState(ViewStatus.Completed);
+    // } catch (e) {
+    //   bool result = await showErrorDialog();
+    //   if (result) {
+    //     await getExtra(cat_id, sup_id);
+    //   } else
+    //     setState(ViewStatus.Error);
+    // }
   }
 
   void addQuantity() {
@@ -85,14 +95,36 @@ class ProductDetailViewModel extends BaseModel {
         minusColor = kPrimary;
       }
       count++;
-      total = (extraTotal + fixTotal) * count;
-      notifyListeners();
-    }
-  }
 
-  void deleteQuantity() {
-    count = 0;
-    notifyListeners();
+      if (master.type == MASTER_PRODUCT) {
+        Map choice = new Map();
+        for (int i = 0; i < affectPriceContent.keys.toList().length; i++) {
+          choice[affectPriceContent.keys.elementAt(i)] =
+              affectPriceChoice[affectPriceContent.keys.elementAt(i)];
+        }
+
+        ProductDTO dto = master.getChildByAttributes(choice);
+        fixTotal = BussinessHandler.countPrice(dto.prices, count);
+      } else {
+        fixTotal = BussinessHandler.countPrice(master.prices, count);
+      }
+
+      if (this.extra != null) {
+        extraTotal = 0;
+        for (int i = 0; i < extra.keys.length; i++) {
+          if (extra[extra.keys.elementAt(i)]) {
+            double price = BussinessHandler.countPrice(
+                extra.keys.elementAt(i).prices, count);
+            extraTotal += price;
+          }
+        }
+      }
+
+      total = fixTotal + extraTotal;
+      notifyListeners();
+      // total = (extraTotal + fixTotal) * count;
+      // notifyListeners();
+    }
   }
 
   void minusQuantity() {
@@ -101,54 +133,81 @@ class ProductDetailViewModel extends BaseModel {
       if (count == 1) {
         minusColor = kBackgroundGrey[5];
       }
-      total = (extraTotal + fixTotal) * count;
+
+      if (master.type == MASTER_PRODUCT) {
+        Map choice = new Map();
+        for (int i = 0; i < affectPriceContent.keys.toList().length; i++) {
+          choice[affectPriceContent.keys.elementAt(i)] =
+              affectPriceChoice[affectPriceContent.keys.elementAt(i)];
+        }
+
+        ProductDTO dto = master.getChildByAttributes(choice);
+        fixTotal = BussinessHandler.countPrice(dto.prices, count);
+      } else {
+        fixTotal = BussinessHandler.countPrice(master.prices, count);
+      }
+
+      if (this.extra != null) {
+        extraTotal = 0;
+        for (int i = 0; i < extra.keys.length; i++) {
+          if (extra[extra.keys.elementAt(i)]) {
+            double price = BussinessHandler.countPrice(
+                extra.keys.elementAt(i).prices, count);
+            extraTotal += price;
+          }
+        }
+      }
+
+      total = fixTotal + extraTotal;
       notifyListeners();
+      // total = (extraTotal + fixTotal) * count;
+      // notifyListeners();
     }
   }
 
-  void changeAffectPriceAtrribute(ProductDTO e) {
-    if (affectPriceChoice[affectPriceContent.keys.elementAt(affectIndex)] !=
-        null) {
-      fixTotal -=
-          affectPriceChoice[affectPriceContent.keys.elementAt(affectIndex)]
-              .price;
+  void changeAffectPriceAtrribute(String e) {
+    Map choice = new Map();
+    String attribute = affectPriceContent.keys.elementAt(affectIndex);
+
+    affectPriceChoice[attribute] = e;
+
+    verifyOrder();
+
+    if (order) {
+      for (int i = 0; i < affectPriceContent.keys.toList().length; i++) {
+        choice[affectPriceContent.keys.elementAt(i)] =
+            affectPriceChoice[affectPriceContent.keys.elementAt(i)];
+      }
+
+      if (master.type == MASTER_PRODUCT) {
+        ProductDTO dto = master.getChildByAttributes(choice);
+        fixTotal = BussinessHandler.countPrice(dto.prices, count);
+        if (dto.hasExtra) {
+          getExtra(dto);
+        } else {
+          this.extra = null;
+        }
+      }
+      total = fixTotal + extraTotal;
     }
-    affectPriceChoice[affectPriceContent.keys.elementAt(affectIndex)] = e;
-    fixTotal += e.price;
-    total = (fixTotal + extraTotal) * count;
 
-    verifyOrder();
+    notifyListeners();
   }
 
-  void changeUnAffectPriceAtrribute(String e) {
-    unaffectPriceChoice[unaffectPriceContent.keys.elementAt(unaffectIndex)] = e;
-    verifyOrder();
-  }
-
-  void changeUnAffectIndex(int index) {
-    this.unaffectIndex = index;
-    if (index == unaffectPriceContent.keys.toList().length) {
+  void changeAffectIndex(int index) {
+    this.affectIndex = index;
+    if (index == affectPriceContent.keys.toList().length) {
       isExtra = true;
     } else
       isExtra = false;
     notifyListeners();
   }
 
-  void changeAffectIndex(int index) {
-    this.affectIndex = index;
-    notifyListeners();
-  }
-
   void verifyOrder() {
     order = true;
+
     for (int i = 0; i < affectPriceContent.keys.toList().length; i++) {
       if (affectPriceChoice[affectPriceContent.keys.elementAt(i)] == null) {
-        order = false;
-      }
-    }
-
-    for (int i = 0; i < unaffectPriceContent.keys.toList().length; i++) {
-      if (unaffectPriceChoice[unaffectPriceContent.keys.elementAt(i)].isEmpty) {
         order = false;
       }
     }
@@ -157,7 +216,6 @@ class ProductDetailViewModel extends BaseModel {
       addColor = kPrimary;
     }
     // setState(ViewStatus.Completed);
-    notifyListeners();
   }
 
   void changExtra(bool value, int i) {
@@ -165,10 +223,12 @@ class ProductDetailViewModel extends BaseModel {
     extra[extra.keys.elementAt(i)] = value;
     for (int j = 0; j < extra.keys.toList().length; j++) {
       if (extra[extra.keys.elementAt(j)]) {
-        extraTotal += extra.keys.elementAt(j).price;
+        double price =
+            BussinessHandler.countPrice(extra.keys.elementAt(j).prices, count);
+        extraTotal += price;
       }
     }
-    total = (fixTotal + extraTotal) * count;
+    total = fixTotal + extraTotal;
     notifyListeners();
   }
 
@@ -176,14 +236,17 @@ class ProductDetailViewModel extends BaseModel {
     showLoadingDialog();
     List<ProductDTO> listChoices = new List<ProductDTO>();
     if (master.type == MASTER_PRODUCT) {
-      for (int i = 0; i < affectPriceChoice.keys.toList().length; i++) {
-        print("Save product: " +
-            affectPriceChoice[affectPriceChoice.keys.elementAt(i)].toString());
-        listChoices.add(affectPriceChoice[affectPriceChoice.keys.elementAt(i)]);
+      Map choice = new Map();
+      for (int i = 0; i < affectPriceContent.keys.toList().length; i++) {
+        choice[affectPriceContent.keys.elementAt(i)] =
+            affectPriceChoice[affectPriceContent.keys.elementAt(i)];
       }
+
+      ProductDTO dto = master.getChildByAttributes(choice);
+      listChoices.add(dto);
     }
 
-    if (master.extraId != null) {
+    if (this.extra != null) {
       for (int i = 0; i < extra.keys.length; i++) {
         if (extra[extra.keys.elementAt(i)]) {
           listChoices.add(extra.keys.elementAt(i));
@@ -192,12 +255,7 @@ class ProductDetailViewModel extends BaseModel {
     }
 
     String description = "";
-    for (int i = 0; i < unaffectPriceChoice.keys.toList().length; i++) {
-      description += unaffectPriceChoice.keys.elementAt(i) +
-          ": " +
-          unaffectPriceChoice[unaffectPriceChoice.keys.elementAt(i)] +
-          "\n";
-    }
+
     CartItem item = new CartItem(master, listChoices, description, count);
 
     print("Save product: " + master.toString());

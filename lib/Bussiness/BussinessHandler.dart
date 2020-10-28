@@ -8,6 +8,17 @@ class BussinessHandler {
 
   static double countPrice(List<double> prices, int quantity,
       [double weight = 1]) {
-    return 10000;
+    double total = 0;
+
+    for(int i = 0; i < quantity; i++){
+      if(i >= PRICE_QUANTITY){
+        total += prices[PRICE_QUANTITY - 1];
+      }
+      else total += prices[i];
+    }
+
+    print("total: " + total.toString());
+
+    return total;
   }
 }

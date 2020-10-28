@@ -5,7 +5,6 @@ import 'package:unidelivery_mobile/constraints.dart';
 class ProductDTO {
   int id;
   String name;
-  double price;
   String description;
   int type;
   String imageURL;
@@ -25,14 +24,13 @@ class ProductDTO {
 
   @override
   String toString() {
-    return 'ProductDTO{id: $id, name: $name, price: $price, description: $description, type: $type, imageURL: $imageURL, listChild: $listChild, catergoryId: $catergoryId, extraId: $extraId}';
+    return 'ProductDTO{id: $id, name: $name, description: $description, type: $type, imageURL: $imageURL, listChild: $listChild, catergoryId: $catergoryId, extraId: $extraId}';
   }
 
   ProductDTO(
     this.id, {
     this.name,
     this.imageURL,
-    this.price,
     this.description,
     this.type,
     this.listChild,
@@ -74,7 +72,7 @@ class ProductDTO {
 
     // prices
     for (int i = 0; i < BussinessHandler.PRICE_QUANTITY; i++) {
-      prices[i] = (json["price${i + 1}"] as double);
+      prices[i] = (json["price${i + 1}"] as double)??json["price"] as double;
     }
     product.prices = prices;
 
@@ -105,7 +103,7 @@ class ProductDTO {
   }
 
   Map<String, dynamic> toJson() {
-    Map prodJson = {
+    Map<String, dynamic> prodJson = {
       "product_id": id,
       "product_name": name,
       // price: double.parse(json['price'].toString()),
@@ -124,7 +122,7 @@ class ProductDTO {
       "extras": extras,
     };
 
-    var pricesMap = {};
+    Map<String, dynamic> pricesMap = new Map();
 
     for (var i = 0; i < prices.length; i++) {
       pricesMap.addAll({"price${i + 1}": prices[i]});

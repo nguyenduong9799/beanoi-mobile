@@ -245,7 +245,10 @@ class _OrderScreenState extends State<OrderScreen> {
 
   Widget productCard(CartItem item) {
     List<Widget> list = new List();
-    double price = item.master.price;
+    double price = 0;
+    if (item.master.type != ProductType.MASTER_PRODUCT) {
+      price = BussinessHandler.countPrice(item.master.prices, item.quantity);
+    }
 
     // if (item.master.type == MASTER_PRODUCT) {
     //   list.add(Text(item.products[0].name,
@@ -274,7 +277,8 @@ class _OrderScreenState extends State<OrderScreen> {
               ? item.products[i].name.replaceAll("Extra", "+")
               : item.products[i].name,
           style: TextStyle(fontSize: 13, color: kBackgroundGrey[5])));
-      price += item.products[i].price;
+      price +=
+          BussinessHandler.countPrice(item.products[i].prices, item.quantity);
     }
 
     if (item.description != null && item.description.isNotEmpty) {
@@ -306,7 +310,6 @@ class _OrderScreenState extends State<OrderScreen> {
                       ClipRRect(
                         borderRadius: BorderRadius.circular(8),
                         child: CachedNetworkImage(
-
                           width: MediaQuery.of(context).size.width * 0.25,
                           height: MediaQuery.of(context).size.width * 0.25,
                           fit: BoxFit.fill,
@@ -333,7 +336,8 @@ class _OrderScreenState extends State<OrderScreen> {
                               color: Colors.grey,
                             ),
                           ),
-                          errorWidget: (context, url, error) => Icon(Icons.error),
+                          errorWidget: (context, url, error) =>
+                              Icon(Icons.error),
                         ),
                       ),
                       SizedBox(
@@ -350,7 +354,7 @@ class _OrderScreenState extends State<OrderScreen> {
                             ),
                             Text(
                               NumberFormat.simpleCurrency(locale: 'vi')
-                                  .format(price * item.quantity),
+                                  .format(price),
                               style: TextStyle(fontSize: 14),
                             )
                           ],
@@ -374,7 +378,8 @@ class _OrderScreenState extends State<OrderScreen> {
               showLoadingDialog();
               bool result = await removeItemFromCart(item);
               if (result) {
-                await AnalyticsService.getInstance().logChangeCart(item.master, item.quantity, false);
+                await AnalyticsService.getInstance()
+                    .logChangeCart(item.master, item.quantity, false);
                 hideDialog();
                 Get.back(result: false);
               } else {
@@ -468,7 +473,9 @@ class _OrderScreenState extends State<OrderScreen> {
                     ],
                   ),
                 ),
-                MySeparator(color: kPrimary,),
+                MySeparator(
+                  color: kPrimary,
+                ),
                 Padding(
                   padding: const EdgeInsets.only(top: 10, bottom: 10),
                   child: Row(
@@ -505,50 +512,47 @@ class _OrderScreenState extends State<OrderScreen> {
     );
   }
 
-  Widget selectPaymentMethods(){
+  Widget selectPaymentMethods() {
     return ScopedModel(
-      model: orderViewModel,
-      child: ScopedModelDescendant<OrderViewModel>(
-        builder: (context, child, model) {
+        model: orderViewModel,
+        child: ScopedModelDescendant<OrderViewModel>(
+          builder: (context, child, model) {
+            List<Widget> listPayments = new List();
+            for (int i = 0; i < model.options.length; i++) {
+              listPayments.add(RadioListTile(
+                activeColor: kPrimary,
+                groupValue: model.payment,
+                value: model.options[i],
+                title: Text(model.options[i]),
+                onChanged: (value) {
+                  model.changeOption(value);
+                },
+              ));
+            }
 
-          List<Widget> listPayments = new List();
-          for(int i = 0; i < model.options.length; i++){
-            listPayments.add(RadioListTile(
-              activeColor: kPrimary,
-              groupValue: model.payment,
-              value: model.options[i],
-              title: Text(model.options[i]),
-              onChanged: (value){
-                model.changeOption(value);
-              },
-            ));
-
-          }
-
-          return  Container(
-            color: kBackgroundGrey[0],
-            padding: const EdgeInsets.only(bottom: 8, top: 8),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
-                  child: Text(
-                    "Phương thức thanh toán",
-                    style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                        color: kPrimary
+            return Container(
+              color: kBackgroundGrey[0],
+              padding: const EdgeInsets.only(bottom: 8, top: 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(left: 8, right: 8, bottom: 8),
+                    child: Text(
+                      "Phương thức thanh toán",
+                      style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                          color: kPrimary),
                     ),
                   ),
-                ),
-                ...listPayments
-              ],
-            ),
-          );
-        },
-      )
-    );
+                  ...listPayments
+                ],
+              ),
+            );
+          },
+        ));
   }
 
   Widget bottomBar(double total) {

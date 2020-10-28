@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:unidelivery_mobile/Bussiness/BussinessHandler.dart';
 import 'package:unidelivery_mobile/Model/DAO/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/CartDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/StoreDTO.dart';
@@ -42,11 +43,15 @@ class OrderViewModel extends BaseModel {
   double countPrice(Cart cart) {
     double total = 0;
     for (CartItem item in cart.items) {
-      double subTotal = item.master.price;
-      for (ProductDTO dto in item.products) {
-        subTotal += dto.price;
+      double subTotal = 0;
+      if(item.master.type != ProductType.MASTER_PRODUCT){
+        subTotal = BussinessHandler.countPrice(item.master.prices, item.quantity);
       }
-      total += (subTotal * item.quantity);
+
+      for (ProductDTO dto in item.products) {
+        subTotal +=  BussinessHandler.countPrice(dto.prices, item.quantity);
+      }
+      total += subTotal;
     }
     total += DELIVERY_FEE;
     return total;
