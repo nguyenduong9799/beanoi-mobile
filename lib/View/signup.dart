@@ -82,10 +82,9 @@ class _SignUpState extends State<SignUp> {
           print('Update Success');
           if (widget.user != null) {
             Get.back(result: true);
-          } else{
-            Get.offAndToNamed(RouteHandler.NAV);
+          } else {
+            Get.offAllNamed(RouteHandler.NAV);
           }
-
         }
       }
     }
@@ -261,7 +260,10 @@ class _SignUpState extends State<SignUp> {
                           Center(
                             child: GestureDetector(
                               onTap: () async {
-                                Get.back();
+                                if (widget.user != null) {
+                                  Get.back();
+                                } else
+                                  Get.offAllNamed(RouteHandler.LOGIN);
                                 print("Back to home");
                               },
                               child: Text(

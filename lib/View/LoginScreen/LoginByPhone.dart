@@ -96,10 +96,15 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
             child: Column(
               children: [
                 Expanded(
-                  child: Container(
-                    child: Image.asset(
-                      'assets/images/phone_input.png',
-                      alignment: Alignment.topRight,
+                  child: Align(
+                    alignment: Alignment.topRight,
+                    child: Container(
+                      padding: EdgeInsets.only(right: 16),
+                      //color: Colors.blue,
+                      child: Image.asset(
+                        'assets/images/phone_input.png',
+                        alignment: Alignment.topRight,
+                      ),
                     ),
                   ),
                 ),

@@ -6,7 +6,7 @@ class StoreDAO {
   // 1. Get Product List from API
   Future<List<StoreDTO>> getStores() async {
     final res = await request.get('/stores', queryParameters: {
-      "type": VIRTUAL_STORE_TYPE,
+      // "type": VIRTUAL_STORE_TYPE,
       "brand-id": UNIBEAN_BRAND
     });
     var jsonList = res.data["data"] as List;

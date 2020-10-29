@@ -593,31 +593,55 @@ class _OrderScreenState extends State<OrderScreen> {
           SizedBox(
             height: 16,
           ),
-          FlatButton(
-            onPressed: () async {
-              await orderViewModel.orderCart(orderNote, total);
-              // pr.hide();
-              // showStateDialog();
-            },
-            padding: EdgeInsets.only(left: 8.0, right: 8.0),
-            textColor: Colors.white,
-            color: kPrimary,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(8))),
-            child: Column(
-              children: [
-                SizedBox(
-                  height: 16,
-                ),
-                Text("Chốt đơn",
-                    style:
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-                SizedBox(
-                  height: 16,
+          orderViewModel.payment != null
+              ? FlatButton(
+                  onPressed: () async {
+                    if (orderViewModel.payment != null) {
+                      await orderViewModel.orderCart(orderNote, total);
+                    }
+                    // pr.hide();
+                    // showStateDialog();
+                  },
+                  padding: EdgeInsets.only(left: 8.0, right: 8.0),
+                  textColor: Colors.white,
+                  color: kPrimary,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(8))),
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: 16,
+                      ),
+                      Text("Chốt đơn",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 15)),
+                      SizedBox(
+                        height: 16,
+                      )
+                    ],
+                  ),
                 )
-              ],
-            ),
-          ),
+              : FlatButton(
+                  onPressed: () async {},
+                  padding: EdgeInsets.only(left: 8.0, right: 8.0),
+                  textColor: Colors.white,
+                  color: kBackgroundGrey[4],
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(8))),
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: 16,
+                      ),
+                      Text("Vui lòng chọn phương thức thanh toán",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 15)),
+                      SizedBox(
+                        height: 16,
+                      )
+                    ],
+                  ),
+                ),
           SizedBox(
             height: 8,
           )

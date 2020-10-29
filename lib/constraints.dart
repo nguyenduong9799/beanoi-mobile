@@ -39,3 +39,8 @@ class ProductType {
   static const int DETAIL_PRODUCT = 7;
   static const int COMPLEX_PRODUCT = 10;
 }
+
+class PaymentType{
+  static const int CASH = 1;
+  static const int BEAN = 3;
+}

@@ -77,14 +77,17 @@ class _LoginWithPhoneOTPState extends State<LoginWithPhoneOTP> {
             child: Column(
               children: [
                 Expanded(
-                  child: Container(
-                    // color: Colors.blue,
-                    padding: EdgeInsets.all(0),
-                    child: Image.asset(
-                      'assets/images/bi_password.png',
-                      alignment: Alignment.bottomRight,
-                      fit: BoxFit.fitHeight,
-                      // scale: 0.4,
+                  child: Align(
+                    alignment: Alignment.topRight,
+                    child: Container(
+                      // color: Colors.blue,
+                      padding: EdgeInsets.only(right: 16),
+                      child: Image.asset(
+                        'assets/images/bi_password.png',
+                        alignment: Alignment.bottomRight,
+                        fit: BoxFit.fitHeight,
+                        // scale: 0.4,
+                      ),
                     ),
                   ),
                 ),

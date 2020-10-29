@@ -101,9 +101,8 @@ class _CustomTabsState extends State<CustomTabView> with TickerProviderStateMixi
       unselectedLabelColor: kBackgroundGrey[0],
       indicatorSize: TabBarIndicatorSize.tab,
       indicator: BoxDecoration(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(8),
-            topRight: Radius.circular(8),
+          borderRadius: BorderRadius.all(
+           Radius.circular(16),
           ),
           color: kBackgroundGrey[0]),
       isScrollable: true,

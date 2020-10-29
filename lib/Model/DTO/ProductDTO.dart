@@ -10,7 +10,7 @@ class ProductDTO {
   String imageURL;
   List<ProductDTO> listChild;
   int catergoryId;
-  List<int> extraId;
+  // List<int> extraId;
   String supplierId;
   List<ProductDTO> extras;
   // update
@@ -21,10 +21,12 @@ class ProductDTO {
   int min;
   int max;
   bool isAnd;
+  int generalId;
+
 
   @override
   String toString() {
-    return 'ProductDTO{id: $id, name: $name, description: $description, type: $type, imageURL: $imageURL, listChild: $listChild, catergoryId: $catergoryId, extraId: $extraId}';
+    return 'ProductDTO{id: $id, name: $name, description: $description, type: $type, imageURL: $imageURL, listChild: $listChild, catergoryId: $catergoryId, supplierId: $supplierId, extras: $extras, prices: $prices, hasExtra: $hasExtra, attributes: $attributes, defaultQuantity: $defaultQuantity, min: $min, max: $max, isAnd: $isAnd}';
   }
 
   ProductDTO(
@@ -35,7 +37,6 @@ class ProductDTO {
     this.type,
     this.listChild,
     this.catergoryId,
-    this.extraId,
     this.prices,
     this.supplierId,
     this.attributes,
@@ -44,6 +45,7 @@ class ProductDTO {
     this.isAnd,
     this.max,
     this.min,
+        this.generalId
   }); // balance. point;
 
   factory ProductDTO.fromJson(dynamic json) {
@@ -63,11 +65,12 @@ class ProductDTO {
       supplierId: json['supplier_id'] as String,
       // prices: prices,
       // extraId: listExtra,
-      hasExtra: json['hasExtra'] as bool,
+      hasExtra: json['has_extra'] as bool,
       attributes: json["attributes"] as Map,
       defaultQuantity: json["default"] ?? 0,
       min: json["min"] ?? 0,
       max: json["max"] ?? 0,
+      generalId: json['general_product_id']
     );
 
     // prices
@@ -86,7 +89,7 @@ class ProductDTO {
         product.listChild = listChild;
         break;
       case ProductType.COMPLEX_PRODUCT:
-        if (product.hasExtra) {
+        if (product.hasExtra != null && product.hasExtra) {
           var listExtraJson = json['extras'] as List;
 
           List<ProductDTO> listExtra =
@@ -112,7 +115,6 @@ class ProductDTO {
       "pic_url": imageURL,
       "catergory_id": catergoryId,
       "child_products": listChild,
-      "extra_category_id": extraId,
       "supplier_id": supplierId,
       "hasExtra": hasExtra,
       "attributes": attributes,
@@ -120,7 +122,9 @@ class ProductDTO {
       "min": min,
       "max": max,
       "extras": extras,
+      "general_product_id" : generalId
     };
+
 
     Map<String, dynamic> pricesMap = new Map();
 

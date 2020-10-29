@@ -66,6 +66,7 @@ class CustomInterceptors extends InterceptorsWrapper {
 class MyRequest {
   static BaseOptions options = new BaseOptions(
       baseUrl: 'http://api.dominos.reso.vn/api/v2',
+      //baseUrl: 'https://192.168.1.201:45455/api/v2',
       headers: {
         Headers.contentTypeHeader: "application/json",
       },
@@ -82,9 +83,7 @@ class MyRequest {
       onError: (DioError e) async {
         // Do something with response error
         if (e.response.statusCode == 401) {
-          await showStatusDialog(
-              "assets/images/global_error.png",
-              "Lỗi",
+          await showStatusDialog("assets/images/global_error.png", "Lỗi",
               "Vui lòng đang nhập lại");
           Get.offAllNamed(RouteHandler.LOGIN);
         } else
@@ -104,7 +103,6 @@ class MyRequest {
 
 final requestObj = new MyRequest();
 final request = requestObj.request;
-
 
 class MyHttpOverrides extends HttpOverrides {
   @override

@@ -6,6 +6,7 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
+import 'package:unidelivery_mobile/acessories/tabbar.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
 
@@ -20,9 +21,7 @@ class ProductDetailScreen extends StatefulWidget {
 
 class _ProductDetailScreenState extends State<ProductDetailScreen>
     with TickerProviderStateMixin {
-  List<Tab> affectPriceTabs;
-
-  TabController _affectPriceController;
+  List<String> affectPriceTabs;
 
   ProductDetailViewModel productDetailViewModel;
 
@@ -33,19 +32,14 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
     productDetailViewModel = new ProductDetailViewModel(widget.dto);
 
     if (widget.dto.type == MASTER_PRODUCT) {
-      affectPriceTabs = new List<Tab>();
+      affectPriceTabs = new List<String>();
       List<String> affectkeys =
           productDetailViewModel.affectPriceContent.keys.toList();
       for (int i = 0; i < affectkeys.length; i++) {
         print(affectkeys[i].toString());
-        affectPriceTabs.add(Tab(
-          child: Text(affectkeys[i].toUpperCase() + " (*)"),
-        ));
+        affectPriceTabs.add(affectkeys[i].toUpperCase() + " *");
       }
 
-      _affectPriceController =
-          TabController(vsync: this, length: affectPriceTabs.length);
-      _affectPriceController.addListener(_handleAffectTabSelection);
     }
 
     // List<String> keys =
@@ -68,11 +62,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
     // _affectPriceController.addListener(_handleAffectTabSelection);
   }
 
-  void _handleAffectTabSelection() {
-    if (_affectPriceController.indexIsChanging) {
-      productDetailViewModel.changeAffectIndex(_affectPriceController.index);
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -280,9 +269,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
   // }
 
   Widget tabAffectAtritbute() {
-    Tab extraTab = Tab(
-      child: Text("Thêm"),
-    );
+    // Tab extraTab = Tab(
+    //   child: Text("Thêm"),
+    // );
+    String extraTab = "Thêm";
 
     if (widget.dto.type == ProductType.MASTER_PRODUCT)
       return ScopedModelDescendant<ProductDetailViewModel>(
@@ -296,25 +286,18 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
               affectPriceTabs.removeLast();
             }
           }
+
           return Container(
             width: MediaQuery.of(context).size.width,
             color: kPrimary,
-            padding: EdgeInsets.only(top: 8),
-            child: TabBar(
-              labelColor: kPrimary,
-              unselectedLabelColor: kBackgroundGrey[0],
-              indicatorSize: TabBarIndicatorSize.tab,
-              indicator: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(8),
-                    topRight: Radius.circular(8),
-                  ),
-                  color: kBackgroundGrey[0]),
-              isScrollable: true,
-              tabs: affectPriceTabs,
-              indicatorColor: kBackgroundGrey[0],
-              controller: _affectPriceController,
-            ),
+            padding: EdgeInsets.all(8),
+            child: CustomTabView(
+              itemCount: affectPriceTabs.length,
+              tabBuilder: (context, index) => Tab(text: affectPriceTabs[index]),
+              onPositionChange: (index){
+                model.changeAffectIndex(index);
+              },
+            )
           );
         },
       );

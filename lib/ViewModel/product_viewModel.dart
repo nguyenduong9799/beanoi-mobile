@@ -46,6 +46,9 @@ class ProductDetailViewModel extends BaseModel {
       for (int i = 0; i < master.attributes.keys.length; i++) {
         List<String> listContents =
             master.attributes[master.attributes.keys.elementAt(i)].split(",");
+        listContents.forEach((element) {
+          element.trim();
+        });
         affectPriceContent[master.attributes.keys.elementAt(i)] = listContents;
         affectPriceChoice[master.attributes.keys.elementAt(i)] = null;
       }
@@ -181,8 +184,11 @@ class ProductDetailViewModel extends BaseModel {
 
       if (master.type == MASTER_PRODUCT) {
         ProductDTO dto = master.getChildByAttributes(choice);
+        print("dto: " + dto.toString());
         fixTotal = BussinessHandler.countPrice(dto.prices, count);
-        if (dto.hasExtra) {
+        extraTotal = 0;
+        if (dto.hasExtra != null && dto.hasExtra) {
+          print("add extra!");
           getExtra(dto);
         } else {
           this.extra = null;

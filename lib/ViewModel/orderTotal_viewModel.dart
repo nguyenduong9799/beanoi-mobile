@@ -15,7 +15,7 @@ import '../constraints.dart';
 
 class OrderViewModel extends BaseModel {
   AnalyticsService _analyticsService;
-  String payment = "Tiền mặt";
+  String payment;
   List<String> options = ["Tiền mặt", "Tiền trong ví"];
 
   static OrderViewModel _instance;
@@ -31,8 +31,7 @@ class OrderViewModel extends BaseModel {
     _instance = null;
   }
 
-
-  OrderViewModel(){
+  OrderViewModel() {
     _analyticsService = AnalyticsService.getInstance();
   }
 
@@ -44,12 +43,13 @@ class OrderViewModel extends BaseModel {
     double total = 0;
     for (CartItem item in cart.items) {
       double subTotal = 0;
-      if(item.master.type != ProductType.MASTER_PRODUCT){
-        subTotal = BussinessHandler.countPrice(item.master.prices, item.quantity);
+      if (item.master.type != ProductType.MASTER_PRODUCT) {
+        subTotal =
+            BussinessHandler.countPrice(item.master.prices, item.quantity);
       }
 
       for (ProductDTO dto in item.products) {
-        subTotal +=  BussinessHandler.countPrice(dto.prices, item.quantity);
+        subTotal += BussinessHandler.countPrice(dto.prices, item.quantity);
       }
       total += subTotal;
     }
@@ -65,7 +65,20 @@ class OrderViewModel extends BaseModel {
       // LOG ORDER
 
       await _analyticsService.logBeginCheckout(total);
-      OrderStatus result = await dao.createOrders(orderNote, storeDTO.id);
+
+      int paymentType = 0;
+
+      switch (payment) {
+        case "Tiền mặt":
+          paymentType = PaymentType.CASH;
+          break;
+        case "Tiền trong ví":
+          paymentType = ProductType.MASTER_PRODUCT;
+          break;
+      }
+
+      OrderStatus result =
+          await dao.createOrders(orderNote, storeDTO.id, paymentType);
       if (result == OrderStatus.Success) {
         await _analyticsService.logOrderCreated(total);
         await deleteCart();
@@ -94,7 +107,7 @@ class OrderViewModel extends BaseModel {
     }
   }
 
-  void changeOption(String option){
+  void changeOption(String option) {
     payment = option;
     notifyListeners();
   }

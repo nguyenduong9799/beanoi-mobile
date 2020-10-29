@@ -1,4 +1,5 @@
 import 'package:unidelivery_mobile/Model/DTO/ProductDTO.dart';
+import 'package:unidelivery_mobile/constraints.dart';
 
 class Cart {
   List<CartItem> items;
@@ -6,6 +7,8 @@ class Cart {
   String orderNote;
 
   Cart.get({this.items, this.orderNote});
+
+  int payment;
 
   Cart() {
     items = List();
@@ -33,9 +36,17 @@ class Cart {
   }
 
   Map<String, dynamic> toJsonAPi() {
-    List listCartItem = items.map((e) => e.toJsonApi()).toList();
+    List<Map<String, int>> payments = new List();
+    payments.add({"type": payment});
+
+    List<Map<String, dynamic>> listCartItem = new List();
+    items.forEach((element) {
+      listCartItem.addAll(element.toJsonApi());
+    });
+
     Map<String, dynamic> map = {
-      "products_list": listCartItem,
+      "payments": payments,
+      "order_details": listCartItem,
       "note": orderNote,
     };
     print("Order: " + map.toString());
@@ -128,13 +139,24 @@ class CartItem {
     };
   }
 
-  Map<String, dynamic> toJsonApi() {
-    List productsId = products.map((e) => e.id).toList();
-    return {
-      "master_product": master.id,
-      "product_childs": productsId,
-      "description": description,
-      "quantity": quantity
-    };
+  List<Map<String, dynamic>> toJsonApi() {
+    List<Map<String, dynamic>> map = new List();
+
+    if (master.type != ProductType.MASTER_PRODUCT) {
+      map.add({
+        "product_id": master.id,
+        "quantity": quantity,
+        "parent_id": master.catergoryId
+      });
+    }
+
+    products.forEach((element) {
+      map.add({
+        "product_id": element.id,
+        "quantity": quantity,
+        "parent_id": element.catergoryId
+      });
+    });
+    return map;
   }
 }

@@ -6,7 +6,6 @@ import 'package:unidelivery_mobile/enums/order_status.dart';
 import 'package:unidelivery_mobile/utils/request.dart';
 import 'package:unidelivery_mobile/utils/shared_pref.dart';
 
-
 class OrderDAO {
   Future<List<OrderListDTO>> getOrders(OrderFilter filter) async {
     final res = await request.get('/orders', queryParameters: {
@@ -31,25 +30,24 @@ class OrderDAO {
     return orderDetail;
   }
 
-  Future<OrderStatus> createOrders(String note, int store_id) async {
+  Future<OrderStatus> createOrders(
+      String note, int store_id, int payment) async {
     try {
       Cart cart = await getCart();
       if (cart != null) {
         print("Request Note: " + note);
         cart.orderNote = note;
+        cart.payment = payment;
         final res = await request.post('/orders',
-            queryParameters: {
-              "brand-id": UNIBEAN_BRAND,
-              "store-id": store_id
-            },
+            queryParameters: {"brand-id": UNIBEAN_BRAND, "store-id": store_id},
             data: cart.toJsonAPi());
         if (res.statusCode == 200) {
           return OrderStatus.Success;
         }
       }
     } on DioError catch (e) {
-     if (e.response.statusCode == 400) {
-       print("Code: " + e.response.data['code'].toString());
+      if (e.response.statusCode == 400) {
+        print("Code: " + e.response.data['code'].toString());
         if (e.response.data['code'] == 'ERR_BALANCE')
           return OrderStatus.NoMoney;
         return OrderStatus.Timeout;
