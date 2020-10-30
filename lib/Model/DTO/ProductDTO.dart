@@ -23,30 +23,27 @@ class ProductDTO {
   bool isAnd;
   int generalId;
 
-
   @override
   String toString() {
     return 'ProductDTO{id: $id, name: $name, description: $description, type: $type, imageURL: $imageURL, listChild: $listChild, catergoryId: $catergoryId, supplierId: $supplierId, extras: $extras, prices: $prices, hasExtra: $hasExtra, attributes: $attributes, defaultQuantity: $defaultQuantity, min: $min, max: $max, isAnd: $isAnd}';
   }
 
-  ProductDTO(
-    this.id, {
-    this.name,
-    this.imageURL,
-    this.description,
-    this.type,
-    this.listChild,
-    this.catergoryId,
-    this.prices,
-    this.supplierId,
-    this.attributes,
-    this.hasExtra,
-    this.defaultQuantity,
-    this.isAnd,
-    this.max,
-    this.min,
-        this.generalId
-  }); // balance. point;
+  ProductDTO(this.id,
+      {this.name,
+      this.imageURL,
+      this.description,
+      this.type,
+      this.listChild,
+      this.catergoryId,
+      this.prices,
+      this.supplierId,
+      this.attributes,
+      this.hasExtra,
+      this.defaultQuantity,
+      this.isAnd,
+      this.max,
+      this.min,
+      this.generalId}); // balance. point;
 
   factory ProductDTO.fromJson(dynamic json) {
     var type = json['product_type_id'] as int;
@@ -54,28 +51,27 @@ class ProductDTO {
     List<double> prices = List.filled(10, 0);
     // List<int> listExtra = jsonExtra.cast<int>().toList();
 
-    ProductDTO product = ProductDTO(
-      json["product_id"],
-      name: json['product_name'] as String,
-      // price: double.parse(json['price'].toString()),
-      description: json['description'] as String,
-      type: type,
-      imageURL: json['pic_url'] as String,
-      catergoryId: json['category_id'],
-      supplierId: json['supplier_id'] as String,
-      // prices: prices,
-      // extraId: listExtra,
-      hasExtra: json['has_extra'] as bool,
-      attributes: json["attributes"] as Map,
-      defaultQuantity: json["default"] ?? 0,
-      min: json["min"] ?? 0,
-      max: json["max"] ?? 0,
-      generalId: json['general_product_id']
-    );
+    ProductDTO product = ProductDTO(json["product_id"],
+        name: json['product_name'] as String,
+        // price: double.parse(json['price'].toString()),
+        description: json['description'] as String,
+        type: type,
+        imageURL:
+            "https://images.unsplash.com/photo-1516714435131-44d6b64dc6a2?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=80",
+        catergoryId: json['category_id'],
+        supplierId: json['supplier_id'] as String,
+        // prices: prices,
+        // extraId: listExtra,
+        hasExtra: json['has_extra'] as bool,
+        attributes: json["attributes"] as Map,
+        defaultQuantity: json["default"] ?? 0,
+        min: json["min"] ?? 0,
+        max: json["max"] ?? 0,
+        generalId: json['general_product_id']);
 
     // prices
     for (int i = 0; i < BussinessHandler.PRICE_QUANTITY; i++) {
-      prices[i] = (json["price${i + 1}"] as double)??json["price"] as double;
+      prices[i] = (json["price${i + 1}"] as double) ?? json["price"] as double;
     }
     product.prices = prices;
 
@@ -122,9 +118,8 @@ class ProductDTO {
       "min": min,
       "max": max,
       "extras": extras,
-      "general_product_id" : generalId
+      "general_product_id": generalId
     };
-
 
     Map<String, dynamic> pricesMap = new Map();
 

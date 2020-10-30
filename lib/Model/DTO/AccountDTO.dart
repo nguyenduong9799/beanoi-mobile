@@ -1,6 +1,7 @@
 class AccountDTO {
   final int uid;
-  final String name, phone, gender, email;
+  final String name, gender, email;
+  String phone;
   final DateTime birthdate;
   final double balance;
   final double point;
@@ -31,7 +32,6 @@ class AccountDTO {
             ? DateTime.parse(json['birth_day'] as String)
             : null,
       );
-
 
   @override
   String toString() {
