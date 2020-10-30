@@ -51,6 +51,7 @@ dependencies:
   animated_text_kit: ^2.2.0
   get: ^3.12.1
   flutter_launcher_icons: ^0.8.1
+  introduction_screen: ^1.0.7
 
 dev_dependencies:
   flutter_test:

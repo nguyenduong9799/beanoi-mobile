@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-final kPrimary = Color(0xFF4fba6f);
+const kPrimary = Color(0xFF4fba6f);
 final kSecondary = Color(0xFF438029);
 final kSuccess = Colors.green;
 final kFail = Colors.red;
@@ -40,7 +40,7 @@ class ProductType {
   static const int COMPLEX_PRODUCT = 10;
 }
 
-class PaymentType{
+class PaymentType {
   static const int CASH = 1;
   static const int BEAN = 3;
 }

@@ -32,7 +32,8 @@ Future<void> showStatusDialog(
             ),
             Text(
               status,
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: kPrimary),
+              style: TextStyle(
+                  fontWeight: FontWeight.bold, fontSize: 18, color: kPrimary),
             ),
             SizedBox(
               height: 8,
@@ -41,10 +42,7 @@ Future<void> showStatusDialog(
               padding: const EdgeInsets.all(8.0),
               child: Text(
                 content,
-                style: TextStyle(
-                  fontSize: 16,
-                  color: kPrimary
-                ),
+                style: TextStyle(fontSize: 16, color: kPrimary),
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.left,
                 maxLines: 2,
@@ -53,8 +51,6 @@ Future<void> showStatusDialog(
             SizedBox(
               height: 16,
             ),
-
-
             Container(
               width: double.infinity,
               child: FlatButton(
@@ -337,8 +333,10 @@ Future<void> changeAddressDialog(RootViewModel model, Function function) async {
                       groupValue: model.tmp.id,
                       value: model.list[i].id,
                       title: Text(
-                        model.list[i].location,
-                        style: kTextSecondary,
+                        "${model.list[i].name} - ${model.list[i].location}",
+                        style: kTextSecondary.copyWith(
+                          fontSize: 14,
+                        ),
                       ),
                       onChanged: (value) {
                         model.changeLocation(value);
