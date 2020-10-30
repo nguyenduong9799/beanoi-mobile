@@ -4,6 +4,7 @@ import 'package:introduction_screen/introduction_screen.dart';
 import 'package:unidelivery_mobile/Model/DAO/AccountDAO.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/route_constraint.dart';
+import 'package:unidelivery_mobile/utils/shared_pref.dart';
 
 class OnBoardScreen extends StatefulWidget {
   OnBoardScreen({Key key}) : super(key: key);
@@ -81,6 +82,7 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
     // set pref that first onboard is false
     AccountDAO _accountDAO = AccountDAO();
     var hasLoggedInUser = await _accountDAO.isUserLoggedIn();
+    await setIsFirstOnboard(false);
     if (hasLoggedInUser) {
       Get.offAndToNamed(RouteHandler.NAV);
     } else {

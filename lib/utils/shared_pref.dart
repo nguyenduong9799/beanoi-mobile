@@ -4,6 +4,16 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:unidelivery_mobile/Model/DTO/StoreDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 
+Future<bool> setIsFirstOnboard(bool isFirstOnboard) async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  return prefs.setBool('isFirstOnBoard', isFirstOnboard);
+}
+
+Future<bool> getIsFirstOnboard() async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  return prefs.getBool('isFirstOnBoard');
+}
+
 Future<bool> setFCMToken(String value) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   return prefs.setString('FCMToken', value);

@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:unidelivery_mobile/Model/DAO/index.dart';
 import 'package:unidelivery_mobile/ViewModel/base_model.dart';
 import 'package:unidelivery_mobile/route_constraint.dart';
+import 'package:unidelivery_mobile/utils/shared_pref.dart';
 
 class StartUpViewModel extends BaseModel {
   static StartUpViewModel _instance;
@@ -27,7 +28,7 @@ class StartUpViewModel extends BaseModel {
     // await _pushNotificationService.initialise();
     await Future.delayed(Duration(seconds: 5));
     var hasLoggedInUser = await _accountDAO.isUserLoggedIn();
-    bool isFirstOnBoard = true;
+    bool isFirstOnBoard = await getIsFirstOnboard() ?? true;
 
     if (isFirstOnBoard) {
       Get.offAndToNamed(RouteHandler.ONBOARD);
