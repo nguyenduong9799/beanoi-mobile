@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:unidelivery_mobile/Model/DAO/AccountDAO.dart';
 import 'package:unidelivery_mobile/Model/DAO/StoreDAO.dart';
 import 'package:unidelivery_mobile/Model/DTO/AccountDTO.dart';
+import 'package:unidelivery_mobile/Model/DTO/CartDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/StoreDTO.dart';
 import 'package:unidelivery_mobile/Services/analytic_service.dart';
 import 'package:unidelivery_mobile/ViewModel/base_model.dart';
@@ -89,14 +90,20 @@ class RootViewModel extends BaseModel {
 
     StoreDAO dao = new StoreDAO();
     list = await dao.getStores();
+    Cart cart = await getCart();
 
     hideDialog();
     await changeAddressDialog(this, () async {
       hideDialog();
       if (tmp.id != this.dto.id) {
-        int option = await showOptionDialog(
-            "Bạn có chắc không? Đổi địa chỉ rồi là giỏ hàng m bị xóa đó :))");
-        if (option == 1) {
+        int option = 0;
+
+        if(cart != null){
+          option = await showOptionDialog(
+              "Bạn có chắc không? Đổi địa chỉ rồi là giỏ hàng m bị xóa đó :))");
+        }
+
+        if (option == 1 || cart == null) {
           print("Changing index...");
           dto = tmp;
           await deleteCart();
