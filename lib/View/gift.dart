@@ -55,10 +55,10 @@ class GiftScreen extends StatelessWidget {
               ),
               Container(
                 // color: Colors.amber,
-                height: 200,
+                height: 300,
                 width: MediaQuery.of(context).size.width * 0.9,
                 child: Image.asset(
-                  'assets/images/new-idea.png',
+                  'assets/images/coming_soon.gif',
                   fit: BoxFit.cover,
                 ),
               )
