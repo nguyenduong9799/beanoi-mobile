@@ -15,8 +15,11 @@ import '../constraints.dart';
 
 class OrderViewModel extends BaseModel {
   AnalyticsService _analyticsService;
-  String payment;
-  List<String> options = ["Tiền mặt", "Tiền trong ví"];
+  int payment;
+  Map<int, String> options = {
+    PaymentType.CASH : "Tiền mặt",
+    PaymentType.BEAN : "Tiền trong ví"
+  };
 
   static OrderViewModel _instance;
 
@@ -66,19 +69,8 @@ class OrderViewModel extends BaseModel {
 
       await _analyticsService.logBeginCheckout(total);
 
-      int paymentType = 0;
-
-      switch (payment) {
-        case "Tiền mặt":
-          paymentType = PaymentType.CASH;
-          break;
-        case "Tiền trong ví":
-          paymentType = ProductType.MASTER_PRODUCT;
-          break;
-      }
-
       OrderStatus result =
-          await dao.createOrders(orderNote, storeDTO.id, paymentType);
+          await dao.createOrders(orderNote, storeDTO.id, payment);
       if (result == OrderStatus.Success) {
         await _analyticsService.logOrderCreated(total);
         await deleteCart();
@@ -107,7 +99,7 @@ class OrderViewModel extends BaseModel {
     }
   }
 
-  void changeOption(String option) {
+  void changeOption(int option) {
     payment = option;
     notifyListeners();
   }

@@ -183,16 +183,23 @@ class ProductDetailViewModel extends BaseModel {
       }
 
       if (master.type == MASTER_PRODUCT) {
-        ProductDTO dto = master.getChildByAttributes(choice);
-        print("dto: " + dto.toString());
-        fixTotal = BussinessHandler.countPrice(dto.prices, count);
-        extraTotal = 0;
-        if (dto.hasExtra != null && dto.hasExtra) {
-          print("add extra!");
-          getExtra(dto);
-        } else {
-          this.extra = null;
+        try{
+          ProductDTO dto = master.getChildByAttributes(choice);
+          print("dto: " + dto.toString());
+          fixTotal = BussinessHandler.countPrice(dto.prices, count);
+          extraTotal = 0;
+          if (dto.hasExtra != null && dto.hasExtra) {
+            print("add extra!");
+            getExtra(dto);
+          } else {
+            this.extra = null;
+          }
+        } catch(e){
+          showStatusDialog("assets/images/global_error.png", "Sản phẩm không tồn tại", choice.toString());
+          affectPriceChoice[attribute] = null;
+          verifyOrder();
         }
+
       }
       total = fixTotal + extraTotal;
     }

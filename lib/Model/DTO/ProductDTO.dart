@@ -107,7 +107,7 @@ class ProductDTO {
       "product_name": name,
       // price: double.parse(json['price'].toString()),
       "description": description,
-      "product_type": type,
+      "product_type_id": type,
       "pic_url": imageURL,
       "catergory_id": catergoryId,
       "child_products": listChild,

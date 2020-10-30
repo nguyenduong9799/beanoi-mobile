@@ -247,8 +247,11 @@ class _OrderScreenState extends State<OrderScreen> {
     List<Widget> list = new List();
     double price = 0;
     if (item.master.type != ProductType.MASTER_PRODUCT) {
+      print("Khác" + item.master.type.toString());
       price = BussinessHandler.countPrice(item.master.prices, item.quantity);
     }
+
+    print("Price: "+ price.toString());
 
     // if (item.master.type == MASTER_PRODUCT) {
     //   list.add(Text(item.products[0].name,
@@ -518,12 +521,12 @@ class _OrderScreenState extends State<OrderScreen> {
         child: ScopedModelDescendant<OrderViewModel>(
           builder: (context, child, model) {
             List<Widget> listPayments = new List();
-            for (int i = 0; i < model.options.length; i++) {
+            for (int i = 0; i < model.options.keys.length; i++) {
               listPayments.add(RadioListTile(
                 activeColor: kPrimary,
                 groupValue: model.payment,
-                value: model.options[i],
-                title: Text(model.options[i]),
+                value: model.options.keys.elementAt(i),
+                title: Text(model.options[model.options.keys.elementAt(i)]),
                 onChanged: (value) {
                   model.changeOption(value);
                 },
