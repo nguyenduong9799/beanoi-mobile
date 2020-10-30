@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:introduction_screen/introduction_screen.dart';
-import 'package:sk_onboarding_screen/flutter_onboarding.dart';
-import 'package:sk_onboarding_screen/sk_onboarding_screen.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/route_constraint.dart';
 
