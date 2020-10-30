@@ -143,7 +143,7 @@ class _HomeScreenState extends State<HomeScreen> {
             text = "Đang thay đổi...";
           } else {
             if (root.dto != null) {
-              text = root.dto.location;
+              text = "${root.dto.name} - ${root.dto.location}";
             }
           }
 

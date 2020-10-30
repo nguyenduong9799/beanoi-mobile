@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:unidelivery_mobile/View/onboard.dart';
 import 'package:unidelivery_mobile/View/start_up.dart';
 import 'package:unidelivery_mobile/View/test.dart';
 import 'package:unidelivery_mobile/route_constraint.dart';
@@ -45,7 +46,7 @@ class MyApp extends StatelessWidget {
                     ),
                 settings: settings);
           case RouteHandler.LOGIN:
-            return FadeRoute(page: LoginScreen());
+            return ScaleRoute(page: LoginScreen());
           case RouteHandler.GIFT:
             return CupertinoPageRoute(
                 builder: (context) => GiftScreen(), settings: settings);
@@ -88,6 +89,8 @@ class MyApp extends StatelessWidget {
                       title: settings.arguments ?? "Đang xử lý...",
                     ),
                 settings: settings);
+          case RouteHandler.ONBOARD:
+            return ScaleRoute(page: OnBoardScreen());
           default:
             return CupertinoPageRoute(
                 builder: (context) => NotFoundScreen(), settings: settings);
@@ -105,5 +108,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-
