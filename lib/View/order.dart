@@ -521,12 +521,12 @@ class _OrderScreenState extends State<OrderScreen> {
         child: ScopedModelDescendant<OrderViewModel>(
           builder: (context, child, model) {
             List<Widget> listPayments = new List();
-            for (int i = 0; i < model.options.keys.length; i++) {
+            for (int i = 0; i < PaymentType.options.keys.length; i++) {
               listPayments.add(RadioListTile(
                 activeColor: kPrimary,
                 groupValue: model.payment,
-                value: model.options.keys.elementAt(i),
-                title: Text(model.options[model.options.keys.elementAt(i)]),
+                value: PaymentType.options.keys.elementAt(i),
+                title: Text(PaymentType.getPaymentName( PaymentType.options.keys.elementAt(i))),
                 onChanged: (value) {
                   model.changeOption(value);
                 },
