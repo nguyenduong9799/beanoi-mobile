@@ -16,10 +16,7 @@ import '../constraints.dart';
 class OrderViewModel extends BaseModel {
   AnalyticsService _analyticsService;
   int payment;
-  Map<int, String> options = {
-    PaymentType.CASH : "Tiền mặt",
-    PaymentType.BEAN : "Tiền trong ví"
-  };
+
 
   static OrderViewModel _instance;
 
