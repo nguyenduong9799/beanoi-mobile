@@ -45,15 +45,11 @@ class PaymentType {
   static const int BEAN = 3;
 
   static Map<int, String> options = {
-    PaymentType.CASH : "Tiền mặt",
-    PaymentType.BEAN : "Tiền trong ví"
+    PaymentType.CASH: "Tiền mặt",
+    PaymentType.BEAN: "Tiền trong ví"
   };
 
-  static String getPaymentName(int type){
-    return options[type];
+  static String getPaymentName(int type) {
+    return options[type] ?? "N/A";
   }
 }
-
-
-
-

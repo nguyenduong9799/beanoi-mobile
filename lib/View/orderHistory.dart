@@ -354,7 +354,8 @@ class _OrderDetailBottomSheetState extends State<OrderDetailBottomSheet> {
                                 '${orderDetail.invoiceId}',
                                 style: TextStyle(color: Colors.black45),
                                 overflow: TextOverflow.ellipsis,
-                                maxLines: 1,
+                                textAlign: TextAlign.center,
+                                maxLines: 2,
                               ),
                             ],
                           ),
@@ -483,8 +484,8 @@ class _OrderDetailBottomSheetState extends State<OrderDetailBottomSheet> {
             ],
           ),
           Text(
-            "Phuowng thu${orderDetail.itemQuantity} món",
-            style: TextStyle(fontWeight: FontWeight.bold),
+            "Phương thức: ${PaymentType.getPaymentName(orderDetail.paymentType)}",
+            style: TextStyle(fontSize: 12),
           ),
           Container(
             margin: EdgeInsets.only(top: 15),

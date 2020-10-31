@@ -12,9 +12,6 @@ import 'package:unidelivery_mobile/utils/index.dart';
 import '../constraints.dart';
 
 class ProfileScreen extends StatefulWidget {
-
-
-
   ProfileScreen();
 
   @override
@@ -61,7 +58,16 @@ class _UpdateAccountState extends State<ProfileScreen> {
                 color: Colors.grey,
               ),
             );
-          else if (status == ViewStatus.Error) return Text("＞﹏＜");
+          else if (status == ViewStatus.Error)
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text("＞﹏＜"),
+                  signoutButton(),
+                ],
+              ),
+            );
 
           return Container(
             color: kBackgroundGrey[0],
@@ -115,7 +121,9 @@ class _UpdateAccountState extends State<ProfileScreen> {
       child: Center(
         child: Column(
           children: <Widget>[
-            SizedBox(height: 8,),
+            SizedBox(
+              height: 8,
+            ),
             Text(
               user.name.toUpperCase(),
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -136,7 +144,6 @@ class _UpdateAccountState extends State<ProfileScreen> {
                 ),
               ],
             ),
-
             SizedBox(
               height: 8,
             ),
@@ -161,9 +168,10 @@ class _UpdateAccountState extends State<ProfileScreen> {
         ),
         onPressed: () async {
           print("Update: ");
-          bool result = await Get.toNamed(RouteHandler.SIGN_UP, arguments: model.currentUser);
-          if(result != null){
-            if(result){
+          bool result = await Get.toNamed(RouteHandler.SIGN_UP,
+              arguments: model.currentUser);
+          if (result != null) {
+            if (result) {
               await model.fetchUser();
             }
           }
@@ -186,8 +194,7 @@ class _UpdateAccountState extends State<ProfileScreen> {
           splashColor: kBackgroundGrey[3],
           child: Text(
             "Đăng xuất",
-            style: TextStyle(
-                fontSize: 16, color: kFail),
+            style: TextStyle(fontSize: 16, color: kFail),
           ),
           onPressed: () async {
             await model.processSignout();
@@ -210,23 +217,22 @@ class _UpdateAccountState extends State<ProfileScreen> {
           children: <Widget>[
             Text(
               "Version $VERSION by UniTeam",
-              style: TextStyle(
-                fontSize: 13,
-                  color: kBackgroundGrey[5]
-              ),
+              style: TextStyle(fontSize: 13, color: kBackgroundGrey[5]),
             ),
-            SizedBox(height: 8,),
+            SizedBox(
+              height: 8,
+            ),
             Container(
               // height: 40,
               child: RichText(
                 text: TextSpan(
                   text: "Bean delivery ",
                   style: TextStyle(
-                    fontSize: 13,
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold
-                    // fontStyle: FontStyle.italic,
-                  ),
+                      fontSize: 13,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold
+                      // fontStyle: FontStyle.italic,
+                      ),
                   // children: <TextSpan>[
                   //   TextSpan(
                   //     text: "UniTeam",
@@ -239,7 +245,9 @@ class _UpdateAccountState extends State<ProfileScreen> {
                 ),
               ),
             ),
-            SizedBox(height: 8,)
+            SizedBox(
+              height: 8,
+            )
           ],
         ),
       ),
