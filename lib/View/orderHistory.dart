@@ -24,11 +24,19 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
   List<bool> _selections = [true, false];
 
   OrderHistoryViewModel model = OrderHistoryViewModel();
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
+      new GlobalKey<RefreshIndicatorState>();
 
   @override
   void initState() {
     super.initState();
     orderHandler();
+  }
+
+  Future<void> refreshFetchOrder() async {
+    OrderFilter filter =
+        _selections[0] ? OrderFilter.ORDERING : OrderFilter.DONE;
+    await model.getOrders(filter);
   }
 
   Future<void> orderHandler() async {
@@ -136,23 +144,27 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
           ),
         );
 
-      return Container(
-        child: ListView(
-          padding: EdgeInsets.all(8),
-          children: [
-            ...orderSummaryList
-                .map((orderSummary) => _buildOrderSummary(orderSummary))
-                .toList(),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Center(
-                child: Text(
-                  "Bạn đã xem hết rồi đây :)",
-                  style: TextStyle(color: Colors.grey),
+      return RefreshIndicator(
+        key: _refreshIndicatorKey,
+        onRefresh: refreshFetchOrder,
+        child: Container(
+          child: ListView(
+            padding: EdgeInsets.all(8),
+            children: [
+              ...orderSummaryList
+                  .map((orderSummary) => _buildOrderSummary(orderSummary))
+                  .toList(),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Center(
+                  child: Text(
+                    "Bạn đã xem hết rồi đây :)",
+                    style: TextStyle(color: Colors.grey),
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       );
     });

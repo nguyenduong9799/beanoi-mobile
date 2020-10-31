@@ -70,10 +70,11 @@ class LoginViewModel extends BaseModel {
         (AuthCredential authCredential) async {
       try {
         final userInfo = await signIn(authCredential);
+        userInfo.phone = _phoneNb;
         // TODO: Kiem tra xem user moi hay cu
         if (userInfo.isFirstLogin) {
           // Navigate to sign up screen
-          await Get.offAllNamed(RouteHandler.SIGN_UP);
+          await Get.offAllNamed(RouteHandler.SIGN_UP, arguments: userInfo);
         } else {
           await Get.offAllNamed(RouteHandler.NAV);
           // chuyen sang trang home

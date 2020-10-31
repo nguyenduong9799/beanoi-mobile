@@ -88,7 +88,7 @@ class _SignUpState extends State<SignUp> {
           } else {
             Get.offAllNamed(RouteHandler.NAV);
           }
-        }
+        } else {}
       }
     }
   }
@@ -275,9 +275,9 @@ class _SignUpState extends State<SignUp> {
                                 print("Back to home");
                               },
                               child: Text(
-                                "Quay lại",
+                                "Bỏ qua",
                                 style: TextStyle(
-                                  color: Colors.redAccent,
+                                  color: Colors.grey,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),

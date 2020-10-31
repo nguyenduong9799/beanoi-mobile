@@ -21,7 +21,7 @@ class AccountDTO {
 
   factory AccountDTO.fromJson(dynamic json) => AccountDTO(
         uid: json["customer_id"],
-        name: json['name'] as String,
+        name: json['name'] as String ?? "",
         email: json['email'] as String,
         phone: json['phone'] as String,
         gender: (json['gender'] as bool) == true ? 'nam' : 'nữ',

@@ -10,8 +10,8 @@ import 'package:unidelivery_mobile/utils/shared_pref.dart';
 class AccountDAO {
   Future<AccountDTO> login(String idToken) async {
     try {
-      String fcmToken = await PushNotificationService.getInstance()
-          .getFcmToken();
+      String fcmToken =
+          await PushNotificationService.getInstance().getFcmToken();
       print("FCM_token: " + fcmToken);
 
       Response response = await request
@@ -19,14 +19,16 @@ class AccountDAO {
       print('idToken $idToken');
       // set access token
       final user = response.data["data"];
+      final userDTO = AccountDTO.fromJson(user);
       final accessToken = user["access_token"] as String;
       print("accessToken    $accessToken");
       requestObj.setToken = accessToken;
       setToken(accessToken);
-      return AccountDTO.fromJson(user);
-    }catch(e){
+      return userDTO;
+    } catch (e) {
       print("error: " + e.toString());
     }
+    return null;
     // return AccountDTO(uid: idToken, name: "Default Name");
   }
 

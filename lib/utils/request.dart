@@ -65,8 +65,8 @@ class CustomInterceptors extends InterceptorsWrapper {
 
 class MyRequest {
   static BaseOptions options = new BaseOptions(
-      // baseUrl: 'http://api.dominos.reso.vn/api/v2',
-      baseUrl: 'https://192.168.1.167:45456/api/v2',
+      baseUrl: 'http://api.dominos.reso.vn/api/v2',
+      // baseUrl: 'https://192.168.1.167:45456/api/v2',
       headers: {
         Headers.contentTypeHeader: "application/json",
       },
