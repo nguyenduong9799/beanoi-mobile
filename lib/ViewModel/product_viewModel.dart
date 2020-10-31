@@ -21,7 +21,7 @@ class ProductDetailViewModel extends BaseModel {
   //List product ảnh hưởng giá
   Map<String, List<String>> affectPriceContent;
   //List choice bắt buộc không ảnh hưởng giá
-  Map<String, String> affectPriceChoice;
+  Map<String, String> selectedAttributes;
   int count = 1;
 
   double total, fixTotal = 0, extraTotal = 0;
@@ -39,18 +39,19 @@ class ProductDetailViewModel extends BaseModel {
 
     this.affectPriceContent = new Map<String, List<String>>();
 
-    this.affectPriceChoice = new Map<String, String>();
+    this.selectedAttributes = new Map<String, String>();
     //
 
     if (master.type == MASTER_PRODUCT) {
       for (int i = 0; i < master.attributes.keys.length; i++) {
-        List<String> listContents =
-            master.attributes[master.attributes.keys.elementAt(i)].split(",");
-        listContents.forEach((element) {
+        String attributeKey = master.attributes.keys.elementAt(i);
+        List<String> listAttributesName =
+            master.attributes[attributeKey].split(",");
+        listAttributesName.forEach((element) {
           element.trim();
         });
-        affectPriceContent[master.attributes.keys.elementAt(i)] = listContents;
-        affectPriceChoice[master.attributes.keys.elementAt(i)] = null;
+        affectPriceContent[attributeKey] = listAttributesName;
+        selectedAttributes[attributeKey] = null;
       }
     } else {
       fixTotal = BussinessHandler.countPrice(master.prices, count);
@@ -103,7 +104,7 @@ class ProductDetailViewModel extends BaseModel {
         Map choice = new Map();
         for (int i = 0; i < affectPriceContent.keys.toList().length; i++) {
           choice[affectPriceContent.keys.elementAt(i)] =
-              affectPriceChoice[affectPriceContent.keys.elementAt(i)];
+              selectedAttributes[affectPriceContent.keys.elementAt(i)];
         }
 
         ProductDTO dto = master.getChildByAttributes(choice);
@@ -141,7 +142,7 @@ class ProductDetailViewModel extends BaseModel {
         Map choice = new Map();
         for (int i = 0; i < affectPriceContent.keys.toList().length; i++) {
           choice[affectPriceContent.keys.elementAt(i)] =
-              affectPriceChoice[affectPriceContent.keys.elementAt(i)];
+              selectedAttributes[affectPriceContent.keys.elementAt(i)];
         }
 
         ProductDTO dto = master.getChildByAttributes(choice);
@@ -168,22 +169,22 @@ class ProductDetailViewModel extends BaseModel {
     }
   }
 
-  void changeAffectPriceAtrribute(String e) {
+  void changeAffectPriceAtrribute(String attributeValue) {
     Map choice = new Map();
-    String attribute = affectPriceContent.keys.elementAt(affectIndex);
+    String attributeKey = affectPriceContent.keys.elementAt(affectIndex);
 
-    affectPriceChoice[attribute] = e;
+    selectedAttributes[attributeKey] = attributeValue;
 
     verifyOrder();
 
     if (order) {
       for (int i = 0; i < affectPriceContent.keys.toList().length; i++) {
         choice[affectPriceContent.keys.elementAt(i)] =
-            affectPriceChoice[affectPriceContent.keys.elementAt(i)];
+            selectedAttributes[affectPriceContent.keys.elementAt(i)];
       }
 
       if (master.type == MASTER_PRODUCT) {
-        try{
+        try {
           ProductDTO dto = master.getChildByAttributes(choice);
           print("dto: " + dto.toString());
           fixTotal = BussinessHandler.countPrice(dto.prices, count);
@@ -194,12 +195,12 @@ class ProductDetailViewModel extends BaseModel {
           } else {
             this.extra = null;
           }
-        } catch(e){
-          showStatusDialog("assets/images/global_error.png", "Sản phẩm không tồn tại", choice.toString());
-          affectPriceChoice[attribute] = null;
+        } catch (e) {
+          showStatusDialog("assets/images/global_error.png",
+              "Sản phẩm không tồn tại", choice.toString());
+          selectedAttributes[attributeKey] = null;
           verifyOrder();
         }
-
       }
       total = fixTotal + extraTotal;
     }
@@ -220,7 +221,7 @@ class ProductDetailViewModel extends BaseModel {
     order = true;
 
     for (int i = 0; i < affectPriceContent.keys.toList().length; i++) {
-      if (affectPriceChoice[affectPriceContent.keys.elementAt(i)] == null) {
+      if (selectedAttributes[affectPriceContent.keys.elementAt(i)] == null) {
         order = false;
       }
     }
@@ -252,7 +253,7 @@ class ProductDetailViewModel extends BaseModel {
       Map choice = new Map();
       for (int i = 0; i < affectPriceContent.keys.toList().length; i++) {
         choice[affectPriceContent.keys.elementAt(i)] =
-            affectPriceChoice[affectPriceContent.keys.elementAt(i)];
+            selectedAttributes[affectPriceContent.keys.elementAt(i)];
       }
 
       ProductDTO dto = master.getChildByAttributes(choice);

@@ -39,7 +39,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
         print(affectkeys[i].toString());
         affectPriceTabs.add(affectkeys[i].toUpperCase() + " *");
       }
-
     }
 
     // List<String> keys =
@@ -61,7 +60,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
     //     TabController(vsync: this, length: affectPriceTabs.length);
     // _affectPriceController.addListener(_handleAffectTabSelection);
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -162,7 +160,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                 widget.dto.name,
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
               )),
-
 
               // widget.dto.type != MASTER_PRODUCT
               //     ? Flexible(
@@ -277,28 +274,28 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
     if (widget.dto.type == ProductType.MASTER_PRODUCT)
       return ScopedModelDescendant<ProductDetailViewModel>(
         builder: (context, child, model) {
-          if(model.extra != null){
-            if(affectPriceTabs.last != extraTab){
+          if (model.extra != null) {
+            if (affectPriceTabs.last != extraTab) {
               affectPriceTabs.add(extraTab);
             }
           } else {
-            if(affectPriceTabs.last == extraTab){
+            if (affectPriceTabs.last == extraTab) {
               affectPriceTabs.removeLast();
             }
           }
 
           return Container(
-            width: MediaQuery.of(context).size.width,
-            color: kPrimary,
-            padding: EdgeInsets.all(8),
-            child: CustomTabView(
-              itemCount: affectPriceTabs.length,
-              tabBuilder: (context, index) => Tab(text: affectPriceTabs[index]),
-              onPositionChange: (index){
-                model.changeAffectIndex(index);
-              },
-            )
-          );
+              width: MediaQuery.of(context).size.width,
+              color: kPrimary,
+              padding: EdgeInsets.all(8),
+              child: CustomTabView(
+                itemCount: affectPriceTabs.length,
+                tabBuilder: (context, index) =>
+                    Tab(text: affectPriceTabs[index]),
+                onPositionChange: (index) {
+                  model.changeAffectIndex(index);
+                },
+              ));
         },
       );
     return Container();
@@ -328,13 +325,12 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
             if (!model.isExtra) {
               attributes = new List();
               if (widget.dto.type == MASTER_PRODUCT) {
-                listOptions = model.affectPriceContent[model
-                    .affectPriceContent.keys
-                    .elementAt(model.affectIndex)];
+                listOptions = model.affectPriceContent[
+                    model.affectPriceContent.keys.elementAt(model.affectIndex)];
                 for (int i = 0; i < listOptions.length; i++) {
                   attributes.add(RadioListTile(
                     title: Text(listOptions[i]),
-                    groupValue: model.affectPriceChoice[model
+                    groupValue: model.selectedAttributes[model
                         .affectPriceContent.keys
                         .elementAt(model.affectIndex)],
                     value: listOptions[i],

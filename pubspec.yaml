@@ -52,10 +52,14 @@ dependencies:
   get: ^3.12.1
   flutter_launcher_icons: ^0.8.1
   introduction_screen: ^1.0.7
+  logger: ^0.9.4
+  json_annotation: ^3.1.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  json_serializable: ^3.5.0
+  build_runner: ^1.0.0
 
 flutter_icons:
   android: true

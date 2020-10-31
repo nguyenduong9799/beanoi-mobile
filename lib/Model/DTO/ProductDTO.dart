@@ -4,6 +4,7 @@ import 'package:unidelivery_mobile/constraints.dart';
 
 class ProductDTO {
   int id;
+  int productInMenuId;
   String name;
   String description;
   int type;
@@ -30,6 +31,7 @@ class ProductDTO {
 
   ProductDTO(this.id,
       {this.name,
+      this.productInMenuId,
       this.imageURL,
       this.description,
       this.type,
@@ -53,11 +55,11 @@ class ProductDTO {
 
     ProductDTO product = ProductDTO(json["product_id"],
         name: json['product_name'] as String,
+        productInMenuId: json['product_in_menu_id'],
         // price: double.parse(json['price'].toString()),
         description: json['description'] as String,
         type: type,
-        imageURL:
-            "https://images.unsplash.com/photo-1516714435131-44d6b64dc6a2?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=80",
+        imageURL: json['pic_url'] as String,
         catergoryId: json['category_id'],
         supplierId: json['supplier_id'] as String,
         // prices: prices,
@@ -104,6 +106,7 @@ class ProductDTO {
   Map<String, dynamic> toJson() {
     Map<String, dynamic> prodJson = {
       "product_id": id,
+      "product_in_menu_id": productInMenuId,
       "product_name": name,
       // price: double.parse(json['price'].toString()),
       "description": description,
