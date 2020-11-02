@@ -139,8 +139,11 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
       if (status == ViewStatus.Error)
         return Center(
           child: AspectRatio(
-            aspectRatio: 1,
-            child: Text(model.error.toString()),
+            aspectRatio: 1 / 4,
+            child: Image.asset(
+              'assets/images/error.png',
+              width: 24,
+            ),
           ),
         );
 
@@ -495,9 +498,22 @@ class _OrderDetailBottomSheetState extends State<OrderDetailBottomSheet> {
               ),
             ],
           ),
-          Text(
-            "Phương thức: ${PaymentType.getPaymentName(orderDetail.paymentType)}",
-            style: TextStyle(fontSize: 12),
+          RichText(
+            text: TextSpan(
+                text: "P.Thức: ",
+                style: TextStyle(fontSize: 12, color: Colors.black),
+                children: <TextSpan>[
+                  TextSpan(
+                    text:
+                        "${PaymentType.getPaymentName(orderDetail.paymentType)}",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontStyle: FontStyle.italic,
+                      fontSize: 12,
+                      color: kPrimary,
+                    ),
+                  ),
+                ]),
           ),
           Container(
             margin: EdgeInsets.only(top: 15),
@@ -522,7 +538,7 @@ class _OrderDetailBottomSheetState extends State<OrderDetailBottomSheet> {
                 ),
                 MySeparator(),
                 // OTHER AMOUNTS GO HERE
-                // ..._buildOtherAmount(orderDetail.otherAmounts),
+                ..._buildOtherAmount(orderDetail.otherAmounts),
                 Divider(color: Colors.black),
                 Padding(
                   padding: const EdgeInsets.only(top: 5, bottom: 5),
@@ -552,12 +568,12 @@ class _OrderDetailBottomSheetState extends State<OrderDetailBottomSheet> {
     if (otherAmounts == null) return [SizedBox.shrink()];
     return otherAmounts
         .map((amountObj) => Padding(
-              padding: const EdgeInsets.only(top: 10, bottom: 10),
+              padding: const EdgeInsets.only(top: 5, bottom: 5),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text("Phí vận chuyển", style: TextStyle()),
-                  Text("${formatPrice(5000)}", style: TextStyle()),
+                  Text("${amountObj.name}", style: TextStyle()),
+                  Text("${formatPrice(amountObj.amount)}", style: TextStyle()),
                 ],
               ),
             ))

@@ -470,18 +470,18 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     Row(
                       children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            border: Border(
-                              right: BorderSide(
-                                color: Colors.grey,
-                                width: 0.0,
-                              ),
-                            ),
-                          ),
-                          child: IconButton(
-                              icon: Icon(AntDesign.search1), onPressed: () {}),
-                        ),
+                        // Container(
+                        //   decoration: BoxDecoration(
+                        //     border: Border(
+                        //       right: BorderSide(
+                        //         color: Colors.grey,
+                        //         width: 0.0,
+                        //       ),
+                        //     ),
+                        //   ),
+                        //   child: IconButton(
+                        //       icon: Icon(AntDesign.search1), onPressed: () {}),
+                        // ),
                         Expanded(
                           flex: 2,
                           child: PageView(

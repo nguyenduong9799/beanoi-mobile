@@ -180,6 +180,7 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
                                     child: Form(
                                       key: _formKey,
                                       child: TextFormField(
+                                        autofocus: true,
                                         focusNode: _phoneFocus,
                                         inputFormatters: <TextInputFormatter>[
                                           WhitelistingTextInputFormatter

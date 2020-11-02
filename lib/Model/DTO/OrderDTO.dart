@@ -59,7 +59,7 @@ class OrderDTO {
         otherAmounts: (map["other_amounts"] as List)
             ?.map((otherAmountJSON) => OtherAmount.fromJSON(otherAmountJSON))
             ?.toList(),
-        paymentType: map["paymentType"] ?? 0,
+        paymentType: map["payment_type"][0] ?? 0,
       );
 
   static List<OrderDTO> fromList(List list) =>

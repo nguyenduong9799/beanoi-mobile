@@ -83,7 +83,7 @@ class _SignUpState extends State<SignUp> {
         // Chuyen trang
         if (updateSucces) {
           print('Update Success');
-          if (widget.user != null) {
+          if (widget.user != null && !widget.user.isFirstLogin) {
             Get.back(result: true);
           } else {
             Get.offAllNamed(RouteHandler.NAV);
@@ -264,20 +264,20 @@ class _SignUpState extends State<SignUp> {
                               ),
                             );
                           }),
-                          // BACK TO LOGIN SCREEN
+                          // BACK TO NAV SCREEN
                           Center(
                             child: GestureDetector(
                               onTap: () async {
-                                if (widget.user != null) {
+                                if (widget.user != null &&
+                                    !widget.user.isFirstLogin) {
                                   Get.back();
                                 } else
-                                  Get.offAllNamed(RouteHandler.LOGIN);
-                                print("Back to home");
+                                  Get.offAllNamed(RouteHandler.NAV);
                               },
                               child: Text(
                                 "Bỏ qua",
                                 style: TextStyle(
-                                  color: Colors.grey,
+                                  color: Colors.grey[400],
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -376,6 +376,7 @@ class FormItem extends StatelessWidget {
                               ? DateFormat('dd/MM/yyyy')
                                   .format((formControl.value as DateTime))
                               : "Chọn ngày",
+                          style: TextStyle(color: Colors.blue),
                         ),
                       ),
                     ],
