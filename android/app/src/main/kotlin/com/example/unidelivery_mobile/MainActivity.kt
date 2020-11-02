@@ -1,4 +1,4 @@
-package com.example.unidelivery_mobile
+package com.unibean.unidelivery
 
 import io.flutter.embedding.android.FlutterActivity
 
