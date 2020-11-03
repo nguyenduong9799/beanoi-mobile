@@ -37,7 +37,7 @@ Future<String> getToken() async {
 Future<Cart> setCart(Cart cart) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   print("Cart: " + cart.toString());
-  prefs.setString('CART', jsonEncode(cart?.toJson()));
+  prefs.setString('CART', jsonEncode(cart.toJson()));
   return cart;
 }
 
