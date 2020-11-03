@@ -121,7 +121,7 @@ class HomeViewModel extends BaseModel {
       }
       print("Get products...");
       if (_isFirstFetch) {
-        products = await _dao.getProducts(store.id);
+        products = await _dao.getProducts(store?.id);
         _cachedProduct = products.sublist(0);
         // products.insertAll(0, products);
         _isFirstFetch = false;

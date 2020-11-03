@@ -10,7 +10,7 @@ class ProductDAO {
       "brand-id": UNIBEAN_BRAND,
       "store-id": store_id,
       "fields": "ChildProducts",
-      "size" : 100
+      "size": 100
     });
     //final res = await Dio().get("http://api.dominos.reso.vn/api/v1/products");
     final products = ProductDTO.fromList(res.data["data"]);

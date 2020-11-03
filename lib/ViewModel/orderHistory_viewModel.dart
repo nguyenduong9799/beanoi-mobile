@@ -27,6 +27,7 @@ class OrderHistoryViewModel extends BaseModel {
       setState(ViewStatus.Completed);
     } catch (e) {
       bool result = await showErrorDialog();
+      print(e.toString());
       if (result) {
         await getOrders(filter);
       } else

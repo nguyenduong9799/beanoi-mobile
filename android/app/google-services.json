@@ -8,64 +8,36 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:868742887756:android:c29228a17eec2a3614b7e9",
+        "mobilesdk_app_id": "1:868742887756:android:38fde96f04a99efe14b7e9",
         "android_client_info": {
-          "package_name": "com.example.unidelivery_mobile"
+          "package_name": "com.unibean.unidelivery"
         }
       },
       "oauth_client": [
         {
-          "client_id": "868742887756-45ab7561lprj4i3s5shac0dm42d6jiao.apps.googleusercontent.com",
+          "client_id": "868742887756-1nsimestsfd27apeqobr0i0e9srr2bm9.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.unidelivery_mobile",
-            "certificate_hash": "fd0ca9a465e03d08ad20ea8b130e65f5b1500772"
+            "package_name": "com.unibean.unidelivery",
+            "certificate_hash": "7822e8ba4157c8cf6c5292587b5d2f6237823e0d"
           }
         },
         {
-          "client_id": "868742887756-ro7n3k092oj42lrsv5r8u9pmbfg8ju5p.apps.googleusercontent.com",
+          "client_id": "868742887756-p4dkc9p7j470m3r1dv2i18lv2dth9o87.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.unidelivery_mobile",
+            "package_name": "com.unibean.unidelivery",
             "certificate_hash": "52e74c3efb89a23a0a57c7391e671c898d48b4c2"
           }
         },
         {
-          "client_id": "868742887756-7puthu01nsp8vr1qc0knonbeeb0ie95j.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyDJ3B-0xSAFDxYRVQdcuqhcnQaWN9dk7P0"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "868742887756-7puthu01nsp8vr1qc0knonbeeb0ie95j.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "868742887756-og719tvrnr7kpgdh46taqrjvckke82ah.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.example.unidelivery-mobile"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:868742887756:android:ad79e516cf3787e314b7e9",
-        "android_client_info": {
-          "package_name": "unibean.net"
-        }
-      },
-      "oauth_client": [
+          "client_id": "868742887756-g24h8en5p8k5p73ap164pjlh2duojtqj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.unibean.unidelivery",
+            "certificate_hash": "fd0ca9a465e03d08ad20ea8b130e65f5b1500772"
+          }
+        },
         {
           "client_id": "868742887756-7puthu01nsp8vr1qc0knonbeeb0ie95j.apps.googleusercontent.com",
           "client_type": 3

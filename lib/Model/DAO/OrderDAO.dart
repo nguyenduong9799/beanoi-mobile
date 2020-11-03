@@ -30,14 +30,16 @@ class OrderDAO {
     return orderDetail;
   }
 
+  // TODO: nen dep cart ra ngoai truyen vao parameter
   Future<OrderStatus> createOrders(
       String note, int store_id, int payment) async {
     try {
       Cart cart = await getCart();
       if (cart != null) {
-        print("Request Note: " + note);
+        // print("Request Note: " + note);
         cart.orderNote = note;
         cart.payment = payment;
+        print(cart.toJsonAPi());
         final res = await request.post('/orders',
             queryParameters: {"brand-id": UNIBEAN_BRAND, "store-id": store_id},
             data: cart.toJsonAPi());

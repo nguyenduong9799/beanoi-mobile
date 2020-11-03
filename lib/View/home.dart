@@ -39,6 +39,9 @@ class _HomeScreenState extends State<HomeScreen> {
   // int endTime = DateTime.now().millisecondsSinceEpoch + 1000 * 60 * 60;
   bool _endOrderTime = false;
 
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
+      new GlobalKey<RefreshIndicatorState>();
+
   @override
   void initState() {
     super.initState();
@@ -48,6 +51,10 @@ class _HomeScreenState extends State<HomeScreen> {
         _endOrderTime = false;
       });
     }
+  }
+
+  Future<void> _refresh() async {
+    await model.getProducts();
   }
 
   @override
@@ -71,57 +78,58 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Padding(
                         padding: EdgeInsets.only(
                             top: MediaQuery.of(context).size.height * 0.12),
-                        child: ListView(
-                          children: [
-                            // banner(),
-                            location(rootViewModel),
-                            Center(
-                              child: Container(
-                                margin: EdgeInsets.all(8),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(16),
-                                  color: Colors.blue[200],
-                                ),
-                                height:
-                                    MediaQuery.of(context).size.height * 0.13,
-                                width: double.infinity,
-                                child: Image.asset(
-                                  'assets/images/banner.png',
-                                  fit: BoxFit.cover,
-                                  // width: double.infinity,
+                        child: RefreshIndicator(
+                          key: _refreshIndicatorKey,
+                          onRefresh: _refresh,
+                          child: ListView(
+                            children: [
+                              // banner(),
+                              location(rootViewModel),
+                              Center(
+                                child: Container(
+                                  margin: EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(16),
+                                    color: Colors.blue[200],
+                                  ),
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.13,
+                                  width: double.infinity,
+                                  child: Image.asset(
+                                    'assets/images/banner.png',
+                                    fit: BoxFit.cover,
+                                    // width: double.infinity,
+                                  ),
                                 ),
                               ),
-                            ),
-                            SizedBox(height: 16),
-                            buildProducts(rootViewModel),
-                            SizedBox(height: 16),
-                            Center(
-                              child: Container(
-                                margin: EdgeInsets.all(8),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(16),
-                                  // color: Colors.orange[300],
+                              SizedBox(height: 16),
+                              buildProducts(rootViewModel),
+                              SizedBox(height: 16),
+                              Center(
+                                child: Container(
+                                  margin: EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(16),
+                                    // color: Colors.orange[300],
+                                  ),
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.08,
+                                  width: double.infinity,
                                 ),
-                                height:
-                                    MediaQuery.of(context).size.height * 0.08,
-                                width: double.infinity,
-                                // child: Center(
-                                //     child: Text(
-                                //   "Bottom Section",
-                                //   style: TextStyle(
-                                //     fontSize: 25,
-                                //   ),
-                                // )),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),
                     HomeAppBar(),
                     buildCountDown(),
                     !_endOrderTime
-                        ? Positioned(left: 0, bottom: 0, child: tag())
+                        ? Positioned(
+                            left: 0,
+                            bottom: 0,
+                            child: tag(),
+                          )
                         : SizedBox.shrink(),
                   ],
                 ),
@@ -428,6 +436,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget tag() {
     double screenWidth = MediaQuery.of(context).size.width;
+
     return Container(
       height: 50,
       width: screenWidth,
@@ -454,93 +463,48 @@ class _HomeScreenState extends State<HomeScreen> {
               builder: (context, child, model) {
                 final filterType = model.filterType;
                 final filterCategories = model.filterCategories;
-                return PageView(
-                  // shrinkWrap: true,
-                  controller: _scrollController,
-                  scrollDirection: Axis.horizontal,
+                List<Filter> mergedFilter = []
+                  ..addAll(filterType)
+                  ..addAll(filterCategories);
+                return Stack(
                   children: [
-                    Container(
-                      width: screenWidth,
-                      padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-                      // color: Colors.amber,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          ...filterType.map((e) => filterButton(e)).toList(),
-                          Material(
-                            color: Colors.transparent,
-                            borderRadius: BorderRadius.circular(20),
-                            child: AspectRatio(
-                              aspectRatio: 1,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  // color: Colors.amber,
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                child: RawMaterialButton(
-                                  child: Icon(
-                                    Icons.keyboard_arrow_right,
-                                    color: kPrimary,
-                                  ),
-                                  onPressed: () {
-                                    _scrollController.animateTo(
-                                      _scrollController
-                                          .position.maxScrollExtent,
-                                      duration: Duration(seconds: 1),
-                                      curve: Curves.fastOutSlowIn,
-                                    );
-                                  },
-                                  shape: CircleBorder(),
+                    Row(
+                      children: [
+                        // Container(
+                        //   decoration: BoxDecoration(
+                        //     border: Border(
+                        //       right: BorderSide(
+                        //         color: Colors.grey,
+                        //         width: 0.0,
+                        //       ),
+                        //     ),
+                        //   ),
+                        //   child: IconButton(
+                        //       icon: Icon(AntDesign.search1), onPressed: () {}),
+                        // ),
+                        Expanded(
+                          flex: 2,
+                          child: PageView(
+                            controller: _scrollController,
+                            scrollDirection: Axis.horizontal,
+                            children: [
+                              Container(
+                                width: screenWidth,
+                                padding: const EdgeInsets.all(10),
+                                child: ListView.separated(
+                                  itemBuilder: (context, index) =>
+                                      filterButton(mergedFilter[index]),
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: mergedFilter.length,
+                                  separatorBuilder:
+                                      (BuildContext context, int index) =>
+                                          SizedBox(width: 8),
                                 ),
                               ),
-                            ),
+                            ],
                           ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      width: screenWidth,
-                      padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Material(
-                            color: Colors.transparent,
-                            borderRadius: BorderRadius.circular(20),
-                            child: AspectRatio(
-                              aspectRatio: 1,
-                              child: Container(
-                                width: 40,
-                                height: 40,
-                                decoration: BoxDecoration(
-                                  // color: Colors.amber,
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                child: RawMaterialButton(
-                                  child: Icon(
-                                    Icons.keyboard_arrow_left,
-                                    color: kPrimary,
-                                  ),
-                                  onPressed: () {
-                                    print('Change filter type');
-                                    _scrollController.animateTo(
-                                      _scrollController
-                                          .position.minScrollExtent,
-                                      duration: Duration(seconds: 1),
-                                      curve: Curves.fastOutSlowIn,
-                                    );
-                                  },
-                                  shape: CircleBorder(),
-                                ),
-                              ),
-                            ),
-                          ),
-                          ...filterCategories
-                              .map((e) => filterButton(e))
-                              .toList(),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ],
                 );

@@ -6,6 +6,7 @@ import 'package:reactive_forms/reactive_forms.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
+import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
 import 'package:unidelivery_mobile/services/analytic_service.dart';
 import 'package:unidelivery_mobile/utils/regex.dart';
@@ -13,8 +14,10 @@ import 'package:unidelivery_mobile/utils/regex.dart';
 import '../route_constraint.dart';
 
 class SignUp extends StatefulWidget {
-  const SignUp({Key key, this.user}) : super(key: key);
+  const SignUp({Key key, this.user, this.isCreatemode = false})
+      : super(key: key);
   final AccountDTO user;
+  final bool isCreatemode;
 
   @override
   _SignUpState createState() => _SignUpState();
@@ -80,12 +83,12 @@ class _SignUpState extends State<SignUp> {
         // Chuyen trang
         if (updateSucces) {
           print('Update Success');
-          if (widget.user != null) {
+          if (widget.user != null && !widget.user.isFirstLogin) {
             Get.back(result: true);
           } else {
             Get.offAllNamed(RouteHandler.NAV);
           }
-        }
+        } else {}
       }
     }
   }
@@ -185,7 +188,12 @@ class _SignUpState extends State<SignUp> {
                               shrinkWrap: true,
                               children: [
                                 FormItem("Họ Tên", "Nguyễn Văn A", "name"),
-                                FormItem("Số Điện Thoại", "012345678", "phone"),
+                                FormItem(
+                                  "Số Điện Thoại",
+                                  "012345678",
+                                  "phone",
+                                  isReadOnly: true,
+                                ),
                                 FormItem("Email", "abc@gmail.com", "email"),
                                 FormItem(
                                   "Ngày sinh",
@@ -256,20 +264,20 @@ class _SignUpState extends State<SignUp> {
                               ),
                             );
                           }),
-                          // BACK TO LOGIN SCREEN
+                          // BACK TO NAV SCREEN
                           Center(
                             child: GestureDetector(
                               onTap: () async {
-                                if (widget.user != null) {
+                                if (widget.user != null &&
+                                    !widget.user.isFirstLogin) {
                                   Get.back();
                                 } else
-                                  Get.offAllNamed(RouteHandler.LOGIN);
-                                print("Back to home");
+                                  Get.offAllNamed(RouteHandler.NAV);
                               },
                               child: Text(
-                                "Quay lại",
+                                "Bỏ qua",
                                 style: TextStyle(
-                                  color: Colors.redAccent,
+                                  color: Colors.grey[400],
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -307,6 +315,8 @@ class FormItem extends StatelessWidget {
   final String hintText;
   final String formName;
   final String keyboardType;
+  final bool isReadOnly;
+
   final List<Map<String, dynamic>> radioGroup;
 
   const FormItem(
@@ -316,6 +326,7 @@ class FormItem extends StatelessWidget {
     Key key,
     this.keyboardType,
     this.radioGroup,
+    this.isReadOnly = false,
   }) : super(key: key);
 
   Widget _getFormItemType(FormGroup form) {
@@ -348,27 +359,28 @@ class FormItem extends StatelessWidget {
           formControlName: formName,
           builder: (BuildContext context, ReactiveDatePickerDelegate picker,
               Widget child) {
-            return Container(
-              padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-              child: Theme(
-                data: ThemeData.dark(),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        formControl.value != null
-                            ? DateFormat('dd/MM/yyyy')
-                                .format((formControl.value as DateTime))
-                            : "Chọn ngày",
+            return GestureDetector(
+              onTap: () {
+                picker.showPicker();
+              },
+              child: Container(
+                padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                height: 72,
+                child: Theme(
+                  data: ThemeData.dark(),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          formControl.value != null
+                              ? DateFormat('dd/MM/yyyy')
+                                  .format((formControl.value as DateTime))
+                              : "Chọn ngày",
+                          style: TextStyle(color: Colors.blue),
+                        ),
                       ),
-                    ),
-                    RaisedButton(
-                      child: Text("Ngày"),
-                      onPressed: () {
-                        picker.showPicker();
-                      },
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             );
@@ -382,6 +394,9 @@ class FormItem extends StatelessWidget {
             ValidationMessage.number: ':(',
             ValidationMessage.pattern: ':('
           },
+          // enableInteractiveSelection: false,
+          style: TextStyle(color: isReadOnly ? Colors.grey : Colors.black),
+          readOnly: isReadOnly,
           formControlName: formName,
           textCapitalization: TextCapitalization.words,
           textAlignVertical: TextAlignVertical.center,
@@ -395,7 +410,8 @@ class FormItem extends StatelessWidget {
                 child: Icon(Icons.check, color: Color(0xff00d286))),
             focusColor: Colors.white,
             focusedBorder: OutlineInputBorder(
-              borderSide: new BorderSide(color: Color(0xFFc7c3e4)),
+              borderSide: new BorderSide(
+                  color: isReadOnly ? Colors.transparent : kPrimary),
               // borderRadius: new BorderRadius.circular(25.7),
             ),
             enabledBorder: InputBorder.none,

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:unidelivery_mobile/Model/DTO/AccountDTO.dart';
 import 'package:unidelivery_mobile/View/onboard.dart';
 import 'package:unidelivery_mobile/View/start_up.dart';
 import 'package:unidelivery_mobile/View/test.dart';
@@ -98,9 +99,10 @@ class MyApp extends StatelessWidget {
       },
       theme: ThemeData(
         fontFamily: 'Gotham',
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.green,
         primaryColor: kPrimary,
         scaffoldBackgroundColor: Color(0xFFF0F2F5),
+        toggleableActiveColor: kPrimary,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: StartUpView(),

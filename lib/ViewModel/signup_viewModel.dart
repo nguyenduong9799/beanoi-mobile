@@ -31,6 +31,7 @@ class SignUpViewModel extends BaseModel {
         gender: user["gender"],
       );
       final updatedUser = await dao.updateUser(userDTO);
+      // setToken here
       setState(ViewStatus.Completed);
       // await Future.delayed(Duration(seconds: 3));
       return updatedUser;

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:introduction_screen/introduction_screen.dart';
+import 'package:unidelivery_mobile/Model/DAO/AccountDAO.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/route_constraint.dart';
+import 'package:unidelivery_mobile/utils/shared_pref.dart';
 
 class OnBoardScreen extends StatefulWidget {
   OnBoardScreen({Key key}) : super(key: key);
@@ -76,9 +78,16 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
     );
   }
 
-  void _onIntroEnd() {
+  void _onIntroEnd() async {
     // set pref that first onboard is false
-    Get.offAllNamed(RouteHandler.LOGIN);
+    AccountDAO _accountDAO = AccountDAO();
+    var hasLoggedInUser = await _accountDAO.isUserLoggedIn();
+    await setIsFirstOnboard(false);
+    if (hasLoggedInUser) {
+      Get.offAndToNamed(RouteHandler.NAV);
+    } else {
+      Get.offAndToNamed(RouteHandler.LOGIN);
+    }
   }
 
   Widget _buildImage(String assetName) {

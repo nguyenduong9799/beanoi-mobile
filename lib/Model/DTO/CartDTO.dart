@@ -1,5 +1,16 @@
+import 'package:logger/logger.dart';
 import 'package:unidelivery_mobile/Model/DTO/ProductDTO.dart';
 import 'package:unidelivery_mobile/constraints.dart';
+
+final logger = Logger(
+    printer: PrettyPrinter(
+  methodCount: 0,
+  errorMethodCount: 5,
+  lineLength: 50,
+  colors: true,
+  printEmojis: true,
+  printTime: false,
+));
 
 class Cart {
   List<CartItem> items;
@@ -41,15 +52,15 @@ class Cart {
 
     List<Map<String, dynamic>> listCartItem = new List();
     items.forEach((element) {
-      listCartItem.addAll(element.toJsonApi());
+      listCartItem.add(element.toJsonApi());
     });
 
     Map<String, dynamic> map = {
       "payments": payments,
-      "order_details": listCartItem,
+      "products_list": listCartItem,
       "note": orderNote,
     };
-    print("Order: " + map.toString());
+    logger.i("Order: " + map.toString());
     return map;
   }
 
@@ -139,24 +150,39 @@ class CartItem {
     };
   }
 
-  List<Map<String, dynamic>> toJsonApi() {
-    List<Map<String, dynamic>> map = new List();
+  // TODO: Xem lai quantity cua tung CartItem
+  Map<String, dynamic> toJsonApi() {
+    // List<Map<String, dynamic>> map = new List();
+    List productChilds = products
+        .map((productChild) => {
+              "product_id": productChild.id,
+              "product_in_menu_id": productChild.productInMenuId,
+              "quantity": quantity, // TODO: Kiem tra lon hon max va < min
+            })
+        .toList();
 
-    if (master.type != ProductType.MASTER_PRODUCT) {
-      map.add({
-        "product_id": master.id,
-        "quantity": quantity,
-        "parent_id": master.catergoryId
-      });
-    }
+    return {
+      "master_product": master.productInMenuId,
+      "product_childs": productChilds,
+      "description": description,
+      "quantity": quantity
+    };
 
-    products.forEach((element) {
-      map.add({
-        "product_id": element.id,
-        "quantity": quantity,
-        "parent_id": element.catergoryId
-      });
-    });
-    return map;
+    // if (master.type != ProductType.MASTER_PRODUCT) {
+    //   map.add({
+    //     "product_id": master.id,
+    //     "quantity": quantity,
+    //     "parent_id": master.catergoryId
+    //   });
+    // }
+
+    // products.forEach((element) {
+    //   map.add({
+    //     "product_id": element.id,
+    //     "quantity": quantity,
+    //     "parent_id": element.catergoryId
+    //   });
+    // });
+    // return map;
   }
 }

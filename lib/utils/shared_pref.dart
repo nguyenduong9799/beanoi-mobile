@@ -4,6 +4,16 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:unidelivery_mobile/Model/DTO/StoreDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 
+Future<bool> setIsFirstOnboard(bool isFirstOnboard) async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  return prefs.setBool('isFirstOnBoard', isFirstOnboard);
+}
+
+Future<bool> getIsFirstOnboard() async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  return prefs.getBool('isFirstOnBoard');
+}
+
 Future<bool> setFCMToken(String value) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   return prefs.setString('FCMToken', value);
@@ -27,7 +37,7 @@ Future<String> getToken() async {
 Future<Cart> setCart(Cart cart) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   print("Cart: " + cart.toString());
-  prefs.setString('CART', jsonEncode(cart.toJson()));
+  prefs.setString('CART', jsonEncode(cart?.toJson()));
   return cart;
 }
 
@@ -83,7 +93,9 @@ Future<void> updateItemFromCart(CartItem item) async {
 
 Future<void> setStore(StoreDTO dto) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  prefs.setString('STORE', jsonEncode(dto.toJson()));
+  if (dto != null) {
+    prefs.setString('STORE', jsonEncode(dto?.toJson()));
+  }
 }
 
 Future<StoreDTO> getStore() async {
