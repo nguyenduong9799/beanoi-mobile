@@ -8,7 +8,7 @@ class GiftScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black54,
+      backgroundColor: Colors.white,
       body: Center(
         child: Container(
           height: MediaQuery.of(context).size.height,
@@ -20,7 +20,7 @@ class GiftScreen extends StatelessWidget {
                   child: Container(
                     height: 70,
                     child: Text(
-                      "COMING SOON",
+                      "SẮP RA MẮT",
                       style: TextStyle(
                         fontSize: 30,
                         color: kPrimary,
@@ -42,11 +42,11 @@ class GiftScreen extends StatelessWidget {
                     },
                     text: [
                       "Tính năng đổi quà đang được phát triển",
-                      "Hãy Tích điểm thật nhiều để đổi thật nhiều quà nhá \n^0^",
+                      "Hãy thu thập thật nhiều Bean coin nhé",
                     ],
                     textStyle: TextStyle(
                       fontSize: 20.0,
-                      color: Colors.white,
+                      color: kPrimary,
                     ),
                     textAlign: TextAlign.center,
                     alignment:

@@ -109,29 +109,14 @@ class _HomeAppBarSate extends State<HomeAppBar> {
                         return GestureDetector(
                           onTap: () async {
                             await model.fetchUser();
-                            Get.snackbar(
-                               "Olala", // title
-                                "Hello cả nhà",
-                                colorText: kBackgroundGrey[0],
-                                icon: Icon(Icons.alarm),
-                                shouldIconPulse: true,
-                                backgroundColor: kPrimary,
-                                isDismissible: true,
-                                duration: Duration(minutes: 1),
-                                mainButton: FlatButton(
-                                  child: Text("OK", style: kTextPrimary,),
-                                  onPressed: (){
-                                    hideSnackbar();
-                                  },
-                                )
-                            );
+
                           },
                           child: Align(
                             alignment: Alignment.bottomCenter,
                             child: Image(
                               image: AssetImage("assets/images/avatar.png"),
-                              width: 40,
-                              height: 40,
+                              width: 45,
+                              height: 45,
                             ),
                           ),
                         );

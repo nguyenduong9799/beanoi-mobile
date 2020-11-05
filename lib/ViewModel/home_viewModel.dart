@@ -79,13 +79,14 @@ class HomeViewModel extends BaseModel {
     bool result = await Get.toNamed(RouteHandler.ORDER);
     if (result != null) {
       if (result) {
+        notifyListeners();
         await showStatusDialog("assets/images/global_sucsess.png", "Thành công",
             "Đơn hàng của bạn sẽ được giao vào lúc $TIME");
 
         await rootViewModel.fetchUser();
       }
     }
-    notifyListeners();
+
   }
 
   Future<Cart> get cart async {

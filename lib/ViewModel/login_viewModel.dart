@@ -69,8 +69,10 @@ class LoginViewModel extends BaseModel {
     final PhoneVerificationCompleted verificationCompleted =
         (AuthCredential authCredential) async {
       try {
+        showLoadingDialog();
         final userInfo = await signIn(authCredential);
         userInfo.phone = _phoneNb;
+        hideDialog();
         // TODO: Kiem tra xem user moi hay cu
         if (userInfo.isFirstLogin) {
           // Navigate to sign up screen
@@ -113,6 +115,7 @@ class LoginViewModel extends BaseModel {
       verificationFailed: verificationFailed,
       codeSent: phoneCodeSent,
       codeAutoRetrievalTimeout: phoneTimeout,
+
     );
     print("Login Done");
   }

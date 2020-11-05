@@ -70,8 +70,8 @@ class RootViewModel extends BaseModel {
     if (option == 1) {
       await signOut();
       Get.offAllNamed(RouteHandler.LOGIN);
-
     }
+    destroyInstance();
   }
 
   Future<void> getLocation() async {

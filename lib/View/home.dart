@@ -1,4 +1,3 @@
-import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:animator/animator.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +14,7 @@ import 'package:unidelivery_mobile/acessories/loading.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
 
-const ORDER_TIME = 23;
+const ORDER_TIME = 11;
 
 class HomeScreen extends StatefulWidget {
   final AccountDTO user;
@@ -30,12 +29,8 @@ class _HomeScreenState extends State<HomeScreen> {
   PageController _scrollController = new PageController();
   HomeViewModel model = HomeViewModel();
   DateTime now = DateTime.now();
-  DateTime orderTime = DateTime(
-    DateTime.now().year,
-    DateTime.now().month,
-    DateTime.now().day,
-    ORDER_TIME,
-  );
+  DateTime orderTime = DateTime(DateTime.now().year, DateTime.now().month,
+      DateTime.now().day, ORDER_TIME, 30);
   // int endTime = DateTime.now().millisecondsSinceEpoch + 1000 * 60 * 60;
   bool _endOrderTime = false;
 
@@ -48,9 +43,10 @@ class _HomeScreenState extends State<HomeScreen> {
     model.getProducts();
     if (orderTime.isBefore(DateTime.now())) {
       setState(() {
-        _endOrderTime = false;
+        _endOrderTime = true;
       });
     }
+    print("Orderable: " + _endOrderTime.toString());
   }
 
   Future<void> _refresh() async {
@@ -272,28 +268,23 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             children: [
               Text(
-                "Còn lại",
+                _endOrderTime ? "Hết giờ" : "Còn lại",
                 style: kTextPrimary.copyWith(fontWeight: FontWeight.bold),
               ),
-              !_endOrderTime
-                  ? CountdownTimer(
-                      textStyle: TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                      ),
-                      endTime: orderTime.millisecondsSinceEpoch,
-                      onEnd: () {
-                        setState(() {
-                          _endOrderTime = true;
-                        });
-                      },
-                    )
-                  : Text(
-                      "Bạn quay lại sau nhé :(",
-                      style: TextStyle(
-                        color: Colors.white,
-                      ),
-                    ),
+              CountdownTimer(
+
+                emptyWidget: Container(),
+                textStyle: TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                ),
+                endTime: orderTime.millisecondsSinceEpoch,
+                onEnd: () {
+                  setState(() {
+                    _endOrderTime = true;
+                  });
+                },
+              )
             ],
           ),
         ),

@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "868742887756-lirt3ffkvm9phaoktb9ek9n19u3b2ops.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.unibean.unidelivery",
+            "certificate_hash": "9780ab8abd5ef43dc54fc0a1d2224c7b8a39ab07"
+          }
+        },
+        {
           "client_id": "868742887756-1nsimestsfd27apeqobr0i0e9srr2bm9.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
