@@ -43,35 +43,38 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
       PageViewModel(
         title: "Tích thật nhiều đậu",
         body: "Tích góp thật nhiều đậu và đổi được những phần quà hay ho nhá.",
-        image: _buildImage('onboard_2.png'),
+        image: _buildImage('onboard_3.png'),
         decoration: pageDecoration,
       ),
     ];
 
     return Scaffold(
-      body: IntroductionScreen(
-        pages: pages,
-        onDone: () => _onIntroEnd(),
-        onSkip: () => _onIntroEnd(), // You can override onSkip callback
-        showSkipButton: true,
-        next: const Icon(
-          Icons.arrow_forward,
-          color: kPrimary,
-        ),
-        skip: const Text(
-          'Bỏ qua',
-          style: TextStyle(color: Colors.grey),
-        ),
-        done: const Text('Xong',
-            style: TextStyle(
-                fontWeight: FontWeight.w600, color: kPrimary, fontSize: 14)),
-        dotsDecorator: const DotsDecorator(
-          size: Size(10.0, 10.0),
-          color: Colors.grey,
-          activeColor: kPrimary,
-          activeSize: Size(22.0, 10.0),
-          activeShape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(25.0)),
+      body: Padding(
+        padding: const EdgeInsets.only(top: 24.0),
+        child: IntroductionScreen(
+          pages: pages,
+          onDone: () => _onIntroEnd(),
+          onSkip: () => _onIntroEnd(), // You can override onSkip callback
+          showSkipButton: true,
+          next: const Icon(
+            Icons.arrow_forward,
+            color: kPrimary,
+          ),
+          skip: const Text(
+            'Bỏ qua',
+            style: TextStyle(color: Colors.grey),
+          ),
+          done: const Text('Xong',
+              style: TextStyle(
+                  fontWeight: FontWeight.w600, color: kPrimary, fontSize: 14)),
+          dotsDecorator: const DotsDecorator(
+            size: Size(10.0, 10.0),
+            color: Colors.grey,
+            activeColor: kPrimary,
+            activeSize: Size(22.0, 10.0),
+            activeShape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(25.0)),
+            ),
           ),
         ),
       ),

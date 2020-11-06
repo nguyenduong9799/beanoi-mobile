@@ -30,7 +30,6 @@ dependencies:
   firebase_messaging: ^6.0.16
   scoped_model: ^1.0.1
   intl: ^0.16.1
-  progress_dialog: ^1.2.4
   dio: ^3.0.9
   shared_preferences: ^0.5.7+3
   flutter_svg: ^0.18.1

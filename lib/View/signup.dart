@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:progress_dialog/progress_dialog.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
-import 'package:unidelivery_mobile/services/analytic_service.dart';
 import 'package:unidelivery_mobile/utils/regex.dart';
 
 import '../route_constraint.dart';
@@ -24,7 +22,7 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
-  ProgressDialog pr;
+
 
   final form = FormGroup({
     'name': FormControl(validators: [
@@ -50,12 +48,7 @@ class _SignUpState extends State<SignUp> {
   @override
   void initState() {
     super.initState();
-    pr = new ProgressDialog(
-      context,
-      showLogs: true,
-      type: ProgressDialogType.Normal,
-      isDismissible: false,
-    );
+
     final user = widget.user;
     // UPDATE USER INFO INTO FORM
     if (user != null)
@@ -79,7 +72,7 @@ class _SignUpState extends State<SignUp> {
       } catch (e) {
         await _showMyDialog("Lỗi", e.toString());
       } finally {
-        if (pr.isShowing()) await pr.hide();
+
         // Chuyen trang
         if (updateSucces) {
           print('Update Success');

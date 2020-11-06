@@ -49,7 +49,9 @@ class AccountDAO {
 
   Future<void> logOut() async {
     await AuthService().signOut();
-    await setToken(null);
+    String fcmToken = await PushNotificationService.getInstance().getFcmToken();
+    Response response =
+        await request.post("/logout", data: {"fcm_token": fcmToken});
   }
 
   Future<AccountDTO> updateUser(AccountDTO updateUser) async {

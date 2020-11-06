@@ -50,6 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _refresh() async {
+    model.isFirstFetch = true;
     await model.getProducts();
   }
 
@@ -120,13 +121,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     HomeAppBar(),
                     buildCountDown(),
-                    !_endOrderTime
-                        ? Positioned(
-                            left: 0,
-                            bottom: 0,
-                            child: tag(),
-                          )
-                        : SizedBox.shrink(),
+                    Positioned(
+                      left: 0,
+                      bottom: 0,
+                      child: tag(),
+                    )
                   ],
                 ),
               ),
@@ -180,8 +179,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget buildCartButton(rootViewModel) {
-    return !_endOrderTime
-        ? ScopedModelDescendant(
+    return ScopedModelDescendant(
             rebuildOnChange: true,
             builder: (context, child, HomeViewModel model) {
               return FutureBuilder(
@@ -246,8 +244,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     );
                   });
-            })
-        : SizedBox.shrink();
+            });
   }
 
   Positioned buildCountDown() {
@@ -272,7 +269,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 style: kTextPrimary.copyWith(fontWeight: FontWeight.bold),
               ),
               CountdownTimer(
-
                 emptyWidget: Container(),
                 textStyle: TextStyle(
                   color: Colors.white,

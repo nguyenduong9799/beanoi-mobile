@@ -27,7 +27,6 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
-  final navigatorKey = GlobalKey<NavigatorState>();
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +35,7 @@ class MyApp extends StatelessWidget {
       DeviceOrientation.portraitDown,
     ]);
     return GetMaterialApp(
-      title: 'Flutter Demo',
+      title: 'Uni Delivery',
       debugShowCheckedModeBanner: false,
       onGenerateRoute: (settings) {
         switch (settings.name) {

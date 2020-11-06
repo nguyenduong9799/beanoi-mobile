@@ -58,6 +58,7 @@ class _RootScreenState extends State<RootScreen> {
                 index: _selectedIndex,
                 children: _screens,
               ),
+
               bottomNavigationBar: Container(
                 // padding: const EdgeInsets.only(bottom: 12.0),
                 color: Colors.white,

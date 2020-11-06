@@ -10,6 +10,7 @@ import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
 import 'package:unidelivery_mobile/route_constraint.dart';
 import 'package:unidelivery_mobile/services/analytic_service.dart';
+import 'package:unidelivery_mobile/services/push_notification_service.dart';
 import 'package:unidelivery_mobile/utils/shared_pref.dart';
 
 import '../constraints.dart';
@@ -57,6 +58,8 @@ class HomeViewModel extends BaseModel {
 
   Future<void> openProductDetail(ProductDTO product) async {
     await AnalyticsService.getInstance().logViewItem(product);
+    String fcm =  await PushNotificationService.getInstance().getFcmToken();
+    print("fcm: " + fcm);
     bool result =
         await Get.toNamed(RouteHandler.PRODUCT_DETAIL, arguments: product);
     hideSnackbar();
@@ -84,6 +87,8 @@ class HomeViewModel extends BaseModel {
             "Đơn hàng của bạn sẽ được giao vào lúc $TIME");
 
         await rootViewModel.fetchUser();
+      }else{
+        notifyListeners();
       }
     }
 

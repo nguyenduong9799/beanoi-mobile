@@ -268,10 +268,11 @@ class _HomeAppBarSate extends State<HomeAppBar> {
                 ),
                 TextSpan(text: " và "),
                 TextSpan(
-                  text: "${user.point.round()} bean",
+                  text: "${user.point.round()} Bean",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: Colors.deepOrangeAccent,
+                    fontSize: 14,
+                    color: kBean,
                   ),
                 ),
               ]),

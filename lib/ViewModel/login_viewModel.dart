@@ -58,11 +58,6 @@ class LoginViewModel extends BaseModel {
     }
   }
 
-  Future<void> signOut() async {
-    await AuthService().signOut();
-    await setToken(null);
-  }
-
   Future<void> onLoginWithPhone(String phone) async {
     _phoneNb = phone;
     Get.toNamed(RouteHandler.LOADING);
