@@ -8,6 +8,7 @@ import 'package:unidelivery_mobile/Services/firebase.dart';
 import 'package:unidelivery_mobile/ViewModel/base_model.dart';
 import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
+import 'package:unidelivery_mobile/services/push_notification_service.dart';
 import 'package:unidelivery_mobile/utils/shared_pref.dart';
 
 import '../route_constraint.dart';
@@ -45,7 +46,8 @@ class LoginViewModel extends BaseModel {
       String token = await userCredential.user.getIdToken();
       print("token: " + token);
       final userInfo = await dao.login(token);
-      // await setToken(userInfo.toString());
+      await PushNotificationService.getInstance().init();
+
       await _analyticsService.setUserProperties(userInfo);
       print("User: " + userInfo.toString());
       return userInfo;

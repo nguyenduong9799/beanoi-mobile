@@ -69,9 +69,9 @@ class RootViewModel extends BaseModel {
     int option = await showOptionDialog("Mình sẽ nhớ bạn lắm ó huhu :'(((");
     if (option == 1) {
       await signOut();
+      destroyInstance();
       Get.offAllNamed(RouteHandler.LOGIN);
     }
-    destroyInstance();
   }
 
   Future<void> getLocation() async {

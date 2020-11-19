@@ -110,7 +110,7 @@ Future<StoreDTO> getStore() async {
 Future<void> removeALL() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   await prefs.clear();
-  await setIsFirstOnboard(true);
+  await setIsFirstOnboard(false);
 }
 
 // Future<bool> setUser(A value) async {

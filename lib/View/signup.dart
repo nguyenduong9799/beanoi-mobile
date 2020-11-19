@@ -51,7 +51,7 @@ class _SignUpState extends State<SignUp> {
 
     final user = widget.user;
     // UPDATE USER INFO INTO FORM
-    if (user != null)
+    if (user != null){
       form.value = {
         "name": user.name,
         "phone": user.phone,
@@ -59,6 +59,9 @@ class _SignUpState extends State<SignUp> {
         "email": user.email,
         "gender": user.gender,
       };
+      print("Phone: " + user.phone);
+    }
+
   }
 
   Future<void> _onUpdateUser(SignUpViewModel model) async {
@@ -121,6 +124,7 @@ class _SignUpState extends State<SignUp> {
       model: SignUpViewModel(),
       child: SafeArea(
         child: Scaffold(
+          resizeToAvoidBottomPadding: false,
           body: ReactiveForm(
             formGroup: this.form,
             child: Stack(
@@ -149,10 +153,10 @@ class _SignUpState extends State<SignUp> {
                         borderRadius: BorderRadiusDirectional.circular(25),
                         color: Colors.white,
                       ),
-                      margin: EdgeInsets.fromLTRB(15, 15, 15, 0),
-                      padding: EdgeInsets.fromLTRB(15, 30, 15, 0),
+                      margin: EdgeInsets.fromLTRB(8, 8, 8, 0),
+                      padding: EdgeInsets.fromLTRB(8, 16, 8, 0),
                       width: screenWidth,
-                      height: screenHeight * 0.65,
+                      height: screenHeight * 0.75,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -161,11 +165,11 @@ class _SignUpState extends State<SignUp> {
                             "Vài bước nữa là xong rồi nè!",
                             style: TextStyle(
                               color: Color(0xFF00d286),
-                              fontSize: 25,
+                              fontSize: 20,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          SizedBox(height: 15),
+                          SizedBox(height: 8),
                           Text(
                             "Giúp mình điền vài thông tin dưới đây nhé.",
                             style: TextStyle(
@@ -174,7 +178,7 @@ class _SignUpState extends State<SignUp> {
                               fontWeight: FontWeight.w500,
                             ),
                           ),
-                          SizedBox(height: 30),
+                          SizedBox(height: 16),
                           // FORM ITEM
                           Expanded(
                             child: ListView(
@@ -393,6 +397,7 @@ class FormItem extends StatelessWidget {
           formControlName: formName,
           textCapitalization: TextCapitalization.words,
           textAlignVertical: TextAlignVertical.center,
+          textInputAction: this.label == "Email" ? TextInputAction.done : TextInputAction.next,
           decoration: InputDecoration(
             filled: true,
             fillColor: Color(0xFFf4f4f6),
