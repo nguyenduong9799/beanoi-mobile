@@ -108,7 +108,7 @@ class _HomeAppBarSate extends State<HomeAppBar> {
                       builder: (context, child, model) {
                         return GestureDetector(
                           onTap: () async {
-                            await model.fetchUser();
+                            await model.fetchUser(true);
 
                           },
                           child: Align(

@@ -12,7 +12,7 @@ class ProductDTO {
   List<ProductDTO> listChild;
   int catergoryId;
   // List<int> extraId;
-  String supplierId;
+  int supplierId;
   List<ProductDTO> extras;
   // update
   List<double> prices;
@@ -23,6 +23,8 @@ class ProductDTO {
   int max;
   bool isAnd;
   int generalId;
+  double minPrice;
+  List<int> collections;
 
   @override
   String toString() {
@@ -45,7 +47,7 @@ class ProductDTO {
       this.isAnd,
       this.max,
       this.min,
-      this.generalId}); // balance. point;
+      this.generalId, this.minPrice, this.collections}); // balance. point;
 
   factory ProductDTO.fromJson(dynamic json) {
     var type = json['product_type_id'] as int;
@@ -61,7 +63,7 @@ class ProductDTO {
         type: type,
         imageURL: json['pic_url'] as String,
         catergoryId: json['category_id'],
-        supplierId: json['supplier_id'] as String,
+        supplierId: json['supplier_id'] as int,
         // prices: prices,
         // extraId: listExtra,
         hasExtra: json['has_extra'] as bool,
@@ -75,6 +77,11 @@ class ProductDTO {
     for (int i = 0; i < BussinessHandler.PRICE_QUANTITY; i++) {
       prices[i] = (json["price${i + 1}"] as double) ?? json["price"] as double;
     }
+
+    if(json['collection_id'] != null){
+        var listCollection = json['collection_id'] as List;
+        product.collections = listCollection.cast<int>().toList();
+    }
     product.prices = prices;
 
     switch (type) {
@@ -85,6 +92,7 @@ class ProductDTO {
             listChildJson.map((e) => ProductDTO.fromJson(e)).toList();
 
         product.listChild = listChild;
+        product.minPrice = json['min_price'];
         break;
       case ProductType.COMPLEX_PRODUCT:
         if (product.hasExtra != null && product.hasExtra) {
@@ -121,7 +129,9 @@ class ProductDTO {
       "min": min,
       "max": max,
       "extras": extras,
-      "general_product_id": generalId
+      "general_product_id": generalId,
+      "min_price": minPrice,
+      "collection_id": collections
     };
 
     Map<String, dynamic> pricesMap = new Map();
@@ -145,22 +155,4 @@ class ProductDTO {
   }
 }
 
-class ProductChild {
-  String attribute;
-  List<ProductDTO> list;
 
-  ProductChild({this.attribute, this.list});
-
-  Map<String, dynamic> toJson() {
-    List listProducts = list.map((e) => e.toJson()).toList();
-    return {"attribute_name": attribute, "products": listProducts};
-  }
-
-  factory ProductChild.fromJson(dynamic json) {
-    List<ProductDTO> listProducts = ProductDTO.fromList(json['products']);
-    return ProductChild(
-      attribute: json["attribute_name"] as String,
-      list: listProducts,
-    );
-  }
-}

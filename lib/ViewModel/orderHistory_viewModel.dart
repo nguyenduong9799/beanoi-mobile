@@ -42,7 +42,8 @@ class OrderHistoryViewModel extends BaseModel {
       final data = await _orderDAO.getOrderDetail(orderId);
       orderDetail = data;
       setState(ViewStatus.Completed);
-    } catch (e) {
+    } catch (e, str) {
+      print(str.toString());
       bool result = await showErrorDialog();
       if (result) {
         await getOrderDetail(orderId);

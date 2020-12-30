@@ -4,10 +4,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:unidelivery_mobile/Model/DTO/AccountDTO.dart';
+import 'package:unidelivery_mobile/View/home_detail.dart';
 import 'package:unidelivery_mobile/View/onboard.dart';
 import 'package:unidelivery_mobile/View/start_up.dart';
-import 'package:unidelivery_mobile/View/test.dart';
 import 'package:unidelivery_mobile/route_constraint.dart';
 import 'package:unidelivery_mobile/setup.dart';
 import 'package:unidelivery_mobile/utils/pageNavigation.dart';
@@ -58,6 +57,9 @@ class MyApp extends StatelessWidget {
           case RouteHandler.HOME:
             return CupertinoPageRoute(
                 builder: (context) => HomeScreen(), settings: settings);
+          case RouteHandler.HOME_DETAIL:
+            return CupertinoPageRoute(
+                builder: (context) => HomeScreenDetail(store: settings.arguments,), settings: settings);
           case RouteHandler.NAV:
             return CupertinoPageRoute(
                 builder: (context) => RootScreen(

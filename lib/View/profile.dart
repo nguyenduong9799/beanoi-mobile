@@ -172,7 +172,7 @@ class _UpdateAccountState extends State<ProfileScreen> {
               arguments: model.currentUser);
           if (result != null) {
             if (result) {
-              await model.fetchUser();
+              await model.fetchUser(true);
             }
           }
         },

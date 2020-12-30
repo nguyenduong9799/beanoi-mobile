@@ -53,6 +53,8 @@ dependencies:
   introduction_screen: ^1.0.7
   logger: ^0.9.4
   json_annotation: ^3.1.0
+  scrollable_positioned_list: ^0.1.8
+  carousel_slider: ^2.3.1
 
 dev_dependencies:
   flutter_test:

@@ -40,30 +40,13 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
         affectPriceTabs.add(affectkeys[i].toUpperCase() + " *");
       }
     }
-
-    // List<String> keys =
-    //     productDetailViewModel.affectPriceContent.keys.toList();
-    // for (int i = 0; i < keys.length; i++) {
-    //   print(keys[i].toString());
-    //   affectPriceTabs.add(Tab(
-    //     child: Text(keys[i].toUpperCase() + " (*)"),
-    //   ));
-    // }
-
-    // if (widget.dto.extraId != null && widget.dto.extraId.isNotEmpty) {
-    //   productDetailViewModel.getExtra(
-    //       widget.dto.extraId, widget.dto.supplierId);
-    //   affectPriceTabs.add(Tab(child: Text("Thêm ")));
-    // }
-
-    // _affectPriceController =
-    //     TabController(vsync: this, length: affectPriceTabs.length);
-    // _affectPriceController.addListener(_handleAffectTabSelection);
+    
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: kBackgroundGrey[0],
       bottomNavigationBar: bottomBar(),
       body: CustomScrollView(
         slivers: [
@@ -76,44 +59,37 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
               ),
               child: BackButton(color: Colors.white),
             ),
-            backgroundColor: kBackgroundGrey[0],
             elevation: 0,
             pinned: true,
             floating: false,
             expandedHeight: 250.0,
             flexibleSpace: FlexibleSpaceBar(
-              background: Hero(
-                tag: widget.dto.id,
-                child: ClipRRect(
-                  child: Opacity(
-                    opacity: 0.8,
-                    child: CachedNetworkImage(
-                      imageUrl: widget.dto.imageURL ?? "",
-                      imageBuilder: (context, imageProvider) => Container(
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: imageProvider,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                      progressIndicatorBuilder:
-                          (context, url, downloadProgress) =>
-                              Shimmer.fromColors(
-                        baseColor: Colors.grey[300],
-                        highlightColor: Colors.grey[100],
-                        enabled: true,
-                        child: Container(
-                          width: MediaQuery.of(context).size.width,
-                          // height: 100,
-                          color: Colors.grey,
-                        ),
-                      ),
-                      errorWidget: (context, url, error) => Icon(
-                        MaterialIcons.broken_image,
-                        color: kPrimary.withOpacity(0.5),
+              background: ClipRRect(
+                child: CachedNetworkImage(
+                  imageUrl: widget.dto.imageURL ?? "",
+                  imageBuilder: (context, imageProvider) => Container(
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: imageProvider,
+                        fit: BoxFit.cover,
                       ),
                     ),
+                  ),
+                  progressIndicatorBuilder:
+                      (context, url, downloadProgress) =>
+                          Shimmer.fromColors(
+                    baseColor: Colors.grey[300],
+                    highlightColor: Colors.grey[100],
+                    enabled: true,
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      // height: 100,
+                      color: Colors.grey,
+                    ),
+                  ),
+                  errorWidget: (context, url, error) => Icon(
+                    MaterialIcons.broken_image,
+                    color: kPrimary.withOpacity(0.5),
                   ),
                 ),
               ),
@@ -176,7 +152,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
             height: 24,
           ),
           Text(
-            " " + widget.dto.description,
+            widget.dto.description != null ? " " + widget.dto.description : "",
             style: TextStyle(color: Colors.grey, fontSize: 16),
             overflow: TextOverflow.ellipsis,
             maxLines: 3,

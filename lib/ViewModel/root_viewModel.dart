@@ -7,11 +7,11 @@ import 'package:unidelivery_mobile/Model/DTO/CartDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/StoreDTO.dart';
 import 'package:unidelivery_mobile/Services/analytic_service.dart';
 import 'package:unidelivery_mobile/ViewModel/base_model.dart';
-import 'package:unidelivery_mobile/ViewModel/home_viewModel.dart';
 import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
 import 'package:unidelivery_mobile/utils/shared_pref.dart';
 
+import '../constraints.dart';
 import '../route_constraint.dart';
 
 class RootViewModel extends BaseModel {
@@ -20,6 +20,7 @@ class RootViewModel extends BaseModel {
   String error;
   static RootViewModel _instance;
   AnalyticsService _analyticsService;
+  StoreDAO storeDAO = new StoreDAO();
 
   static RootViewModel getInstance() {
     if (_instance == null) {
@@ -37,27 +38,66 @@ class RootViewModel extends BaseModel {
   StoreDTO dto, tmp;
 
   List<StoreDTO> list;
+  List<StoreDTO> suppliers;
 
   RootViewModel() {
     _dao = AccountDAO();
     _analyticsService = AnalyticsService.getInstance();
     setState(ViewStatus.Loading);
-    fetchUser();
+    fetchUser(false);
   }
 
-  Future<void> fetchUser() async {
+  Future<void> fetchUser(bool completed) async {
     try {
       setState(ViewStatus.Loading);
       final user = await _dao.getUser();
       currentUser = user;
-      setState(ViewStatus.Completed);
+      if(completed){
+        setState(ViewStatus.Completed);
+      }
     } catch (e) {
       bool result = await showErrorDialog();
       if (result) {
-        await fetchUser();
+        await fetchUser(completed);
       } else
         setState(ViewStatus.Error);
-    } finally {}
+    }
+  }
+
+  Future<void> getSuppliers() async {
+    try {
+      setState(ViewStatus.Loading);
+      StoreDTO store = await getStore();
+
+      if (store == null) {
+        List<StoreDTO> listStore = await storeDAO.getStores();
+        for (StoreDTO dto in listStore) {
+          if (dto.id == UNIBEAN_STORE) {
+            store = dto;
+            await setStore(dto);
+          }
+        }
+      }
+      if(dto == null){
+        dto = store;
+      }
+      print("Get suppliers...");
+      suppliers = await storeDAO.getSuppliers(dto.id);
+      await Future.delayed(Duration(microseconds: 500));
+      // check truong hop product tra ve rong (do khong co menu nao trong TG do)
+      if (suppliers.isEmpty || suppliers == null) {
+        setState(ViewStatus.Empty);
+      } else {
+        setState(ViewStatus.Completed);
+      }
+    } catch (e, stacktrace) {
+      print("Excception: " + e.toString() + stacktrace.toString());
+      bool result = await showErrorDialog();
+      if (result) {
+        await getSuppliers();
+      } else
+        setState(ViewStatus.Error);
+    }
   }
 
   Future<void> signOut() async {
@@ -79,7 +119,7 @@ class RootViewModel extends BaseModel {
     notifyListeners();
   }
 
-  Future<void> processChangeAddress(HomeViewModel homeViewModel) async {
+  Future<void> processChangeAddress() async {
     if (dto == null) {
       return;
     }
@@ -108,8 +148,7 @@ class RootViewModel extends BaseModel {
           dto = tmp;
           await deleteCart();
           await setStore(dto);
-          homeViewModel.isFirstFetch = true;
-          await homeViewModel.getProducts();
+          await getSuppliers();
         }
       }
       changeAddress = false;
