@@ -6,14 +6,13 @@ import 'package:unidelivery_mobile/utils/request.dart';
 class ProductDAO {
   // 1. Get Product List from API
   Future<List<ProductDTO>> getProducts(int store_id, int supplier_id) async {
-
-    final res = await request.get('/products', queryParameters: {
-      "store-id": store_id,
-      "supplier-id": supplier_id,
-      "fields": "ChildProducts",
-      "fields": "CollectionId",
-      "size": 100
-    });
+    final res = await request.get(
+        'stores/$store_id/suppliers/$supplier_id/products',
+        queryParameters: {
+          "fields": "ChildProducts",
+          "fields": "CollectionId",
+          "size": 100
+        });
     //final res = await Dio().get("http://api.dominos.reso.vn/api/v1/products");
     final products = ProductDTO.fromList(res.data["data"]);
     return products;

@@ -34,19 +34,21 @@ class OrderDAO {
 
   Future<OrderAmountDTO> prepareOrder(
       String note, int store_id, int payment) async {
-      Cart cart = await getCart();
-      if (cart != null) {
-        // print("Request Note: " + note);
-        cart.orderNote = note;
-        cart.payment = payment;
-        print(cart.toJsonAPi());
-        final res = await request.post('/supplier-orders/prepare',
-            queryParameters: {"store-id": store_id},
-            data: cart.toJsonAPi());
-        if (res.statusCode == 200) {
-          return OrderAmountDTO.fromJson(res.data['data']);
-        } return null;
-      } return null;
+    Cart cart = await getCart();
+    if (cart != null) {
+      // print("Request Note: " + note);
+      cart.orderNote = note;
+      cart.payment = payment;
+      print(cart.toJsonAPi());
+      final res = await request.post('/supplier-orders/prepare',
+          queryParameters: {"store-id": store_id}, data: cart.toJsonAPi());
+      print(cart.toString());
+      if (res.statusCode == 200) {
+        return OrderAmountDTO.fromJson(res.data['data']);
+      }
+      return null;
+    }
+    return null;
   }
 
   // TODO: nen dep cart ra ngoai truyen vao parameter
@@ -60,8 +62,7 @@ class OrderDAO {
         cart.payment = payment;
         print(cart.toJsonAPi());
         final res = await request.post('/supplier-orders',
-            queryParameters: {"store-id": store_id},
-            data: cart.toJsonAPi());
+            queryParameters: {"store-id": store_id}, data: cart.toJsonAPi());
         if (res.statusCode == 200) {
           return OrderStatus.Success;
         }

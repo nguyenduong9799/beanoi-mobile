@@ -31,7 +31,6 @@ class _HomeScreenState extends State<HomeScreenDetail> {
   static HomeViewModel model = HomeViewModel.getInstance();
   DateTime now = DateTime.now();
 
-
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       new GlobalKey<RefreshIndicatorState>();
   final double height = 200;
@@ -74,7 +73,8 @@ class _HomeScreenState extends State<HomeScreenDetail> {
                       child: CustomScrollView(
                         slivers: [
                           SliverAppBar(
-                            leading: CupertinoNavigationBarBackButton(color: Colors.white),
+                            leading: CupertinoNavigationBarBackButton(
+                                color: Colors.white),
                             backgroundColor: kPrimary,
                             elevation: 10,
                             pinned: true,
@@ -83,11 +83,12 @@ class _HomeScreenState extends State<HomeScreenDetail> {
                             bottom: PreferredSize(
                                 preferredSize: Size.fromHeight(50),
                                 child: tag()),
-                            title:  Text(
+                            title: Text(
                               widget.store.name,
                               style: TextStyle(
                                   fontSize: 20,
-                                  fontWeight: FontWeight.bold, color: kBackgroundGrey[0]),
+                                  fontWeight: FontWeight.bold,
+                                  color: kBackgroundGrey[0]),
                             ),
                             flexibleSpace: LayoutBuilder(
                               builder: (context, constraints) {
@@ -97,28 +98,51 @@ class _HomeScreenState extends State<HomeScreenDetail> {
                                 } else {
                                   model.updateShrinkStatus(false);
                                 }
-                                return  Container(
+                                return Container(
                                   width: Get.width,
-                                  margin: EdgeInsets.only(top: kToolbarHeight),
+                                  margin: EdgeInsets.only(top: 70),
                                   decoration: BoxDecoration(
                                     color: kBackgroundGrey[0],
                                   ),
-                                  child: Container(
-                                    width: Get.width,
-                                    margin: EdgeInsets.all(16),
-                                    decoration: BoxDecoration(
-                                      color: kPrimary,
-                                      borderRadius: BorderRadius.all(Radius.circular(16)),
-                                    ),
+                                  child: ListView(
+                                    scrollDirection: Axis.horizontal,
+                                    children: [
+                                      Container(
+                                        width: Get.width,
+                                        height: 50,
+                                        margin: EdgeInsets.all(16),
+                                        decoration: BoxDecoration(
+                                          color: kPrimary,
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(16)),
+                                        ),
+                                      ),
+                                      Container(
+                                        width: Get.width,
+                                        height: 40,
+                                        margin: EdgeInsets.all(16),
+                                        decoration: BoxDecoration(
+                                          color: kPrimary,
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(16),
+                                          ),
+                                        ),
+                                      )
+                                    ],
                                   ),
                                 );
                               },
                             ),
                           ),
                           SliverList(
-                              delegate: SliverChildListDelegate(<Widget>[
-                            buildProducts(rootViewModel),
-                          ]))
+                              delegate: SliverChildListDelegate(
+                            <Widget>[
+                              Container(
+                                child: Text('Hello'),
+                              ),
+                              buildProducts(rootViewModel),
+                            ],
+                          ))
                         ],
                       ),
                     ),
@@ -270,12 +294,12 @@ class _HomeScreenState extends State<HomeScreenDetail> {
               shrinkWrap: true,
               itemCount: model.collections.length,
               itemBuilder: (context, index) {
-                if(model.collections.every((element) => !element.isSelected) || model.collections[index].isSelected){
+                if (model.collections.every((element) => !element.isSelected) ||
+                    model.collections[index].isSelected) {
                   return homeContent(model.collections[index]);
                 }
                 return SizedBox.shrink();
               },
-
             );
           default:
             return Text("Some thing wrong");
@@ -284,74 +308,85 @@ class _HomeScreenState extends State<HomeScreenDetail> {
     );
   }
 
-
-
   Widget homeContent(CollectionDTO collection) {
     return ScopedModelDescendant<HomeViewModel>(
         builder: (context, child, model) {
-          List<Widget> listProducts = List();
-          if(collection.products != null && collection.products.isNotEmpty){
-            collection.products.forEach((product) {
-              double price = product.prices[0];
-              if(product.type == ProductType.MASTER_PRODUCT){
-                price = product.minPrice;
-              }
-              listProducts.add(InkWell(
-                onTap: () {
-                  model.openProductDetail(product);
-                },
-                child: Container(
-                  padding: EdgeInsets.fromLTRB(8, 16, 8, 16),
-                  decoration: BoxDecoration(border: Border(bottom: BorderSide(color: kBackgroundGrey[3]))),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Flexible(
-                              child: Text(
-                                product.name,
-                                style: TextStyle(fontWeight: FontWeight.bold, decorationThickness: 0.5),
-                              )),
-                          Flexible(
-                              child: Text(product.type != ProductType.MASTER_PRODUCT ? formatPrice(price) : "từ " + formatPrice(price),
-                                  style: TextStyle(color: kPrimary)))
-                        ],
-                      ),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      Container(
-                          width: Get.width * 0.65,
-                          child: Text(
-                            product.description ?? "",
-                            maxLines: 1,
-                            style: TextStyle( decorationThickness: 0.5),
-                            overflow: TextOverflow.ellipsis,
-                          ))
-                    ],
-                  ),
-                ),
-              ));
-            });
-            return Container(
-              margin: EdgeInsets.only(top: 8, bottom: 0),
-              color: kBackgroundGrey[0],
+      List<Widget> listProducts = List();
+      if (collection.products != null && collection.products.isNotEmpty) {
+        collection.products.forEach((product) {
+          double price = product.prices[0];
+          if (product.type == ProductType.MASTER_PRODUCT) {
+            price = product.minPrice;
+          }
+          listProducts.add(InkWell(
+            onTap: () {
+              model.openProductDetail(product);
+            },
+            child: Container(
+              padding: EdgeInsets.fromLTRB(8, 16, 8, 16),
+              decoration: BoxDecoration(
+                  border:
+                      Border(bottom: BorderSide(color: kBackgroundGrey[3]))),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
-                    child: Text(collection.name, style: TextStyle(color: kPrimary, fontSize: 18, fontWeight: FontWeight.bold),),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Flexible(
+                          child: Text(
+                        product.name,
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            decorationThickness: 0.5),
+                      )),
+                      Flexible(
+                          child: Text(
+                              product.type != ProductType.MASTER_PRODUCT
+                                  ? formatPrice(price)
+                                  : "từ " + formatPrice(price),
+                              style: TextStyle(color: kPrimary)))
+                    ],
                   ),
-                  ...listProducts
+                  SizedBox(
+                    height: 8,
+                  ),
+                  Container(
+                      width: Get.width * 0.65,
+                      child: Text(
+                        product.description ?? "",
+                        maxLines: 1,
+                        style: TextStyle(decorationThickness: 0.5),
+                        overflow: TextOverflow.ellipsis,
+                      ))
                 ],
               ),
-            );
-          } return SizedBox.shrink();
-
-        } );
+            ),
+          ));
+        });
+        return Container(
+          margin: EdgeInsets.only(top: 8, bottom: 0),
+          color: kBackgroundGrey[0],
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+                child: Text(
+                  collection.name,
+                  style: TextStyle(
+                      color: kPrimary,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold),
+                ),
+              ),
+              ...listProducts
+            ],
+          ),
+        );
+      }
+      return SizedBox.shrink();
+    });
   }
 
   Widget tag() {
@@ -373,7 +408,7 @@ class _HomeScreenState extends State<HomeScreenDetail> {
             child: ScopedModelDescendant<HomeViewModel>(
               builder: (context, child, model) {
                 final filterCategories = model.collections;
-                switch(model.status){
+                switch (model.status) {
                   case ViewStatus.Loading:
                     return Shimmer.fromColors(
                       baseColor: kBackgroundGrey[0],
@@ -385,7 +420,8 @@ class _HomeScreenState extends State<HomeScreenDetail> {
                       ),
                     );
                   default:
-                    if(model.collections != null && model.collections.isNotEmpty){
+                    if (model.collections != null &&
+                        model.collections.isNotEmpty) {
                       return Stack(
                         children: [
                           Row(
@@ -401,12 +437,13 @@ class _HomeScreenState extends State<HomeScreenDetail> {
                                       padding: const EdgeInsets.all(10),
                                       child: ListView.separated(
                                         itemBuilder: (context, index) =>
-                                            filterButton(filterCategories[index]),
+                                            filterButton(
+                                                filterCategories[index]),
                                         scrollDirection: Axis.horizontal,
                                         itemCount: filterCategories.length,
                                         separatorBuilder:
                                             (BuildContext context, int index) =>
-                                            SizedBox(width: 8),
+                                                SizedBox(width: 8),
                                       ),
                                     ),
                                   ],
@@ -418,7 +455,7 @@ class _HomeScreenState extends State<HomeScreenDetail> {
                       );
                     }
                     return Container(
-                        color: kBackgroundGrey[3],
+                      color: kBackgroundGrey[3],
                     );
                 }
               },
@@ -433,7 +470,6 @@ class _HomeScreenState extends State<HomeScreenDetail> {
     final title = filter.name;
     final id = filter.id;
     final isSelected = filter.isSelected;
-
 
     return ButtonTheme(
       minWidth: 62,
@@ -464,10 +500,9 @@ class _HomeScreenState extends State<HomeScreenDetail> {
               Text(
                 title,
                 style: isSelected
-                    ? kTextPrimary.copyWith(
-                        fontStyle: FontStyle.italic
-                      )
-                    : kTextPrimary.copyWith(color: Colors.black, fontStyle: FontStyle.italic),
+                    ? kTextPrimary.copyWith(fontStyle: FontStyle.italic)
+                    : kTextPrimary.copyWith(
+                        color: Colors.black, fontStyle: FontStyle.italic),
               ),
             ],
           ),
