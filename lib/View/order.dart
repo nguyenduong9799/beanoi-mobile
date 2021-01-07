@@ -33,7 +33,6 @@ class _OrderScreenState extends State<OrderScreen> {
     super.initState();
     orderViewModel = OrderViewModel.getInstance();
     orderViewModel.checkPayment();
-
   }
 
   @override
@@ -45,7 +44,9 @@ class _OrderScreenState extends State<OrderScreen> {
           ViewStatus status = orderViewModel.status;
           switch (status) {
             case ViewStatus.Loading:
-              return LoadingScreen(title: "Đang xử lý",);
+              return LoadingScreen(
+                title: "Đang xử lý",
+              );
             case ViewStatus.Completed:
               return FutureBuilder(
                 future: model.cart,
@@ -109,6 +110,22 @@ class _OrderScreenState extends State<OrderScreen> {
                   );
                 },
               );
+            case ViewStatus.Error:
+              return ListView(
+                children: [
+                  Center(
+                    child: Text(
+                      "Có gì đó sai sai..\n Vui lòng thử lại.",
+                      style: kTextPrimary.copyWith(fontSize: 20),
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Image.asset(
+                    'assets/images/global_error.png',
+                    fit: BoxFit.contain,
+                  ),
+                ],
+              );
             default:
               return LoadingScreen();
           }
@@ -118,58 +135,58 @@ class _OrderScreenState extends State<OrderScreen> {
   }
 
   Widget buildBeanReward() {
-
-   if(orderViewModel.payment != null){
-     int bean = BussinessHandler.beanReward(orderViewModel.orderAmount.totalAmount);
-     return Center(
-       child: Container(
-         width: MediaQuery.of(context).size.width,
-         // height: 70,
-         decoration: BoxDecoration(
-           borderRadius: BorderRadius.circular(4),
-           border: Border.all(
-             color: kPrimary,
-           ),
-           color: Colors.white,
-         ),
-         padding: const EdgeInsets.fromLTRB(8, 12, 8, 12),
-         margin: EdgeInsets.only(left: 4, right: 4),
-         child: Row(
-           children: [
-             Icon(FontAwesome5Solid.fire_alt, color: Colors.red),
-             SizedBox(width: 8),
-             Expanded(
-               child: Container(
-                 // height: 50,
-                 child: RichText(
-                   maxLines: 2,
-                   text: TextSpan(
-                       text: "WoW\nBạn sẽ nhận được ",
-                       style: TextStyle(
-                         fontSize: 12,
-                         // fontWeight: FontWeight.w100,
-                         color: Colors.black45,
-                       ),
-                       children: <TextSpan>[
-                         TextSpan(
-                           text: "${bean.toString()} bean",
-                           style: TextStyle(
-                             fontWeight: FontWeight.bold,
-                             fontSize: 14,
-                             color: kPrimary,
-                           ),
-                         ),
-                         TextSpan(text: " cho đơn hàng này đấy!"),
-                       ]),
-                 ),
-               ),
-             ),
-           ],
-         ),
-       ),
-     );
-   } return SizedBox.shrink();
-
+    if (orderViewModel.payment != null) {
+      int bean =
+          BussinessHandler.beanReward(orderViewModel.orderAmount.totalAmount);
+      return Center(
+        child: Container(
+          width: MediaQuery.of(context).size.width,
+          // height: 70,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(4),
+            border: Border.all(
+              color: kPrimary,
+            ),
+            color: Colors.white,
+          ),
+          padding: const EdgeInsets.fromLTRB(8, 12, 8, 12),
+          margin: EdgeInsets.only(left: 4, right: 4),
+          child: Row(
+            children: [
+              Icon(FontAwesome5Solid.fire_alt, color: Colors.red),
+              SizedBox(width: 8),
+              Expanded(
+                child: Container(
+                  // height: 50,
+                  child: RichText(
+                    maxLines: 2,
+                    text: TextSpan(
+                        text: "WoW\nBạn sẽ nhận được ",
+                        style: TextStyle(
+                          fontSize: 12,
+                          // fontWeight: FontWeight.w100,
+                          color: Colors.black45,
+                        ),
+                        children: <TextSpan>[
+                          TextSpan(
+                            text: "${bean.toString()} bean",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                              color: kPrimary,
+                            ),
+                          ),
+                          TextSpan(text: " cho đơn hàng này đấy!"),
+                        ]),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+    return SizedBox.shrink();
   }
 
   Widget layoutOrder(Cart cart, String store) {
@@ -638,34 +655,34 @@ class _OrderScreenState extends State<OrderScreen> {
               ],
             )
           : Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: ListView(
-        shrinkWrap: true,
-              children: [
-                FlatButton(
-                  onPressed: () async {},
-                  padding: EdgeInsets.only(right:8.0, left: 8.0),
-                  textColor: Colors.white,
-                  color: kBackgroundGrey[4],
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(8))),
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        height: 16,
-                      ),
-                      Text("Vui lòng chọn phương thức thanh toán",
-                          style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-                      SizedBox(
-                        height: 16,
-                      )
-                    ],
+              padding: const EdgeInsets.all(8.0),
+              child: ListView(
+                shrinkWrap: true,
+                children: [
+                  FlatButton(
+                    onPressed: () async {},
+                    padding: EdgeInsets.only(right: 8.0, left: 8.0),
+                    textColor: Colors.white,
+                    color: kBackgroundGrey[4],
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(8))),
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: 16,
+                        ),
+                        Text("Vui lòng chọn phương thức thanh toán",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 15)),
+                        SizedBox(
+                          height: 16,
+                        )
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
     );
   }
 

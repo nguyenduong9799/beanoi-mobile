@@ -63,19 +63,17 @@ class OrderDAO {
         print(cart.toJsonAPi());
         final res = await request.post('/supplier-orders',
             queryParameters: {"store-id": store_id}, data: cart.toJsonAPi());
-        if (res.statusCode == 200) {
-          return OrderStatus.Success;
-        }
+        return OrderStatus(
+            statusCode: res.statusCode,
+            code: res.data['code'],
+            message: res.data['message']);
       }
     } on DioError catch (e) {
-      if (e.response.statusCode == 400) {
-        print("Code: " + e.response.data['code'].toString());
-        if (e.response.data['code'] == 'ERR_BALANCE')
-          return OrderStatus.NoMoney;
-        return OrderStatus.Timeout;
-      }
-      return OrderStatus.Fail;
+      return OrderStatus(
+          statusCode: e.response.statusCode,
+          code: e.response.data['code'],
+          message: e.response.data['message']);
     }
-    return OrderStatus.Fail;
+    return null;
   }
 }

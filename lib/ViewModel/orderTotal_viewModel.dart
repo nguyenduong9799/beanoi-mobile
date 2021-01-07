@@ -41,23 +41,6 @@ class OrderViewModel extends BaseModel {
     return await getCart();
   }
 
-  // double countPrice(Cart cart) {
-  //   double total = 0;
-  //   for (CartItem item in cart.items) {
-  //     double subTotal = 0;
-  //     if (item.master.type != ProductType.MASTER_PRODUCT) {
-  //       subTotal =
-  //           BussinessHandler.countPrice(item.master.prices, item.quantity);
-  //     }
-  //
-  //     for (ProductDTO dto in item.products) {
-  //       subTotal += BussinessHandler.countPrice(dto.prices, item.quantity);
-  //     }
-  //     total += subTotal;
-  //   }
-  //   total += DELIVERY_FEE;
-  //   return total;
-  // }
 
   Future<void> prepareOrder() async {
     try {
@@ -86,7 +69,13 @@ class OrderViewModel extends BaseModel {
   Future<void> updateQuantity(CartItem item) async {
     showLoadingDialog();
     await updateItemFromCart(item);
-    await prepareOrder();
+    if(payment != null){
+      await prepareOrder();
+    }else{
+      hideDialog();
+      notifyListeners();
+    }
+
   }
 
   Future<void> orderCart() async {
@@ -97,23 +86,17 @@ class OrderViewModel extends BaseModel {
 
       OrderStatus result =
           await dao.createOrders(orderNote, storeDTO.id, payment);
-      if (result == OrderStatus.Success) {
+      if (result.statusCode == 200) {
         await deleteCart();
         hideDialog();
+        await showStatusDialog("assets/images/global_sucsess.png", result.code,
+            result.message);
         Get.back(result: true);
-      } else if (result == OrderStatus.Fail) {
+      } else{
         hideDialog();
-        await showStatusDialog("assets/images/global_error.png", "Thất bại :(",
-            "Vui lòng thử lại sau");
-      } else if (result == OrderStatus.NoMoney) {
-        hideDialog();
+        await showStatusDialog("assets/images/global_error.png", result.code,
+            result.message);
         await RootViewModel.getInstance().fetchUser(true);
-        await showStatusDialog("assets/images/global_error.png", "Thất bại :(",
-            "Có đủ tiền đâu mà mua (>_<)");
-      } else if (result == OrderStatus.Timeout) {
-        hideDialog();
-        await showStatusDialog("assets/images/global_error.png", "Thất bại :(",
-            "Hết giờ rồi bạn ơi, mai đặt sớm nhen <3");
       }
     } catch (e) {
       bool result = await showErrorDialog();
@@ -146,8 +129,13 @@ class OrderViewModel extends BaseModel {
       hideDialog();
       Get.back(result: false);
     } else {
-      await prepareOrder();
-      hideDialog();
+      if(payment != null){
+        await prepareOrder();
+      }else{
+        hideDialog();
+        notifyListeners();
+      }
+
     }
   }
 }

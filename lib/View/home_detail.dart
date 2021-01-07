@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:get/get.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shimmer/shimmer.dart';
@@ -11,6 +12,7 @@ import 'package:unidelivery_mobile/Model/DTO/StoreDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
 import 'package:unidelivery_mobile/acessories/loading.dart';
+import 'package:unidelivery_mobile/acessories/product_promotion.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
 import 'package:unidelivery_mobile/utils/index.dart';
@@ -29,11 +31,9 @@ class _HomeScreenState extends State<HomeScreenDetail> {
   bool switcher = false;
   PageController _scrollController = new PageController();
   static HomeViewModel model = HomeViewModel.getInstance();
-  DateTime now = DateTime.now();
 
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       new GlobalKey<RefreshIndicatorState>();
-  final double height = 200;
 
   @override
   void initState() {
@@ -55,108 +55,87 @@ class _HomeScreenState extends State<HomeScreenDetail> {
   Widget build(BuildContext context) {
     // print(widget?.user.uid);
     return ScopedModel(
-      model: RootViewModel.getInstance(),
-      child: ScopedModelDescendant<RootViewModel>(
-        builder:
-            (BuildContext context, Widget child, RootViewModel rootViewModel) {
-          return ScopedModel(
-            model: model,
-            child: Scaffold(
-              floatingActionButton: buildCartButton(rootViewModel),
-              body: SafeArea(
-                child: Container(
-                  height: MediaQuery.of(context).size.height,
-                  child: Center(
-                    child: RefreshIndicator(
-                      key: _refreshIndicatorKey,
-                      onRefresh: _refresh,
-                      child: CustomScrollView(
-                        slivers: [
-                          SliverAppBar(
-                            leading: CupertinoNavigationBarBackButton(
-                                color: Colors.white),
-                            backgroundColor: kPrimary,
-                            elevation: 10,
-                            pinned: true,
-                            floating: false,
-                            expandedHeight: height,
-                            bottom: PreferredSize(
-                                preferredSize: Size.fromHeight(50),
-                                child: tag()),
-                            title: Text(
-                              widget.store.name,
-                              style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  color: kBackgroundGrey[0]),
-                            ),
-                            flexibleSpace: LayoutBuilder(
-                              builder: (context, constraints) {
-                                var top = constraints.biggest.height;
-                                if (top <= kToolbarHeight + 50) {
-                                  model.updateShrinkStatus(true);
-                                } else {
-                                  model.updateShrinkStatus(false);
-                                }
-                                return Container(
-                                  width: Get.width,
-                                  margin: EdgeInsets.only(top: 70),
-                                  decoration: BoxDecoration(
-                                    color: kBackgroundGrey[0],
-                                  ),
-                                  child: ListView(
-                                    scrollDirection: Axis.horizontal,
-                                    children: [
-                                      Container(
-                                        width: Get.width,
-                                        height: 50,
-                                        margin: EdgeInsets.all(16),
-                                        decoration: BoxDecoration(
-                                          color: kPrimary,
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(16)),
-                                        ),
-                                      ),
-                                      Container(
-                                        width: Get.width,
-                                        height: 40,
-                                        margin: EdgeInsets.all(16),
-                                        decoration: BoxDecoration(
-                                          color: kPrimary,
-                                          borderRadius: BorderRadius.all(
-                                            Radius.circular(16),
-                                          ),
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                          SliverList(
-                              delegate: SliverChildListDelegate(
-                            <Widget>[
-                              Container(
-                                child: Text('Hello'),
+      model: model,
+      child: Scaffold(
+        floatingActionButton: buildCartButton(),
+        body: SafeArea(
+          child: Container(
+            height: MediaQuery.of(context).size.height,
+            child: Center(
+              child: RefreshIndicator(
+                key: _refreshIndicatorKey,
+                onRefresh: _refresh,
+                child: CustomScrollView(
+                  slivers: [
+                    SliverAppBar(
+                      leading:
+                          CupertinoNavigationBarBackButton(color: Colors.white),
+                      toolbarHeight: kToolbarHeight,
+                      backgroundColor: kPrimary,
+                      elevation: 10,
+                      pinned: true,
+                      floating: false,
+                      expandedHeight: Get.height / 3 + kToolbarHeight + 16 + 8,
+                      bottom: PreferredSize(
+                          preferredSize: Size.fromHeight(50), child: tag()),
+                      title: Text(
+                        widget.store.name,
+                        style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: kBackgroundGrey[0]),
+                      ),
+                      flexibleSpace: ScopedModelDescendant<HomeViewModel>(
+                        builder: (context, child, model) {
+                          if (model.status == ViewStatus.Loading) {
+                            return Shimmer.fromColors(
+                              baseColor: kBackgroundGrey[0],
+                              highlightColor: Colors.grey[100],
+                              enabled: true,
+                              child: Container(
+                                width: Get.width,
+                                color: Colors.grey,
                               ),
-                              buildProducts(rootViewModel),
-                            ],
-                          ))
-                        ],
+                            );
+                          }
+                          return Container(
+                            padding: EdgeInsets.only(top: kToolbarHeight),
+                            height: Get.height / 3 + 16 + 16,
+                            child: Swiper(
+                              autoplayDelay: 3000,
+                              autoplay: true,
+                              itemCount: model.products.length,
+                              itemBuilder: (context, index) => Center(
+                                  child: StorePromotion(model
+                                      .products[index])), // -> Text widget.
+                              //viewportFraction: 1,
+                              loop: true,
+                              control: new SwiperControl(color: Color(0xff719a0a), iconPrevious: AntDesign.leftcircleo, iconNext: AntDesign.rightcircleo),
+                            ),
+                          );
+                        },
                       ),
                     ),
-                  ),
+                    SliverList(
+                        delegate: SliverChildListDelegate(
+                      <Widget>[
+                        // Container(
+                        //   child: Text('Hello'),
+                        // ),
+                        buildProducts(),
+                      ],
+                    ))
+                  ],
                 ),
               ),
             ),
-          );
-        },
+          ),
+        ),
       ),
     );
   }
 
-  Widget buildCartButton(rootViewModel) {
+  Widget buildCartButton() {
     return ScopedModelDescendant(
         rebuildOnChange: true,
         builder: (context, child, HomeViewModel model) {
@@ -225,8 +204,7 @@ class _HomeScreenState extends State<HomeScreenDetail> {
         });
   }
 
-  ScopedModelDescendant<HomeViewModel> buildProducts(
-      RootViewModel rootViewModel) {
+  ScopedModelDescendant<HomeViewModel> buildProducts() {
     return ScopedModelDescendant<HomeViewModel>(
       builder: (context, child, model) {
         ViewStatus status = model.status;
@@ -372,12 +350,22 @@ class _HomeScreenState extends State<HomeScreenDetail> {
             children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
-                child: Text(
-                  collection.name,
-                  style: TextStyle(
-                      color: kPrimary,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold),
+                child: Center(
+                  child: Text(
+                    collection.name,
+                    style: TextStyle(
+                        color: kPrimary,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+              Center(
+                child: Container(
+                  width: collection.name.length * 0.8 * 8,
+                  child: Divider(
+                    color: kPrimary,
+                  ),
                 ),
               ),
               ...listProducts
