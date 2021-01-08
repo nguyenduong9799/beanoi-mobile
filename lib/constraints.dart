@@ -27,7 +27,7 @@ const UNIBEAN_BRAND = 10;
 const MASTER_PRODUCT = 6;
 const double DIALOG_ICON_SIZE = 60;
 const String defaultImage =
-    "https://mcnewsmd1.keeng.net/netnews/archive/images/2020052200/tinngan_120240_510965964_20wap_320.jpg";
+    "https://scontent.fsgn2-5.fna.fbcdn.net/v/t1.0-9/121323906_2758776227677425_3020435246082138067_o.jpg?_nc_cat=104&ccb=2&_nc_sid=09cbfe&_nc_ohc=rrVR7mqoAmsAX_xMx0L&_nc_ht=scontent.fsgn2-5.fna&oh=97d2f9a697d253e1c34169f716ea0415&oe=601E072C";
 const String TIME = "12:10";
 const String VERSION = "0.0.1";
 const TEST_STORE = 69;

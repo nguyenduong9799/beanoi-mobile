@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -70,8 +69,7 @@ class _StorePromotionState extends State<StorePromotion> {
                             Row(
                               children: [
                                 Text(
-                                  BussinessHandler.beanReward(
-                                          widget.dto.prices[0])
+                                  BussinessHandler.beanReward(widget.dto.price)
                                       .toString(),
                                   style: TextStyle(color: kBean),
                                 ),
@@ -108,7 +106,7 @@ class _StorePromotionState extends State<StorePromotion> {
                         maxLines: 1,
                       )),
                       OutlineButton(
-                        onPressed: (){
+                        onPressed: () {
                           Get.to(VideoPlayerTest());
                         },
                         shape: RoundedRectangleBorder(
@@ -160,17 +158,15 @@ class PrimaryCippler extends CustomClipper<Path> {
   }
 }
 
-class VideoPlayerTest extends StatefulWidget{
+class VideoPlayerTest extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
     // TODO: implement createState
     return SecondaryCippler();
   }
-
 }
 
 class SecondaryCippler extends State<VideoPlayerTest> {
-
   VideoPlayerController _controller;
 
   double _aspectRatio = 16 / 9;
@@ -180,7 +176,6 @@ class SecondaryCippler extends State<VideoPlayerTest> {
     _controller.dispose();
     super.dispose();
   }
-
 
   @override
   initState() {
@@ -200,9 +195,9 @@ class SecondaryCippler extends State<VideoPlayerTest> {
       body: Center(
         child: _controller.value.initialized
             ? AspectRatio(
-          aspectRatio: _controller.value.aspectRatio,
-          child: VideoPlayer(_controller),
-        )
+                aspectRatio: _controller.value.aspectRatio,
+                child: VideoPlayer(_controller),
+              )
             : Container(),
       ),
       floatingActionButton: FloatingActionButton(

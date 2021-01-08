@@ -14,10 +14,8 @@ import 'package:unidelivery_mobile/View/start_up.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
 import 'package:unidelivery_mobile/acessories/appbar.dart';
 import 'package:unidelivery_mobile/acessories/dash_border.dart';
-import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
-import 'package:unidelivery_mobile/services/analytic_service.dart';
 import 'package:unidelivery_mobile/utils/shared_pref.dart';
 
 class OrderScreen extends StatefulWidget {
@@ -283,27 +281,10 @@ class _OrderScreenState extends State<OrderScreen> {
     double price = 0;
     if (item.master.type != ProductType.MASTER_PRODUCT) {
       print("Khác" + item.master.type.toString());
-      price = BussinessHandler.countPrice(item.master.prices, item.quantity);
+      price = item.master.price * item.quantity;
     }
-
     print("Price: " + price.toString());
 
-    // if (item.master.type == MASTER_PRODUCT) {
-    //   list.add(Text(item.products[0].name,
-    //       style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)));
-    //   price = item.products[0].price;
-    //   for (int i = 1; i < item.products.length; i++) {
-    //     list.add(SizedBox(
-    //       height: 10,
-    //     ));
-    //     list.add(Text(
-    //         item.products[i].name.contains("Extra")
-    //             ? item.products[i].name.replaceAll("Extra", "+")
-    //             : item.products[i].name,
-    //         style: TextStyle(fontSize: 14)));
-    //     price += item.products[i].price;
-    //   }
-    // } else {
     list.add(Text(item.master.name,
         style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)));
     for (int i = 0; i < item.products.length; i++) {
@@ -315,8 +296,7 @@ class _OrderScreenState extends State<OrderScreen> {
               ? item.products[i].name.replaceAll("Extra", "+")
               : item.products[i].name,
           style: TextStyle(fontSize: 13, color: kBackgroundGrey[5])));
-      price +=
-          BussinessHandler.countPrice(item.products[i].prices, item.quantity);
+      price += item.products[i].price * item.quantity;
     }
 
     if (item.description != null && item.description.isNotEmpty) {

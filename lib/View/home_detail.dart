@@ -292,7 +292,7 @@ class _HomeScreenState extends State<HomeScreenDetail> {
       List<Widget> listProducts = List();
       if (collection.products != null && collection.products.isNotEmpty) {
         collection.products.forEach((product) {
-          double price = product.prices[0];
+          double price = product.price;
           if (product.type == ProductType.MASTER_PRODUCT) {
             price = product.minPrice;
           }

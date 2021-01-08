@@ -54,7 +54,7 @@ class ProductDetailViewModel extends BaseModel {
         selectedAttributes[attributeKey] = null;
       }
     } else {
-      fixTotal = BussinessHandler.countPrice(master.prices, count);
+      fixTotal = master.price * count;
     }
 
     total = fixTotal + extraTotal;
@@ -108,17 +108,16 @@ class ProductDetailViewModel extends BaseModel {
         }
 
         ProductDTO dto = master.getChildByAttributes(choice);
-        fixTotal = BussinessHandler.countPrice(dto.prices, count);
+        fixTotal = dto.price * count;
       } else {
-        fixTotal = BussinessHandler.countPrice(master.prices, count);
+        fixTotal = master.price * count;
       }
 
       if (this.extra != null) {
         extraTotal = 0;
         for (int i = 0; i < extra.keys.length; i++) {
           if (extra[extra.keys.elementAt(i)]) {
-            double price = BussinessHandler.countPrice(
-                extra.keys.elementAt(i).prices, count);
+            double price = extra.keys.elementAt(i).price * count;
             extraTotal += price;
           }
         }
@@ -146,17 +145,16 @@ class ProductDetailViewModel extends BaseModel {
         }
 
         ProductDTO dto = master.getChildByAttributes(choice);
-        fixTotal = BussinessHandler.countPrice(dto.prices, count);
+        fixTotal = dto.price * count;
       } else {
-        fixTotal = BussinessHandler.countPrice(master.prices, count);
+        fixTotal = master.price * count;
       }
 
       if (this.extra != null) {
         extraTotal = 0;
         for (int i = 0; i < extra.keys.length; i++) {
           if (extra[extra.keys.elementAt(i)]) {
-            double price = BussinessHandler.countPrice(
-                extra.keys.elementAt(i).prices, count);
+            double price = extra.keys.elementAt(i).price * count;
             extraTotal += price;
           }
         }
@@ -187,7 +185,7 @@ class ProductDetailViewModel extends BaseModel {
         try {
           ProductDTO dto = master.getChildByAttributes(choice);
           print("dto: " + dto.toString());
-          fixTotal = BussinessHandler.countPrice(dto.prices, count);
+          fixTotal = dto.price * count;
           extraTotal = 0;
           if (dto.hasExtra != null && dto.hasExtra) {
             print("add extra!");
@@ -237,8 +235,7 @@ class ProductDetailViewModel extends BaseModel {
     extra[extra.keys.elementAt(i)] = value;
     for (int j = 0; j < extra.keys.toList().length; j++) {
       if (extra[extra.keys.elementAt(j)]) {
-        double price =
-            BussinessHandler.countPrice(extra.keys.elementAt(j).prices, count);
+        double price = extra.keys.elementAt(j).price * count;
         extraTotal += price;
       }
     }

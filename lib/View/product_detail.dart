@@ -40,7 +40,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
         affectPriceTabs.add(affectkeys[i].toUpperCase() + " *");
       }
     }
-    
   }
 
   @override
@@ -75,9 +74,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                       ),
                     ),
                   ),
-                  progressIndicatorBuilder:
-                      (context, url, downloadProgress) =>
-                          Shimmer.fromColors(
+                  progressIndicatorBuilder: (context, url, downloadProgress) =>
+                      Shimmer.fromColors(
                     baseColor: Colors.grey[300],
                     highlightColor: Colors.grey[100],
                     enabled: true,
@@ -333,7 +331,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                         child: Padding(
                           padding: const EdgeInsets.only(right: 8.0),
                           child: Text(NumberFormat.simpleCurrency(locale: "vi")
-                              .format(model.extra.keys.elementAt(i).prices[0])),
+                              .format(model.extra.keys.elementAt(i).price)),
                         ),
                       )
                     ],
