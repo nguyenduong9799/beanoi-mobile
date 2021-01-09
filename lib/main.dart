@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:unidelivery_mobile/View/home_detail.dart';
 import 'package:unidelivery_mobile/View/onboard.dart';
 import 'package:unidelivery_mobile/View/start_up.dart';
+import 'package:unidelivery_mobile/acessories/product_promotion.dart';
 import 'package:unidelivery_mobile/route_constraint.dart';
 import 'package:unidelivery_mobile/setup.dart';
 import 'package:unidelivery_mobile/utils/pageNavigation.dart';
@@ -14,6 +15,8 @@ import 'package:unidelivery_mobile/constraints.dart';
 
 import 'package:unidelivery_mobile/View/index.dart';
 import 'package:unidelivery_mobile/utils/request.dart';
+
+import 'Model/DTO/index.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -59,7 +62,10 @@ class MyApp extends StatelessWidget {
                 builder: (context) => HomeScreen(), settings: settings);
           case RouteHandler.HOME_DETAIL:
             return CupertinoPageRoute(
-                builder: (context) => HomeScreenDetail(store: settings.arguments,), settings: settings);
+                builder: (context) => HomeScreenDetail(
+                      store: settings.arguments,
+                    ),
+                settings: settings);
           case RouteHandler.NAV:
             return CupertinoPageRoute(
                 builder: (context) => RootScreen(
@@ -111,8 +117,12 @@ class MyApp extends StatelessWidget {
         toggleableActiveColor: kPrimary,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
+      // home: Scaffold(
+      //   body: Container(
+      //       margin: EdgeInsets.only(top: 16),
+      //       child: StorePromotion(new ProductDTO(1, name: "Test", description: "abc", prices: [1500, 2000000000]))),
+      // ),
       home: StartUpView(),
-      // home: ProfileScreen(new AccountDTO(name: "Mít tơ Bin")),
     );
   }
 }

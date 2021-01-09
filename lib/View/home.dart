@@ -17,7 +17,6 @@ import 'package:unidelivery_mobile/route_constraint.dart';
 const ORDER_TIME = 11;
 
 class HomeScreen extends StatefulWidget {
-
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -46,7 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _refresh() async {
-   await RootViewModel.getInstance().getSuppliers();
+    await RootViewModel.getInstance().getSuppliers();
   }
 
   @override
@@ -58,7 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
         return ScopedModel(
           model: HomeViewModel.getInstance(),
           child: Scaffold(
-            floatingActionButton: buildCartButton(rootViewModel),
+            floatingActionButton: buildCartButton(),
             backgroundColor: Colors.white,
             //bottomNavigationBar: bottomBar(),
             body: SafeArea(
@@ -154,7 +153,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget buildCartButton(rootViewModel) {
+  Widget buildCartButton() {
     return ScopedModelDescendant(
         rebuildOnChange: true,
         builder: (context, child, HomeViewModel model) {
@@ -268,7 +267,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return ScopedModelDescendant<RootViewModel>(
       builder: (context, child, model) {
         ViewStatus status = model.status;
-        switch(status){
+        switch (status) {
           case ViewStatus.Error:
             return ListView(
               children: [
@@ -334,66 +333,66 @@ class _HomeScreenState extends State<HomeScreen> {
         }
       },
     );
-
   }
 
   Widget buildStore(StoreDTO dto) {
     return InkWell(
-      onTap: (){
+      onTap: () {
         Get.toNamed(RouteHandler.HOME_DETAIL, arguments: dto);
       },
       child: Row(
         children: [
-          SizedBox(width: 8,),
+          SizedBox(
+            width: 8,
+          ),
           ClipRRect(
             borderRadius: BorderRadius.circular(16),
             child: Opacity(
               opacity: 1,
               child: (dto.imageUrl == null || dto.imageUrl == "")
                   ? Icon(
-                MaterialIcons.broken_image,
-                color: kPrimary.withOpacity(0.5),
-              )
+                      MaterialIcons.broken_image,
+                      color: kPrimary.withOpacity(0.5),
+                    )
                   : CachedNetworkImage(
-
-                imageUrl: dto.imageUrl,
-                imageBuilder: (context, imageProvider) =>
-                    Container(
-                      width: 50,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: imageProvider,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                progressIndicatorBuilder:
-                    (context, url, downloadProgress) =>
-                    Shimmer.fromColors(
-                      baseColor: Colors.grey[300],
-                      highlightColor: Colors.grey[100],
-                      enabled: true,
-                      child: Container(
+                      imageUrl: dto.imageUrl,
+                      imageBuilder: (context, imageProvider) => Container(
                         width: 50,
                         height: 50,
-                        color: Colors.grey,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: imageProvider,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                      progressIndicatorBuilder:
+                          (context, url, downloadProgress) =>
+                              Shimmer.fromColors(
+                        baseColor: Colors.grey[300],
+                        highlightColor: Colors.grey[100],
+                        enabled: true,
+                        child: Container(
+                          width: 50,
+                          height: 50,
+                          color: Colors.grey,
+                        ),
+                      ),
+                      errorWidget: (context, url, error) => Icon(
+                        MaterialIcons.broken_image,
+                        color: kPrimary.withOpacity(0.5),
                       ),
                     ),
-                errorWidget: (context, url, error) => Icon(
-                  MaterialIcons.broken_image,
-                  color: kPrimary.withOpacity(0.5),
-                ),
-              ),
             ),
           ),
-          SizedBox(width: 16,),
+          SizedBox(
+            width: 16,
+          ),
           Text(dto.name)
         ],
       ),
     );
   }
-
 
   Widget banner() {
     return Container(
@@ -401,6 +400,4 @@ class _HomeScreenState extends State<HomeScreen> {
       color: Colors.red,
     );
   }
-
-
 }

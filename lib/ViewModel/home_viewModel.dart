@@ -66,8 +66,6 @@ class HomeViewModel extends BaseModel {
     notifyListeners();
     if (result != null) {
       if (result) {
-        await showStatusDialog("assets/images/global_sucsess.png", "Thành công",
-            "Đơn hàng của bạn sẽ được giao vào lúc $TIME");
         await RootViewModel.getInstance().fetchUser(true);
       }
     }
@@ -97,7 +95,7 @@ class HomeViewModel extends BaseModel {
       StoreDTO store = await getStore();
 
       print("Get products...");
-      collections = await _collectionDAO.getCollections(supplierId);
+      collections = await _collectionDAO.getCollections(store.id, supplierId);
       products = await _productDAO.getProducts(store.id, supplierId);
       if (collections != null && collections.isNotEmpty) {
         collections.forEach((element) {
