@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_countdown_timer/countdown_timer.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:get/get.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shimmer/shimmer.dart';
@@ -13,6 +14,7 @@ import 'package:unidelivery_mobile/acessories/loading.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
 import 'package:unidelivery_mobile/route_constraint.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 const ORDER_TIME = 11;
 
@@ -72,25 +74,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         onRefresh: _refresh,
                         child: Column(
                           children: [
-                            // banner(),
+                            banner(),
                             location(),
-                            Center(
-                              child: Container(
-                                margin: EdgeInsets.all(8),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(16),
-                                  color: Colors.blue[200],
-                                ),
-                                height:
-                                    MediaQuery.of(context).size.height * 0.13,
-                                width: double.infinity,
-                                child: Image.asset(
-                                  'assets/images/banner.png',
-                                  fit: BoxFit.cover,
-                                  // width: double.infinity,
-                                ),
-                              ),
-                            ),
                             Expanded(child: storeList()),
                             SizedBox(height: 16),
                           ],
@@ -394,10 +379,59 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  List<String> imgList = [
+    "https://dichvuquantriweb.com/wp-content/uploads/2016/02/banner-noel.jpg",
+    "https://previews.123rf.com/images/limbi007/limbi0072003/limbi007200300143/151208245-happy-new-year-2021-banner-with-golden-sand-and-ornaments-eps-10-vector-file-.jpg",
+    "https://i.pinimg.com/originals/aa/72/58/aa72583fa16497aa429bb483fcf77ee9.jpg"
+  ];
+
   Widget banner() {
     return Container(
-      height: 90,
-      color: Colors.red,
+      //padding: EdgeInsets.only(top: 8, bottom: 8),
+      height: MediaQuery.of(context).size.height * 0.2,
+      width: double.infinity,
+      child: Swiper(
+        onTap: (index) async {
+          await _launchURL(
+              "https://kenh14.vn/hoa-ra-cang-bi-crush-phu-ban-cang-lao-vao-nhu-thieu-than-la-vi-ly-do-nay-day-20180308123837012.chn");
+        },
+        autoplay: true,
+        autoplayDelay: 2000,
+        pagination: new SwiperPagination(alignment: Alignment.bottomCenter),
+        itemCount: imgList.length,
+        itemBuilder: (context, index) => CachedNetworkImage(
+          imageUrl: imgList[index],
+          imageBuilder: (context, imageProvider) => Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: imageProvider,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          progressIndicatorBuilder: (context, url, downloadProgress) =>
+              Shimmer.fromColors(
+            baseColor: Colors.grey[300],
+            highlightColor: Colors.grey[100],
+            enabled: true,
+            child: Container(
+              color: Colors.grey,
+            ),
+          ),
+          errorWidget: (context, url, error) => Icon(
+            MaterialIcons.broken_image,
+            color: kPrimary.withOpacity(0.5),
+          ),
+        ),
+      ),
     );
+  }
+
+  _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url, forceWebView: true);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 }

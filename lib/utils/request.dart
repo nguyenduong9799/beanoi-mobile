@@ -70,6 +70,7 @@ class MyRequest {
       headers: {
         Headers.contentTypeHeader: "application/json",
       },
+      sendTimeout: 15000,
       receiveTimeout: 5000);
   Dio _inner;
   MyRequest() {

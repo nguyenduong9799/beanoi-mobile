@@ -8,9 +8,6 @@ import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
 import 'package:get/get.dart';
 import 'package:unidelivery_mobile/route_constraint.dart';
-import 'package:unidelivery_mobile/utils/index.dart';
-
-import 'dialog.dart';
 
 class DefaultAppBar extends StatefulWidget implements PreferredSizeWidget {
   final String title;
@@ -259,7 +256,7 @@ class _HomeAppBarSate extends State<HomeAppBar> {
               ),
               children: <TextSpan>[
                 TextSpan(
-                  text: "${formatPrice(user.balance)}",
+                  text: "${user.balance} xu",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 14,

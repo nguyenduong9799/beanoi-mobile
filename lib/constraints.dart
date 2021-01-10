@@ -47,7 +47,7 @@ class PaymentType {
 
   static Map<int, String> options = {
     PaymentType.CASH: "Tiền mặt",
-    PaymentType.BEAN: "Tiền trong ví"
+    PaymentType.BEAN: "Xu trong ví"
   };
 
   static String getPaymentName(int type) {

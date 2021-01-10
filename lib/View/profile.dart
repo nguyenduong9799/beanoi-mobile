@@ -135,7 +135,7 @@ class _UpdateAccountState extends State<ProfileScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Số tiền trong ví: ${formatPrice(user.balance)}",
+                  "Số tiền trong ví: ${user.balance} xu",
                   style: TextStyle(fontSize: 15),
                 ),
                 Text(

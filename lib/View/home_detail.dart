@@ -103,14 +103,16 @@ class _HomeScreenState extends State<HomeScreenDetail> {
                             height: Get.height / 3 + 16 + 16,
                             child: Swiper(
                               autoplayDelay: 3000,
-                              autoplay: true,
+                              autoplay:
+                                  model.products.length > 1 ? true : false,
                               itemCount: model.products.length,
                               itemBuilder: (context, index) => Center(
                                   child: StorePromotion(model
                                       .products[index])), // -> Text widget.
                               //viewportFraction: 1,
-                              loop: true,
-                              control: new SwiperControl(color: Color(0xff719a0a), iconPrevious: AntDesign.leftcircleo, iconNext: AntDesign.rightcircleo),
+                              loop: model.products.length > 1 ? true : false,
+                              pagination: new SwiperPagination(
+                                  alignment: Alignment.bottomCenter),
                             ),
                           );
                         },

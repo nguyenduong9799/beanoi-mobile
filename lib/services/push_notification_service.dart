@@ -38,10 +38,10 @@ class PushNotificationService {
           Get.snackbar(
             message['notification']['title'], // title
             message['notification']['body'],
-            colorText: kBackgroundGrey[0],
+            colorText: kPrimary,
             icon: Icon(Icons.alarm),
             shouldIconPulse: true,
-            backgroundColor: kPrimary,
+            backgroundColor: kBackgroundGrey[0],
             isDismissible: true,
             duration: Duration(minutes: 1),
             mainButton: FlatButton(
