@@ -1,11 +1,9 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' as Get;
 import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/route_constraint.dart';
-import '../constraints.dart';
 
 class AppException implements Exception {
   final _message;
@@ -86,7 +84,7 @@ class MyRequest {
         if (e.response.statusCode == 401) {
           await showStatusDialog("assets/images/global_error.png", "Lỗi",
               "Vui lòng đang nhập lại");
-          Get.offAllNamed(RouteHandler.LOGIN);
+          Get.Get.offAllNamed(RouteHandler.LOGIN);
         } else
           throw e; //continue
       },

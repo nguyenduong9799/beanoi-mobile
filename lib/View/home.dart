@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_countdown_timer/countdown_timer.dart';
+import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:get/get.dart';
@@ -16,8 +16,6 @@ import 'package:unidelivery_mobile/enums/view_status.dart';
 import 'package:unidelivery_mobile/route_constraint.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-const ORDER_TIME = 11;
-
 class HomeScreen extends StatefulWidget {
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -26,10 +24,8 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   bool switcher = false;
   DateTime now = DateTime.now();
-  DateTime orderTime = DateTime(DateTime.now().year, DateTime.now().month,
-      DateTime.now().day, ORDER_TIME, 30);
+
   // int endTime = DateTime.now().millisecondsSinceEpoch + 1000 * 60 * 60;
-  bool _endOrderTime = false;
 
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       new GlobalKey<RefreshIndicatorState>();
@@ -38,12 +34,6 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     RootViewModel.getInstance().getSuppliers();
-    if (orderTime.isBefore(DateTime.now())) {
-      setState(() {
-        _endOrderTime = true;
-      });
-    }
-    print("Orderable: " + _endOrderTime.toString());
   }
 
   Future<void> _refresh() async {
@@ -225,7 +215,7 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             children: [
               Text(
-                _endOrderTime ? "Hết giờ" : "Còn lại",
+                RootViewModel.getInstance().endOrderTime ? "Hết giờ" : "Còn lại",
                 style: kTextPrimary.copyWith(fontWeight: FontWeight.bold),
               ),
               CountdownTimer(
@@ -234,11 +224,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   color: Colors.white,
                   fontSize: 14,
                 ),
-                endTime: orderTime.millisecondsSinceEpoch,
+                endTime: RootViewModel.getInstance().orderTime.millisecondsSinceEpoch,
                 onEnd: () {
-                  setState(() {
-                    _endOrderTime = true;
-                  });
+                  RootViewModel.getInstance().endOrderTime = true;
+                  RootViewModel.getInstance().notifyListeners();
                 },
               )
             ],

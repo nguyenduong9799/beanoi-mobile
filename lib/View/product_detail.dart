@@ -67,7 +67,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                 child: widget.dto.imageURL == null
                     ? Icon(
                         MaterialIcons.broken_image,
-                        color: kPrimary.withOpacity(0.5),
                       )
                     : CachedNetworkImage(
                         imageUrl: widget.dto.imageURL,

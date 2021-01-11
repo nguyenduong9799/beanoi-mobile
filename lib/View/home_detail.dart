@@ -102,17 +102,14 @@ class _HomeScreenState extends State<HomeScreenDetail> {
                             padding: EdgeInsets.only(top: kToolbarHeight),
                             height: Get.height / 3 + 16 + 16,
                             child: Swiper(
-                              autoplayDelay: 3000,
-                              autoplay:
-                                  model.products.length > 1 ? true : false,
                               itemCount: model.products.length,
                               itemBuilder: (context, index) => Center(
                                   child: StorePromotion(model
                                       .products[index])), // -> Text widget.
                               //viewportFraction: 1,
-                              loop: model.products.length > 1 ? true : false,
-                              pagination: new SwiperPagination(
-                                  alignment: Alignment.bottomCenter),
+                              loop: false,
+
+                                control: new SwiperControl(color: Color(0xff719a0a), iconPrevious: AntDesign.leftcircleo, iconNext: AntDesign.rightcircleo, )
                             ),
                           );
                         },
