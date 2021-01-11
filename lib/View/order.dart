@@ -327,17 +327,12 @@ class _OrderScreenState extends State<OrderScreen> {
                     children: [
                       ClipRRect(
                         borderRadius: BorderRadius.circular(8),
-                        child: item.master.imageURL == null
-                            ? Icon(
-                                MaterialIcons.broken_image,
-                                color: kPrimary.withOpacity(0.5),
-                              )
-                            : CachedNetworkImage(
+                        child: CachedNetworkImage(
                                 width: MediaQuery.of(context).size.width * 0.25,
                                 height:
                                     MediaQuery.of(context).size.width * 0.25,
                                 fit: BoxFit.fill,
-                                imageUrl: item.master.imageURL,
+                                imageUrl: item.master.imageURL??defaultImage,
                                 imageBuilder: (context, imageProvider) =>
                                     Container(
                                   decoration: BoxDecoration(

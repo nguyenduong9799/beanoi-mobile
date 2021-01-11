@@ -64,12 +64,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
             expandedHeight: 250.0,
             flexibleSpace: FlexibleSpaceBar(
               background: ClipRRect(
-                child: widget.dto.imageURL == null
-                    ? Icon(
-                        MaterialIcons.broken_image,
-                      )
-                    : CachedNetworkImage(
-                        imageUrl: widget.dto.imageURL,
+                child: CachedNetworkImage(
+                        imageUrl: widget.dto.imageURL??defaultImage,
                         imageBuilder: (context, imageProvider) => Container(
                           decoration: BoxDecoration(
                             image: DecorationImage(
