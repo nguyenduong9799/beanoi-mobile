@@ -64,32 +64,38 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
             expandedHeight: 250.0,
             flexibleSpace: FlexibleSpaceBar(
               background: ClipRRect(
-                child: CachedNetworkImage(
-                  imageUrl: widget.dto.imageURL ?? "",
-                  imageBuilder: (context, imageProvider) => Container(
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: imageProvider,
-                        fit: BoxFit.cover,
+                child: widget.dto.imageURL == null
+                    ? Icon(
+                        MaterialIcons.broken_image,
+                        color: kPrimary.withOpacity(0.5),
+                      )
+                    : CachedNetworkImage(
+                        imageUrl: widget.dto.imageURL,
+                        imageBuilder: (context, imageProvider) => Container(
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: imageProvider,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                        progressIndicatorBuilder:
+                            (context, url, downloadProgress) =>
+                                Shimmer.fromColors(
+                          baseColor: Colors.grey[300],
+                          highlightColor: Colors.grey[100],
+                          enabled: true,
+                          child: Container(
+                            width: MediaQuery.of(context).size.width,
+                            // height: 100,
+                            color: Colors.grey,
+                          ),
+                        ),
+                        errorWidget: (context, url, error) => Icon(
+                          MaterialIcons.broken_image,
+                          color: kPrimary.withOpacity(0.5),
+                        ),
                       ),
-                    ),
-                  ),
-                  progressIndicatorBuilder: (context, url, downloadProgress) =>
-                      Shimmer.fromColors(
-                    baseColor: Colors.grey[300],
-                    highlightColor: Colors.grey[100],
-                    enabled: true,
-                    child: Container(
-                      width: MediaQuery.of(context).size.width,
-                      // height: 100,
-                      color: Colors.grey,
-                    ),
-                  ),
-                  errorWidget: (context, url, error) => Icon(
-                    MaterialIcons.broken_image,
-                    color: kPrimary.withOpacity(0.5),
-                  ),
-                ),
               ),
             ),
           ),

@@ -391,39 +391,46 @@ class _HomeScreenState extends State<HomeScreen> {
       height: MediaQuery.of(context).size.height * 0.2,
       width: double.infinity,
       child: Swiper(
-        onTap: (index) async {
-          await _launchURL(
-              "https://kenh14.vn/hoa-ra-cang-bi-crush-phu-ban-cang-lao-vao-nhu-thieu-than-la-vi-ly-do-nay-day-20180308123837012.chn");
-        },
-        autoplay: true,
-        autoplayDelay: 2000,
-        pagination: new SwiperPagination(alignment: Alignment.bottomCenter),
-        itemCount: imgList.length,
-        itemBuilder: (context, index) => CachedNetworkImage(
-          imageUrl: imgList[index],
-          imageBuilder: (context, imageProvider) => Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: imageProvider,
-                fit: BoxFit.cover,
+          onTap: (index) async {
+            await _launchURL(
+                "https://kenh14.vn/hoa-ra-cang-bi-crush-phu-ban-cang-lao-vao-nhu-thieu-than-la-vi-ly-do-nay-day-20180308123837012.chn");
+          },
+          autoplay: true,
+          autoplayDelay: 2000,
+          pagination: new SwiperPagination(alignment: Alignment.bottomCenter),
+          itemCount: imgList.length,
+          itemBuilder: (context, index) {
+            if (imgList[index] == null || imgList[index] == "")
+              return Icon(
+                MaterialIcons.broken_image,
+                color: kPrimary.withOpacity(0.5),
+              );
+
+            return CachedNetworkImage(
+              imageUrl: imgList[index],
+              imageBuilder: (context, imageProvider) => Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: imageProvider,
+                    fit: BoxFit.cover,
+                  ),
+                ),
               ),
-            ),
-          ),
-          progressIndicatorBuilder: (context, url, downloadProgress) =>
-              Shimmer.fromColors(
-            baseColor: Colors.grey[300],
-            highlightColor: Colors.grey[100],
-            enabled: true,
-            child: Container(
-              color: Colors.grey,
-            ),
-          ),
-          errorWidget: (context, url, error) => Icon(
-            MaterialIcons.broken_image,
-            color: kPrimary.withOpacity(0.5),
-          ),
-        ),
-      ),
+              progressIndicatorBuilder: (context, url, downloadProgress) =>
+                  Shimmer.fromColors(
+                baseColor: Colors.grey[300],
+                highlightColor: Colors.grey[100],
+                enabled: true,
+                child: Container(
+                  color: Colors.grey,
+                ),
+              ),
+              errorWidget: (context, url, error) => Icon(
+                MaterialIcons.broken_image,
+                color: kPrimary.withOpacity(0.5),
+              ),
+            );
+          }),
     );
   }
 
