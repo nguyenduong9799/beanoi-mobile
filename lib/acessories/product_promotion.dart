@@ -100,7 +100,7 @@ class _StorePromotionState extends State<StorePromotion> {
                     children: [
                       Flexible(
                           child: Text(widget.dto.name,
-                        style: TextStyle(color: kSecondary, fontWeight: FontWeight.bold, fontSize: 18),
+                        style: TextStyle(color: kSecondary, fontSize: 18),
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
                       )),

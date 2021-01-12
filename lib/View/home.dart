@@ -382,7 +382,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Swiper(
           onTap: (index) async {
             await _launchURL(
-                "https://kenh14.vn/hoa-ra-cang-bi-crush-phu-ban-cang-lao-vao-nhu-thieu-than-la-vi-ly-do-nay-day-20180308123837012.chn");
+                "https://www.youtube.com/embed/wu32Wj_Uix4");
           },
           autoplay: true,
           autoplayDelay: 2000,
@@ -425,7 +425,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   _launchURL(String url) async {
     if (await canLaunch(url)) {
-      await launch(url, forceWebView: true);
+      await launch(url, forceWebView: true, enableJavaScript: true);
     } else {
       throw 'Could not launch $url';
     }

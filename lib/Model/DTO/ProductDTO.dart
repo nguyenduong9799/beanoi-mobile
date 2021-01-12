@@ -78,7 +78,7 @@ class ProductDTO {
       var listCollection = json['collection_id'] as List;
       product.collections = listCollection.cast<int>().toList();
     }
-    product.price = json["price1"];
+    product.price = json["price"];
 
     switch (type) {
       case ProductType.MASTER_PRODUCT:
@@ -128,7 +128,7 @@ class ProductDTO {
       "general_product_id": generalId,
       "min_price": minPrice,
       "collection_id": collections,
-      "price1": price
+      "price": price
     };
 
     Map<String, dynamic> pricesMap = new Map();

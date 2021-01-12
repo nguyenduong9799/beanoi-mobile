@@ -25,7 +25,7 @@ class StartUpViewModel extends BaseModel {
   }
 
   Future handleStartUpLogic() async {
-    await PermissionsService.requestPermission(Permission.storage);
+    //await PermissionsService.requestPermission(Permission.storage);
     AccountDAO _accountDAO = AccountDAO();
     // Register for push notifications
     // await _pushNotificationService.initialise();

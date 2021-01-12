@@ -28,6 +28,9 @@ const MASTER_PRODUCT = 6;
 const double DIALOG_ICON_SIZE = 60;
 const String defaultImage =
     "https://firebasestorage.googleapis.com/v0/b/unidelivery-fad6f.appspot.com/o/images%2Fdefault_image.png?alt=media&token=3c1cf2f4-52be-4df1-aed5-cdb5fd4990d8";
+const String defaultPromotionImage =
+    "https://firebasestorage.googleapis.com/v0/b/unidelivery-fad6f.appspot.com/o/images%2Fstores%2Ffood-drink-banner.jpg?alt=media&token=96b3c6dc-c93b-4066-b3fa-dacc64f14edc";
+
 const String TIME = "12:10";
 const String VERSION = "0.0.1";
 const TEST_STORE = 69;

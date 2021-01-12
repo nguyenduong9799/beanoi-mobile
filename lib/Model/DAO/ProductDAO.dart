@@ -1,6 +1,4 @@
-import 'package:dio/dio.dart';
 import 'package:unidelivery_mobile/Model/DTO/ProductDTO.dart';
-import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/utils/request.dart';
 
 class ProductDAO {
@@ -18,18 +16,18 @@ class ProductDAO {
     return products;
   }
 
-  Future<List<ProductDTO>> getExtraProducts(
-      int cat_id, String sup_id, int store_id) async {
-    print("Category id: " + cat_id.toString());
-    final res = await request.get('/extra-products', queryParameters: {
-      "brand-id": UNIBEAN_BRAND,
-      "cat-id": cat_id,
-      "store-id": store_id,
-      "supplier-id": sup_id,
-    });
-    final products = ProductDTO.fromList(res.data['data']);
-    return products;
-  }
+  // Future<List<ProductDTO>> getExtraProducts(
+  //     int cat_id, String sup_id, int store_id) async {
+  //   print("Category id: " + cat_id.toString());
+  //   final res = await request.get('/extra-products', queryParameters: {
+  //     "brand-id": UNIBEAN_BRAND,
+  //     "cat-id": cat_id,
+  //     "store-id": store_id,
+  //     "supplier-id": sup_id,
+  //   });
+  //   final products = ProductDTO.fromList(res.data['data']);
+  //   return products;
+  // }
 
   // dynamic normalizeProducts(dynamic data) {
   //   final products = data["products"];

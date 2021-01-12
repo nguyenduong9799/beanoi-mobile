@@ -88,14 +88,14 @@ class _HomeScreenState extends State<HomeScreenDetail> {
                       flexibleSpace: ScopedModelDescendant<HomeViewModel>(
                         builder: (context, child, model) {
                           if (model.status == ViewStatus.Loading) {
-                            return Shimmer.fromColors(
-                              baseColor: kBackgroundGrey[0],
-                              highlightColor: Colors.grey[100],
-                              enabled: true,
-                              child: Container(
-                                width: Get.width,
-                                color: Colors.grey,
-                              ),
+                            return Container(
+                              width: Get.width,
+                              color: Colors.grey[200],
+                            );
+                          }else if(model.status == ViewStatus.Empty){
+                            return Image(
+                              image: NetworkImage(defaultPromotionImage),
+                              fit: BoxFit.cover,
                             );
                           }
                           return Container(
