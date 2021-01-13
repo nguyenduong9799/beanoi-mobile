@@ -11,9 +11,11 @@ import 'package:unidelivery_mobile/utils/shared_pref.dart';
 class OrderDAO {
   Future<List<OrderListDTO>> getOrders(int store_id, OrderFilter filter) async {
     final res = await request.get('stores/$store_id/orders', queryParameters: {
-      "delivery-status":
+      "order-status":
           filter == OrderFilter.ORDERING ? ORDER_NEW_STATUS : ORDER_DONE_STATUS
     });
+    print(
+        '${filter == OrderFilter.ORDERING ? ORDER_NEW_STATUS : ORDER_DONE_STATUS}');
     List<OrderListDTO> orderSummaryList;
     if (res.statusCode == 200) {
       orderSummaryList = OrderListDTO.fromList(res.data['data']);
