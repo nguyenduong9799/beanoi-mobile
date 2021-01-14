@@ -27,12 +27,15 @@ const UNIBEAN_BRAND = 10;
 const MASTER_PRODUCT = 6;
 const double DIALOG_ICON_SIZE = 60;
 const String defaultImage =
-    "https://scontent.fsgn2-5.fna.fbcdn.net/v/t1.0-9/121323906_2758776227677425_3020435246082138067_o.jpg?_nc_cat=104&ccb=2&_nc_sid=09cbfe&_nc_ohc=rrVR7mqoAmsAX_xMx0L&_nc_ht=scontent.fsgn2-5.fna&oh=97d2f9a697d253e1c34169f716ea0415&oe=601E072C";
+    "https://firebasestorage.googleapis.com/v0/b/unidelivery-fad6f.appspot.com/o/images%2Fdefault_image.png?alt=media&token=3c1cf2f4-52be-4df1-aed5-cdb5fd4990d8";
+const String defaultPromotionImage =
+    "https://firebasestorage.googleapis.com/v0/b/unidelivery-fad6f.appspot.com/o/images%2Fstores%2Ffood-drink-banner.jpg?alt=media&token=96b3c6dc-c93b-4066-b3fa-dacc64f14edc";
+
 const String TIME = "12:10";
 const String VERSION = "0.0.1";
 const TEST_STORE = 69;
-const int ORDER_NEW_STATUS = 0;
-const int ORDER_DONE_STATUS = 4;
+const int ORDER_NEW_STATUS = 1;
+const int ORDER_DONE_STATUS = 3;
 const int VIRTUAL_STORE_TYPE = 8;
 
 class ProductType {
@@ -47,7 +50,7 @@ class PaymentType {
 
   static Map<int, String> options = {
     PaymentType.CASH: "Tiền mặt",
-    PaymentType.BEAN: "Tiền trong ví"
+    PaymentType.BEAN: "Xu trong ví"
   };
 
   static String getPaymentName(int type) {

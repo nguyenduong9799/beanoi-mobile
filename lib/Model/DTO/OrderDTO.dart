@@ -50,7 +50,7 @@ class OrderDTO {
         finalAmount: map["final_amount"],
         orderTime: map["check_in_date"],
         itemQuantity: map["master_product_quantity"],
-        status: (map["delivery_status"]) == 0
+        status: (map["order_status"]) == ORDER_NEW_STATUS
             ? OrderFilter.ORDERING
             : OrderFilter.DONE,
         orderItems: map["list_order_details"] != null

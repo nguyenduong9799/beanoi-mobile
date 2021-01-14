@@ -88,29 +88,28 @@ class _HomeScreenState extends State<HomeScreenDetail> {
                       flexibleSpace: ScopedModelDescendant<HomeViewModel>(
                         builder: (context, child, model) {
                           if (model.status == ViewStatus.Loading) {
-                            return Shimmer.fromColors(
-                              baseColor: kBackgroundGrey[0],
-                              highlightColor: Colors.grey[100],
-                              enabled: true,
-                              child: Container(
-                                width: Get.width,
-                                color: Colors.grey,
-                              ),
+                            return Container(
+                              width: Get.width,
+                              color: Colors.grey[200],
+                            );
+                          }else if(model.status == ViewStatus.Empty){
+                            return Image(
+                              image: NetworkImage(defaultPromotionImage),
+                              fit: BoxFit.cover,
                             );
                           }
                           return Container(
                             padding: EdgeInsets.only(top: kToolbarHeight),
                             height: Get.height / 3 + 16 + 16,
                             child: Swiper(
-                              autoplayDelay: 3000,
-                              autoplay: true,
                               itemCount: model.products.length,
                               itemBuilder: (context, index) => Center(
                                   child: StorePromotion(model
                                       .products[index])), // -> Text widget.
                               //viewportFraction: 1,
-                              loop: true,
-                              control: new SwiperControl(color: Color(0xff719a0a), iconPrevious: AntDesign.leftcircleo, iconNext: AntDesign.rightcircleo),
+                              loop: false,
+
+                                control: new SwiperControl(color: Color(0xff719a0a), iconPrevious: AntDesign.leftcircleo, iconNext: AntDesign.rightcircleo, )
                             ),
                           );
                         },

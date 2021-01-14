@@ -1,7 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_countdown_timer/countdown_timer.dart';
+import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:get/get.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shimmer/shimmer.dart';
@@ -13,8 +14,7 @@ import 'package:unidelivery_mobile/acessories/loading.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
 import 'package:unidelivery_mobile/route_constraint.dart';
-
-const ORDER_TIME = 11;
+import 'package:url_launcher/url_launcher.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -24,10 +24,8 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   bool switcher = false;
   DateTime now = DateTime.now();
-  DateTime orderTime = DateTime(DateTime.now().year, DateTime.now().month,
-      DateTime.now().day, ORDER_TIME, 30);
+
   // int endTime = DateTime.now().millisecondsSinceEpoch + 1000 * 60 * 60;
-  bool _endOrderTime = false;
 
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       new GlobalKey<RefreshIndicatorState>();
@@ -36,12 +34,6 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     RootViewModel.getInstance().getSuppliers();
-    if (orderTime.isBefore(DateTime.now())) {
-      setState(() {
-        _endOrderTime = true;
-      });
-    }
-    print("Orderable: " + _endOrderTime.toString());
   }
 
   Future<void> _refresh() async {
@@ -72,25 +64,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         onRefresh: _refresh,
                         child: Column(
                           children: [
-                            // banner(),
+                            banner(),
                             location(),
-                            Center(
-                              child: Container(
-                                margin: EdgeInsets.all(8),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(16),
-                                  color: Colors.blue[200],
-                                ),
-                                height:
-                                    MediaQuery.of(context).size.height * 0.13,
-                                width: double.infinity,
-                                child: Image.asset(
-                                  'assets/images/banner.png',
-                                  fit: BoxFit.cover,
-                                  // width: double.infinity,
-                                ),
-                              ),
-                            ),
                             Expanded(child: storeList()),
                             SizedBox(height: 16),
                           ],
@@ -240,7 +215,7 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             children: [
               Text(
-                _endOrderTime ? "Hết giờ" : "Còn lại",
+                RootViewModel.getInstance().endOrderTime ? "Hết giờ" : "Còn lại",
                 style: kTextPrimary.copyWith(fontWeight: FontWeight.bold),
               ),
               CountdownTimer(
@@ -249,11 +224,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   color: Colors.white,
                   fontSize: 14,
                 ),
-                endTime: orderTime.millisecondsSinceEpoch,
+                endTime: RootViewModel.getInstance().orderTime.millisecondsSinceEpoch,
                 onEnd: () {
-                  setState(() {
-                    _endOrderTime = true;
-                  });
+                  RootViewModel.getInstance().endOrderTime = true;
+                  RootViewModel.getInstance().notifyListeners();
                 },
               )
             ],
@@ -394,10 +368,66 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  List<String> imgList = [
+    "https://dichvuquantriweb.com/wp-content/uploads/2016/02/banner-noel.jpg",
+    "https://previews.123rf.com/images/limbi007/limbi0072003/limbi007200300143/151208245-happy-new-year-2021-banner-with-golden-sand-and-ornaments-eps-10-vector-file-.jpg",
+    "https://i.pinimg.com/originals/aa/72/58/aa72583fa16497aa429bb483fcf77ee9.jpg"
+  ];
+
   Widget banner() {
     return Container(
-      height: 90,
-      color: Colors.red,
+      //padding: EdgeInsets.only(top: 8, bottom: 8),
+      height: MediaQuery.of(context).size.height * 0.2,
+      width: double.infinity,
+      child: Swiper(
+          onTap: (index) async {
+            await _launchURL(
+                "https://www.youtube.com/embed/wu32Wj_Uix4");
+          },
+          autoplay: true,
+          autoplayDelay: 2000,
+          pagination: new SwiperPagination(alignment: Alignment.bottomCenter),
+          itemCount: imgList.length,
+          itemBuilder: (context, index) {
+            if (imgList[index] == null || imgList[index] == "")
+              return Icon(
+                MaterialIcons.broken_image,
+                color: kPrimary.withOpacity(0.5),
+              );
+
+            return CachedNetworkImage(
+              imageUrl: imgList[index],
+              imageBuilder: (context, imageProvider) => Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: imageProvider,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              progressIndicatorBuilder: (context, url, downloadProgress) =>
+                  Shimmer.fromColors(
+                baseColor: Colors.grey[300],
+                highlightColor: Colors.grey[100],
+                enabled: true,
+                child: Container(
+                  color: Colors.grey,
+                ),
+              ),
+              errorWidget: (context, url, error) => Icon(
+                MaterialIcons.broken_image,
+                color: kPrimary.withOpacity(0.5),
+              ),
+            );
+          }),
     );
+  }
+
+  _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url, forceWebView: true, enableJavaScript: true);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 }

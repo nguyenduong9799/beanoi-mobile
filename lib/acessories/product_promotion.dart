@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:unidelivery_mobile/Bussiness/BussinessHandler.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
+import 'package:unidelivery_mobile/ViewModel/index.dart';
 import 'package:unidelivery_mobile/constraints.dart';
-import 'package:video_player/video_player.dart';
 
 class StorePromotion extends StatefulWidget {
-  ProductDTO dto;
+  final ProductDTO dto;
   StorePromotion(this.dto);
 
   @override
@@ -59,7 +58,7 @@ class _StorePromotionState extends State<StorePromotion> {
                           children: [
                             Flexible(
                                 child: Text(
-                              widget.dto.name,
+                              "Khuyến Mãi",
                               style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 20,
@@ -100,21 +99,20 @@ class _StorePromotionState extends State<StorePromotion> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Flexible(
-                          child: Text(
-                        widget.dto.description ?? "",
+                          child: Text(widget.dto.name,
+                        style: TextStyle(color: kSecondary, fontSize: 18),
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
                       )),
                       OutlineButton(
                         onPressed: () {
-                          Get.to(VideoPlayerTest());
                         },
                         shape: RoundedRectangleBorder(
                           side: BorderSide(color: Colors.orange),
                           borderRadius: BorderRadius.all(Radius.circular(16)),
                         ),
                         child: Text(
-                          "Nhận quà",
+                          "Đổi quà",
                           style: TextStyle(color: Colors.orange),
                         ),
                       )
@@ -155,63 +153,5 @@ class PrimaryCippler extends CustomClipper<Path> {
   bool shouldReclip(covariant CustomClipper<Path> oldClipper) {
     // TODO: implement shouldReclip
     return oldClipper != this;
-  }
-}
-
-class VideoPlayerTest extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() {
-    // TODO: implement createState
-    return SecondaryCippler();
-  }
-}
-
-class SecondaryCippler extends State<VideoPlayerTest> {
-  VideoPlayerController _controller;
-
-  double _aspectRatio = 16 / 9;
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  initState() {
-    super.initState();
-    _controller = VideoPlayerController.network(
-        'http://www.sample-videos.com/video123/mp4/720/big_buck_bunny_720p_20mb.mp4')
-      ..initialize().then((_) {
-        // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
-        setState(() {});
-      });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    return Scaffold(
-      body: Center(
-        child: _controller.value.initialized
-            ? AspectRatio(
-                aspectRatio: _controller.value.aspectRatio,
-                child: VideoPlayer(_controller),
-              )
-            : Container(),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          setState(() {
-            _controller.value.isPlaying
-                ? _controller.pause()
-                : _controller.play();
-          });
-        },
-        child: Icon(
-          _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
-        ),
-      ),
-    );
   }
 }

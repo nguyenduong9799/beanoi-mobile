@@ -10,10 +10,12 @@ import 'package:unidelivery_mobile/utils/shared_pref.dart';
 
 class OrderDAO {
   Future<List<OrderListDTO>> getOrders(OrderFilter filter) async {
-    final res = await request.get('/supplier-orders', queryParameters: {
-      "delivery-status":
+    final res = await request.get('me/orders', queryParameters: {
+      "order-status":
           filter == OrderFilter.ORDERING ? ORDER_NEW_STATUS : ORDER_DONE_STATUS
     });
+    print(
+        '${filter == OrderFilter.ORDERING ? ORDER_NEW_STATUS : ORDER_DONE_STATUS}');
     List<OrderListDTO> orderSummaryList;
     if (res.statusCode == 200) {
       orderSummaryList = OrderListDTO.fromList(res.data['data']);
@@ -23,7 +25,7 @@ class OrderDAO {
 
   Future<OrderDTO> getOrderDetail(int orderId) async {
     final res = await request.get(
-      '/supplier-orders/$orderId',
+      'me/orders/$orderId',
     );
     OrderDTO orderDetail;
     if (res.statusCode == 200) {
@@ -40,7 +42,7 @@ class OrderDAO {
       cart.orderNote = note;
       cart.payment = payment;
       print(cart.toJsonAPi());
-      final res = await request.post('/supplier-orders/prepare',
+      final res = await request.post('orders/prepare',
           queryParameters: {"store-id": store_id}, data: cart.toJsonAPi());
       print(cart.toString());
       if (res.statusCode == 200) {
@@ -61,7 +63,7 @@ class OrderDAO {
         cart.orderNote = note;
         cart.payment = payment;
         print(cart.toJsonAPi());
-        final res = await request.post('/supplier-orders',
+        final res = await request.post('/orders',
             queryParameters: {"store-id": store_id}, data: cart.toJsonAPi());
         return OrderStatus(
             statusCode: res.statusCode,

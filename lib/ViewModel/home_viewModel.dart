@@ -66,7 +66,7 @@ class HomeViewModel extends BaseModel {
     notifyListeners();
     if (result != null) {
       if (result) {
-        await RootViewModel.getInstance().fetchUser(true);
+        await RootViewModel.getInstance().fetchUser();
       }
     }
   }

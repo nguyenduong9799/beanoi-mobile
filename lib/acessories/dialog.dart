@@ -129,12 +129,9 @@ Future<bool> showErrorDialog() async {
                   },
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  "Có một chút trục trặc nhỏ!!",
-                  style: TextStyle(fontSize: 16, color: kPrimary),
-                ),
+              Text(
+                "Có một chút trục trặc nhỏ!!",
+                style: TextStyle(fontSize: 16, color: kPrimary),
               ),
               SizedBox(
                 height: 8,

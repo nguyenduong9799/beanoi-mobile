@@ -96,7 +96,7 @@ class OrderViewModel extends BaseModel {
         hideDialog();
         await showStatusDialog("assets/images/global_error.png", result.code,
             result.message);
-        await RootViewModel.getInstance().fetchUser(true);
+        await RootViewModel.getInstance().fetchUser();
       }
     } catch (e) {
       bool result = await showErrorDialog();

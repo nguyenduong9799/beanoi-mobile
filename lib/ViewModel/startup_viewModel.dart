@@ -1,8 +1,9 @@
 import 'package:get/get.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:unidelivery_mobile/Model/DAO/index.dart';
 import 'package:unidelivery_mobile/ViewModel/base_model.dart';
 import 'package:unidelivery_mobile/route_constraint.dart';
-import 'package:unidelivery_mobile/services/push_notification_service.dart';
+import 'package:unidelivery_mobile/services/permission_service.dart';
 import 'package:unidelivery_mobile/utils/shared_pref.dart';
 
 class StartUpViewModel extends BaseModel {
@@ -24,10 +25,11 @@ class StartUpViewModel extends BaseModel {
   }
 
   Future handleStartUpLogic() async {
+    //await PermissionsService.requestPermission(Permission.storage);
     AccountDAO _accountDAO = AccountDAO();
     // Register for push notifications
     // await _pushNotificationService.initialise();
-    await Future.delayed(Duration(seconds: 5));
+    await Future.delayed(Duration(seconds: 3));
     var hasLoggedInUser = await _accountDAO.isUserLoggedIn();
     bool isFirstOnBoard = await getIsFirstOnboard() ?? true;
 

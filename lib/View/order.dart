@@ -328,35 +328,36 @@ class _OrderScreenState extends State<OrderScreen> {
                       ClipRRect(
                         borderRadius: BorderRadius.circular(8),
                         child: CachedNetworkImage(
-                          width: MediaQuery.of(context).size.width * 0.25,
-                          height: MediaQuery.of(context).size.width * 0.25,
-                          fit: BoxFit.fill,
-                          imageUrl: item.master.imageURL != null
-                              ? item.master.imageURL
-                              : defaultImage,
-                          imageBuilder: (context, imageProvider) => Container(
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                image: imageProvider,
-                                fit: BoxFit.cover,
+                                width: MediaQuery.of(context).size.width * 0.25,
+                                height:
+                                    MediaQuery.of(context).size.width * 0.25,
+                                fit: BoxFit.fill,
+                                imageUrl: item.master.imageURL??defaultImage,
+                                imageBuilder: (context, imageProvider) =>
+                                    Container(
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                      image: imageProvider,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                                progressIndicatorBuilder:
+                                    (context, url, downloadProgress) =>
+                                        Shimmer.fromColors(
+                                  baseColor: Colors.grey[300],
+                                  highlightColor: Colors.grey[100],
+                                  enabled: true,
+                                  child: Container(
+                                    width: MediaQuery.of(context).size.width *
+                                        0.25,
+                                    // height: 100,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                                errorWidget: (context, url, error) =>
+                                    Icon(Icons.error),
                               ),
-                            ),
-                          ),
-                          progressIndicatorBuilder:
-                              (context, url, downloadProgress) =>
-                                  Shimmer.fromColors(
-                            baseColor: Colors.grey[300],
-                            highlightColor: Colors.grey[100],
-                            enabled: true,
-                            child: Container(
-                              width: MediaQuery.of(context).size.width * 0.25,
-                              // height: 100,
-                              color: Colors.grey,
-                            ),
-                          ),
-                          errorWidget: (context, url, error) =>
-                              Icon(Icons.error),
-                        ),
                       ),
                       SizedBox(
                         width: 10,

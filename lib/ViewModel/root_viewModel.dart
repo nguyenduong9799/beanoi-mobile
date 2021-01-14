@@ -5,7 +5,6 @@ import 'package:unidelivery_mobile/Model/DAO/StoreDAO.dart';
 import 'package:unidelivery_mobile/Model/DTO/AccountDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/CartDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/StoreDTO.dart';
-import 'package:unidelivery_mobile/Services/analytic_service.dart';
 import 'package:unidelivery_mobile/ViewModel/base_model.dart';
 import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
@@ -15,14 +14,23 @@ import '../constraints.dart';
 import '../route_constraint.dart';
 
 class RootViewModel extends BaseModel {
+  static int ORDER_TIME = 11;
   AccountDAO _dao;
   AccountDTO currentUser;
   String error;
   static RootViewModel _instance;
-  AnalyticsService _analyticsService;
   StoreDAO storeDAO = new StoreDAO();
+  bool _endOrderTime = false;
+  bool get endOrderTime => _endOrderTime;
+  DateTime orderTime = DateTime(DateTime.now().year, DateTime.now().month,
+      DateTime.now().day, ORDER_TIME, 30);
+
+  set endOrderTime(bool value) {
+    _endOrderTime = value;
+  }
 
   static RootViewModel getInstance() {
+
     if (_instance == null) {
       _instance = RootViewModel();
     }
@@ -42,23 +50,24 @@ class RootViewModel extends BaseModel {
 
   RootViewModel() {
     _dao = AccountDAO();
-    _analyticsService = AnalyticsService.getInstance();
-    setState(ViewStatus.Loading);
-    fetchUser(false);
+    if (orderTime.isBefore(DateTime.now())) {
+      _endOrderTime = true;
+    }
+    fetchUser();
   }
 
-  Future<void> fetchUser(bool completed) async {
+  Future<void> fetchUser() async {
     try {
       setState(ViewStatus.Loading);
       final user = await _dao.getUser();
       currentUser = user;
-      if(completed){
+      if(suppliers != null){
         setState(ViewStatus.Completed);
       }
     } catch (e) {
       bool result = await showErrorDialog();
       if (result) {
-        await fetchUser(completed);
+        await fetchUser();
       } else
         setState(ViewStatus.Error);
     }
@@ -87,7 +96,7 @@ class RootViewModel extends BaseModel {
       // check truong hop product tra ve rong (do khong co menu nao trong TG do)
       if (suppliers.isEmpty || suppliers == null) {
         setState(ViewStatus.Empty);
-      } else {
+      } else if(currentUser != null) {
         setState(ViewStatus.Completed);
       }
     } catch (e, stacktrace) {
@@ -164,4 +173,5 @@ class RootViewModel extends BaseModel {
     }
     notifyListeners();
   }
+
 }
