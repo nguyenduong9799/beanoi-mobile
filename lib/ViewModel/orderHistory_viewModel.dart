@@ -1,10 +1,8 @@
 import 'package:unidelivery_mobile/Model/DAO/OrderDAO.dart';
 import 'package:unidelivery_mobile/Model/DTO/OrderDTO.dart';
-import 'package:unidelivery_mobile/Model/DTO/StoreDTO.dart';
 import 'package:unidelivery_mobile/ViewModel/base_model.dart';
 import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
-import 'package:unidelivery_mobile/utils/shared_pref.dart';
 
 enum OrderFilter { ORDERING, DONE }
 
@@ -22,9 +20,7 @@ class OrderHistoryViewModel extends BaseModel {
   Future<void> getOrders(OrderFilter filter) async {
     try {
       setState(ViewStatus.Loading);
-      StoreDTO store = await getStore();
-
-      final data = await _orderDAO.getOrders(store.id, filter);
+      final data = await _orderDAO.getOrders(filter);
 
       orderThumbnail = data;
 
@@ -43,8 +39,7 @@ class OrderHistoryViewModel extends BaseModel {
     // get order detail
     try {
       setState(ViewStatus.Loading);
-      StoreDTO store = await getStore();
-      final data = await _orderDAO.getOrderDetail(store.id, orderId);
+      final data = await _orderDAO.getOrderDetail(orderId);
       orderDetail = data;
       setState(ViewStatus.Completed);
     } catch (e, str) {
