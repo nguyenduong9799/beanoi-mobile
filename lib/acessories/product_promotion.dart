@@ -1,8 +1,8 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:unidelivery_mobile/Bussiness/BussinessHandler.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
-import 'package:unidelivery_mobile/ViewModel/index.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 
 class StorePromotion extends StatefulWidget {
@@ -17,6 +17,8 @@ class StorePromotion extends StatefulWidget {
 }
 
 class _StorePromotionState extends State<StorePromotion> {
+
+
   @override
   void initState() {
     super.initState();
@@ -31,7 +33,7 @@ class _StorePromotionState extends State<StorePromotion> {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Container(
-      color: kBackgroundGrey[0],
+      color: kBackgroundGrey[3],
       padding: EdgeInsets.all(8.0),
       child: Material(
         elevation: 20,
@@ -48,7 +50,13 @@ class _StorePromotionState extends State<StorePromotion> {
                     child: Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                        color: Color(0xfff68741),
+                        gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              Color(0xff0652C5),
+                              Color(0xffD4418E)
+                            ]),
                       ),
                       padding: EdgeInsets.all(8.0),
                       child: Align(
@@ -61,30 +69,29 @@ class _StorePromotionState extends State<StorePromotion> {
                               "Khuyến Mãi",
                               style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
                                   decorationThickness: 0.5),
                             )),
                             Row(
                               children: [
                                 Text(
-                                  BussinessHandler.beanReward(widget.dto.price)
-                                      .toString(),
+                                  widget.dto.price.toString(),
                                   style: TextStyle(color: kBean),
                                 ),
                                 SizedBox(
                                   width: 8,
                                 ),
                                 Container(
-                                    width: 55,
-                                    height: 55,
+                                    width: 50,
+                                    height: 50,
                                     decoration: BoxDecoration(
                                         shape: BoxShape.circle,
                                         border: Border.all(color: kBean)),
                                     child: Center(
                                         child: Text(
                                       "Bean",
-                                      style: TextStyle(color: kBean),
+                                      style:
+                                          TextStyle(color: kBean, fontSize: 13),
                                     ))),
                               ],
                             )
@@ -99,21 +106,22 @@ class _StorePromotionState extends State<StorePromotion> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Flexible(
-                          child: Text(widget.dto.name,
-                        style: TextStyle(color: kSecondary, fontSize: 18),
+                          child: Text(
+                        widget.dto.name,
+                        style: TextStyle(color: kSecondary, fontSize: 16),
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
                       )),
                       OutlineButton(
-                        onPressed: () {
-                        },
+                        color: Colors.orange,
+                        onPressed: () {},
                         shape: RoundedRectangleBorder(
-                          side: BorderSide(color: Colors.orange),
-                          borderRadius: BorderRadius.all(Radius.circular(16)),
+                          //side: BorderSide(color: Colors.orange),
+                          borderRadius: BorderRadius.all(Radius.circular(8)),
                         ),
                         child: Text(
                           "Đổi quà",
-                          style: TextStyle(color: Colors.orange),
+                          style: TextStyle(color: Colors.red),
                         ),
                       )
                     ],

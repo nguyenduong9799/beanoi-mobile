@@ -42,18 +42,7 @@ class ProductType {
   static const int MASTER_PRODUCT = 6;
   static const int DETAIL_PRODUCT = 7;
   static const int COMPLEX_PRODUCT = 10;
+  static const int GIFT_PRODUCT = 12;
 }
 
-class PaymentType {
-  static const int CASH = 1;
-  static const int BEAN = 3;
 
-  static Map<int, String> options = {
-    PaymentType.CASH: "Tiền mặt",
-    PaymentType.BEAN: "Xu trong ví"
-  };
-
-  static String getPaymentName(int type) {
-    return options[type] ?? "N/A";
-  }
-}

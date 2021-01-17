@@ -505,7 +505,7 @@ class _OrderDetailBottomSheetState extends State<OrderDetailBottomSheet> {
                 children: <TextSpan>[
                   TextSpan(
                     text:
-                        "${PaymentType.getPaymentName(orderDetail.paymentType)}",
+                        "${orderDetailModel.listPayments.keys.elementAt(orderDetailModel.listPayments.values.toList().indexOf(orderDetail.paymentType))}",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontStyle: FontStyle.italic,
@@ -566,6 +566,9 @@ class _OrderDetailBottomSheetState extends State<OrderDetailBottomSheet> {
 
   List<Widget> _buildOtherAmount(List<OtherAmount> otherAmounts) {
     if (otherAmounts == null) return [SizedBox.shrink()];
+    NumberFormat formatter = NumberFormat();
+    formatter.minimumFractionDigits = 0;
+    formatter.maximumFractionDigits = 2;
     return otherAmounts
         .map((amountObj) => Padding(
               padding: const EdgeInsets.only(top: 5, bottom: 5),
@@ -573,7 +576,7 @@ class _OrderDetailBottomSheetState extends State<OrderDetailBottomSheet> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text("${amountObj.name}", style: TextStyle()),
-                  Text("${formatPrice(amountObj.amount)}", style: TextStyle()),
+                  Text("${formatter.format(amountObj.amount)}", style: TextStyle()),
                 ],
               ),
             ))

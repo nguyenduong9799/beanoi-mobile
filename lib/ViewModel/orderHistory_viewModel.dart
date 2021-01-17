@@ -11,6 +11,7 @@ class OrderHistoryViewModel extends BaseModel {
   OrderDAO _orderDAO;
   dynamic error;
   OrderDTO orderDetail;
+  Map<String, dynamic> listPayments;
 
   OrderHistoryViewModel() {
     setState(ViewStatus.Loading);
@@ -40,6 +41,9 @@ class OrderHistoryViewModel extends BaseModel {
     try {
       setState(ViewStatus.Loading);
       final data = await _orderDAO.getOrderDetail(orderId);
+      if(listPayments == null){
+        listPayments = await _orderDAO.getPayments();
+      }
       orderDetail = data;
       setState(ViewStatus.Completed);
     } catch (e, str) {

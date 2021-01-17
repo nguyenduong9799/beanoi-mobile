@@ -47,16 +47,13 @@ class Cart {
   }
 
   Map<String, dynamic> toJsonAPi() {
-    List<Map<String, int>> payments = new List();
-    payments.add({"type": payment});
-
     List<Map<String, dynamic>> listCartItem = new List();
     items.forEach((element) {
       listCartItem.add(element.toJsonApi());
     });
 
     Map<String, dynamic> map = {
-      "payments": payments,
+      "payment": payment,
       "products_list": listCartItem,
       "note": orderNote,
     };

@@ -13,11 +13,12 @@ import 'package:unidelivery_mobile/enums/view_status.dart';
 import 'package:unidelivery_mobile/utils/shared_pref.dart';
 
 class OrderViewModel extends BaseModel {
-  AnalyticsService _analyticsService;
   int payment;
   String orderNote;
   OrderAmountDTO orderAmount;
+  Map<String, dynamic> listPayments;
   static OrderViewModel _instance;
+
 
   static OrderViewModel getInstance() {
     if (_instance == null) {
@@ -33,7 +34,6 @@ class OrderViewModel extends BaseModel {
   OrderDAO dao;
 
   OrderViewModel() {
-    _analyticsService = AnalyticsService.getInstance();
     dao = new OrderDAO();
   }
 
@@ -44,16 +44,19 @@ class OrderViewModel extends BaseModel {
 
   Future<void> prepareOrder() async {
     try {
-      if(!Get.isDialogOpen && status != ViewStatus.Loading){
-        showLoadingDialog();
+      if(!Get.isDialogOpen){
+        setState(ViewStatus.Loading);
       }
 
       StoreDTO storeDTO = await getStore();
-      // LOG ORDER
 
       orderAmount =
           await dao.prepareOrder(orderNote, storeDTO.id, payment);
+      if(listPayments == null){
+        listPayments = await dao.getPayments();
+      }
     } catch (e, stacktra) {
+      print(e.toString());
       print(stacktra.toString());
       bool result = await showErrorDialog();
       if (result) {
@@ -61,20 +64,16 @@ class OrderViewModel extends BaseModel {
       } else
         setState(ViewStatus.Error);
     } finally {
+      await Future.delayed(Duration(milliseconds: 500));
       hideDialog();
-      notifyListeners();
+      setState(ViewStatus.Completed);
     }
   }
 
   Future<void> updateQuantity(CartItem item) async {
     showLoadingDialog();
     await updateItemFromCart(item);
-    if(payment != null){
-      await prepareOrder();
-    }else{
-      hideDialog();
-      notifyListeners();
-    }
+    await prepareOrder();
 
   }
 
@@ -108,16 +107,9 @@ class OrderViewModel extends BaseModel {
   }
 
   Future<void> changeOption(int option) async {
+    showLoadingDialog();
     payment = option;
     await prepareOrder();
-  }
-
-  Future<void> checkPayment() async {
-    if(payment != null){
-      setState(ViewStatus.Loading);
-      await prepareOrder();
-      setState(ViewStatus.Completed);
-    }
   }
 
   Future<void> deleteItem(CartItem item) async {
@@ -129,13 +121,7 @@ class OrderViewModel extends BaseModel {
       hideDialog();
       Get.back(result: false);
     } else {
-      if(payment != null){
-        await prepareOrder();
-      }else{
-        hideDialog();
-        notifyListeners();
-      }
-
+      await prepareOrder();
     }
   }
 }

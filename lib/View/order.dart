@@ -7,7 +7,6 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:unidelivery_mobile/Bussiness/BussinessHandler.dart';
 import 'package:unidelivery_mobile/Model/DTO/StoreDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/View/start_up.dart';
@@ -30,16 +29,16 @@ class _OrderScreenState extends State<OrderScreen> {
   void initState() {
     super.initState();
     orderViewModel = OrderViewModel.getInstance();
-    orderViewModel.checkPayment();
+    orderViewModel.prepareOrder();
   }
 
   @override
   Widget build(BuildContext context) {
     return ScopedModel(
       model: orderViewModel,
-      child: ScopedModelDescendant(
+      child: ScopedModelDescendant<OrderViewModel>(
         builder: (BuildContext context, Widget child, OrderViewModel model) {
-          ViewStatus status = orderViewModel.status;
+          ViewStatus status = model.status;
           switch (status) {
             case ViewStatus.Loading:
               return LoadingScreen(
@@ -133,58 +132,61 @@ class _OrderScreenState extends State<OrderScreen> {
   }
 
   Widget buildBeanReward() {
-    if (orderViewModel.payment != null) {
-      int bean =
-          BussinessHandler.beanReward(orderViewModel.orderAmount.totalAmount);
-      return Center(
-        child: Container(
-          width: MediaQuery.of(context).size.width,
-          // height: 70,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(4),
-            border: Border.all(
-              color: kPrimary,
-            ),
-            color: Colors.white,
+    return Center(
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        // height: 70,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(4),
+          border: Border.all(
+            color: kPrimary,
           ),
-          padding: const EdgeInsets.fromLTRB(8, 12, 8, 12),
-          margin: EdgeInsets.only(left: 4, right: 4),
-          child: Row(
-            children: [
-              Icon(FontAwesome5Solid.fire_alt, color: Colors.red),
-              SizedBox(width: 8),
-              Expanded(
-                child: Container(
-                  // height: 50,
-                  child: RichText(
-                    maxLines: 2,
-                    text: TextSpan(
-                        text: "WoW\nBạn sẽ nhận được ",
-                        style: TextStyle(
-                          fontSize: 12,
-                          // fontWeight: FontWeight.w100,
-                          color: Colors.black45,
-                        ),
-                        children: <TextSpan>[
-                          TextSpan(
-                            text: "${bean.toString()} bean",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
-                              color: kPrimary,
-                            ),
+          color: Colors.white,
+        ),
+        padding: const EdgeInsets.fromLTRB(8, 12, 8, 12),
+        margin: EdgeInsets.only(left: 4, right: 4),
+        child: Row(
+          children: [
+            Icon(FontAwesome5Solid.fire_alt, color: Colors.red),
+            SizedBox(width: 8),
+            Expanded(
+              child: Container(
+                // height: 50,
+                child: RichText(
+                  maxLines: 2,
+                  text: TextSpan(
+                      text: "WoW\nBạn sẽ nhận được ",
+                      style: TextStyle(
+                        fontSize: 12,
+                        // fontWeight: FontWeight.w100,
+                        color: Colors.black45,
+                      ),
+                      children: [
+                        TextSpan(
+                          text: "${orderViewModel.orderAmount.beanAmount.toString()} ",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                            color: Colors.orange,
                           ),
-                          TextSpan(text: " cho đơn hàng này đấy!"),
-                        ]),
-                  ),
+                        ),
+                        WidgetSpan(
+                            alignment: PlaceholderAlignment.middle,
+                            child: Image(
+                              image:
+                              AssetImage("assets/images/icons/bean_coin.png"),
+                              width: 20,
+                              height: 20,
+                            )),
+                        TextSpan(text: " cho đơn hàng này đấy!"),
+                      ]),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
-      );
-    }
-    return SizedBox.shrink();
+      ),
+    );
   }
 
   Widget layoutOrder(Cart cart, String store) {
@@ -328,36 +330,33 @@ class _OrderScreenState extends State<OrderScreen> {
                       ClipRRect(
                         borderRadius: BorderRadius.circular(8),
                         child: CachedNetworkImage(
-                                width: MediaQuery.of(context).size.width * 0.25,
-                                height:
-                                    MediaQuery.of(context).size.width * 0.25,
-                                fit: BoxFit.fill,
-                                imageUrl: item.master.imageURL??defaultImage,
-                                imageBuilder: (context, imageProvider) =>
-                                    Container(
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                      image: imageProvider,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                ),
-                                progressIndicatorBuilder:
-                                    (context, url, downloadProgress) =>
-                                        Shimmer.fromColors(
-                                  baseColor: Colors.grey[300],
-                                  highlightColor: Colors.grey[100],
-                                  enabled: true,
-                                  child: Container(
-                                    width: MediaQuery.of(context).size.width *
-                                        0.25,
-                                    // height: 100,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                                errorWidget: (context, url, error) =>
-                                    Icon(Icons.error),
+                          width: MediaQuery.of(context).size.width * 0.25,
+                          height: MediaQuery.of(context).size.width * 0.25,
+                          fit: BoxFit.fill,
+                          imageUrl: item.master.imageURL ?? defaultImage,
+                          imageBuilder: (context, imageProvider) => Container(
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: imageProvider,
+                                fit: BoxFit.cover,
                               ),
+                            ),
+                          ),
+                          progressIndicatorBuilder:
+                              (context, url, downloadProgress) =>
+                                  Shimmer.fromColors(
+                            baseColor: Colors.grey[300],
+                            highlightColor: Colors.grey[100],
+                            enabled: true,
+                            child: Container(
+                              width: MediaQuery.of(context).size.width * 0.25,
+                              // height: 100,
+                              color: Colors.grey,
+                            ),
+                          ),
+                          errorWidget: (context, url, error) =>
+                              Icon(Icons.error),
+                        ),
                       ),
                       SizedBox(
                         width: 10,
@@ -451,95 +450,75 @@ class _OrderScreenState extends State<OrderScreen> {
   }
 
   Widget layoutSubtotal() {
-    if (orderViewModel.payment != null)
-      return Container(
-        width: MediaQuery.of(context).size.width,
-        padding: const EdgeInsets.all(8),
-        // margin: const EdgeInsets.only(bottom: 8),
-        decoration: BoxDecoration(
-          color: kBackgroundGrey[0],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Text(
-            //   "Tổng tiền",
-            //   style: TextStyle(fontWeight: FontWeight.bold),
-            // ),
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                  border: Border.all(color: kPrimary),
-                  borderRadius: BorderRadius.all(Radius.circular(8))),
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 5, bottom: 10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Tạm tính",
-                          style: kTextSecondary,
-                        ),
-                        Text(
-                            NumberFormat.simpleCurrency(locale: 'vi')
-                                .format(orderViewModel.orderAmount.totalAmount),
-                            style: kTextSecondary),
-                      ],
-                    ),
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      padding: const EdgeInsets.all(8),
+      // margin: const EdgeInsets.only(bottom: 8),
+      decoration: BoxDecoration(
+        color: kBackgroundGrey[0],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+                border: Border.all(color: kPrimary),
+                borderRadius: BorderRadius.all(Radius.circular(8))),
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 5, bottom: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Tạm tính",
+                        style: kTextSecondary,
+                      ),
+                      Text(
+                          NumberFormat.simpleCurrency(locale: 'vi')
+                              .format(orderViewModel.orderAmount.totalAmount),
+                          style: kTextSecondary),
+                    ],
                   ),
-                  MySeparator(
-                    color: kPrimary,
+                ),
+                MySeparator(
+                  color: kPrimary,
+                ),
+                ..._buildOtherAmount(orderViewModel.orderAmount.others),
+                Divider(color: Colors.black),
+                Padding(
+                  padding: const EdgeInsets.only(top: 5, bottom: 5),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("Tổng cộng",
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      Text(
+                          NumberFormat.simpleCurrency(locale: 'vi')
+                              .format(orderViewModel.orderAmount.finalAmount),
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                    ],
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 10, bottom: 10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text("Phí vận chuyển", style: kTextSecondary),
-                        Text(
-                            NumberFormat.simpleCurrency(locale: 'vi').format(
-                                orderViewModel.orderAmount.deliveryAmount),
-                            style: kTextSecondary),
-                      ],
-                    ),
-                  ),
-                  Divider(color: Colors.black),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 5, bottom: 5),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text("Tổng cộng",
-                            style: TextStyle(fontWeight: FontWeight.bold)),
-                        Text(
-                            NumberFormat.simpleCurrency(locale: 'vi')
-                                .format(orderViewModel.orderAmount.finalAmount),
-                            style: TextStyle(fontWeight: FontWeight.bold)),
-                      ],
-                    ),
-                  )
-                ],
-              ),
+                )
+              ],
             ),
-          ],
-        ),
-      );
-    else {
-      return SizedBox.shrink();
-    }
+          ),
+        ],
+      ),
+    );
   }
 
   Widget selectPaymentMethods() {
     List<Widget> listPayments = new List();
-    for (int i = 0; i < PaymentType.options.keys.length; i++) {
+    Map<String, dynamic> paymentsType = orderViewModel.listPayments;
+    for (int i = 0; i < paymentsType.length; i++) {
       listPayments.add(RadioListTile(
         activeColor: kPrimary,
         groupValue: orderViewModel.payment,
-        value: PaymentType.options.keys.elementAt(i),
-        title: Text(
-            PaymentType.getPaymentName(PaymentType.options.keys.elementAt(i))),
+        value: paymentsType.values.elementAt(i),
+        title: Text(paymentsType.keys.elementAt(i)),
         onChanged: (value) async {
           await orderViewModel.changeOption(value);
         },
@@ -604,7 +583,7 @@ class _OrderScreenState extends State<OrderScreen> {
                   ),
                 ),
                 SizedBox(
-                  height: 16,
+                  height: 8,
                 ),
                 FlatButton(
                   onPressed: () async {
@@ -703,5 +682,24 @@ class _OrderScreenState extends State<OrderScreen> {
         )
       ],
     );
+  }
+
+  List<Widget> _buildOtherAmount(List<OtherAmount> otherAmounts) {
+    if (otherAmounts == null) return [SizedBox.shrink()];
+    NumberFormat formatter = NumberFormat();
+    formatter.minimumFractionDigits = 0;
+    formatter.maximumFractionDigits = 2;
+    return otherAmounts
+        .map((amountObj) => Padding(
+      padding: const EdgeInsets.only(top: 5, bottom: 5),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text("${amountObj.name}", style: TextStyle()),
+          Text("${formatter.format(amountObj.amount)} ${amountObj.unit}", style: TextStyle()),
+        ],
+      ),
+    ))
+        .toList();
   }
 }

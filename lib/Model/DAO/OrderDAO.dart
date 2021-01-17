@@ -14,8 +14,6 @@ class OrderDAO {
       "order-status":
           filter == OrderFilter.ORDERING ? ORDER_NEW_STATUS : ORDER_DONE_STATUS
     });
-    print(
-        '${filter == OrderFilter.ORDERING ? ORDER_NEW_STATUS : ORDER_DONE_STATUS}');
     List<OrderListDTO> orderSummaryList;
     if (res.statusCode == 200) {
       orderSummaryList = OrderListDTO.fromList(res.data['data']);
@@ -77,5 +75,11 @@ class OrderDAO {
           message: e.response.data['message']);
     }
     return null;
+  }
+
+  Future<Map<String, dynamic>> getPayments() async {
+    final res = await request.get("payments/methods");
+    var jsonList = res.data['data'] as Map<String, dynamic>;
+    return jsonList;
   }
 }
