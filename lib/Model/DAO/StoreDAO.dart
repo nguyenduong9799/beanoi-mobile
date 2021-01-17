@@ -1,4 +1,4 @@
-import 'package:unidelivery_mobile/Model/DTO/StoreDTO.dart';
+import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/utils/request.dart';
 
@@ -24,6 +24,15 @@ class StoreDAO {
     if(jsonList != null){
       List<StoreDTO> list = jsonList.map((e) => StoreDTO.fromJson(e)).toList();
       return list;
+    }
+    return null;
+  }
+
+  Future<List<BlogDTO>> getBlogs(int store_id) async {
+    final res = await request.get("/stores/${store_id}/blog_posts", queryParameters: {"active": true});
+    if(res.data['data'] != null){
+      var listJson = res.data['data'] as List;
+      return listJson.map((e) => BlogDTO.fromJson(e)).toList();
     }
     return null;
   }

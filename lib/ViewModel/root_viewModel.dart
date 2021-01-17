@@ -1,8 +1,8 @@
 import 'package:get/get.dart';
-
 import 'package:unidelivery_mobile/Model/DAO/AccountDAO.dart';
 import 'package:unidelivery_mobile/Model/DAO/StoreDAO.dart';
 import 'package:unidelivery_mobile/Model/DTO/AccountDTO.dart';
+import 'package:unidelivery_mobile/Model/DTO/BlogDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/CartDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/StoreDTO.dart';
 import 'package:unidelivery_mobile/ViewModel/base_model.dart';
@@ -19,7 +19,7 @@ class RootViewModel extends BaseModel {
   AccountDTO currentUser;
   String error;
   static RootViewModel _instance;
-  StoreDAO storeDAO = new StoreDAO();
+  StoreDAO _storeDAO;
   bool _endOrderTime = false;
   bool get endOrderTime => _endOrderTime;
   DateTime orderTime = DateTime(DateTime.now().year, DateTime.now().month,
@@ -43,13 +43,15 @@ class RootViewModel extends BaseModel {
 
   bool changeAddress = false;
 
-  StoreDTO dto, tmp;
+  StoreDTO currentStore, tmp;
 
-  List<StoreDTO> list;
+  List<StoreDTO> campuses;
   List<StoreDTO> suppliers;
+  List<BlogDTO> blogs;
 
   RootViewModel() {
     _dao = AccountDAO();
+    _storeDAO = new StoreDAO();
     if (orderTime.isBefore(DateTime.now())) {
       _endOrderTime = true;
     }
@@ -76,22 +78,20 @@ class RootViewModel extends BaseModel {
   Future<void> getSuppliers() async {
     try {
       setState(ViewStatus.Loading);
-      StoreDTO store = await getStore();
+      currentStore = await getStore();
 
-      if (store == null) {
-        List<StoreDTO> listStore = await storeDAO.getStores();
+      if (currentStore == null) {
+        List<StoreDTO> listStore = await _storeDAO.getStores();
         for (StoreDTO dto in listStore) {
           if (dto.id == UNIBEAN_STORE) {
-            store = dto;
+            currentStore = dto;
             await setStore(dto);
           }
         }
       }
-      if(dto == null){
-        dto = store;
-      }
-      print("Get suppliers...");
-      suppliers = await storeDAO.getSuppliers(dto.id);
+
+      suppliers = await _storeDAO.getSuppliers(currentStore.id);
+      blogs = await _storeDAO.getBlogs(currentStore.id);
       await Future.delayed(Duration(microseconds: 500));
       // check truong hop product tra ve rong (do khong co menu nao trong TG do)
       if (suppliers.isEmpty || suppliers == null) {
@@ -109,6 +109,7 @@ class RootViewModel extends BaseModel {
     }
   }
 
+
   Future<void> signOut() async {
     await _dao.logOut();
     await removeALL();
@@ -124,27 +125,27 @@ class RootViewModel extends BaseModel {
   }
 
   Future<void> getLocation() async {
-    dto = await getStore();
+    currentStore = await getStore();
     notifyListeners();
   }
 
   Future<void> processChangeAddress() async {
-    if (dto == null) {
+    if (currentStore == null) {
       return;
     }
     changeAddress = true;
-    tmp = dto;
+    tmp = currentStore;
     notifyListeners();
     showLoadingDialog();
 
     StoreDAO dao = new StoreDAO();
-    list = await dao.getStores();
+    campuses = await dao.getStores();
     Cart cart = await getCart();
 
     hideDialog();
     await changeAddressDialog(this, () async {
       hideDialog();
-      if (tmp.id != this.dto.id) {
+      if (tmp.id != this.currentStore.id) {
         int option = 0;
 
         if(cart != null){
@@ -154,9 +155,9 @@ class RootViewModel extends BaseModel {
 
         if (option == 1 || cart == null) {
           print("Changing index...");
-          dto = tmp;
+          currentStore = tmp;
           await deleteCart();
-          await setStore(dto);
+          await setStore(currentStore);
           await getSuppliers();
         }
       }
@@ -166,7 +167,7 @@ class RootViewModel extends BaseModel {
   }
 
   void changeLocation(int id) {
-    for (StoreDTO dto in list) {
+    for (StoreDTO dto in campuses) {
       if (dto.id == id) {
         tmp = dto;
       }

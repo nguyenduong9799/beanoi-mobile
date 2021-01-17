@@ -83,7 +83,7 @@ class MyRequest {
         // Do something with response error
         if (e.response.statusCode == 401) {
           await showStatusDialog("assets/images/global_error.png", "Lỗi",
-              "Vui lòng đang nhập lại");
+              "Vui lòng đăng nhập lại");
           Get.Get.offAllNamed(RouteHandler.LOGIN);
         } else
           throw e; //continue

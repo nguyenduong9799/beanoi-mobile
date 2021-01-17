@@ -14,7 +14,6 @@ import 'package:unidelivery_mobile/acessories/loading.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
 import 'package:unidelivery_mobile/route_constraint.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -66,6 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           children: [
                             banner(),
                             location(),
+                            SizedBox(height: 8,),
                             Expanded(child: storeList()),
                             SizedBox(height: 16),
                           ],
@@ -85,46 +85,43 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget location() {
-    return ScopedModel(
-      model: RootViewModel.getInstance(),
-      child: ScopedModelDescendant<RootViewModel>(
-        builder: (context, child, root) {
-          String text = "Đợi tý đang load...";
-          if (root.changeAddress) {
-            text = "Đang thay đổi...";
-          } else {
-            if (root.dto != null) {
-              text = "${root.dto.name} - ${root.dto.location}";
-            }
+    return ScopedModelDescendant<RootViewModel>(
+      builder: (context, child, root) {
+        String text = "Đợi tý đang load...";
+        if (root.changeAddress) {
+          text = "Đang thay đổi...";
+        } else {
+          if (root.currentStore != null) {
+            text = "${root.currentStore.name} - ${root.currentStore.location}";
           }
+        }
 
-          return InkWell(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.location_on,
-                    color: Colors.red,
+        return InkWell(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.location_on,
+                  color: Colors.red,
+                ),
+                SizedBox(
+                  width: 8,
+                ),
+                Flexible(
+                  child: Text(
+                    text,
+                    style: kTextSecondary,
                   ),
-                  SizedBox(
-                    width: 8,
-                  ),
-                  Flexible(
-                    child: Text(
-                      text,
-                      style: kTextSecondary,
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
-            onTap: () async {
-              await root.processChangeAddress();
-            },
-          );
-        },
-      ),
+          ),
+          onTap: () async {
+            await root.processChangeAddress();
+          },
+        );
+      },
     );
   }
 
@@ -368,66 +365,80 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  List<String> imgList = [
-    "https://dichvuquantriweb.com/wp-content/uploads/2016/02/banner-noel.jpg",
-    "https://previews.123rf.com/images/limbi007/limbi0072003/limbi007200300143/151208245-happy-new-year-2021-banner-with-golden-sand-and-ornaments-eps-10-vector-file-.jpg",
-    "https://i.pinimg.com/originals/aa/72/58/aa72583fa16497aa429bb483fcf77ee9.jpg"
-  ];
-
   Widget banner() {
     return Container(
-      //padding: EdgeInsets.only(top: 8, bottom: 8),
-      height: MediaQuery.of(context).size.height * 0.2,
-      width: double.infinity,
-      child: Swiper(
-          onTap: (index) async {
-            await _launchURL(
-                "https://www.youtube.com/embed/wu32Wj_Uix4");
-          },
-          autoplay: true,
-          autoplayDelay: 2000,
-          pagination: new SwiperPagination(alignment: Alignment.bottomCenter),
-          itemCount: imgList.length,
-          itemBuilder: (context, index) {
-            if (imgList[index] == null || imgList[index] == "")
-              return Icon(
-                MaterialIcons.broken_image,
-                color: kPrimary.withOpacity(0.5),
-              );
-
-            return CachedNetworkImage(
-              imageUrl: imgList[index],
-              imageBuilder: (context, imageProvider) => Container(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: imageProvider,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-              progressIndicatorBuilder: (context, url, downloadProgress) =>
-                  Shimmer.fromColors(
-                baseColor: Colors.grey[300],
+      child: ScopedModelDescendant<RootViewModel>(
+        builder: (context, child, model) {
+          ViewStatus status = model.status;
+          switch(status){
+            case ViewStatus.Loading:
+              return Shimmer.fromColors(
+                baseColor: kBackgroundGrey[0],
                 highlightColor: Colors.grey[100],
                 enabled: true,
                 child: Container(
+                  height: Get.height * 0.2,
+                  width: Get.width,
                   color: Colors.grey,
                 ),
-              ),
-              errorWidget: (context, url, error) => Icon(
-                MaterialIcons.broken_image,
-                color: kPrimary.withOpacity(0.5),
-              ),
-            );
-          }),
+              );
+            case ViewStatus.Empty:
+            case ViewStatus.Error:
+              return SizedBox.shrink();
+            default:
+              return Container(
+                //padding: EdgeInsets.only(top: 8, bottom: 8),
+                height: Get.height * 0.2,
+                width: Get.width,
+                child: Swiper(
+                    onTap: (index) async {
+                      await _launchURL(
+                          "https://www.youtube.com/embed/wu32Wj_Uix4");
+                    },
+                    autoplay: model.blogs.length > 1 ? true : false,
+                    autoplayDelay: 2000,
+                    pagination: new SwiperPagination(alignment: Alignment.bottomCenter),
+                    itemCount: model.blogs.length,
+                    itemBuilder: (context, index) {
+                      if (model.blogs[index].imageUrl == null || model.blogs[index].imageUrl == "")
+                        return Icon(
+                          MaterialIcons.broken_image,
+                          color: kPrimary.withOpacity(0.5),
+                        );
+
+                      return CachedNetworkImage(
+                        imageUrl: model.blogs[index].imageUrl,
+                        imageBuilder: (context, imageProvider) => Container(
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: imageProvider,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                        progressIndicatorBuilder: (context, url, downloadProgress) =>
+                            Shimmer.fromColors(
+                              baseColor: Colors.grey[300],
+                              highlightColor: Colors.grey[100],
+                              enabled: true,
+                              child: Container(
+                                color: Colors.grey,
+                              ),
+                            ),
+                        errorWidget: (context, url, error) => Icon(
+                          MaterialIcons.broken_image,
+                          color: kPrimary.withOpacity(0.5),
+                        ),
+                      );
+                    }),
+              );
+          }
+        },
+      ),
     );
   }
 
   _launchURL(String url) async {
-    if (await canLaunch(url)) {
-      await launch(url, forceWebView: true, enableJavaScript: true);
-    } else {
-      throw 'Could not launch $url';
-    }
+
   }
 }

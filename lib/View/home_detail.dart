@@ -69,9 +69,10 @@ class _HomeScreenState extends State<HomeScreenDetail> {
                   slivers: [
                     SliverAppBar(
                       leading:
-                          CupertinoNavigationBarBackButton(color: Colors.white),
+                          CupertinoNavigationBarBackButton(color: kPrimary),
+                      centerTitle: true,
                       toolbarHeight: kToolbarHeight,
-                      backgroundColor: kPrimary,
+                      backgroundColor: Colors.white,
                       elevation: 10,
                       pinned: true,
                       floating: false,
@@ -81,37 +82,79 @@ class _HomeScreenState extends State<HomeScreenDetail> {
                       title: Text(
                         widget.store.name,
                         style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: kBackgroundGrey[0]),
+                            color: kPrimary),
                       ),
                       flexibleSpace: ScopedModelDescendant<HomeViewModel>(
                         builder: (context, child, model) {
-                          if (model.status == ViewStatus.Loading) {
-                            return Container(
-                              width: Get.width,
-                              color: Colors.grey[200],
-                            );
-                          }else if(model.status == ViewStatus.Empty){
-                            return Image(
-                              image: NetworkImage(defaultPromotionImage),
-                              fit: BoxFit.cover,
-                            );
+                          switch (model.status) {
+                            case ViewStatus.Loading:
+                              return Container(
+                                margin: EdgeInsets.only(top: kToolbarHeight),
+                                width: Get.width,
+                                color: Colors.grey[200],
+                              );
+                            case ViewStatus.Error:
+                            case ViewStatus.Empty:
+                              return Container(
+                                margin: EdgeInsets.only(top: kToolbarHeight),
+                                child: CachedNetworkImage(
+                                  imageUrl: defaultPromotionImage,
+                                  imageBuilder: (context, imageProvider) => Container(
+                                    decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                        image: imageProvider,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
+                                  progressIndicatorBuilder: (context, url, downloadProgress) =>
+                                      Shimmer.fromColors(
+                                        baseColor: Colors.grey[300],
+                                        highlightColor: Colors.grey[100],
+                                        enabled: true,
+                                        child: Container(
+                                          width: MediaQuery.of(context).size.width,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                  errorWidget: (context, url, error) => Icon(
+                                    MaterialIcons.broken_image,
+                                    color: kPrimary.withOpacity(0.5),
+                                  ),
+                                ),
+                              );
+                            default:
+                              List<ProductDTO> giftProducts = model.products
+                                  .where((element) =>
+                                      element.type == ProductType.GIFT_PRODUCT)
+                                  .toList();
+                              if(giftProducts.isEmpty || giftProducts == null){
+                                return Container(
+                                  margin: EdgeInsets.only(top: kToolbarHeight),
+                                  child: Image(
+                                    image: NetworkImage(defaultPromotionImage),
+                                    fit: BoxFit.cover,
+                                    height: Get.height / 3 + 16 + 16,
+                                  ),
+                                );
+                              }
+                              return Container(
+                                padding: EdgeInsets.only(top: kToolbarHeight),
+                                height: Get.height / 3 + 16 + 16,
+                                child: Swiper(
+                                    itemCount: giftProducts.length,
+                                    itemBuilder: (context, index) => Center(
+                                        child: StorePromotion(giftProducts[
+                                            index])), // -> Text widget.
+                                    //viewportFraction: 1,
+                                    loop: false,
+                                    control: new SwiperControl(
+                                      color: Color(0xffEE9617),
+                                      iconPrevious: AntDesign.leftcircle,
+                                      iconNext: AntDesign.rightcircle,
+                                    )),
+                              );
                           }
-                          return Container(
-                            padding: EdgeInsets.only(top: kToolbarHeight),
-                            height: Get.height / 3 + 16 + 16,
-                            child: Swiper(
-                              itemCount: model.products.length,
-                              itemBuilder: (context, index) => Center(
-                                  child: StorePromotion(model
-                                      .products[index])), // -> Text widget.
-                              //viewportFraction: 1,
-                              loop: false,
-
-                                control: new SwiperControl(color: Color(0xff719a0a), iconPrevious: AntDesign.leftcircleo, iconNext: AntDesign.rightcircleo, )
-                            ),
-                          );
                         },
                       ),
                     ),
@@ -300,7 +343,7 @@ class _HomeScreenState extends State<HomeScreenDetail> {
               model.openProductDetail(product);
             },
             child: Container(
-              padding: EdgeInsets.fromLTRB(8, 16, 8, 16),
+              padding: EdgeInsets.fromLTRB(8, 16, 8, 8),
               decoration: BoxDecoration(
                   border:
                       Border(bottom: BorderSide(color: kBackgroundGrey[3]))),
@@ -328,14 +371,42 @@ class _HomeScreenState extends State<HomeScreenDetail> {
                   SizedBox(
                     height: 8,
                   ),
-                  Container(
-                      width: Get.width * 0.65,
-                      child: Text(
-                        product.description ?? "",
-                        maxLines: 1,
-                        style: TextStyle(decorationThickness: 0.5),
-                        overflow: TextOverflow.ellipsis,
-                      ))
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                          width: Get.width * 0.6,
+                          child: Text(
+                            product.description ?? "",
+                            maxLines: 1,
+                            style: TextStyle(decorationThickness: 0.5),
+                            overflow: TextOverflow.ellipsis,
+                          )),
+                      Container(
+                        width: Get.width * 0.3,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Flexible(
+                                child: Text(
+                              "+ " + product.bean.toString(),
+                              style:
+                                  TextStyle(fontSize: 13, color: Colors.orange),
+                            )),
+                            SizedBox(
+                              width: 8,
+                            ),
+                            Image(
+                              image: AssetImage(
+                                  "assets/images/icons/bean_coin.png"),
+                              width: 20,
+                              height: 20,
+                            )
+                          ],
+                        ),
+                      )
+                    ],
+                  )
                 ],
               ),
             ),
@@ -377,21 +448,19 @@ class _HomeScreenState extends State<HomeScreenDetail> {
   }
 
   Widget tag() {
-    double screenWidth = MediaQuery.of(context).size.width;
     return Container(
       height: 50,
-      width: screenWidth,
+      width: Get.width,
       decoration: BoxDecoration(
         color: Colors.white,
       ),
       child: Animator(
-        tween:
-            Tween<Offset>(begin: Offset(-screenWidth, 0), end: Offset(-0, 0)),
+        tween: Tween<Offset>(begin: Offset(-Get.width, 0), end: Offset(-0, 0)),
         duration: Duration(milliseconds: 700),
         builder: (context, animatorState, child) => Transform.translate(
           offset: animatorState.value,
           child: Container(
-            width: screenWidth,
+            width: Get.width,
             child: ScopedModelDescendant<HomeViewModel>(
               builder: (context, child, model) {
                 final filterCategories = model.collections;
@@ -402,47 +471,45 @@ class _HomeScreenState extends State<HomeScreenDetail> {
                       highlightColor: Colors.grey[100],
                       enabled: true,
                       child: Container(
-                        width: screenWidth,
+                        width: Get.width,
                         color: Colors.grey,
                       ),
                     );
-                  default:
-                    if (model.collections != null &&
-                        model.collections.isNotEmpty) {
-                      return Stack(
-                        children: [
-                          Row(
-                            children: [
-                              Expanded(
-                                flex: 2,
-                                child: PageView(
-                                  controller: _scrollController,
-                                  scrollDirection: Axis.horizontal,
-                                  children: [
-                                    Container(
-                                      width: screenWidth,
-                                      padding: const EdgeInsets.all(10),
-                                      child: ListView.separated(
-                                        itemBuilder: (context, index) =>
-                                            filterButton(
-                                                filterCategories[index]),
-                                        scrollDirection: Axis.horizontal,
-                                        itemCount: filterCategories.length,
-                                        separatorBuilder:
-                                            (BuildContext context, int index) =>
-                                                SizedBox(width: 8),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      );
-                    }
+                  case ViewStatus.Empty:
+                  case ViewStatus.Error:
                     return Container(
                       color: kBackgroundGrey[3],
+                    );
+                  default:
+                    return Stack(
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              flex: 2,
+                              child: PageView(
+                                controller: _scrollController,
+                                scrollDirection: Axis.horizontal,
+                                children: [
+                                  Container(
+                                    width: Get.width,
+                                    padding: const EdgeInsets.all(10),
+                                    child: ListView.separated(
+                                      itemBuilder: (context, index) =>
+                                          filterButton(filterCategories[index]),
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount: filterCategories.length,
+                                      separatorBuilder:
+                                          (BuildContext context, int index) =>
+                                              SizedBox(width: 8),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     );
                 }
               },
@@ -502,112 +569,112 @@ class _HomeScreenState extends State<HomeScreenDetail> {
   }
 }
 
-class FoodItem extends StatefulWidget {
-  final ProductDTO product;
-  FoodItem({Key key, this.product}) : super(key: key);
-
-  @override
-  _FoodItemState createState() => _FoodItemState();
-}
-
-class _FoodItemState extends State<FoodItem> {
-  @override
-  Widget build(BuildContext context) {
-    final product = widget.product;
-    final name = product.name;
-    final imageURL = product.imageURL;
-    return Container(
-      // width: MediaQuery.of(context).size.width * 0.3,
-      margin: const EdgeInsets.only(
-        left: 10,
-        right: 10,
-      ),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(10)),
-        // color: Colors.white,
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: ScopedModelDescendant<HomeViewModel>(
-            builder: (context, child, model) {
-          return InkWell(
-            customBorder: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            onTap: () async {
-              print('Add item to cart');
-              model.openProductDetail(product);
-            },
-            child: Opacity(
-              opacity: 1,
-              child: Column(
-                children: [
-                  Hero(
-                    tag: product.id,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(16),
-                      child: Opacity(
-                        opacity: 1,
-                        child: AspectRatio(
-                          aspectRatio: 1.14,
-                          child: (imageURL == null || imageURL == "")
-                              ? Icon(
-                                  MaterialIcons.broken_image,
-                                  color: kPrimary.withOpacity(0.5),
-                                )
-                              : CachedNetworkImage(
-                                  imageUrl: imageURL,
-                                  imageBuilder: (context, imageProvider) =>
-                                      Container(
-                                    decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                        image: imageProvider,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                  ),
-                                  progressIndicatorBuilder:
-                                      (context, url, downloadProgress) =>
-                                          Shimmer.fromColors(
-                                    baseColor: Colors.grey[300],
-                                    highlightColor: Colors.grey[100],
-                                    enabled: true,
-                                    child: Container(
-                                      width: 100,
-                                      height: 100,
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                  errorWidget: (context, url, error) => Icon(
-                                    MaterialIcons.broken_image,
-                                    color: kPrimary.withOpacity(0.5),
-                                  ),
-                                ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Container(
-                      // color: Colors.blue,
-                      height: 60,
-                      child: Text(
-                        name,
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 2,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 13,
-                        ),
-                      ),
-                    ),
-                  )
-                ],
-              ),
-            ),
-          );
-        }),
-      ),
-    );
-  }
-}
+// class FoodItem extends StatefulWidget {
+//   final ProductDTO product;
+//   FoodItem({Key key, this.product}) : super(key: key);
+//
+//   @override
+//   _FoodItemState createState() => _FoodItemState();
+// }
+//
+// class _FoodItemState extends State<FoodItem> {
+//   @override
+//   Widget build(BuildContext context) {
+//     final product = widget.product;
+//     final name = product.name;
+//     final imageURL = product.imageURL;
+//     return Container(
+//       // width: MediaQuery.of(context).size.width * 0.3,
+//       margin: const EdgeInsets.only(
+//         left: 10,
+//         right: 10,
+//       ),
+//       decoration: BoxDecoration(
+//         borderRadius: BorderRadius.all(Radius.circular(10)),
+//         // color: Colors.white,
+//       ),
+//       child: Material(
+//         color: Colors.transparent,
+//         child: ScopedModelDescendant<HomeViewModel>(
+//             builder: (context, child, model) {
+//           return InkWell(
+//             customBorder: RoundedRectangleBorder(
+//               borderRadius: BorderRadius.circular(10),
+//             ),
+//             onTap: () async {
+//               print('Add item to cart');
+//               model.openProductDetail(product);
+//             },
+//             child: Opacity(
+//               opacity: 1,
+//               child: Column(
+//                 children: [
+//                   Hero(
+//                     tag: product.id,
+//                     child: ClipRRect(
+//                       borderRadius: BorderRadius.circular(16),
+//                       child: Opacity(
+//                         opacity: 1,
+//                         child: AspectRatio(
+//                           aspectRatio: 1.14,
+//                           child: (imageURL == null || imageURL == "")
+//                               ? Icon(
+//                                   MaterialIcons.broken_image,
+//                                   color: kPrimary.withOpacity(0.5),
+//                                 )
+//                               : CachedNetworkImage(
+//                                   imageUrl: imageURL,
+//                                   imageBuilder: (context, imageProvider) =>
+//                                       Container(
+//                                     decoration: BoxDecoration(
+//                                       image: DecorationImage(
+//                                         image: imageProvider,
+//                                         fit: BoxFit.cover,
+//                                       ),
+//                                     ),
+//                                   ),
+//                                   progressIndicatorBuilder:
+//                                       (context, url, downloadProgress) =>
+//                                           Shimmer.fromColors(
+//                                     baseColor: Colors.grey[300],
+//                                     highlightColor: Colors.grey[100],
+//                                     enabled: true,
+//                                     child: Container(
+//                                       width: 100,
+//                                       height: 100,
+//                                       color: Colors.grey,
+//                                     ),
+//                                   ),
+//                                   errorWidget: (context, url, error) => Icon(
+//                                     MaterialIcons.broken_image,
+//                                     color: kPrimary.withOpacity(0.5),
+//                                   ),
+//                                 ),
+//                         ),
+//                       ),
+//                     ),
+//                   ),
+//                   Expanded(
+//                     child: Container(
+//                       // color: Colors.blue,
+//                       height: 60,
+//                       child: Text(
+//                         name,
+//                         overflow: TextOverflow.ellipsis,
+//                         maxLines: 2,
+//                         style: TextStyle(
+//                           fontWeight: FontWeight.bold,
+//                           fontSize: 13,
+//                         ),
+//                       ),
+//                     ),
+//                   )
+//                 ],
+//               ),
+//             ),
+//           );
+//         }),
+//       ),
+//     );
+//   }
+// }

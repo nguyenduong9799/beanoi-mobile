@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shimmer/shimmer.dart';
@@ -65,32 +66,31 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
             flexibleSpace: FlexibleSpaceBar(
               background: ClipRRect(
                 child: CachedNetworkImage(
-                        imageUrl: widget.dto.imageURL??defaultImage,
-                        imageBuilder: (context, imageProvider) => Container(
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: imageProvider,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                        progressIndicatorBuilder:
-                            (context, url, downloadProgress) =>
-                                Shimmer.fromColors(
-                          baseColor: Colors.grey[300],
-                          highlightColor: Colors.grey[100],
-                          enabled: true,
-                          child: Container(
-                            width: MediaQuery.of(context).size.width,
-                            // height: 100,
-                            color: Colors.grey,
-                          ),
-                        ),
-                        errorWidget: (context, url, error) => Icon(
-                          MaterialIcons.broken_image,
-                          color: kPrimary.withOpacity(0.5),
-                        ),
+                  imageUrl: widget.dto.imageURL ?? defaultImage,
+                  imageBuilder: (context, imageProvider) => Container(
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: imageProvider,
+                        fit: BoxFit.cover,
                       ),
+                    ),
+                  ),
+                  progressIndicatorBuilder: (context, url, downloadProgress) =>
+                      Shimmer.fromColors(
+                    baseColor: Colors.grey[300],
+                    highlightColor: Colors.grey[100],
+                    enabled: true,
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      // height: 100,
+                      color: Colors.grey,
+                    ),
+                  ),
+                  errorWidget: (context, url, error) => Icon(
+                    MaterialIcons.broken_image,
+                    color: kPrimary.withOpacity(0.5),
+                  ),
+                ),
               ),
             ),
           ),
@@ -130,11 +130,45 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Flexible(
-                  child: Text(
-                widget.dto.name,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-              )),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    width: Get.width * 0.6,
+                    child: Text(
+                      widget.dto.name,
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                    ),
+                  ),
+                  Container(
+                    width: Get.width * 0.3,
+                    alignment: Alignment.centerRight,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Flexible(
+                            child: Text(
+                          "+ " + widget.dto.bean.toString(),
+                          style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.orange),
+                        )),
+                        SizedBox(
+                          width: 8,
+                        ),
+                        Image(
+                          image:
+                              AssetImage("assets/images/icons/bean_coin.png"),
+                          width: 30,
+                          height: 30,
+                        )
+                      ],
+                    ),
+                  )
+                ],
+              ),
 
               // widget.dto.type != MASTER_PRODUCT
               //     ? Flexible(

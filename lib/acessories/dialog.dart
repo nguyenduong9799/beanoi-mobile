@@ -324,13 +324,13 @@ Future<void> changeAddressDialog(RootViewModel model, Function function) async {
                   SizedBox(
                     height: 8,
                   ),
-                  for (int i = 0; i < model.list.length; i++)
+                  for (int i = 0; i < model.campuses.length; i++)
                     RadioListTile(
                       activeColor: kFail,
                       groupValue: model.tmp.id,
-                      value: model.list[i].id,
+                      value: model.campuses[i].id,
                       title: Text(
-                        "${model.list[i].name} - ${model.list[i].location}",
+                        "${model.campuses[i].name} - ${model.campuses[i].location}",
                         style: kTextSecondary.copyWith(
                           fontSize: 14,
                         ),

@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:unidelivery_mobile/Bussiness/BussinessHandler.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 
 class ProductDTO {
@@ -25,6 +24,7 @@ class ProductDTO {
   int generalId;
   double minPrice;
   List<int> collections;
+  int bean;
 
   @override
   String toString() {
@@ -49,11 +49,11 @@ class ProductDTO {
       this.min,
       this.generalId,
       this.minPrice,
-      this.collections}); // balance. point;
+      this.collections,
+      this.bean}); // balance. point;
 
   factory ProductDTO.fromJson(dynamic json) {
     var type = json['product_type_id'] as int;
-    var jsonExtra = json['extra_category_id'] as List;
     // List<int> listExtra = jsonExtra.cast<int>().toList();
 
     ProductDTO product = ProductDTO(json["product_id"],
@@ -72,7 +72,8 @@ class ProductDTO {
         defaultQuantity: json["default"] ?? 0,
         min: json["min"] ?? 0,
         max: json["max"] ?? 0,
-        generalId: json['general_product_id']);
+        generalId: json['general_product_id'],
+        bean: json['bean']);
 
     if (json['collection_id'] != null) {
       var listCollection = json['collection_id'] as List;
@@ -128,7 +129,8 @@ class ProductDTO {
       "general_product_id": generalId,
       "min_price": minPrice,
       "collection_id": collections,
-      "price": price
+      "price": price,
+      "bean": bean
     };
 
     Map<String, dynamic> pricesMap = new Map();

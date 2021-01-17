@@ -29,10 +29,11 @@ class _AppBarSate extends State<DefaultAppBar> {
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      backgroundColor: Colors.white,
       elevation: 5.0,
       centerTitle: true,
       leading: IconButton(
-        icon: Icon(Icons.arrow_back_ios, color: Colors.white),
+        icon: Icon(Icons.arrow_back_ios, color: kPrimary),
         onPressed: () {
           Get.back();
         },
@@ -40,8 +41,7 @@ class _AppBarSate extends State<DefaultAppBar> {
       title: Text(
         widget.title,
         style: TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
+          color: kPrimary,
         ),
       ),
     );
@@ -106,7 +106,6 @@ class _HomeAppBarSate extends State<HomeAppBar> {
                         return GestureDetector(
                           onTap: () async {
                             await model.fetchUser();
-
                           },
                           child: Align(
                             alignment: Alignment.bottomCenter,
