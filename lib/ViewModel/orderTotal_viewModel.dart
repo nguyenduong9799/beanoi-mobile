@@ -12,13 +12,14 @@ import 'package:unidelivery_mobile/enums/order_status.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
 import 'package:unidelivery_mobile/utils/shared_pref.dart';
 
+import '../constraints.dart';
+
 class OrderViewModel extends BaseModel {
   int payment;
   String orderNote;
   OrderAmountDTO orderAmount;
   Map<String, dynamic> listPayments;
   static OrderViewModel _instance;
-
 
   static OrderViewModel getInstance() {
     if (_instance == null) {
@@ -41,20 +42,22 @@ class OrderViewModel extends BaseModel {
     return await getCart();
   }
 
-
   Future<void> prepareOrder() async {
     try {
-      if(!Get.isDialogOpen){
+      if (!Get.isDialogOpen) {
         setState(ViewStatus.Loading);
       }
 
       StoreDTO storeDTO = await getStore();
 
-      orderAmount =
-          await dao.prepareOrder(orderNote, storeDTO.id, payment);
-      if(listPayments == null){
+      orderAmount = await dao.prepareOrder(orderNote, storeDTO.id, payment);
+      if (listPayments == null) {
         listPayments = await dao.getPayments();
       }
+
+      await Future.delayed(Duration(milliseconds: 500));
+      hideDialog();
+      setState(ViewStatus.Completed);
     } catch (e, stacktra) {
       print(e.toString());
       print(stacktra.toString());
@@ -63,18 +66,42 @@ class OrderViewModel extends BaseModel {
         await prepareOrder();
       } else
         setState(ViewStatus.Error);
-    } finally {
-      await Future.delayed(Duration(milliseconds: 500));
-      hideDialog();
-      setState(ViewStatus.Completed);
     }
   }
 
   Future<void> updateQuantity(CartItem item) async {
     showLoadingDialog();
+    if (item.master.type == ProductType.GIFT_PRODUCT) {
+      int originalQuantity = 0;
+      if (RootViewModel.getInstance().currentUser == null) {
+        await RootViewModel.getInstance().fetchUser();
+      }
+      double totalBean = RootViewModel.getInstance().currentUser.point;
+
+      Cart cart = await getCart();
+      if (cart != null) {
+        cart.items.forEach((element) {
+          if (element.master.type == ProductType.GIFT_PRODUCT) {
+            if (element.master.id != item.master.id) {
+              totalBean -= (element.master.price * element.quantity);
+            } else {
+              originalQuantity = element.quantity;
+            }
+          }
+        });
+      }
+
+      if (totalBean < (item.master.price * item.quantity)) {
+        await showStatusDialog("assets/images/global_error.png", "ERR_BALANCE",
+            "Số bean hiện tại không đủ");
+        item.quantity = originalQuantity;
+        hideDialog();
+        return;
+      }
+    }
+
     await updateItemFromCart(item);
     await prepareOrder();
-
   }
 
   Future<void> orderCart() async {
@@ -88,13 +115,13 @@ class OrderViewModel extends BaseModel {
       if (result.statusCode == 200) {
         await deleteCart();
         hideDialog();
-        await showStatusDialog("assets/images/global_sucsess.png", result.code,
-            result.message);
+        await showStatusDialog(
+            "assets/images/global_sucsess.png", result.code, result.message);
         Get.back(result: true);
-      } else{
+      } else {
         hideDialog();
-        await showStatusDialog("assets/images/global_error.png", result.code,
-            result.message);
+        await showStatusDialog(
+            "assets/images/global_error.png", result.code, result.message);
         await RootViewModel.getInstance().fetchUser();
       }
     } catch (e) {

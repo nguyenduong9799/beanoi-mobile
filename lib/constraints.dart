@@ -21,10 +21,8 @@ final kTextSecondary = TextStyle(color: kPrimary);
 
 const String CART_TAG = "cartTag";
 
-const double DELIVERY_FEE = 5000;
 const UNIBEAN_STORE = 150;
 const UNIBEAN_BRAND = 10;
-const MASTER_PRODUCT = 6;
 const double DIALOG_ICON_SIZE = 60;
 const String defaultImage =
     "https://firebasestorage.googleapis.com/v0/b/unidelivery-fad6f.appspot.com/o/images%2Fdefault_image.png?alt=media&token=3c1cf2f4-52be-4df1-aed5-cdb5fd4990d8";
@@ -33,10 +31,10 @@ const String defaultPromotionImage =
 
 const String TIME = "12:10";
 const String VERSION = "0.0.1";
-const TEST_STORE = 69;
 const int ORDER_NEW_STATUS = 1;
 const int ORDER_DONE_STATUS = 3;
 const int VIRTUAL_STORE_TYPE = 8;
+const int DEFAULT_SIZE = 30;
 
 class ProductType {
   static const int MASTER_PRODUCT = 6;
@@ -44,5 +42,3 @@ class ProductType {
   static const int COMPLEX_PRODUCT = 10;
   static const int GIFT_PRODUCT = 12;
 }
-
-

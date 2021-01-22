@@ -1,8 +1,12 @@
 import 'dart:math';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:scoped_model/scoped_model.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
+import 'package:unidelivery_mobile/ViewModel/index.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 
 class StorePromotion extends StatefulWidget {
@@ -17,8 +21,6 @@ class StorePromotion extends StatefulWidget {
 }
 
 class _StorePromotionState extends State<StorePromotion> {
-
-
   @override
   void initState() {
     super.initState();
@@ -32,102 +34,132 @@ class _StorePromotionState extends State<StorePromotion> {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return Container(
-      color: kBackgroundGrey[3],
-      padding: EdgeInsets.all(8.0),
+    return ScopedModel(
+      model: HomeViewModel.getInstance(),
       child: Material(
-        elevation: 20,
-        color: kBackgroundGrey[0],
-        borderRadius: BorderRadius.all(Radius.circular(8.0)),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                  height: Get.height / 5,
-                  child: ClipPath(
-                    clipper: PrimaryCippler(),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                        gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [
-                              Color(0xff0652C5),
-                              Color(0xffD4418E)
-                            ]),
-                      ),
-                      padding: EdgeInsets.all(8.0),
-                      child: Align(
-                        alignment: Alignment.topCenter,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Flexible(
-                                child: Text(
-                              "Khuyến Mãi",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 18,
-                                  decorationThickness: 0.5),
-                            )),
-                            Row(
-                              children: [
-                                Text(
-                                  widget.dto.price.toString(),
-                                  style: TextStyle(color: kBean),
-                                ),
-                                SizedBox(
-                                  width: 8,
-                                ),
-                                Container(
-                                    width: 50,
-                                    height: 50,
-                                    decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        border: Border.all(color: kBean)),
-                                    child: Center(
-                                        child: Text(
-                                      "Bean",
-                                      style:
-                                          TextStyle(color: kBean, fontSize: 13),
-                                    ))),
-                              ],
-                            )
-                          ],
+        elevation: 10,
+        color: kPrimary,
+        borderRadius: BorderRadius.all(Radius.circular(16.0)),
+        child: ScopedModelDescendant<HomeViewModel>(
+          builder: (context, child, model) {
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(16),
+                        child: CachedNetworkImage(
+                          width: Get.width * 0.25,
+                          height: Get.width * 0.25,
+                          fit: BoxFit.fill,
+                          imageUrl: widget.dto.imageURL ?? defaultImage,
+                          imageBuilder: (context, imageProvider) => Container(
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: imageProvider,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                          progressIndicatorBuilder:
+                              (context, url, downloadProgress) =>
+                                  Shimmer.fromColors(
+                            baseColor: Colors.grey[300],
+                            highlightColor: Colors.grey[100],
+                            enabled: true,
+                            child: Container(
+                              width: Get.width * 0.25,
+                              // height: 100,
+                              color: Colors.grey,
+                            ),
+                          ),
+                          errorWidget: (context, url, error) =>
+                              Icon(Icons.error),
                         ),
+                      ),
+                      SizedBox(
+                        width: 8,
+                      ),
+                      SingleChildScrollView(
+                        child: Container(
+                          width: Get.width * 0.35,
+                          height: Get.width * 0.25,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                widget.dto.name,
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: kBackgroundGrey[0]),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 2,
+                              ),
+                              SizedBox(
+                                height: 8,
+                              ),
+                              Text(
+                                widget.dto.supplierName,
+                                style: TextStyle(
+                                    fontSize: 14, color: kBackgroundGrey[0]),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SingleChildScrollView(
+                    child: Container(
+                      width: Get.width * 0.25,
+                      height: Get.width * 0.25,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          RichText(
+                            text: TextSpan(
+                                text: "${widget.dto.price} ",
+                                style: TextStyle(color: kBackgroundGrey[0]),
+                                children: [
+                                  WidgetSpan(
+                                    alignment: PlaceholderAlignment.bottom,
+                                    child: Image(
+                                      image: AssetImage(
+                                          "assets/images/icons/bean_coin.png"),
+                                      width: 20,
+                                      height: 20,
+                                    ),
+                                  )
+                                ]),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                          ),
+                          InkWell(
+                            onTap: () async {
+                              await model.openProductDetail(widget.dto);
+                            },
+                            child: Text(
+                              "Đổi ngay",
+                              style: TextStyle(color: kBean),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 2,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  )),
-              Padding(
-                  padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Flexible(
-                          child: Text(
-                        widget.dto.name,
-                        style: TextStyle(color: kSecondary, fontSize: 16),
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                      )),
-                      OutlineButton(
-                        color: Colors.orange,
-                        onPressed: () {},
-                        shape: RoundedRectangleBorder(
-                          //side: BorderSide(color: Colors.orange),
-                          borderRadius: BorderRadius.all(Radius.circular(8)),
-                        ),
-                        child: Text(
-                          "Đổi quà",
-                          style: TextStyle(color: Colors.red),
-                        ),
-                      )
-                    ],
-                  ))
-            ],
-          ),
+                  )
+                ],
+              ),
+            );
+          },
         ),
       ),
     );

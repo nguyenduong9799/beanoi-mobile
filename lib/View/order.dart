@@ -13,8 +13,10 @@ import 'package:unidelivery_mobile/View/start_up.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
 import 'package:unidelivery_mobile/acessories/appbar.dart';
 import 'package:unidelivery_mobile/acessories/dash_border.dart';
+import 'package:unidelivery_mobile/acessories/loading.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
+import 'package:unidelivery_mobile/utils/index.dart';
 import 'package:unidelivery_mobile/utils/shared_pref.dart';
 
 class OrderScreen extends StatefulWidget {
@@ -36,25 +38,24 @@ class _OrderScreenState extends State<OrderScreen> {
   Widget build(BuildContext context) {
     return ScopedModel(
       model: orderViewModel,
-      child: ScopedModelDescendant<OrderViewModel>(
-        builder: (BuildContext context, Widget child, OrderViewModel model) {
-          ViewStatus status = model.status;
-          switch (status) {
-            case ViewStatus.Loading:
-              return LoadingScreen(
-                title: "Đang xử lý",
-              );
-            case ViewStatus.Completed:
-              return FutureBuilder(
-                future: model.cart,
-                builder: (BuildContext context, AsyncSnapshot<Cart> snapshot) {
-                  if (snapshot.hasData) {
-                    if (snapshot.data != null) {
-                      Cart cart = snapshot.data;
-                      return Scaffold(
-                        bottomNavigationBar: bottomBar(),
-                        appBar: DefaultAppBar(title: "Đơn hàng của bạn"),
-                        body: FutureBuilder(
+      child: Scaffold(
+        appBar: DefaultAppBar(title: "Đơn hàng của bạn"),
+        bottomNavigationBar: bottomBar(),
+        body: ScopedModelDescendant<OrderViewModel>(
+          builder: (BuildContext context, Widget child, OrderViewModel model) {
+            ViewStatus status = model.status;
+            switch (status) {
+              case ViewStatus.Loading:
+                return Center(child: LoadingBean());
+              case ViewStatus.Completed:
+                return FutureBuilder(
+                  future: model.cart,
+                  builder:
+                      (BuildContext context, AsyncSnapshot<Cart> snapshot) {
+                    if (snapshot.hasData) {
+                      if (snapshot.data != null) {
+                        Cart cart = snapshot.data;
+                        return FutureBuilder(
                           future: getStore(),
                           builder: (BuildContext context,
                               AsyncSnapshot<StoreDTO> snapshot) {
@@ -92,41 +93,42 @@ class _OrderScreenState extends State<OrderScreen> {
                             }
                             return Container();
                           },
-                        ),
-                      );
-                    } else {
-                      return Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Center(child: Text("Không có đơn hàng nào")),
-                      );
+                        );
+                      } else {
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Center(child: Text("Không có đơn hàng nào")),
+                        );
+                      }
                     }
-                  }
-                  return Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Center(child: CircularProgressIndicator()),
-                  );
-                },
-              );
-            case ViewStatus.Error:
-              return ListView(
-                children: [
-                  Center(
-                    child: Text(
-                      "Có gì đó sai sai..\n Vui lòng thử lại.",
-                      style: kTextPrimary.copyWith(fontSize: 20),
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Center(child: CircularProgressIndicator()),
+                    );
+                  },
+                );
+              case ViewStatus.Error:
+                return ListView(
+                  children: [
+                    Center(
+                      child: Text(
+                        "Có gì đó sai sai..\n Vui lòng thử lại.",
+                        style: kTextPrimary.copyWith(
+                            fontSize: 20, color: Colors.black),
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 8),
-                  Image.asset(
-                    'assets/images/global_error.png',
-                    fit: BoxFit.contain,
-                  ),
-                ],
-              );
-            default:
-              return LoadingScreen();
-          }
-        },
+                    SizedBox(height: 8),
+                    Image.asset(
+                      'assets/images/global_error.png',
+                      fit: BoxFit.contain,
+                    ),
+                  ],
+                );
+              default:
+                return LoadingScreen();
+            }
+          },
+        ),
       ),
     );
   }
@@ -163,7 +165,8 @@ class _OrderScreenState extends State<OrderScreen> {
                       ),
                       children: [
                         TextSpan(
-                          text: "${orderViewModel.orderAmount.beanAmount.toString()} ",
+                          text:
+                              "${orderViewModel.orderAmount.beanAmount.toString()} ",
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 14,
@@ -171,10 +174,10 @@ class _OrderScreenState extends State<OrderScreen> {
                           ),
                         ),
                         WidgetSpan(
-                            alignment: PlaceholderAlignment.middle,
+                            alignment: PlaceholderAlignment.bottom,
                             child: Image(
-                              image:
-                              AssetImage("assets/images/icons/bean_coin.png"),
+                              image: AssetImage(
+                                  "assets/images/icons/bean_coin.png"),
                               width: 20,
                               height: 20,
                             )),
@@ -311,6 +314,11 @@ class _OrderScreenState extends State<OrderScreen> {
       ));
     }
 
+    bool isGift = false;
+    if (item.master.type == ProductType.GIFT_PRODUCT) {
+      isGift = true;
+    }
+
     return Slidable(
       actionPane: SlidableDrawerActionPane(),
       actionExtentRatio: 0.25,
@@ -359,7 +367,7 @@ class _OrderScreenState extends State<OrderScreen> {
                         ),
                       ),
                       SizedBox(
-                        width: 10,
+                        width: 8,
                       ),
                       Container(
                         width: MediaQuery.of(context).size.width * 0.65 - 110,
@@ -368,12 +376,26 @@ class _OrderScreenState extends State<OrderScreen> {
                           children: [
                             ...list,
                             SizedBox(
-                              height: 10,
+                              height: 8,
                             ),
-                            Text(
-                              NumberFormat.simpleCurrency(locale: 'vi')
-                                  .format(price),
-                              style: TextStyle(fontSize: 14),
+                            RichText(
+                              text: TextSpan(
+                                  text:
+                                      isGift ? "${price} " : formatPrice(price),
+                                  style: TextStyle(color: Colors.black),
+                                  children: [
+                                    WidgetSpan(
+                                      alignment: PlaceholderAlignment.bottom,
+                                      child: isGift
+                                          ? Image(
+                                              image: AssetImage(
+                                                  "assets/images/icons/bean_coin.png"),
+                                              width: 20,
+                                              height: 20,
+                                            )
+                                          : Container(),
+                                    )
+                                  ]),
                             )
                           ],
                         ),
@@ -545,104 +567,118 @@ class _OrderScreenState extends State<OrderScreen> {
   }
 
   Widget bottomBar() {
-    return Container(
-      padding: const EdgeInsets.only(left: 8, right: 8),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey,
-            offset: Offset(0.0, 1.0), //(x,y)
-            blurRadius: 6.0,
-          ),
-        ],
-      ),
-      child: orderViewModel.payment != null
-          ? ListView(
-              shrinkWrap: true,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Tổng tiền",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                        ),
-                      ),
-                      Text(
-                        NumberFormat.simpleCurrency(locale: 'vi')
-                            .format(orderViewModel.orderAmount.finalAmount),
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 18),
-                      )
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  height: 8,
-                ),
-                FlatButton(
-                  onPressed: () async {
-                    if (orderViewModel.payment != null) {
-                      await orderViewModel.orderCart();
-                    }
-                    // pr.hide();
-                    // showStateDialog();
-                  },
-                  padding: EdgeInsets.only(left: 8.0, right: 8.0),
-                  textColor: Colors.white,
-                  color: kPrimary,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(8))),
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        height: 16,
-                      ),
-                      Text("Chốt đơn",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 15)),
-                      SizedBox(
-                        height: 16,
-                      )
-                    ],
-                  ),
-                ),
-              ],
-            )
-          : Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ListView(
-                shrinkWrap: true,
-                children: [
-                  FlatButton(
-                    onPressed: () async {},
-                    padding: EdgeInsets.only(right: 8.0, left: 8.0),
-                    textColor: Colors.white,
-                    color: kBackgroundGrey[4],
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(8))),
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          height: 16,
-                        ),
-                        Text("Vui lòng chọn phương thức thanh toán",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 15)),
-                        SizedBox(
-                          height: 16,
-                        )
-                      ],
-                    ),
+    return ScopedModelDescendant<OrderViewModel>(
+      builder: (context, child, model) {
+        switch (model.status) {
+          case ViewStatus.Completed:
+            return Container(
+              padding: const EdgeInsets.only(left: 8, right: 8),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey,
+                    offset: Offset(0.0, 1.0), //(x,y)
+                    blurRadius: 6.0,
                   ),
                 ],
               ),
-            ),
+              child: orderViewModel.payment != null
+                  ? ListView(
+                      shrinkWrap: true,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Tổng tiền",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                ),
+                              ),
+                              Text(
+                                NumberFormat.simpleCurrency(locale: 'vi')
+                                    .format(
+                                        orderViewModel.orderAmount.finalAmount),
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 18),
+                              )
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: 8,
+                        ),
+                        FlatButton(
+                          onPressed: () async {
+                            if (orderViewModel.payment != null) {
+                              await orderViewModel.orderCart();
+                            }
+                            // pr.hide();
+                            // showStateDialog();
+                          },
+                          padding: EdgeInsets.only(left: 8.0, right: 8.0),
+                          textColor: Colors.white,
+                          color: kPrimary,
+                          shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(8))),
+                          child: Column(
+                            children: [
+                              SizedBox(
+                                height: 16,
+                              ),
+                              Text("Chốt đơn",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15)),
+                              SizedBox(
+                                height: 16,
+                              )
+                            ],
+                          ),
+                        ),
+                      ],
+                    )
+                  : Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ListView(
+                        shrinkWrap: true,
+                        children: [
+                          FlatButton(
+                            onPressed: () async {},
+                            padding: EdgeInsets.only(right: 8.0, left: 8.0),
+                            textColor: Colors.white,
+                            color: kBackgroundGrey[4],
+                            shape: RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(8))),
+                            child: Column(
+                              children: [
+                                SizedBox(
+                                  height: 16,
+                                ),
+                                Text("Vui lòng chọn phương thức thanh toán",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 15)),
+                                SizedBox(
+                                  height: 16,
+                                )
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+            );
+          default:
+            return SizedBox.shrink();
+        }
+      },
     );
   }
 
@@ -691,15 +727,17 @@ class _OrderScreenState extends State<OrderScreen> {
     formatter.maximumFractionDigits = 2;
     return otherAmounts
         .map((amountObj) => Padding(
-      padding: const EdgeInsets.only(top: 5, bottom: 5),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text("${amountObj.name}", style: TextStyle()),
-          Text("${formatter.format(amountObj.amount)} ${amountObj.unit}", style: TextStyle()),
-        ],
-      ),
-    ))
+              padding: const EdgeInsets.only(top: 5, bottom: 5),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text("${amountObj.name}", style: TextStyle()),
+                  Text(
+                      "${formatter.format(amountObj.amount)} ${amountObj.unit}",
+                      style: TextStyle()),
+                ],
+              ),
+            ))
         .toList();
   }
 }

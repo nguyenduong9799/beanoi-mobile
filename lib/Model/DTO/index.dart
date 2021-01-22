@@ -4,3 +4,6 @@ export 'OrderDTO.dart';
 export 'ProductDTO.dart';
 export 'BlogDTO.dart';
 export 'StoreDTO.dart';
+export 'MetaDataDTO.dart';
+export 'CollectionDTO.dart';
+export 'OrderAmountDTO.dart';

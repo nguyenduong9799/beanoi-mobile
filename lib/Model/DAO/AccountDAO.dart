@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:unidelivery_mobile/Model/DAO/BaseDAO.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/Services/firebase.dart';
 import 'package:unidelivery_mobile/services/push_notification_service.dart';
@@ -7,7 +8,7 @@ import 'package:unidelivery_mobile/utils/shared_pref.dart';
 
 // TODO: Test Start_up Screen + FCM TOken
 
-class AccountDAO {
+class AccountDAO extends BaseDAO {
   Future<AccountDTO> login(String idToken) async {
     try {
       String fcmToken =

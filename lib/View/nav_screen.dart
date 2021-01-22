@@ -5,7 +5,10 @@ import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/View/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
 import 'package:unidelivery_mobile/acessories/bottomnavigator.dart';
+import 'package:unidelivery_mobile/acessories/cart_button.dart';
 import 'package:unidelivery_mobile/utils/request.dart';
+
+import '../constraints.dart';
 
 class RootScreen extends StatefulWidget {
   final int initScreenIndex;
@@ -54,11 +57,11 @@ class _RootScreenState extends State<RootScreen> {
             // FEATURE: HIEN GOI Y KHI USER KHONG TAP VAO SCREEN MOT KHOANG THOI GIAN
           },
           child: Scaffold(
+              floatingActionButton: buildCartButton(),
               body: IndexedStack(
                 index: _selectedIndex,
                 children: _screens,
               ),
-
               bottomNavigationBar: Container(
                 // padding: const EdgeInsets.only(bottom: 12.0),
                 color: Colors.white,

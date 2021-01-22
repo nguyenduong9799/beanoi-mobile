@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:unidelivery_mobile/Model/DAO/BaseDAO.dart';
 import 'package:unidelivery_mobile/Model/DTO/OrderAmountDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
@@ -8,14 +9,18 @@ import 'package:unidelivery_mobile/enums/order_status.dart';
 import 'package:unidelivery_mobile/utils/request.dart';
 import 'package:unidelivery_mobile/utils/shared_pref.dart';
 
-class OrderDAO {
-  Future<List<OrderListDTO>> getOrders(OrderFilter filter) async {
+class OrderDAO extends BaseDAO {
+  Future<List<OrderListDTO>> getOrders(OrderFilter filter,
+      {int page, int size}) async {
     final res = await request.get('me/orders', queryParameters: {
       "order-status":
-          filter == OrderFilter.ORDERING ? ORDER_NEW_STATUS : ORDER_DONE_STATUS
+          filter == OrderFilter.ORDERING ? ORDER_NEW_STATUS : ORDER_DONE_STATUS,
+      "size": size ?? DEFAULT_SIZE,
+      "page": page ?? 1
     });
     List<OrderListDTO> orderSummaryList;
     if (res.statusCode == 200) {
+      metaDataDTO = MetaDataDTO.fromJson(res.data["metadata"]);
       orderSummaryList = OrderListDTO.fromList(res.data['data']);
     }
     return orderSummaryList;

@@ -42,45 +42,38 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     // print(widget?.user.uid);
-    return ScopedModelDescendant<RootViewModel>(
-      builder:
-          (BuildContext context, Widget child, RootViewModel rootViewModel) {
-        return ScopedModel(
-          model: HomeViewModel.getInstance(),
-          child: Scaffold(
-            floatingActionButton: buildCartButton(),
-            backgroundColor: Colors.white,
-            //bottomNavigationBar: bottomBar(),
-            body: SafeArea(
-              child: Stack(
-                children: [
-                  Center(
-                    child: Padding(
-                      padding: EdgeInsets.only(
-                          top: MediaQuery.of(context).size.height * 0.12),
-                      child: RefreshIndicator(
-                        key: _refreshIndicatorKey,
-                        onRefresh: _refresh,
-                        child: Column(
-                          children: [
-                            banner(),
-                            location(),
-                            SizedBox(height: 8,),
-                            Expanded(child: storeList()),
-                            SizedBox(height: 16),
-                          ],
-                        ),
+    return Scaffold(
+      backgroundColor: Colors.white,
+      //bottomNavigationBar: bottomBar(),
+      body: SafeArea(
+        child: Stack(
+          children: [
+            Center(
+              child: Padding(
+                padding: EdgeInsets.only(top: Get.height * 0.12),
+                child: RefreshIndicator(
+                  key: _refreshIndicatorKey,
+                  onRefresh: _refresh,
+                  child: Column(
+                    children: [
+                      banner(),
+                      location(),
+                      SizedBox(
+                        height: 8,
                       ),
-                    ),
+                      Expanded(child: storeList()),
+                      //loadMoreButton(),
+                      SizedBox(height: 16),
+                    ],
                   ),
-                  HomeAppBar(),
-                  buildCountDown(),
-                ],
+                ),
               ),
             ),
-          ),
-        );
-      },
+            HomeAppBar(),
+            buildCountDown(),
+          ],
+        ),
+      ),
     );
   }
 
@@ -94,6 +87,10 @@ class _HomeScreenState extends State<HomeScreen> {
           if (root.currentStore != null) {
             text = "${root.currentStore.name} - ${root.currentStore.location}";
           }
+        }
+
+        if (root.status == ViewStatus.Error) {
+          text = "Có lỗi xảy ra...";
         }
 
         return InkWell(
@@ -125,112 +122,47 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget buildCartButton() {
-    return ScopedModelDescendant(
-        rebuildOnChange: true,
-        builder: (context, child, HomeViewModel model) {
-          return FutureBuilder(
-              future: model.cart,
-              builder: (context, snapshot) {
-                Cart cart = snapshot.data;
-                if (cart == null) return SizedBox.shrink();
-                int quantity = cart?.itemQuantity();
-                return Container(
-                  margin: EdgeInsets.only(bottom: 40),
-                  child: FloatingActionButton(
-                    backgroundColor: Colors.transparent,
-                    elevation: 8,
-                    heroTag: CART_TAG,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                      // side: BorderSide(color: Colors.red),
-                    ),
-                    onPressed: () async {
-                      print('Tap order');
-                      await model.openCart();
-                    },
-                    child: Stack(
-                      overflow: Overflow.visible,
-                      children: [
-                        Container(
-                          width: 48,
-                          height: 48,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Icon(
-                            AntDesign.shoppingcart,
-                            color: kPrimary,
-                          ),
-                        ),
-                        Positioned(
-                          top: -10,
-                          left: 32,
-                          child: Container(
-                            width: 24,
-                            height: 24,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(16),
-                              color: Colors.red,
-                              //border: Border.all(color: Colors.grey),
-                            ),
-                            child: Center(
-                              child: Text(
-                                quantity.toString(),
-                                style: kTextPrimary.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
+  Widget buildCountDown() {
+    return ScopedModelDescendant<RootViewModel>(
+      builder: (context, child, model) {
+        return Positioned(
+          top: 150,
+          left: 0,
+          child: RotatedBox(
+            quarterTurns: 1,
+            child: Container(
+              padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
+              decoration: BoxDecoration(
+                color: const Color(0xFFE8581C),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(5),
+                  topRight: Radius.circular(5),
+                ),
+              ),
+              child: Column(
+                children: [
+                  Text(
+                    model.endOrderTime ? "Hết giờ" : "Còn lại",
+                    style: kTextPrimary.copyWith(fontWeight: FontWeight.bold),
                   ),
-                );
-              });
-        });
-  }
-
-  Positioned buildCountDown() {
-    return Positioned(
-      top: 150,
-      left: 0,
-      child: RotatedBox(
-        quarterTurns: 1,
-        child: Container(
-          padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
-          decoration: BoxDecoration(
-            color: const Color(0xFFE8581C),
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(5),
-              topRight: Radius.circular(5),
+                  CountdownTimer(
+                    emptyWidget: Container(),
+                    textStyle: TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                    ),
+                    endTime: model.orderTime.millisecondsSinceEpoch,
+                    onEnd: () {
+                      model.endOrderTime = true;
+                      model.notifyListeners();
+                    },
+                  )
+                ],
+              ),
             ),
           ),
-          child: Column(
-            children: [
-              Text(
-                RootViewModel.getInstance().endOrderTime ? "Hết giờ" : "Còn lại",
-                style: kTextPrimary.copyWith(fontWeight: FontWeight.bold),
-              ),
-              CountdownTimer(
-                emptyWidget: Container(),
-                textStyle: TextStyle(
-                  color: Colors.white,
-                  fontSize: 14,
-                ),
-                endTime: RootViewModel.getInstance().orderTime.millisecondsSinceEpoch,
-                onEnd: () {
-                  RootViewModel.getInstance().endOrderTime = true;
-                  RootViewModel.getInstance().notifyListeners();
-                },
-              )
-            ],
-          ),
-        ),
-      ),
+        );
+      },
     );
   }
 
@@ -293,6 +225,7 @@ class _HomeScreenState extends State<HomeScreen> {
             );
           case ViewStatus.Completed:
             return ListView.separated(
+              physics: AlwaysScrollableScrollPhysics(),
               itemBuilder: (context, index) {
                 return buildStore(model.suppliers[index]);
               },
@@ -306,10 +239,23 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  Widget loadMoreButton() {
+    return ScopedModelDescendant<RootViewModel>(
+      builder: (context, child, model) {
+        switch (model.status) {
+          case ViewStatus.LoadMore:
+            return CircularProgressIndicator();
+          default:
+            return SizedBox.shrink();
+        }
+      },
+    );
+  }
+
   Widget buildStore(StoreDTO dto) {
     return InkWell(
-      onTap: () {
-        Get.toNamed(RouteHandler.HOME_DETAIL, arguments: dto);
+      onTap: () async {
+        await Get.toNamed(RouteHandler.HOME_DETAIL, arguments: dto);
       },
       child: Row(
         children: [
@@ -370,7 +316,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: ScopedModelDescendant<RootViewModel>(
         builder: (context, child, model) {
           ViewStatus status = model.status;
-          switch(status){
+          switch (status) {
             case ViewStatus.Loading:
               return Shimmer.fromColors(
                 baseColor: kBackgroundGrey[0],
@@ -386,6 +332,9 @@ class _HomeScreenState extends State<HomeScreen> {
             case ViewStatus.Error:
               return SizedBox.shrink();
             default:
+              if (model.blogs == null || model.blogs.isEmpty) {
+                return SizedBox.shrink();
+              }
               return Container(
                 //padding: EdgeInsets.only(top: 8, bottom: 8),
                 height: Get.height * 0.2,
@@ -397,10 +346,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     },
                     autoplay: model.blogs.length > 1 ? true : false,
                     autoplayDelay: 2000,
-                    pagination: new SwiperPagination(alignment: Alignment.bottomCenter),
+                    pagination:
+                        new SwiperPagination(alignment: Alignment.bottomCenter),
                     itemCount: model.blogs.length,
                     itemBuilder: (context, index) {
-                      if (model.blogs[index].imageUrl == null || model.blogs[index].imageUrl == "")
+                      if (model.blogs[index].imageUrl == null ||
+                          model.blogs[index].imageUrl == "")
                         return Icon(
                           MaterialIcons.broken_image,
                           color: kPrimary.withOpacity(0.5),
@@ -416,15 +367,16 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                         ),
-                        progressIndicatorBuilder: (context, url, downloadProgress) =>
-                            Shimmer.fromColors(
-                              baseColor: Colors.grey[300],
-                              highlightColor: Colors.grey[100],
-                              enabled: true,
-                              child: Container(
-                                color: Colors.grey,
-                              ),
-                            ),
+                        progressIndicatorBuilder:
+                            (context, url, downloadProgress) =>
+                                Shimmer.fromColors(
+                          baseColor: Colors.grey[300],
+                          highlightColor: Colors.grey[100],
+                          enabled: true,
+                          child: Container(
+                            color: Colors.grey,
+                          ),
+                        ),
                         errorWidget: (context, url, error) => Icon(
                           MaterialIcons.broken_image,
                           color: kPrimary.withOpacity(0.5),
@@ -438,7 +390,5 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  _launchURL(String url) async {
-
-  }
+  _launchURL(String url) async {}
 }

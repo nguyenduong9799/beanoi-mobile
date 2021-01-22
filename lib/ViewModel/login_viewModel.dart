@@ -9,6 +9,8 @@ import 'package:unidelivery_mobile/ViewModel/base_model.dart';
 import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
 import 'package:unidelivery_mobile/services/push_notification_service.dart';
+import 'package:unidelivery_mobile/utils/shared_pref.dart';
+import '../constraints.dart';
 import '../route_constraint.dart';
 
 class LoginViewModel extends BaseModel {
@@ -64,6 +66,13 @@ class LoginViewModel extends BaseModel {
       try {
         showLoadingDialog();
         final userInfo = await signIn(authCredential);
+        StoreDAO storeDAO = new StoreDAO();
+        List<StoreDTO> listStore = await storeDAO.getStores();
+        for (StoreDTO dto in listStore) {
+          if (dto.id == UNIBEAN_STORE) {
+            await setStore(dto);
+          }
+        }
         hideDialog();
         // TODO: Kiem tra xem user moi hay cu
         if (userInfo.isFirstLogin) {
@@ -130,11 +139,20 @@ class LoginViewModel extends BaseModel {
   Future<void> onsignInWithOTP(smsCode, verificationId) async {
     print("DN = OTP");
     showLoadingDialog();
+
     try {
       final authCredential =
           await AuthService().signInWithOTP(smsCode, verificationId);
       final userInfo = await signIn(authCredential);
       print("User info: " + userInfo.toString());
+
+      StoreDAO storeDAO = new StoreDAO();
+      List<StoreDTO> listStore = await storeDAO.getStores();
+      for (StoreDTO dto in listStore) {
+        if (dto.id == UNIBEAN_STORE) {
+          await setStore(dto);
+        }
+      }
 
       if (userInfo.isFirstLogin || userInfo.isFirstLogin == null) {
         // Navigate to sign up screen
