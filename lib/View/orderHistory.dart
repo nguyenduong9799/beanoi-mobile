@@ -21,8 +21,6 @@ class OrderHistoryScreen extends StatefulWidget {
 }
 
 class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
-  List<bool> _selections = [true, false];
-
   OrderHistoryViewModel model = OrderHistoryViewModel();
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       new GlobalKey<RefreshIndicatorState>();
@@ -30,21 +28,11 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
   @override
   void initState() {
     super.initState();
-    orderHandler();
+    model.getOrders();
   }
 
   Future<void> refreshFetchOrder() async {
-    OrderFilter filter =
-        _selections[0] ? OrderFilter.ORDERING : OrderFilter.DONE;
-    await model.getOrders(filter);
-  }
-
-  Future<void> orderHandler() async {
-    OrderFilter filter =
-        _selections[0] ? OrderFilter.ORDERING : OrderFilter.DONE;
-    try {
-      await model.getOrders(filter);
-    } catch (e) {} finally {}
+    await model.getOrders();
   }
 
   @override
@@ -58,54 +46,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Center(
-              child: Container(
-                // color: Colors.amber,
-                padding: EdgeInsets.fromLTRB(0, 8, 0, 8),
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey,
-                      offset: Offset(0.0, 1.0), //(x,y)
-                      blurRadius: 6.0,
-                    ),
-                  ],
-                ),
-                child: Center(
-                  child: ToggleButtons(
-                    renderBorder: false,
-                    selectedColor: kPrimary,
-                    onPressed: (int index) async {
-                      setState(() {
-                        _selections = _selections.map((e) => false).toList();
-                        _selections[index] = true;
-                      });
-                      await orderHandler();
-                    },
-                    borderRadius: BorderRadius.circular(24),
-                    isSelected: _selections,
-                    children: [
-                      Container(
-                        width: MediaQuery.of(context).size.width / 3,
-                        child: Text(
-                          "Đang giao",
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                      Container(
-                        width: MediaQuery.of(context).size.width / 3,
-                        child: Text(
-                          "Hoàn thành",
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
+            orderStatusBar(),
             SizedBox(height: 16),
             Expanded(
               child: Container(
@@ -116,6 +57,57 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget orderStatusBar() {
+    return ScopedModelDescendant<OrderHistoryViewModel>(
+      builder: (context, child, model) {
+        return Center(
+          child: Container(
+            // color: Colors.amber,
+            padding: EdgeInsets.fromLTRB(0, 8, 0, 8),
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey,
+                  offset: Offset(0.0, 1.0), //(x,y)
+                  blurRadius: 6.0,
+                ),
+              ],
+            ),
+            child: Center(
+              child: ToggleButtons(
+                renderBorder: false,
+                selectedColor: kPrimary,
+                onPressed: (int index) async {
+                  await model.changeStatus(index);
+                },
+                borderRadius: BorderRadius.circular(24),
+                isSelected: model.selections,
+                children: [
+                  Container(
+                    width: MediaQuery.of(context).size.width / 3,
+                    child: Text(
+                      "Đang giao",
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width / 3,
+                    child: Text(
+                      "Hoàn thành",
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -152,25 +144,35 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
         onRefresh: refreshFetchOrder,
         child: Container(
           child: ListView(
+            physics: AlwaysScrollableScrollPhysics(),
+            controller: model.scrollController,
             padding: EdgeInsets.all(8),
             children: [
               ...orderSummaryList
                   .map((orderSummary) => _buildOrderSummary(orderSummary))
                   .toList(),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Center(
-                  child: Text(
-                    "Bạn đã xem hết rồi đây :)",
-                    style: TextStyle(color: Colors.grey),
-                  ),
-                ),
-              ),
+              loadMoreIcon(),
             ],
           ),
         ),
       );
     });
+  }
+
+  Widget loadMoreIcon() {
+    return ScopedModelDescendant<OrderHistoryViewModel>(
+      builder: (context, child, model) {
+        switch (model.status) {
+          case ViewStatus.LoadMore:
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Center(child: CircularProgressIndicator()),
+            );
+          default:
+            return SizedBox.shrink();
+        }
+      },
+    );
   }
 
   Widget _buildOrderSummary(OrderListDTO orderSummary) {
@@ -185,19 +187,19 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
             style: TextStyle(
               color: Colors.black,
               fontWeight: FontWeight.bold,
-              fontSize: 18,
+              fontSize: 16,
             ),
           ),
         ),
         ...orderSummary.orders.reversed
             .toList()
-            .map((order) => _buildOrderItem(order, context))
+            .map((order) => _buildOrderItem(order))
             .toList(),
       ],
     );
   }
 
-  Widget _buildOrderItem(OrderDTO order, BuildContext context) {
+  Widget _buildOrderItem(OrderDTO order) {
     return Container(
       // height: 80,
       margin: EdgeInsets.fromLTRB(8, 0, 8, 16),
@@ -230,12 +232,17 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
+                  SizedBox(
+                    height: 8,
+                  ),
                   Text(
-                    "FPT University",
+                    order.address,
                     style: TextStyle(
-                      fontSize: 16,
+                      fontSize: 14,
                       color: Colors.grey[600],
                     ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),
@@ -248,7 +255,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                     style: TextStyle(
                       color: kPrimary,
                       fontWeight: FontWeight.bold,
-                      fontSize: 20,
+                      fontSize: 16,
                     ),
                   ),
                 ],
@@ -420,49 +427,72 @@ class _OrderDetailBottomSheetState extends State<OrderDetailBottomSheet> {
           orderItemPrice += element.amount;
         });
         // orderItemPrice *= orderMaster.quantity;
+        Widget displayPrice = Text("${formatPrice(orderItemPrice)}");
+        if (orderMaster.type == ProductType.GIFT_PRODUCT) {
+          displayPrice = RichText(
+              text: TextSpan(
+                  style: TextStyle(color: Colors.black),
+                  text: orderItemPrice.toString() + " ",
+                  children: [
+                WidgetSpan(
+                    alignment: PlaceholderAlignment.bottom,
+                    child: Image(
+                      image: AssetImage("assets/images/icons/bean_coin.png"),
+                      width: 20,
+                      height: 20,
+                    ))
+              ]));
+        }
+
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
-              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  "${orderMaster.quantity}x",
-                  style: TextStyle(color: Colors.grey),
-                ),
-                SizedBox(width: 4),
-                Expanded(
-                  child: Container(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          orderMaster.masterProductName.contains("Extra")
-                              ? orderMaster.masterProductName
-                                  .replaceAll("Extra", "+")
-                              : orderMaster.masterProductName,
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        ...orderChilds
-                            .map(
-                              (child) => Text(
-                                child.masterProductName.contains("Extra")
-                                    ? child.masterProductName
-                                        .replaceAll("Extra", "+")
-                                    : child.masterProductName,
-                                style: TextStyle(fontSize: 12),
+                Container(
+                  width: Get.width * 0.6,
+                  child: Wrap(
+                    //mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        "${orderMaster.quantity}x ",
+                        style: TextStyle(color: Colors.grey),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Container(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              orderMaster.masterProductName.contains("Extra")
+                                  ? orderMaster.masterProductName
+                                      .replaceAll("Extra", "+")
+                                  : orderMaster.masterProductName,
+                              textAlign: TextAlign.start,
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
                               ),
-                            )
-                            .toList(),
-                      ],
-                    ),
+                            ),
+                            ...orderChilds
+                                .map(
+                                  (child) => Text(
+                                    child.masterProductName.contains("Extra")
+                                        ? child.masterProductName
+                                            .replaceAll("Extra", "+")
+                                        : child.masterProductName,
+                                    style: TextStyle(fontSize: 12),
+                                  ),
+                                )
+                                .toList(),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                Text("${formatPrice(orderItemPrice)}"),
+                Flexible(child: displayPrice)
               ],
             ),
           ],
@@ -474,6 +504,13 @@ class _OrderDetailBottomSheetState extends State<OrderDetailBottomSheet> {
   }
 
   Widget layoutSubtotal(OrderDTO orderDetail) {
+    int index = orderDetailModel.listPayments.values
+        .toList()
+        .indexOf(orderDetail.paymentType);
+    String payment = "Không xác định";
+    if (index >= 0 && index < orderDetailModel.listPayments.keys.length) {
+      payment = orderDetailModel.listPayments.keys.elementAt(index);
+    }
     return Container(
       width: MediaQuery.of(context).size.width,
       padding: const EdgeInsets.all(8),
@@ -504,8 +541,7 @@ class _OrderDetailBottomSheetState extends State<OrderDetailBottomSheet> {
                 style: TextStyle(fontSize: 12, color: Colors.black),
                 children: <TextSpan>[
                   TextSpan(
-                    text:
-                        "${orderDetailModel.listPayments.keys.elementAt(orderDetailModel.listPayments.values.toList().indexOf(orderDetail.paymentType))}",
+                    text: "${payment}",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontStyle: FontStyle.italic,
@@ -576,7 +612,9 @@ class _OrderDetailBottomSheetState extends State<OrderDetailBottomSheet> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text("${amountObj.name}", style: TextStyle()),
-                  Text("${formatter.format(amountObj.amount)}", style: TextStyle()),
+                  Text(
+                      "${formatter.format(amountObj.amount)} ${amountObj.unit}",
+                      style: TextStyle()),
                 ],
               ),
             ))

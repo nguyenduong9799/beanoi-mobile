@@ -10,8 +10,8 @@ class ProductDTO {
   String imageURL;
   List<ProductDTO> listChild;
   int catergoryId;
-  // List<int> extraId;
   int supplierId;
+  String supplierName;
   List<ProductDTO> extras;
   // update
   double price;
@@ -41,6 +41,7 @@ class ProductDTO {
       this.catergoryId,
       this.price,
       this.supplierId,
+      this.supplierName,
       this.attributes,
       this.hasExtra,
       this.defaultQuantity,
@@ -65,6 +66,7 @@ class ProductDTO {
         imageURL: json['pic_url'] as String,
         catergoryId: json['category_id'],
         supplierId: json['supplier_id'] as int,
+        supplierName: json['supplier_name'],
         // prices: prices,
         // extraId: listExtra,
         hasExtra: json['has_extra'] as bool,
@@ -120,6 +122,7 @@ class ProductDTO {
       "catergory_id": catergoryId,
       "child_products": listChild,
       "supplier_id": supplierId,
+      "supplier_name": supplierName,
       "hasExtra": hasExtra,
       "attributes": attributes,
       "default": defaultQuantity,
@@ -133,9 +136,7 @@ class ProductDTO {
       "bean": bean
     };
 
-    Map<String, dynamic> pricesMap = new Map();
-
-    return prodJson..addAll(pricesMap);
+    return prodJson;
   }
 
   static List<ProductDTO> fromList(dynamic jsonList) {

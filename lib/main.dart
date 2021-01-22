@@ -61,7 +61,7 @@ class MyApp extends StatelessWidget {
             return CupertinoPageRoute(
                 builder: (context) => HomeScreen(), settings: settings);
           case RouteHandler.HOME_DETAIL:
-            return CupertinoPageRoute(
+            return CupertinoPageRoute<bool>(
                 builder: (context) => HomeScreenDetail(
                       store: settings.arguments,
                     ),

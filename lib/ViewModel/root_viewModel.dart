@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:get/get.dart';
+import 'package:package_info/package_info.dart';
 import 'package:unidelivery_mobile/Model/DAO/AccountDAO.dart';
 import 'package:unidelivery_mobile/Model/DAO/StoreDAO.dart';
 import 'package:unidelivery_mobile/Model/DTO/AccountDTO.dart';
@@ -9,7 +12,7 @@ import 'package:unidelivery_mobile/ViewModel/base_model.dart';
 import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
 import 'package:unidelivery_mobile/utils/shared_pref.dart';
-
+import 'package:yaml/yaml.dart';
 import '../constraints.dart';
 import '../route_constraint.dart';
 
@@ -22,15 +25,17 @@ class RootViewModel extends BaseModel {
   StoreDAO _storeDAO;
   bool _endOrderTime = false;
   bool get endOrderTime => _endOrderTime;
-  DateTime orderTime = DateTime(DateTime.now().year, DateTime.now().month,
-      DateTime.now().day, ORDER_TIME, 30);
+  DateTime orderTime = DateTime(
+    DateTime.now().year,
+    DateTime.now().month,
+    DateTime.now().day,
+  );
 
   set endOrderTime(bool value) {
     _endOrderTime = value;
   }
 
   static RootViewModel getInstance() {
-
     if (_instance == null) {
       _instance = RootViewModel();
     }
@@ -48,6 +53,7 @@ class RootViewModel extends BaseModel {
   List<StoreDTO> campuses;
   List<StoreDTO> suppliers;
   List<BlogDTO> blogs;
+  String version;
 
   RootViewModel() {
     _dao = AccountDAO();
@@ -63,11 +69,18 @@ class RootViewModel extends BaseModel {
       setState(ViewStatus.Loading);
       final user = await _dao.getUser();
       currentUser = user;
-      if(suppliers != null){
+
+      if (version == null) {
+        PackageInfo packageInfo = await PackageInfo.fromPlatform();
+        version = packageInfo.version;
+      }
+
+      if (suppliers != null) {
         setState(ViewStatus.Completed);
       }
-    } catch (e) {
+    } catch (e, stacktrace) {
       bool result = await showErrorDialog();
+      print(e.toString() + stacktrace.toString());
       if (result) {
         await fetchUser();
       } else
@@ -81,22 +94,34 @@ class RootViewModel extends BaseModel {
       currentStore = await getStore();
 
       if (currentStore == null) {
-        List<StoreDTO> listStore = await _storeDAO.getStores();
-        for (StoreDTO dto in listStore) {
-          if (dto.id == UNIBEAN_STORE) {
-            currentStore = dto;
-            await setStore(dto);
+        bool result = await showErrorDialog();
+        if (result) {
+          List<StoreDTO> listStore = await _storeDAO.getStores();
+          for (StoreDTO dto in listStore) {
+            if (dto.id == UNIBEAN_STORE) {
+              currentStore = dto;
+              await setStore(dto);
+            }
           }
+        } else {
+          setState(ViewStatus.Error);
+          return;
         }
       }
 
       suppliers = await _storeDAO.getSuppliers(currentStore.id);
       blogs = await _storeDAO.getBlogs(currentStore.id);
+
+      // int total_page = (_storeDAO.metaDataDTO.total / DEFAULT_SIZE).ceil();
+      // if (total_page > _storeDAO.metaDataDTO.page){
+      //   isLoadmore = true;
+      // }else isLoadmore = false;
+
       await Future.delayed(Duration(microseconds: 500));
       // check truong hop product tra ve rong (do khong co menu nao trong TG do)
       if (suppliers.isEmpty || suppliers == null) {
         setState(ViewStatus.Empty);
-      } else if(currentUser != null) {
+      } else if (currentUser != null) {
         setState(ViewStatus.Completed);
       }
     } catch (e, stacktrace) {
@@ -109,6 +134,28 @@ class RootViewModel extends BaseModel {
     }
   }
 
+  Future<void> getMoreSuppliers() async {
+    try {
+      setState(ViewStatus.LoadMore);
+
+      suppliers += await _storeDAO.getSuppliers(currentStore.id,
+          page: _storeDAO.metaDataDTO.page + 1);
+      await Future.delayed(Duration(microseconds: 500));
+      // check truong hop product tra ve rong (do khong co menu nao trong TG do)
+      if (suppliers.isEmpty || suppliers == null) {
+        setState(ViewStatus.Empty);
+      } else if (currentUser != null) {
+        setState(ViewStatus.Completed);
+      }
+    } catch (e, stacktrace) {
+      print("Excception: " + e.toString() + stacktrace.toString());
+      bool result = await showErrorDialog();
+      if (result) {
+        await getMoreSuppliers();
+      } else
+        setState(ViewStatus.Error);
+    }
+  }
 
   Future<void> signOut() async {
     await _dao.logOut();
@@ -130,40 +177,51 @@ class RootViewModel extends BaseModel {
   }
 
   Future<void> processChangeAddress() async {
-    if (currentStore == null) {
-      return;
-    }
-    changeAddress = true;
-    tmp = currentStore;
-    notifyListeners();
-    showLoadingDialog();
-
-    StoreDAO dao = new StoreDAO();
-    campuses = await dao.getStores();
-    Cart cart = await getCart();
-
-    hideDialog();
-    await changeAddressDialog(this, () async {
-      hideDialog();
-      if (tmp.id != this.currentStore.id) {
-        int option = 0;
-
-        if(cart != null){
-          option = await showOptionDialog(
-              "Bạn có chắc không? Đổi địa chỉ rồi là giỏ hàng m bị xóa đó :))");
-        }
-
-        if (option == 1 || cart == null) {
-          print("Changing index...");
-          currentStore = tmp;
-          await deleteCart();
-          await setStore(currentStore);
-          await getSuppliers();
-        }
+    try {
+      if (currentStore == null) {
+        return;
       }
-      changeAddress = false;
+      changeAddress = true;
+      tmp = currentStore;
       notifyListeners();
-    });
+      showLoadingDialog();
+
+      StoreDAO dao = new StoreDAO();
+      campuses = await dao.getStores();
+      Cart cart = await getCart();
+
+      hideDialog();
+      await changeAddressDialog(this, () async {
+        hideDialog();
+        if (tmp.id != this.currentStore.id) {
+          int option = 0;
+
+          if (cart != null) {
+            option = await showOptionDialog(
+                "Bạn có chắc không? Đổi địa chỉ rồi là giỏ hàng bị xóa đó :))");
+          }
+
+          if (option == 1 || cart == null) {
+            print("Changing index...");
+            currentStore = tmp;
+            await deleteCart();
+            await setStore(currentStore);
+            await getSuppliers();
+          }
+        }
+        changeAddress = false;
+        notifyListeners();
+      });
+    } catch (e) {
+      hideDialog();
+      bool result = await showErrorDialog();
+      if (result) {
+        await processChangeAddress();
+      } else {
+        changeAddress = false;
+        setState(ViewStatus.Error);
+      }
+    }
   }
 
   void changeLocation(int id) {
@@ -174,5 +232,4 @@ class RootViewModel extends BaseModel {
     }
     notifyListeners();
   }
-
 }
