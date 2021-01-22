@@ -3,7 +3,6 @@ import 'package:unidelivery_mobile/enums/view_status.dart';
 
 class BaseModel extends Model {
   ViewStatus _status = ViewStatus.Completed;
-
   ViewStatus get status => _status;
 
   void setState(ViewStatus newState) {

@@ -41,6 +41,6 @@ class SignUpViewModel extends BaseModel {
         await updateUser(user);
       } else
         setState(ViewStatus.Error);
-    } finally {}
+    }
   }
 }

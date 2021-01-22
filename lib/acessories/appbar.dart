@@ -32,11 +32,14 @@ class _AppBarSate extends State<DefaultAppBar> {
       backgroundColor: Colors.white,
       elevation: 5.0,
       centerTitle: true,
-      leading: IconButton(
-        icon: Icon(Icons.arrow_back_ios, color: kPrimary),
-        onPressed: () {
-          Get.back();
-        },
+      leading: Container(
+        margin: EdgeInsets.only(left: 8),
+        padding: EdgeInsets.only(left: 8),
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: kPrimary.withOpacity(0.8),
+        ),
+        child: CupertinoNavigationBarBackButton(color: Colors.white),
       ),
       title: Text(
         widget.title,
@@ -253,7 +256,7 @@ class _HomeAppBarSate extends State<HomeAppBar> {
                 // fontWeight: FontWeight.w100,
                 color: Colors.black45,
               ),
-              children: <TextSpan>[
+              children: [
                 TextSpan(
                   text: "${user.balance} xu",
                   style: TextStyle(
@@ -264,13 +267,20 @@ class _HomeAppBarSate extends State<HomeAppBar> {
                 ),
                 TextSpan(text: " và "),
                 TextSpan(
-                  text: "${user.point.round()} Bean",
+                  text: "${user.point} ",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 14,
                     color: kBean,
                   ),
                 ),
+                WidgetSpan(
+                    alignment: PlaceholderAlignment.bottom,
+                    child: Image(
+                      image: AssetImage("assets/images/icons/bean_coin.png"),
+                      width: 20,
+                      height: 20,
+                    ))
               ]),
         );
       },

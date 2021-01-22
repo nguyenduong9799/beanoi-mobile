@@ -18,7 +18,9 @@ class StartUpView extends StatelessWidget {
         return Scaffold(
           backgroundColor: Colors.white,
           body: Center(
-            child: LoadingScreen(title: " ",),
+            child: LoadingScreen(
+              title: " ",
+            ),
           ),
         );
       }),
@@ -27,25 +29,24 @@ class StartUpView extends StatelessWidget {
 }
 
 class LoadingScreen extends StatelessWidget {
-
   final String title;
   const LoadingScreen({Key key, this.title}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Scaffold(
-        body: Container(
-          // width: 250.0,
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-
-                children: [
-                  LoadingBean(),
-                  Text(this.title, style: kTextSecondary,)
-                ],
-            ),
+    return Scaffold(
+      body: Container(
+        // width: 250.0,
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              LoadingBean(),
+              Text(
+                this.title,
+                style: kTextSecondary,
+              )
+            ],
           ),
         ),
       ),

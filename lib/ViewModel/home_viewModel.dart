@@ -17,13 +17,27 @@ import '../constraints.dart';
 class HomeViewModel extends BaseModel {
   static HomeViewModel _instance;
 
-  ProductDAO _productDAO = ProductDAO();
-  CollectionDAO _collectionDAO = CollectionDAO();
-  ScrollController _scrollController = ScrollController();
-  dynamic error;
+  static HomeViewModel getInstance() {
+    if (_instance == null) {
+      _instance = HomeViewModel();
+    }
+    return _instance;
+  }
+
+  static void destroyInstance() {
+    _instance = null;
+  }
+
+  int supplierId;
+  ProductDAO _productDAO;
+  CollectionDAO _collectionDAO;
+  ScrollController scrollController;
+
   List<ProductDTO> products;
+  List<ProductDTO> gifts;
   bool _isShrink = false;
   List<CollectionDTO> collections;
+  bool isLoadGift;
 
   bool get isShrink => _isShrink;
 
@@ -31,13 +45,22 @@ class HomeViewModel extends BaseModel {
     _isShrink = value;
   }
 
-  ScrollController get scrollController => _scrollController;
-
-  set scrollController(ScrollController value) {
-    _scrollController = value;
+  HomeViewModel() {
+    this.supplierId = supplierId;
+    scrollController = ScrollController();
+    scrollController.addListener(() async {
+      if (scrollController.position.pixels ==
+          scrollController.position.maxScrollExtent) {
+        int total_page = (_productDAO.metaDataDTO.total / DEFAULT_SIZE).ceil();
+        if (total_page > _productDAO.metaDataDTO.page) {
+          await getMoreProducts();
+        }
+      }
+    });
+    _productDAO = ProductDAO();
+    _collectionDAO = CollectionDAO();
+    isLoadGift = false;
   }
-
-  HomeViewModel();
 
   Future<void> openProductDetail(ProductDTO product) async {
     await AnalyticsService.getInstance().logViewItem(product);
@@ -77,35 +100,25 @@ class HomeViewModel extends BaseModel {
     return await getCart();
   }
 
-  static HomeViewModel getInstance() {
-    if (_instance == null) {
-      _instance = HomeViewModel();
-    }
-    return _instance;
-  }
-
-  static void destroyInstance() {
-    _instance = null;
-  }
-
   // 1. Get ProductList with current Filter
-  Future<void> getProducts(int supplierId) async {
+  Future<void> getProducts() async {
     try {
       setState(ViewStatus.Loading);
       StoreDTO store = await getStore();
-
-      print("Get products...");
       collections = await _collectionDAO.getCollections(store.id, supplierId);
       products = await _productDAO.getProducts(store.id, supplierId);
+      print("Length: " + products.length.toString());
       if (collections != null && collections.isNotEmpty) {
         collections.forEach((element) {
           element.products = products
-              .where(
-                  (product) => product.collections.any((e) => e == element.id) && product.type != ProductType.GIFT_PRODUCT)
+              .where((product) =>
+                  product.collections.any((e) => e == element.id) &&
+                  product.type != ProductType.GIFT_PRODUCT)
               .toList();
         });
       }
-      await Future.delayed(Duration(microseconds: 1000));
+
+      await Future.delayed(Duration(microseconds: 500));
       // check truong hop product tra ve rong (do khong co menu nao trong TG do)
       if (products.isEmpty ||
           products == null ||
@@ -119,11 +132,64 @@ class HomeViewModel extends BaseModel {
       print("Excception: " + e.toString() + stacktrace.toString());
       bool result = await showErrorDialog();
       if (result) {
-        await getProducts(supplierId);
+        await getProducts();
       } else
         setState(ViewStatus.Error);
     } finally {
       // notifyListeners();
+    }
+  }
+
+  Future<void> getGifts() async {
+    try {
+      isLoadGift = true;
+      notifyListeners();
+      StoreDTO store = await getStore();
+      gifts = await _productDAO.getProducts(store.id, supplierId,
+          type: ProductType.GIFT_PRODUCT);
+      await Future.delayed(Duration(microseconds: 500));
+      // check truong hop product tra ve rong (do khong co menu nao trong TG do)
+      isLoadGift = false;
+    } catch (e, stacktrace) {
+      print("Excception: " + e.toString() + stacktrace.toString());
+      bool result = await showErrorDialog();
+      if (result) {
+        await getGifts();
+      } else
+        setState(ViewStatus.Error);
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<void> getMoreProducts() async {
+    try {
+      setState(ViewStatus.LoadMore);
+      StoreDTO store = await getStore();
+
+      print("Get products...");
+      products += await _productDAO.getProducts(store.id, supplierId,
+          page: _productDAO.metaDataDTO.page + 1);
+
+      if (collections != null && collections.isNotEmpty) {
+        collections.forEach((element) {
+          element.products = products
+              .where((product) =>
+                  product.collections.any((e) => e == element.id) &&
+                  product.type != ProductType.GIFT_PRODUCT)
+              .toList();
+        });
+      }
+      await Future.delayed(Duration(milliseconds: 1000));
+      // check truong hop product tra ve rong (do khong co menu nao trong TG do)
+      setState(ViewStatus.Completed);
+    } catch (e, stacktrace) {
+      print("Excception: " + e.toString() + stacktrace.toString());
+      bool result = await showErrorDialog();
+      if (result) {
+        await getMoreProducts();
+      } else
+        setState(ViewStatus.Error);
     }
   }
 
