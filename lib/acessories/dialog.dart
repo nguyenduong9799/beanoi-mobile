@@ -219,25 +219,60 @@ Future<int> showOptionDialog(String text) async {
                 ),
                 Container(
                   width: double.infinity,
-                  child: FlatButton(
-                    color: kPrimary,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.only(
-                            bottomRight: Radius.circular(16),
-                            bottomLeft: Radius.circular(16))),
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 16.0, bottom: 16.0),
-                      child: Center(
-                        child: Text(
-                          "Đồng ý",
-                          style: kTextPrimary,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: FlatButton(
+                          // color: Colors.grey,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.only(
+                            // bottomRight: Radius.circular(16),
+                            bottomLeft: Radius.circular(16),
+                          )),
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.only(top: 16.0, bottom: 16.0),
+                            child: Center(
+                              child: Text(
+                                "Hủy",
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ),
+                          ),
+                          onPressed: () {
+                            option = 0;
+                            hideDialog();
+                          },
                         ),
                       ),
-                    ),
-                    onPressed: () {
-                      option = 1;
-                      hideDialog();
-                    },
+                      Expanded(
+                        child: FlatButton(
+                          color: kPrimary,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                              bottomRight: Radius.circular(16),
+                              // bottomLeft: Radius.circular(16),
+                            ),
+                          ),
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.only(top: 16.0, bottom: 16.0),
+                            child: Center(
+                              child: Text(
+                                "Đồng ý",
+                                style: kTextPrimary,
+                              ),
+                            ),
+                          ),
+                          onPressed: () {
+                            option = 1;
+                            hideDialog();
+                          },
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],

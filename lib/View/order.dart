@@ -620,7 +620,10 @@ class _OrderScreenState extends State<OrderScreen> {
                             // pr.hide();
                             // showStateDialog();
                           },
-                          padding: EdgeInsets.only(left: 8.0, right: 8.0),
+                          padding: EdgeInsets.only(
+                            left: 8.0,
+                            right: 8.0,
+                          ),
                           textColor: Colors.white,
                           color: kPrimary,
                           shape: RoundedRectangleBorder(
@@ -640,6 +643,9 @@ class _OrderScreenState extends State<OrderScreen> {
                               )
                             ],
                           ),
+                        ),
+                        SizedBox(
+                          height: 8,
                         ),
                       ],
                     )

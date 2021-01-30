@@ -14,7 +14,7 @@ class OrderDAO extends BaseDAO {
       {int page, int size}) async {
     final res = await request.get('me/orders', queryParameters: {
       "order-status":
-          filter == OrderFilter.ORDERING ? ORDER_NEW_STATUS : ORDER_DONE_STATUS,
+          filter == OrderFilter.NEW ? ORDER_NEW_STATUS : ORDER_DONE_STATUS,
       "size": size ?? DEFAULT_SIZE,
       "page": page ?? 1
     });
@@ -54,6 +54,15 @@ class OrderDAO extends BaseDAO {
       return null;
     }
     return null;
+  }
+
+  Future<bool> cancelOrder(int orderId, int store_id) async {
+    final res = await request.put(
+      '/me/orders/$orderId',
+      data: ORDER_CANCEL_STATUS,
+    );
+
+    return res != null;
   }
 
   // TODO: nen dep cart ra ngoai truyen vao parameter

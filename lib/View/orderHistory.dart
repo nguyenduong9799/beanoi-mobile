@@ -11,6 +11,7 @@ import 'package:unidelivery_mobile/acessories/dash_border.dart';
 import 'package:unidelivery_mobile/acessories/loading.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
+import 'package:unidelivery_mobile/route_constraint.dart';
 import 'package:unidelivery_mobile/utils/index.dart';
 
 class OrderHistoryScreen extends StatefulWidget {
@@ -91,7 +92,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                   Container(
                     width: MediaQuery.of(context).size.width / 3,
                     child: Text(
-                      "Đang giao",
+                      "Mới",
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -217,7 +218,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
           children: [
             ListTile(
               onTap: () {
-                _settingModalBottomSheet(order.id);
+                _onTapOrderHistory(order);
               },
               contentPadding: EdgeInsets.fromLTRB(16, 8, 16, 8),
               title: Column(
@@ -225,7 +226,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "${order.itemQuantity} món",
+                    "${order.invoiceId} / ${order.itemQuantity} món",
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.black,
@@ -268,356 +269,8 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
     );
   }
 
-  void _settingModalBottomSheet(orderId) {
+  void _onTapOrderHistory(order) {
     // get orderDetail
-    Get.bottomSheet(
-      OrderDetailBottomSheet(
-        orderId: orderId,
-      ),
-      isScrollControlled: true,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(16),
-          topRight: Radius.circular(16),
-        ),
-        // side: BorderSide(color: Colors.orange),
-      ),
-      backgroundColor: kBackgroundGrey[2],
-    );
-  }
-}
-
-class OrderDetailBottomSheet extends StatefulWidget {
-  final int orderId;
-  const OrderDetailBottomSheet({
-    Key key,
-    this.orderId,
-  }) : super(key: key);
-
-  @override
-  _OrderDetailBottomSheetState createState() => _OrderDetailBottomSheetState();
-}
-
-class _OrderDetailBottomSheetState extends State<OrderDetailBottomSheet> {
-  final orderDetailModel = OrderHistoryViewModel();
-
-  @override
-  void initState() {
-    super.initState();
-    orderDetailModel.getOrderDetail(widget.orderId);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: Get.width,
-      padding: EdgeInsets.fromLTRB(16, 8, 16, 0),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(16),
-          topRight: Radius.circular(16),
-        ),
-        // color: Colors.grey,
-      ),
-      height: 500,
-      child: ScopedModel<OrderHistoryViewModel>(
-        model: orderDetailModel,
-        child: ScopedModelDescendant<OrderHistoryViewModel>(
-          builder: (context, child, model) {
-            final status = model.status;
-            if (status == ViewStatus.Loading)
-              return AspectRatio(
-                aspectRatio: 1,
-                child: Center(child: CircularProgressIndicator()),
-              );
-
-            final orderDetail = model.orderDetail;
-            return Container(
-              child: Column(
-                children: <Widget>[
-                  Container(
-                    width: Get.width,
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 85,
-                          child: orderDetail.status == OrderFilter.ORDERING
-                              ? TyperAnimatedTextKit(
-                                  speed: Duration(milliseconds: 100),
-                                  onTap: () {
-                                    print("Tap Event");
-                                  },
-                                  text: ['Đang giao...'],
-                                  textStyle: TextStyle(
-                                      fontFamily: "Bobbers",
-                                      color: Colors.amber),
-                                  textAlign: TextAlign.start,
-                                  alignment: AlignmentDirectional
-                                      .topStart // or Alignment.topLeft
-                                  )
-                              : Text(
-                                  'Đã nhận hàng',
-                                  style: TextStyle(
-                                    color: kPrimary,
-                                  ),
-                                ),
-                        ),
-                        Expanded(
-                          child: Padding(
-                            padding: EdgeInsets.only(left: 8, right: 8),
-                            child: Divider(),
-                          ),
-                        ),
-                        Container(
-                          width: Get.width * 0.4,
-                          child: Column(
-                            children: [
-                              Text(
-                                '${orderDetail.invoiceId}',
-                                style: TextStyle(color: Colors.black45),
-                                overflow: TextOverflow.ellipsis,
-                                textAlign: TextAlign.center,
-                                maxLines: 2,
-                              ),
-                            ],
-                          ),
-                        ),
-                        Expanded(
-                          child: Padding(
-                            padding: EdgeInsets.only(left: 8, right: 8),
-                            child: Divider(),
-                          ),
-                        ),
-                        Text(
-                          DateFormat('HH:mm dd/MM')
-                              .format(DateTime.parse(orderDetail.orderTime)),
-                          style: TextStyle(color: Colors.black45),
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 8),
-                  SizedBox(height: 8),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: buildOrderSummaryList(orderDetail),
-                    ),
-                  ),
-                  layoutSubtotal(orderDetail),
-                ],
-              ),
-            );
-          },
-        ),
-      ),
-    );
-  }
-
-  ListView buildOrderSummaryList(OrderDTO orderDetail) {
-    return ListView.separated(
-      itemBuilder: (context, index) {
-        final orderMaster = orderDetail.orderItems[index];
-        final orderChilds = orderMaster.productChilds;
-
-        double orderItemPrice = orderMaster.amount;
-        orderChilds?.forEach((element) {
-          orderItemPrice += element.amount;
-        });
-        // orderItemPrice *= orderMaster.quantity;
-        Widget displayPrice = Text("${formatPrice(orderItemPrice)}");
-        if (orderMaster.type == ProductType.GIFT_PRODUCT) {
-          displayPrice = RichText(
-              text: TextSpan(
-                  style: TextStyle(color: Colors.black),
-                  text: orderItemPrice.toString() + " ",
-                  children: [
-                WidgetSpan(
-                    alignment: PlaceholderAlignment.bottom,
-                    child: Image(
-                      image: AssetImage("assets/images/icons/bean_coin.png"),
-                      width: 20,
-                      height: 20,
-                    ))
-              ]));
-        }
-
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  width: Get.width * 0.6,
-                  child: Wrap(
-                    //mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        "${orderMaster.quantity}x ",
-                        style: TextStyle(color: Colors.grey),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      Container(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              orderMaster.masterProductName.contains("Extra")
-                                  ? orderMaster.masterProductName
-                                      .replaceAll("Extra", "+")
-                                  : orderMaster.masterProductName,
-                              textAlign: TextAlign.start,
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            ...orderChilds
-                                .map(
-                                  (child) => Text(
-                                    child.masterProductName.contains("Extra")
-                                        ? child.masterProductName
-                                            .replaceAll("Extra", "+")
-                                        : child.masterProductName,
-                                    style: TextStyle(fontSize: 12),
-                                  ),
-                                )
-                                .toList(),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Flexible(child: displayPrice)
-              ],
-            ),
-          ],
-        );
-      },
-      separatorBuilder: (context, index) => Divider(),
-      itemCount: orderDetail.orderItems.length,
-    );
-  }
-
-  Widget layoutSubtotal(OrderDTO orderDetail) {
-    int index = orderDetailModel.listPayments.values
-        .toList()
-        .indexOf(orderDetail.paymentType);
-    String payment = "Không xác định";
-    if (index >= 0 && index < orderDetailModel.listPayments.keys.length) {
-      payment = orderDetailModel.listPayments.keys.elementAt(index);
-    }
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      padding: const EdgeInsets.all(8),
-      // margin: const EdgeInsets.only(bottom: 8),
-      decoration: BoxDecoration(
-        color: kBackgroundGrey[0],
-        borderRadius: BorderRadius.circular(4),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                "Tổng tiền",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              Text(
-                "${orderDetail.itemQuantity} món",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ],
-          ),
-          RichText(
-            text: TextSpan(
-                text: "P.Thức: ",
-                style: TextStyle(fontSize: 12, color: Colors.black),
-                children: <TextSpan>[
-                  TextSpan(
-                    text: "${payment}",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontStyle: FontStyle.italic,
-                      fontSize: 12,
-                      color: kPrimary,
-                    ),
-                  ),
-                ]),
-          ),
-          Container(
-            margin: EdgeInsets.only(top: 15),
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-                border: Border.all(color: kBackgroundGrey[4]),
-                borderRadius: BorderRadius.all(Radius.circular(10))),
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 5, bottom: 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Tạm tính",
-                        style: TextStyle(),
-                      ),
-                      Text("${formatPrice(orderDetail.total)}"),
-                    ],
-                  ),
-                ),
-                MySeparator(),
-                // OTHER AMOUNTS GO HERE
-                ..._buildOtherAmount(orderDetail.otherAmounts),
-                Divider(color: Colors.black),
-                Padding(
-                  padding: const EdgeInsets.only(top: 5, bottom: 5),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Tổng cộng",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      Text(
-                        "${formatPrice(orderDetail.finalAmount)}",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                )
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  List<Widget> _buildOtherAmount(List<OtherAmount> otherAmounts) {
-    if (otherAmounts == null) return [SizedBox.shrink()];
-    NumberFormat formatter = NumberFormat();
-    formatter.minimumFractionDigits = 0;
-    formatter.maximumFractionDigits = 2;
-    return otherAmounts
-        .map((amountObj) => Padding(
-              padding: const EdgeInsets.only(top: 5, bottom: 5),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text("${amountObj.name}", style: TextStyle()),
-                  Text(
-                      "${formatter.format(amountObj.amount)} ${amountObj.unit}",
-                      style: TextStyle()),
-                ],
-              ),
-            ))
-        .toList();
+    Get.toNamed(RouteHandler.ORDER_HISTORY_DETAIL, arguments: order);
   }
 }

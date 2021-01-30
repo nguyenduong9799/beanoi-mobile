@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:get/get.dart';
 import 'package:unidelivery_mobile/Model/DAO/OrderDAO.dart';
 import 'package:unidelivery_mobile/Model/DTO/OrderDTO.dart';
 import 'package:unidelivery_mobile/ViewModel/base_model.dart';
@@ -6,7 +7,7 @@ import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
 
-enum OrderFilter { ORDERING, DONE }
+enum OrderFilter { NEW, ORDERING, DONE }
 
 class OrderHistoryViewModel extends BaseModel {
   List<OrderListDTO> orderThumbnail;
@@ -32,6 +33,13 @@ class OrderHistoryViewModel extends BaseModel {
     });
   }
 
+  Future<void> cancelOrder(int orderId) async {
+    int option = await showOptionDialog("Thanh xuân như một tách trà");
+    if (option == 1) {
+      Get.back();
+    }
+  }
+
   Future<void> changeStatus(int index) async {
     selections = selections.map((e) => false).toList();
     selections[index] = true;
@@ -42,8 +50,7 @@ class OrderHistoryViewModel extends BaseModel {
   Future<void> getOrders() async {
     try {
       setState(ViewStatus.Loading);
-      OrderFilter filter =
-          selections[0] ? OrderFilter.ORDERING : OrderFilter.DONE;
+      OrderFilter filter = selections[0] ? OrderFilter.NEW : OrderFilter.DONE;
       final data = await _orderDAO.getOrders(filter);
       orderThumbnail = data;
 

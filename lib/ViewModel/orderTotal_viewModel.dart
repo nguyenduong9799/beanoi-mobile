@@ -106,6 +106,12 @@ class OrderViewModel extends BaseModel {
 
   Future<void> orderCart() async {
     try {
+      int option = await showOptionDialog("Xác nhận giỏ hàng nha bạn 😊");
+
+      if (option != 1) {
+        return;
+      }
+
       showLoadingDialog();
       StoreDTO storeDTO = await getStore();
       // LOG ORDER

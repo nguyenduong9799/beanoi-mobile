@@ -26,6 +26,37 @@ class SlideRightRoute extends PageRouteBuilder {
         );
 }
 
+class SlideBottomRoute extends PageRouteBuilder {
+  final Widget page;
+  SlideBottomRoute({this.page})
+      : super(
+          pageBuilder: (
+            BuildContext context,
+            Animation<double> animation,
+            Animation<double> secondaryAnimation,
+          ) =>
+              page,
+          transitionsBuilder: (
+            BuildContext context,
+            Animation<double> animation,
+            Animation<double> secondaryAnimation,
+            Widget child,
+          ) =>
+              SlideTransition(
+            position: Tween<Offset>(
+              begin: const Offset(0, 1),
+              end: Offset.zero,
+            ).animate(
+              CurvedAnimation(
+                parent: animation,
+                curve: Curves.fastOutSlowIn,
+              ),
+            ),
+            child: child,
+          ),
+        );
+}
+
 class ScaleRoute extends PageRouteBuilder {
   final Widget page;
   ScaleRoute({this.page})
