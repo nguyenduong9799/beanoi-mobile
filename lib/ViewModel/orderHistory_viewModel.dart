@@ -1,11 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:unidelivery_mobile/Model/DAO/OrderDAO.dart';
+import 'package:unidelivery_mobile/Model/DAO/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/OrderDTO.dart';
+import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/ViewModel/base_model.dart';
 import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
+import 'package:unidelivery_mobile/utils/shared_pref.dart';
 
 enum OrderFilter { NEW, ORDERING, DONE }
 
@@ -36,7 +39,23 @@ class OrderHistoryViewModel extends BaseModel {
   Future<void> cancelOrder(int orderId) async {
     int option = await showOptionDialog("Thanh xuân như một tách trà");
     if (option == 1) {
-      Get.back();
+      StoreDTO storeDTO = await getStore();
+      final success = await _orderDAO.cancelOrder(
+        orderId,
+        storeDTO.id,
+      );
+
+      if (success) {
+        await showStatusDialog("assets/images/global_sucsess.png", "Thành công",
+            "Hãy xem thử các món khác bạn nhé 😓");
+        Get.back();
+      } else {
+        await showStatusDialog(
+          "assets/images/global_error.png",
+          "Thất bại",
+          "Chưa hủy đươc đơn bạn vui lòng thử lại nhé 😓",
+        );
+      }
     }
   }
 

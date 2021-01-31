@@ -56,13 +56,13 @@ class OrderDAO extends BaseDAO {
     return null;
   }
 
-  Future<bool> cancelOrder(int orderId, int store_id) async {
+  Future<bool> cancelOrder(int orderId, int storeId) async {
     final res = await request.put(
-      '/me/orders/$orderId',
+      '/stores/$storeId/orders/$orderId',
       data: ORDER_CANCEL_STATUS,
     );
 
-    return res != null;
+    return res.statusCode == 200;
   }
 
   // TODO: nen dep cart ra ngoai truyen vao parameter
