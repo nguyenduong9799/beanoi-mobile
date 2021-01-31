@@ -37,12 +37,10 @@ class OrderDAO extends BaseDAO {
     return orderDetail;
   }
 
-  Future<OrderAmountDTO> prepareOrder(
-      String note, int store_id, int payment) async {
+  Future<OrderAmountDTO> prepareOrder(int store_id, int payment) async {
     Cart cart = await getCart();
     if (cart != null) {
       // print("Request Note: " + note);
-      cart.orderNote = note;
       cart.payment = payment;
       print(cart.toJsonAPi());
       final res = await request.post('orders/prepare',
@@ -66,13 +64,11 @@ class OrderDAO extends BaseDAO {
   }
 
   // TODO: nen dep cart ra ngoai truyen vao parameter
-  Future<OrderStatus> createOrders(
-      String note, int store_id, int payment) async {
+  Future<OrderStatus> createOrders(int store_id, int payment) async {
     try {
       Cart cart = await getCart();
       if (cart != null) {
         // print("Request Note: " + note);
-        cart.orderNote = note;
         cart.payment = payment;
         print(cart.toJsonAPi());
         final res = await request.post('/orders',

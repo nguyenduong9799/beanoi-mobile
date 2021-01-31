@@ -13,6 +13,7 @@ import 'package:unidelivery_mobile/View/start_up.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
 import 'package:unidelivery_mobile/acessories/appbar.dart';
 import 'package:unidelivery_mobile/acessories/dash_border.dart';
+import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/acessories/loading.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
@@ -74,6 +75,8 @@ class _OrderScreenState extends State<OrderScreen> {
                                               child:
                                                   layoutAddress(dto.location)),
                                         ),
+                                        timeRecieve(),
+
                                         Container(
                                             margin:
                                                 const EdgeInsets.only(top: 8),
@@ -450,24 +453,48 @@ class _OrderScreenState extends State<OrderScreen> {
               ),
             ],
           ),
-          Padding(
-            padding: const EdgeInsets.only(top: 10),
-            child: Material(
-              color: kBackgroundGrey[2],
-              child: TextFormField(
-                onChanged: (value) {
-                  orderViewModel.orderNote = value;
-                },
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                  prefixIcon: Icon(Icons.description),
-                  hintText: "Ghi chú",
-                ),
-              ),
-            ),
-          ),
         ],
       ),
+    );
+  }
+
+  Widget timeRecieve() {
+    return ScopedModelDescendant<OrderViewModel>(
+      builder: (context, child, model) {
+        Color color = Colors.yellow[100];
+        String text = "Chọn thời gian nhận hàng";
+        if (model.receiveTime != null) {
+          if (!model.isChangeTime) {
+            color = Colors.white;
+            text = "⏰ ${model.receiveTime}";
+          }
+          return InkWell(
+            child: Container(
+              color: color,
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Flexible(
+                    child: Text(
+                      text,
+                      style: kTextSecondary,
+                    ),
+                  ),
+                  Text(
+                    "Thay đổi",
+                    style: TextStyle(color: Colors.red),
+                  )
+                ],
+              ),
+            ),
+            onTap: () async {
+              await showTimeDialog(model);
+            },
+          );
+        }
+        return Container();
+      },
     );
   }
 
@@ -543,6 +570,9 @@ class _OrderScreenState extends State<OrderScreen> {
         title: Text(paymentsType.keys.elementAt(i)),
         onChanged: (value) async {
           await orderViewModel.changeOption(value);
+          if (orderViewModel.receiveTime == null) {
+            await showTimeDialog(orderViewModel);
+          }
         },
       ));
     }
@@ -614,7 +644,8 @@ class _OrderScreenState extends State<OrderScreen> {
                         ),
                         FlatButton(
                           onPressed: () async {
-                            if (orderViewModel.payment != null) {
+                            if (orderViewModel.payment != null &&
+                                orderViewModel.receiveTime != null) {
                               await orderViewModel.orderCart();
                             }
                             // pr.hide();

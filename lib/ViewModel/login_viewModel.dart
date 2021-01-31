@@ -112,10 +112,10 @@ class LoginViewModel extends BaseModel {
     await FirebaseAuth.instance.verifyPhoneNumber(
       phoneNumber: phone,
       timeout: Duration(seconds: 30),
-      verificationCompleted: verificationCompleted,
-      verificationFailed: verificationFailed,
-      codeSent: phoneCodeSent,
-      codeAutoRetrievalTimeout: phoneTimeout,
+      verificationCompleted: await verificationCompleted,
+      verificationFailed: await verificationFailed,
+      codeSent: await phoneCodeSent,
+      codeAutoRetrievalTimeout: await phoneTimeout,
     );
     print("Login Done");
   }

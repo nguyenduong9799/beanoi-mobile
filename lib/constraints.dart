@@ -29,7 +29,7 @@ const String defaultImage =
 const String defaultPromotionImage =
     "https://firebasestorage.googleapis.com/v0/b/unidelivery-fad6f.appspot.com/o/images%2Fstores%2Ffood-drink-banner.jpg?alt=media&token=96b3c6dc-c93b-4066-b3fa-dacc64f14edc";
 
-const String TIME = "12:10";
+const List<String> TIMES = ["12:00 PM - 12:10 PM"];
 const String VERSION = "0.0.1";
 const int ORDER_NEW_STATUS = 1;
 const int ORDER_DONE_STATUS = 3;
