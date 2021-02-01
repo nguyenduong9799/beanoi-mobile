@@ -17,6 +17,7 @@ class AccountDAO extends BaseDAO {
 
       Response response = await request
           .post("login", data: {"id_token": idToken, "fcm_token": fcmToken});
+      print(response.request.headers.toString());
       print('idToken $idToken');
       // set access token
       final user = response.data["data"];

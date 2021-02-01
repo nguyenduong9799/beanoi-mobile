@@ -85,8 +85,12 @@ class MyRequest {
           await showStatusDialog("assets/images/global_error.png", "Lỗi",
               "Vui lòng đăng nhập lại");
           Get.Get.offAllNamed(RouteHandler.LOGIN);
-        } else
-          throw e; //continue
+        } else {
+          print('onError: ' + e.response.request.headers.toString());
+
+          print(e.error.toString());
+          throw e;
+        } //continue
       },
     ));
   }
