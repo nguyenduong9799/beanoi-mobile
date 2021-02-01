@@ -16,9 +16,10 @@ import '../constraints.dart';
 
 class OrderViewModel extends BaseModel {
   int payment;
-  String orderNote;
+  String receiveTime;
   OrderAmountDTO orderAmount;
   Map<String, dynamic> listPayments;
+  bool isChangeTime;
   static OrderViewModel _instance;
 
   static OrderViewModel getInstance() {
@@ -35,6 +36,7 @@ class OrderViewModel extends BaseModel {
   OrderDAO dao;
 
   OrderViewModel() {
+    isChangeTime = false;
     dao = new OrderDAO();
   }
 
@@ -50,7 +52,7 @@ class OrderViewModel extends BaseModel {
 
       StoreDTO storeDTO = await getStore();
 
-      orderAmount = await dao.prepareOrder(orderNote, storeDTO.id, payment);
+      orderAmount = await dao.prepareOrder(storeDTO.id, payment);
       if (listPayments == null) {
         listPayments = await dao.getPayments();
       }
@@ -106,12 +108,17 @@ class OrderViewModel extends BaseModel {
 
   Future<void> orderCart() async {
     try {
+      int option = await showOptionDialog("Xác nhận giỏ hàng nha bạn 😊");
+
+      if (option != 1) {
+        return;
+      }
+
       showLoadingDialog();
       StoreDTO storeDTO = await getStore();
       // LOG ORDER
 
-      OrderStatus result =
-          await dao.createOrders(orderNote, storeDTO.id, payment);
+      OrderStatus result = await dao.createOrders(storeDTO.id, payment);
       if (result.statusCode == 200) {
         await deleteCart();
         hideDialog();
@@ -151,4 +158,16 @@ class OrderViewModel extends BaseModel {
       await prepareOrder();
     }
   }
+
+  void selectReceiveTime(String value){
+    isChangeTime = true;
+    receiveTime = value;
+    notifyListeners();
+  }
+
+  void confirmReceiveTime(){
+    isChangeTime = false;
+    notifyListeners();
+  }
+
 }

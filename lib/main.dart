@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:unidelivery_mobile/View/home_detail.dart';
 import 'package:unidelivery_mobile/View/onboard.dart';
+import 'package:unidelivery_mobile/View/orderDetail.dart';
 import 'package:unidelivery_mobile/View/start_up.dart';
 import 'package:unidelivery_mobile/acessories/product_promotion.dart';
 import 'package:unidelivery_mobile/route_constraint.dart';
@@ -81,6 +82,10 @@ class MyApp extends StatelessWidget {
           case RouteHandler.ORDER_HISTORY:
             return CupertinoPageRoute(
                 builder: (context) => OrderHistoryScreen(), settings: settings);
+          case RouteHandler.ORDER_HISTORY_DETAIL:
+            return SlideBottomRoute(
+              page: OrderHistoryDetail(order: settings.arguments),
+            );
           case RouteHandler.PRODUCT_DETAIL:
             return CupertinoPageRoute<bool>(
                 builder: (context) => ProductDetailScreen(

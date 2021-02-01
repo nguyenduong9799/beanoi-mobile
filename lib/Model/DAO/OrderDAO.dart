@@ -14,7 +14,7 @@ class OrderDAO extends BaseDAO {
       {int page, int size}) async {
     final res = await request.get('me/orders', queryParameters: {
       "order-status":
-          filter == OrderFilter.ORDERING ? ORDER_NEW_STATUS : ORDER_DONE_STATUS,
+          filter == OrderFilter.NEW ? ORDER_NEW_STATUS : ORDER_DONE_STATUS,
       "size": size ?? DEFAULT_SIZE,
       "page": page ?? 1
     });
@@ -37,12 +37,10 @@ class OrderDAO extends BaseDAO {
     return orderDetail;
   }
 
-  Future<OrderAmountDTO> prepareOrder(
-      String note, int store_id, int payment) async {
+  Future<OrderAmountDTO> prepareOrder(int store_id, int payment) async {
     Cart cart = await getCart();
     if (cart != null) {
       // print("Request Note: " + note);
-      cart.orderNote = note;
       cart.payment = payment;
       print(cart.toJsonAPi());
       final res = await request.post('orders/prepare',
@@ -56,14 +54,21 @@ class OrderDAO extends BaseDAO {
     return null;
   }
 
+  Future<bool> cancelOrder(int orderId, int storeId) async {
+    final res = await request.put(
+      '/stores/$storeId/orders/$orderId',
+      data: ORDER_CANCEL_STATUS,
+    );
+
+    return res.statusCode == 200;
+  }
+
   // TODO: nen dep cart ra ngoai truyen vao parameter
-  Future<OrderStatus> createOrders(
-      String note, int store_id, int payment) async {
+  Future<OrderStatus> createOrders(int store_id, int payment) async {
     try {
       Cart cart = await getCart();
       if (cart != null) {
         // print("Request Note: " + note);
-        cart.orderNote = note;
         cart.payment = payment;
         print(cart.toJsonAPi());
         final res = await request.post('/orders',

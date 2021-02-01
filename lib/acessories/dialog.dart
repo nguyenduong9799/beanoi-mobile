@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
 
@@ -219,25 +220,60 @@ Future<int> showOptionDialog(String text) async {
                 ),
                 Container(
                   width: double.infinity,
-                  child: FlatButton(
-                    color: kPrimary,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.only(
-                            bottomRight: Radius.circular(16),
-                            bottomLeft: Radius.circular(16))),
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 16.0, bottom: 16.0),
-                      child: Center(
-                        child: Text(
-                          "Đồng ý",
-                          style: kTextPrimary,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: FlatButton(
+                          // color: Colors.grey,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.only(
+                            // bottomRight: Radius.circular(16),
+                            bottomLeft: Radius.circular(16),
+                          )),
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.only(top: 16.0, bottom: 16.0),
+                            child: Center(
+                              child: Text(
+                                "Hủy",
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ),
+                          ),
+                          onPressed: () {
+                            option = 0;
+                            hideDialog();
+                          },
                         ),
                       ),
-                    ),
-                    onPressed: () {
-                      option = 1;
-                      hideDialog();
-                    },
+                      Expanded(
+                        child: FlatButton(
+                          color: kPrimary,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                              bottomRight: Radius.circular(16),
+                              // bottomLeft: Radius.circular(16),
+                            ),
+                          ),
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.only(top: 16.0, bottom: 16.0),
+                            child: Center(
+                              child: Text(
+                                "Đồng ý",
+                                style: kTextPrimary,
+                              ),
+                            ),
+                          ),
+                          onPressed: () {
+                            option = 1;
+                            hideDialog();
+                          },
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -364,6 +400,75 @@ Future<void> changeAddressDialog(RootViewModel model, Function function) async {
               ),
             );
           }),
+        ),
+      ),
+      barrierDismissible: false);
+}
+
+Future<void> showTimeDialog(OrderViewModel model) async {
+  await Get.dialog(
+      ScopedModel(
+        model: model,
+        child: ScopedModelDescendant<OrderViewModel>(
+            builder: (context, child, model) {
+              return  WillPopScope(
+                onWillPop: () {},
+                child: Dialog(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(16.0))),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Center(
+                            child: Text(
+                              "Chọn thời gian nhận hàng",
+                              style: TextStyle(color: Colors.grey, fontSize: 15),
+                            )),
+                        SizedBox(
+                          height: 16,
+                        ),
+                        Text(
+                            "📅  Hôm nay, ${DateFormat("dd/MM/yyyy").format(DateTime.now())}",
+                            style: TextStyle(fontSize: 16)),
+                        for (String time in TIMES)
+                          RadioListTile(
+                            activeColor: Colors.red,
+                            value: time,
+                            title: Text(
+                              time,
+                              style: TextStyle(color: kPrimary),
+                            ),
+                            groupValue: model.receiveTime,
+                            onChanged: (value) {
+                              model.selectReceiveTime(value);
+                            },
+                          ),
+                        model.receiveTime != null
+                            ? Container(
+                          width: double.infinity,
+                          child: FlatButton(
+                              padding: EdgeInsets.all(8),
+                              textColor: Colors.white,
+                              color: kPrimary,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.all(
+                                      Radius.circular(8))),
+                              onPressed: () {
+                                model.confirmReceiveTime();
+                                hideDialog();
+                              },
+                              child: Text("OK")),
+                        )
+                            : SizedBox.shrink()
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            }
         ),
       ),
       barrierDismissible: false);

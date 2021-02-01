@@ -11,8 +11,9 @@ import 'package:unidelivery_mobile/route_constraint.dart';
 
 class DefaultAppBar extends StatefulWidget implements PreferredSizeWidget {
   final String title;
-
-  DefaultAppBar({Key key, this.title}) : super(key: key);
+  Widget backButton;
+  DefaultAppBar({Key key, @required this.title, this.backButton})
+      : super(key: key);
 
   @override
   Size get preferredSize => Size.fromHeight(56);
@@ -33,13 +34,33 @@ class _AppBarSate extends State<DefaultAppBar> {
       elevation: 5.0,
       centerTitle: true,
       leading: Container(
+        width: 12,
+        height: 12,
         margin: EdgeInsets.only(left: 8),
-        padding: EdgeInsets.only(left: 8),
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           color: kPrimary.withOpacity(0.8),
+          // borderRadius:
         ),
-        child: CupertinoNavigationBarBackButton(color: Colors.white),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            widget.backButton != null
+                ? widget.backButton
+                : Container(
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.arrow_back,
+                        size: 24,
+                        color: Colors.white,
+                      ),
+                      onPressed: () {
+                        Get.back();
+                      },
+                    ),
+                  ),
+          ],
+        ),
       ),
       title: Text(
         widget.title,

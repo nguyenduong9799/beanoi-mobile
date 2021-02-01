@@ -9,6 +9,7 @@ class RouteHandler {
   static const String ORDER = "order";
   static const String ORDER_DETAIL = "order_detail";
   static const String ORDER_HISTORY = "order_history";
+  static const String ORDER_HISTORY_DETAIL = "order_history_detail";
   static const String PRODUCT_DETAIL = "product_detail";
   static const String PROFILE = "profile";
   static const String SIGN_UP = "signup";
