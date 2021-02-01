@@ -12,10 +12,9 @@ import 'package:unidelivery_mobile/utils/regex.dart';
 import '../route_constraint.dart';
 
 class SignUp extends StatefulWidget {
-  const SignUp({Key key, this.user, this.isCreatemode = false})
+  const SignUp({Key key, this.user})
       : super(key: key);
   final AccountDTO user;
-  final bool isCreatemode;
 
   @override
   _SignUpState createState() => _SignUpState();

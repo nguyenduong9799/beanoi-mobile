@@ -15,9 +15,10 @@ final logger = Logger(
 class Cart {
   List<CartItem> items;
   // User info
-  String orderNote;
 
-  Cart.get({this.items, this.orderNote});
+  Cart.get({
+    this.items,
+  });
 
   int payment;
 
@@ -33,7 +34,6 @@ class Cart {
     }
     return Cart.get(
       items: list,
-      orderNote: json['orderNote'] as String,
     );
   }
 
@@ -42,23 +42,18 @@ class Cart {
     print("Items: " + listCartItem.toString());
     return {
       "items": listCartItem,
-      "orderNote": orderNote,
     };
   }
 
   Map<String, dynamic> toJsonAPi() {
-    List<Map<String, int>> payments = new List();
-    payments.add({"type": payment});
-
     List<Map<String, dynamic>> listCartItem = new List();
     items.forEach((element) {
       listCartItem.add(element.toJsonApi());
     });
 
     Map<String, dynamic> map = {
-      "payments": payments,
+      "payment": payment,
       "products_list": listCartItem,
-      "note": orderNote,
     };
     logger.i("Order: " + map.toString());
     return map;

@@ -1,19 +1,21 @@
+import 'package:unidelivery_mobile/Model/DTO/index.dart';
+
 class OrderAmountDTO {
   double totalAmount;
-  double deliveryAmount;
   double finalAmount;
+  double beanAmount;
+  List<OtherAmount> others;
 
-  OrderAmountDTO({this.totalAmount, this.deliveryAmount, this.finalAmount});
+  OrderAmountDTO(
+      {this.totalAmount, this.others, this.finalAmount, this.beanAmount});
 
   factory OrderAmountDTO.fromJson(dynamic json) {
-    double delivery = 0;
-    var listOthers = json['other_amounts'] as List;
-    if (listOthers != null) {
-      listOthers.forEach((element) {
-        if (element['name'] == "Delivery") delivery = element['amount'];
-      });
-    }
     return OrderAmountDTO(
-        totalAmount: json['total_amount'], finalAmount: json['final_amount'], deliveryAmount: delivery);
+        totalAmount: json['total_amount'],
+        finalAmount: json['final_amount'],
+        others: (json["other_amounts"] as List)
+            ?.map((otherAmountJSON) => OtherAmount.fromJSON(otherAmountJSON))
+            ?.toList(),
+        beanAmount: json['receive_bean']);
   }
 }

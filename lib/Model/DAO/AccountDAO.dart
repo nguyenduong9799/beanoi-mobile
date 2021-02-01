@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:unidelivery_mobile/Model/DAO/BaseDAO.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/Services/firebase.dart';
 import 'package:unidelivery_mobile/services/push_notification_service.dart';
@@ -7,7 +8,7 @@ import 'package:unidelivery_mobile/utils/shared_pref.dart';
 
 // TODO: Test Start_up Screen + FCM TOken
 
-class AccountDAO {
+class AccountDAO extends BaseDAO {
   Future<AccountDTO> login(String idToken) async {
     try {
       String fcmToken =
@@ -15,7 +16,7 @@ class AccountDAO {
       print("FCM_token: " + fcmToken);
 
       Response response = await request
-          .post("/login", data: {"id_token": idToken, "fcm_token": fcmToken});
+          .post("login", data: {"id_token": idToken, "fcm_token": fcmToken});
       print('idToken $idToken');
       // set access token
       final user = response.data["data"];
@@ -39,7 +40,7 @@ class AccountDAO {
   }
 
   Future<AccountDTO> getUser() async {
-    Response response = await request.get("/me");
+    Response response = await request.get("me");
     // set access token
     final user = response.data["data"];
 
@@ -50,14 +51,14 @@ class AccountDAO {
   Future<void> logOut() async {
     await AuthService().signOut();
     String fcmToken = await PushNotificationService.getInstance().getFcmToken();
-    await request.post("/logout", data: {"fcm_token": fcmToken});
+    await request.post("logout", data: {"fcm_token": fcmToken});
   }
 
   Future<AccountDTO> updateUser(AccountDTO updateUser) async {
     final updateJSON = updateUser.toJson();
     print('updateUser');
     print(updateJSON.toString());
-    Response res = await request.put("/me", data: updateUser.toJson());
+    Response res = await request.put("me", data: updateUser.toJson());
     return AccountDTO.fromJson(res.data["data"]);
   }
 }

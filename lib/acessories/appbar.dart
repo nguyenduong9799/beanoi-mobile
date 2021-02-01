@@ -8,14 +8,12 @@ import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
 import 'package:get/get.dart';
 import 'package:unidelivery_mobile/route_constraint.dart';
-import 'package:unidelivery_mobile/utils/index.dart';
-
-import 'dialog.dart';
 
 class DefaultAppBar extends StatefulWidget implements PreferredSizeWidget {
   final String title;
-
-  DefaultAppBar({Key key, this.title}) : super(key: key);
+  Widget backButton;
+  DefaultAppBar({Key key, @required this.title, this.backButton})
+      : super(key: key);
 
   @override
   Size get preferredSize => Size.fromHeight(56);
@@ -32,19 +30,42 @@ class _AppBarSate extends State<DefaultAppBar> {
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      backgroundColor: Colors.white,
       elevation: 5.0,
       centerTitle: true,
-      leading: IconButton(
-        icon: Icon(Icons.arrow_back_ios, color: Colors.white),
-        onPressed: () {
-          Get.back();
-        },
+      leading: Container(
+        width: 12,
+        height: 12,
+        margin: EdgeInsets.only(left: 8),
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: kPrimary.withOpacity(0.8),
+          // borderRadius:
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            widget.backButton != null
+                ? widget.backButton
+                : Container(
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.arrow_back,
+                        size: 24,
+                        color: Colors.white,
+                      ),
+                      onPressed: () {
+                        Get.back();
+                      },
+                    ),
+                  ),
+          ],
+        ),
       ),
       title: Text(
         widget.title,
         style: TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
+          color: kPrimary,
         ),
       ),
     );
@@ -108,8 +129,7 @@ class _HomeAppBarSate extends State<HomeAppBar> {
                       builder: (context, child, model) {
                         return GestureDetector(
                           onTap: () async {
-                            await model.fetchUser(true);
-
+                            await model.fetchUser();
                           },
                           child: Align(
                             alignment: Alignment.bottomCenter,
@@ -257,9 +277,9 @@ class _HomeAppBarSate extends State<HomeAppBar> {
                 // fontWeight: FontWeight.w100,
                 color: Colors.black45,
               ),
-              children: <TextSpan>[
+              children: [
                 TextSpan(
-                  text: "${formatPrice(user.balance)}",
+                  text: "${user.balance} xu",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 14,
@@ -268,13 +288,20 @@ class _HomeAppBarSate extends State<HomeAppBar> {
                 ),
                 TextSpan(text: " và "),
                 TextSpan(
-                  text: "${user.point.round()} Bean",
+                  text: "${user.point} ",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 14,
                     color: kBean,
                   ),
                 ),
+                WidgetSpan(
+                    alignment: PlaceholderAlignment.bottom,
+                    child: Image(
+                      image: AssetImage("assets/images/icons/bean_coin.png"),
+                      width: 20,
+                      height: 20,
+                    ))
               ]),
         );
       },

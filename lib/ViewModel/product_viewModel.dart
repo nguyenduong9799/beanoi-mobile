@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:unidelivery_mobile/Bussiness/BussinessHandler.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
+import 'package:unidelivery_mobile/ViewModel/index.dart';
 import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/services/analytic_service.dart';
@@ -9,18 +9,13 @@ import 'package:unidelivery_mobile/utils/shared_pref.dart';
 
 import 'base_model.dart';
 
-Color minusColor = kBackgroundGrey[5];
-Color addColor = kBackgroundGrey[5];
-
-// TODO: 1. Tach cac attriute tu Product master
-// TODO: 2. Thay doi extra state khi chon xong attribute
-// TODO: 2.1 Viet ham changeAttribute
-
 class ProductDetailViewModel extends BaseModel {
+  Color minusColor = kBackgroundGrey[5];
+  Color addColor = kBackgroundGrey[5];
   int affectIndex = 0;
   //List product ảnh hưởng giá
   Map<String, List<String>> affectPriceContent;
-  //List choice bắt buộc không ảnh hưởng giá
+
   Map<String, String> selectedAttributes;
   int count = 1;
 
@@ -42,7 +37,7 @@ class ProductDetailViewModel extends BaseModel {
     this.selectedAttributes = new Map<String, String>();
     //
 
-    if (master.type == MASTER_PRODUCT) {
+    if (master.type == ProductType.MASTER_PRODUCT) {
       for (int i = 0; i < master.attributes.keys.length; i++) {
         String attributeKey = master.attributes.keys.elementAt(i);
         List<String> listAttributesName =
@@ -54,7 +49,16 @@ class ProductDetailViewModel extends BaseModel {
         selectedAttributes[attributeKey] = null;
       }
     } else {
-      fixTotal = BussinessHandler.countPrice(master.prices, count);
+      if (dto.type == ProductType.COMPLEX_PRODUCT &&
+          dto.hasExtra != null &&
+          dto.hasExtra) {
+        print("add extra!");
+        getExtra(dto);
+        isExtra = true;
+      } else {
+        this.extra = null;
+      }
+      fixTotal = master.price * count;
     }
 
     total = fixTotal + extraTotal;
@@ -63,34 +67,12 @@ class ProductDetailViewModel extends BaseModel {
     notifyListeners();
   }
 
-  Future<void> getExtra(ProductDTO product) async {
+  void getExtra(ProductDTO product) {
     this.extra = new Map<ProductDTO, bool>();
     for (ProductDTO dto in product.extras) {
       extra[dto] = false;
     }
     notifyListeners();
-
-    // setState(ViewStatus.Loading);
-    // try {
-    //   StoreDTO store = await getStore();
-    //   ProductDAO dao = new ProductDAO();
-    //   List<ProductDTO> products = new List();
-    //
-    //   for (int id in cat_id) {
-    //     products.addAll(await dao.getExtraProducts(id, sup_id, store.id));
-    //   }
-    //
-    //   for (ProductDTO dto in products) {
-    //     extra[dto] = false;
-    //   }
-    //   setState(ViewStatus.Completed);
-    // } catch (e) {
-    //   bool result = await showErrorDialog();
-    //   if (result) {
-    //     await getExtra(cat_id, sup_id);
-    //   } else
-    //     setState(ViewStatus.Error);
-    // }
   }
 
   void addQuantity() {
@@ -100,7 +82,7 @@ class ProductDetailViewModel extends BaseModel {
       }
       count++;
 
-      if (master.type == MASTER_PRODUCT) {
+      if (master.type == ProductType.MASTER_PRODUCT) {
         Map choice = new Map();
         for (int i = 0; i < affectPriceContent.keys.toList().length; i++) {
           choice[affectPriceContent.keys.elementAt(i)] =
@@ -108,17 +90,16 @@ class ProductDetailViewModel extends BaseModel {
         }
 
         ProductDTO dto = master.getChildByAttributes(choice);
-        fixTotal = BussinessHandler.countPrice(dto.prices, count);
+        fixTotal = dto.price * count;
       } else {
-        fixTotal = BussinessHandler.countPrice(master.prices, count);
+        fixTotal = master.price * count;
       }
 
       if (this.extra != null) {
         extraTotal = 0;
         for (int i = 0; i < extra.keys.length; i++) {
           if (extra[extra.keys.elementAt(i)]) {
-            double price = BussinessHandler.countPrice(
-                extra.keys.elementAt(i).prices, count);
+            double price = extra.keys.elementAt(i).price * count;
             extraTotal += price;
           }
         }
@@ -138,7 +119,7 @@ class ProductDetailViewModel extends BaseModel {
         minusColor = kBackgroundGrey[5];
       }
 
-      if (master.type == MASTER_PRODUCT) {
+      if (master.type == ProductType.MASTER_PRODUCT) {
         Map choice = new Map();
         for (int i = 0; i < affectPriceContent.keys.toList().length; i++) {
           choice[affectPriceContent.keys.elementAt(i)] =
@@ -146,17 +127,16 @@ class ProductDetailViewModel extends BaseModel {
         }
 
         ProductDTO dto = master.getChildByAttributes(choice);
-        fixTotal = BussinessHandler.countPrice(dto.prices, count);
+        fixTotal = dto.price * count;
       } else {
-        fixTotal = BussinessHandler.countPrice(master.prices, count);
+        fixTotal = master.price * count;
       }
 
       if (this.extra != null) {
         extraTotal = 0;
         for (int i = 0; i < extra.keys.length; i++) {
           if (extra[extra.keys.elementAt(i)]) {
-            double price = BussinessHandler.countPrice(
-                extra.keys.elementAt(i).prices, count);
+            double price = extra.keys.elementAt(i).price * count;
             extraTotal += price;
           }
         }
@@ -183,11 +163,11 @@ class ProductDetailViewModel extends BaseModel {
             selectedAttributes[affectPriceContent.keys.elementAt(i)];
       }
 
-      if (master.type == MASTER_PRODUCT) {
+      if (master.type == ProductType.MASTER_PRODUCT) {
         try {
           ProductDTO dto = master.getChildByAttributes(choice);
           print("dto: " + dto.toString());
-          fixTotal = BussinessHandler.countPrice(dto.prices, count);
+          fixTotal = dto.price * count;
           extraTotal = 0;
           if (dto.hasExtra != null && dto.hasExtra) {
             print("add extra!");
@@ -237,8 +217,7 @@ class ProductDetailViewModel extends BaseModel {
     extra[extra.keys.elementAt(i)] = value;
     for (int j = 0; j < extra.keys.toList().length; j++) {
       if (extra[extra.keys.elementAt(j)]) {
-        double price =
-            BussinessHandler.countPrice(extra.keys.elementAt(j).prices, count);
+        double price = extra.keys.elementAt(j).price * count;
         extraTotal += price;
       }
     }
@@ -249,7 +228,7 @@ class ProductDetailViewModel extends BaseModel {
   Future<void> addProductToCart() async {
     showLoadingDialog();
     List<ProductDTO> listChoices = new List<ProductDTO>();
-    if (master.type == MASTER_PRODUCT) {
+    if (master.type == ProductType.MASTER_PRODUCT) {
       Map choice = new Map();
       for (int i = 0; i < affectPriceContent.keys.toList().length; i++) {
         choice[affectPriceContent.keys.elementAt(i)] =
@@ -269,10 +248,33 @@ class ProductDetailViewModel extends BaseModel {
     }
 
     String description = "";
-
     CartItem item = new CartItem(master, listChoices, description, count);
 
     print("Save product: " + master.toString());
+
+    if (master.type == ProductType.GIFT_PRODUCT) {
+      if (RootViewModel.getInstance().currentUser == null) {
+        await RootViewModel.getInstance().fetchUser();
+      }
+
+      double totalBean = RootViewModel.getInstance().currentUser.point;
+
+      Cart cart = await getCart();
+      if (cart != null) {
+        cart.items.forEach((element) {
+          if (element.master.type == ProductType.GIFT_PRODUCT) {
+            totalBean -= (element.master.price * element.quantity);
+          }
+        });
+      }
+
+      if (totalBean < (master.price * count)) {
+        await showStatusDialog("assets/images/global_error.png", "ERR_BALANCE",
+            "Số bean hiện tại không đủ");
+        return;
+      }
+    }
+
     await addItemToCart(item);
     await AnalyticsService.getInstance()
         .logChangeCart(item.master, item.quantity, true);

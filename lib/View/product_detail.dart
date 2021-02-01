@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shimmer/shimmer.dart';
@@ -9,6 +11,7 @@ import 'package:unidelivery_mobile/ViewModel/index.dart';
 import 'package:unidelivery_mobile/acessories/tabbar.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
+import 'package:unidelivery_mobile/utils/index.dart';
 
 class ProductDetailScreen extends StatefulWidget {
   final ProductDTO dto;
@@ -30,8 +33,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
     super.initState();
     print("Product: " + widget.dto.toString());
     productDetailViewModel = new ProductDetailViewModel(widget.dto);
-
-    if (widget.dto.type == MASTER_PRODUCT) {
+    if (widget.dto.type == ProductType.MASTER_PRODUCT ||
+        widget.dto.type == ProductType.COMPLEX_PRODUCT) {
       affectPriceTabs = new List<String>();
       List<String> affectkeys =
           productDetailViewModel.affectPriceContent.keys.toList();
@@ -40,7 +43,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
         affectPriceTabs.add(affectkeys[i].toUpperCase() + " *");
       }
     }
-    
   }
 
   @override
@@ -53,11 +55,12 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
           SliverAppBar(
             leading: Container(
               margin: EdgeInsets.only(left: 8),
+              padding: EdgeInsets.only(left: 8),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: kPrimary.withOpacity(0.8),
               ),
-              child: BackButton(color: Colors.white),
+              child: CupertinoNavigationBarBackButton(color: Colors.white),
             ),
             elevation: 0,
             pinned: true,
@@ -66,7 +69,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
             flexibleSpace: FlexibleSpaceBar(
               background: ClipRRect(
                 child: CachedNetworkImage(
-                  imageUrl: widget.dto.imageURL ?? "",
+                  imageUrl: widget.dto.imageURL ?? defaultImage,
                   imageBuilder: (context, imageProvider) => Container(
                     decoration: BoxDecoration(
                       image: DecorationImage(
@@ -75,9 +78,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                       ),
                     ),
                   ),
-                  progressIndicatorBuilder:
-                      (context, url, downloadProgress) =>
-                          Shimmer.fromColors(
+                  progressIndicatorBuilder: (context, url, downloadProgress) =>
+                      Shimmer.fromColors(
                     baseColor: Colors.grey[300],
                     highlightColor: Colors.grey[100],
                     enabled: true,
@@ -132,20 +134,32 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Flexible(
-                  child: Text(
-                widget.dto.name,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-              )),
-
-              // widget.dto.type != MASTER_PRODUCT
-              //     ? Flexible(
-              //         child: Text(
-              //         NumberFormat.simpleCurrency(locale: 'vi')
-              //             .format(widget.dto.price),
-              //         style:
-              //             TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-              //       ))
-              //     : Container()
+                child: Text(
+                  widget.dto.name + " ",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                ),
+              ),
+              widget.dto.type != ProductType.GIFT_PRODUCT
+                  ? Flexible(
+                      child: RichText(
+                          text: TextSpan(
+                              text: "+ " + widget.dto.bean.toString() + " ",
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.orange),
+                              children: [
+                            WidgetSpan(
+                                alignment: PlaceholderAlignment.bottom,
+                                child: Image(
+                                  image: AssetImage(
+                                      "assets/images/icons/bean_coin.png"),
+                                  width: 30,
+                                  height: 30,
+                                ))
+                          ])),
+                    )
+                  : SizedBox.shrink()
             ],
           ),
           SizedBox(
@@ -165,93 +179,20 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
     );
   }
 
-  // Widget tabAffectAtritbute() {
-  //   if (widget.dto.type == MASTER_PRODUCT) {
-  //     return Container(
-  //       decoration: BoxDecoration(
-  //           border: Border(top: BorderSide(color: kPrimary, width: 2))),
-  //       width: MediaQuery.of(context).size.width,
-  //       child: TabBar(
-  //         labelStyle: TextStyle(fontWeight: FontWeight.bold),
-  //         labelColor: kSecondary,
-  //         unselectedLabelColor: kSecondary,
-  //         unselectedLabelStyle: TextStyle(fontWeight: FontWeight.bold),
-  //         isScrollable: true,
-  //         tabs: affectPriceTabs,
-  //         indicatorColor: kPrimary,
-  //         controller: _affectPriceController,
-  //       ),
-  //     );
-  //   }
-  //   return Container();
-  // }
-  //
-  // Widget AffectAtributeContent() {
-  //   List<Widget> attributes;
-  //   List<ProductDTO> listOptions;
-  //   if (widget.dto.type == MASTER_PRODUCT) {
-  //     return ScopedModelDescendant(
-  //       builder:
-  //           (BuildContext context, Widget child, ProductDetailViewModel model) {
-  //         attributes = new List();
-  //         if (model.affectPriceContent.keys.length != 0) {
-  //           listOptions = model.affectPriceContent[
-  //               model.affectPriceContent.keys.elementAt(model.affectIndex)];
-  //
-  //           for (int i = 0; i < listOptions.length; i++) {
-  //             attributes.add(Container(
-  //               padding: EdgeInsets.only(right: 8),
-  //               child: RadioListTile(
-  //                 title: Row(
-  //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //                   children: [
-  //                     Text(listOptions[i].name),
-  //                     Flexible(
-  //                         child: Text(
-  //                       NumberFormat.simpleCurrency(locale: 'vi')
-  //                           .format(listOptions[i].price),
-  //                       style: TextStyle(
-  //                           fontWeight: FontWeight.bold, fontSize: 16),
-  //                     ))
-  //                   ],
-  //                 ),
-  //                 groupValue: model.affectPriceChoice[model
-  //                     .affectPriceContent.keys
-  //                     .elementAt(model.affectIndex)],
-  //                 value: listOptions[i],
-  //                 onChanged: (e) {
-  //                   model.changeAffectPriceAtrribute(e);
-  //                 },
-  //               ),
-  //             ));
-  //           }
-  //
-  //           return Container(
-  //             color: kBackgroundGrey[0],
-  //             child: Column(
-  //               children: [...attributes],
-  //             ),
-  //           );
-  //         }
-  //
-  //         return Container();
-  //       },
-  //     );
-  //   }
-  //   return Container();
-  // }
-
   Widget tabAffectAtritbute() {
     // Tab extraTab = Tab(
     //   child: Text("Thêm"),
     // );
     String extraTab = "Thêm";
 
-    if (widget.dto.type == ProductType.MASTER_PRODUCT)
+    if (widget.dto.type == ProductType.MASTER_PRODUCT ||
+        widget.dto.type == ProductType.COMPLEX_PRODUCT) {
       return ScopedModelDescendant<ProductDetailViewModel>(
         builder: (context, child, model) {
           if (model.extra != null) {
-            if (affectPriceTabs.last != extraTab) {
+            if (affectPriceTabs.isEmpty) {
+              affectPriceTabs.add(extraTab);
+            } else if (affectPriceTabs.last != extraTab) {
               affectPriceTabs.add(extraTab);
             }
           } else {
@@ -274,6 +215,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
               ));
         },
       );
+    }
     return Container();
   }
 
@@ -300,7 +242,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
             print("Complete");
             if (!model.isExtra) {
               attributes = new List();
-              if (widget.dto.type == MASTER_PRODUCT) {
+              if (widget.dto.type == ProductType.MASTER_PRODUCT) {
                 listOptions = model.affectPriceContent[
                     model.affectPriceContent.keys.elementAt(model.affectIndex)];
                 for (int i = 0; i < listOptions.length; i++) {
@@ -333,7 +275,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                         child: Padding(
                           padding: const EdgeInsets.only(right: 8.0),
                           child: Text(NumberFormat.simpleCurrency(locale: "vi")
-                              .format(model.extra.keys.elementAt(i).prices[0])),
+                              .format(model.extra.keys.elementAt(i).price)),
                         ),
                       )
                     ],
@@ -415,18 +357,47 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(model.count.toString() + " Món",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 15)),
-                            Text("Thêm",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 15)),
-                            Text(
-                              NumberFormat.simpleCurrency(locale: "vi")
-                                  .format(model.total),
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 15),
+                            Flexible(
+                              child: Text(model.count.toString() + " Món ",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15)),
                             ),
+                            Flexible(
+                              child: Text("Thêm ",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15)),
+                            ),
+                            widget.dto.type != ProductType.GIFT_PRODUCT
+                                ? Flexible(
+                                    child: Text(
+                                      formatPrice(model.total),
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 15),
+                                    ),
+                                  )
+                                : Flexible(
+                                    child: RichText(
+                                        text: TextSpan(
+                                            text: model.total.toString() + " ",
+                                            style: TextStyle(
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                            children: [
+                                          WidgetSpan(
+                                              alignment:
+                                                  PlaceholderAlignment.bottom,
+                                              child: Image(
+                                                image: AssetImage(
+                                                    "assets/images/icons/bean_coin.png"),
+                                                width: 20,
+                                                height: 20,
+                                              ))
+                                        ])),
+                                  ),
                           ],
                         ),
                         SizedBox(
@@ -469,7 +440,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
               icon: Icon(
                 Icons.remove_circle_outline,
                 size: 30,
-                color: minusColor,
+                color: model.minusColor,
               ),
               onPressed: () {
                 model.minusQuantity();
@@ -489,7 +460,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
               icon: Icon(
                 Icons.add_circle_outline,
                 size: 30,
-                color: addColor,
+                color: model.addColor,
               ),
               onPressed: () {
                 model.addQuantity();

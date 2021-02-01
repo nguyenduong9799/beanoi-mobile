@@ -12,11 +12,14 @@ import 'package:unidelivery_mobile/enums/order_status.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
 import 'package:unidelivery_mobile/utils/shared_pref.dart';
 
+import '../constraints.dart';
+
 class OrderViewModel extends BaseModel {
-  AnalyticsService _analyticsService;
   int payment;
-  String orderNote;
+  String receiveTime;
   OrderAmountDTO orderAmount;
+  Map<String, dynamic> listPayments;
+  bool isChangeTime;
   static OrderViewModel _instance;
 
   static OrderViewModel getInstance() {
@@ -33,7 +36,7 @@ class OrderViewModel extends BaseModel {
   OrderDAO dao;
 
   OrderViewModel() {
-    _analyticsService = AnalyticsService.getInstance();
+    isChangeTime = false;
     dao = new OrderDAO();
   }
 
@@ -41,79 +44,92 @@ class OrderViewModel extends BaseModel {
     return await getCart();
   }
 
-  // double countPrice(Cart cart) {
-  //   double total = 0;
-  //   for (CartItem item in cart.items) {
-  //     double subTotal = 0;
-  //     if (item.master.type != ProductType.MASTER_PRODUCT) {
-  //       subTotal =
-  //           BussinessHandler.countPrice(item.master.prices, item.quantity);
-  //     }
-  //
-  //     for (ProductDTO dto in item.products) {
-  //       subTotal += BussinessHandler.countPrice(dto.prices, item.quantity);
-  //     }
-  //     total += subTotal;
-  //   }
-  //   total += DELIVERY_FEE;
-  //   return total;
-  // }
-
   Future<void> prepareOrder() async {
     try {
-      if(!Get.isDialogOpen && status != ViewStatus.Loading){
-        showLoadingDialog();
+      if (!Get.isDialogOpen) {
+        setState(ViewStatus.Loading);
       }
 
       StoreDTO storeDTO = await getStore();
-      // LOG ORDER
 
-      orderAmount =
-          await dao.prepareOrder(orderNote, storeDTO.id, payment);
+      orderAmount = await dao.prepareOrder(storeDTO.id, payment);
+      if (listPayments == null) {
+        listPayments = await dao.getPayments();
+      }
+
+      await Future.delayed(Duration(milliseconds: 500));
+      hideDialog();
+      setState(ViewStatus.Completed);
     } catch (e, stacktra) {
+      print(e.toString());
       print(stacktra.toString());
       bool result = await showErrorDialog();
       if (result) {
         await prepareOrder();
       } else
         setState(ViewStatus.Error);
-    } finally {
-      hideDialog();
-      notifyListeners();
     }
   }
 
   Future<void> updateQuantity(CartItem item) async {
     showLoadingDialog();
+    if (item.master.type == ProductType.GIFT_PRODUCT) {
+      int originalQuantity = 0;
+      if (RootViewModel.getInstance().currentUser == null) {
+        await RootViewModel.getInstance().fetchUser();
+      }
+      double totalBean = RootViewModel.getInstance().currentUser.point;
+
+      Cart cart = await getCart();
+      if (cart != null) {
+        cart.items.forEach((element) {
+          if (element.master.type == ProductType.GIFT_PRODUCT) {
+            if (element.master.id != item.master.id) {
+              totalBean -= (element.master.price * element.quantity);
+            } else {
+              originalQuantity = element.quantity;
+            }
+          }
+        });
+      }
+
+      if (totalBean < (item.master.price * item.quantity)) {
+        await showStatusDialog("assets/images/global_error.png", "ERR_BALANCE",
+            "Số bean hiện tại không đủ");
+        item.quantity = originalQuantity;
+        hideDialog();
+        return;
+      }
+    }
+
     await updateItemFromCart(item);
     await prepareOrder();
   }
 
   Future<void> orderCart() async {
     try {
+      int option = await showOptionDialog("Xác nhận giỏ hàng nha bạn 😊");
+
+      if (option != 1) {
+        return;
+      }
+
       showLoadingDialog();
       StoreDTO storeDTO = await getStore();
       // LOG ORDER
 
-      OrderStatus result =
-          await dao.createOrders(orderNote, storeDTO.id, payment);
-      if (result == OrderStatus.Success) {
+      OrderStatus result = await dao.createOrders(storeDTO.id, payment);
+      if (result.statusCode == 200) {
         await deleteCart();
         hideDialog();
+        await showStatusDialog(
+            "assets/images/global_sucsess.png", result.code, result.message);
         Get.back(result: true);
-      } else if (result == OrderStatus.Fail) {
+      } else {
         hideDialog();
-        await showStatusDialog("assets/images/global_error.png", "Thất bại :(",
-            "Vui lòng thử lại sau");
-      } else if (result == OrderStatus.NoMoney) {
-        hideDialog();
-        await RootViewModel.getInstance().fetchUser(true);
-        await showStatusDialog("assets/images/global_error.png", "Thất bại :(",
-            "Có đủ tiền đâu mà mua (>_<)");
-      } else if (result == OrderStatus.Timeout) {
-        hideDialog();
-        await showStatusDialog("assets/images/global_error.png", "Thất bại :(",
-            "Hết giờ rồi bạn ơi, mai đặt sớm nhen <3");
+        await showStatusDialog(
+            "assets/images/global_error.png", result.code, result.message);
+        await RootViewModel.getInstance().fetchUser();
       }
     } catch (e) {
       bool result = await showErrorDialog();
@@ -125,16 +141,9 @@ class OrderViewModel extends BaseModel {
   }
 
   Future<void> changeOption(int option) async {
+    showLoadingDialog();
     payment = option;
     await prepareOrder();
-  }
-
-  Future<void> checkPayment() async {
-    if(payment != null){
-      setState(ViewStatus.Loading);
-      await prepareOrder();
-      setState(ViewStatus.Completed);
-    }
   }
 
   Future<void> deleteItem(CartItem item) async {
@@ -147,7 +156,18 @@ class OrderViewModel extends BaseModel {
       Get.back(result: false);
     } else {
       await prepareOrder();
-      hideDialog();
     }
   }
+
+  void selectReceiveTime(String value){
+    isChangeTime = true;
+    receiveTime = value;
+    notifyListeners();
+  }
+
+  void confirmReceiveTime(){
+    isChangeTime = false;
+    notifyListeners();
+  }
+
 }

@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:unidelivery_mobile/Model/DAO/BaseDAO.dart';
 import 'package:unidelivery_mobile/Model/DTO/OrderAmountDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
@@ -8,14 +9,18 @@ import 'package:unidelivery_mobile/enums/order_status.dart';
 import 'package:unidelivery_mobile/utils/request.dart';
 import 'package:unidelivery_mobile/utils/shared_pref.dart';
 
-class OrderDAO {
-  Future<List<OrderListDTO>> getOrders(OrderFilter filter) async {
-    final res = await request.get('/supplier-orders', queryParameters: {
-      "delivery-status":
-          filter == OrderFilter.ORDERING ? ORDER_NEW_STATUS : ORDER_DONE_STATUS
+class OrderDAO extends BaseDAO {
+  Future<List<OrderListDTO>> getOrders(OrderFilter filter,
+      {int page, int size}) async {
+    final res = await request.get('me/orders', queryParameters: {
+      "order-status":
+          filter == OrderFilter.NEW ? ORDER_NEW_STATUS : ORDER_DONE_STATUS,
+      "size": size ?? DEFAULT_SIZE,
+      "page": page ?? 1
     });
     List<OrderListDTO> orderSummaryList;
     if (res.statusCode == 200) {
+      metaDataDTO = MetaDataDTO.fromJson(res.data["metadata"]);
       orderSummaryList = OrderListDTO.fromList(res.data['data']);
     }
     return orderSummaryList;
@@ -23,7 +28,7 @@ class OrderDAO {
 
   Future<OrderDTO> getOrderDetail(int orderId) async {
     final res = await request.get(
-      '/supplier-orders/$orderId',
+      'me/orders/$orderId',
     );
     OrderDTO orderDetail;
     if (res.statusCode == 200) {
@@ -32,49 +37,59 @@ class OrderDAO {
     return orderDetail;
   }
 
-  Future<OrderAmountDTO> prepareOrder(
-      String note, int store_id, int payment) async {
-      Cart cart = await getCart();
-      if (cart != null) {
-        // print("Request Note: " + note);
-        cart.orderNote = note;
-        cart.payment = payment;
-        print(cart.toJsonAPi());
-        final res = await request.post('/supplier-orders/prepare',
-            queryParameters: {"store-id": store_id},
-            data: cart.toJsonAPi());
-        if (res.statusCode == 200) {
-          return OrderAmountDTO.fromJson(res.data['data']);
-        } return null;
-      } return null;
+  Future<OrderAmountDTO> prepareOrder(int store_id, int payment) async {
+    Cart cart = await getCart();
+    if (cart != null) {
+      // print("Request Note: " + note);
+      cart.payment = payment;
+      print(cart.toJsonAPi());
+      final res = await request.post('orders/prepare',
+          queryParameters: {"store-id": store_id}, data: cart.toJsonAPi());
+      print(cart.toString());
+      if (res.statusCode == 200) {
+        return OrderAmountDTO.fromJson(res.data['data']);
+      }
+      return null;
+    }
+    return null;
+  }
+
+  Future<bool> cancelOrder(int orderId, int storeId) async {
+    final res = await request.put(
+      '/stores/$storeId/orders/$orderId',
+      data: ORDER_CANCEL_STATUS,
+    );
+
+    return res.statusCode == 200;
   }
 
   // TODO: nen dep cart ra ngoai truyen vao parameter
-  Future<OrderStatus> createOrders(
-      String note, int store_id, int payment) async {
+  Future<OrderStatus> createOrders(int store_id, int payment) async {
     try {
       Cart cart = await getCart();
       if (cart != null) {
         // print("Request Note: " + note);
-        cart.orderNote = note;
         cart.payment = payment;
         print(cart.toJsonAPi());
-        final res = await request.post('/supplier-orders',
-            queryParameters: {"store-id": store_id},
-            data: cart.toJsonAPi());
-        if (res.statusCode == 200) {
-          return OrderStatus.Success;
-        }
+        final res = await request.post('/orders',
+            queryParameters: {"store-id": store_id}, data: cart.toJsonAPi());
+        return OrderStatus(
+            statusCode: res.statusCode,
+            code: res.data['code'],
+            message: res.data['message']);
       }
     } on DioError catch (e) {
-      if (e.response.statusCode == 400) {
-        print("Code: " + e.response.data['code'].toString());
-        if (e.response.data['code'] == 'ERR_BALANCE')
-          return OrderStatus.NoMoney;
-        return OrderStatus.Timeout;
-      }
-      return OrderStatus.Fail;
+      return OrderStatus(
+          statusCode: e.response.statusCode,
+          code: e.response.data['code'],
+          message: e.response.data['message']);
     }
-    return OrderStatus.Fail;
+    return null;
+  }
+
+  Future<Map<String, dynamic>> getPayments() async {
+    final res = await request.get("payments/methods");
+    var jsonList = res.data['data'] as Map<String, dynamic>;
+    return jsonList;
   }
 }

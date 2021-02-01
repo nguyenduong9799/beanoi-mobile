@@ -10,7 +10,7 @@ import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
 import 'package:unidelivery_mobile/services/push_notification_service.dart';
 import 'package:unidelivery_mobile/utils/shared_pref.dart';
-
+import '../constraints.dart';
 import '../route_constraint.dart';
 
 class LoginViewModel extends BaseModel {
@@ -18,7 +18,6 @@ class LoginViewModel extends BaseModel {
   AccountDAO dao = AccountDAO();
   String verificationId;
   AnalyticsService _analyticsService;
-  String _phoneNb;
   static LoginViewModel getInstance() {
     if (_instance == null) {
       _instance = LoginViewModel();
@@ -61,14 +60,19 @@ class LoginViewModel extends BaseModel {
   }
 
   Future<void> onLoginWithPhone(String phone) async {
-    _phoneNb = phone;
     Get.toNamed(RouteHandler.LOADING);
     final PhoneVerificationCompleted verificationCompleted =
         (AuthCredential authCredential) async {
       try {
         showLoadingDialog();
         final userInfo = await signIn(authCredential);
-        userInfo.phone = _phoneNb;
+        StoreDAO storeDAO = new StoreDAO();
+        List<StoreDTO> listStore = await storeDAO.getStores();
+        for (StoreDTO dto in listStore) {
+          if (dto.id == UNIBEAN_STORE) {
+            await setStore(dto);
+          }
+        }
         hideDialog();
         // TODO: Kiem tra xem user moi hay cu
         if (userInfo.isFirstLogin) {
@@ -108,11 +112,10 @@ class LoginViewModel extends BaseModel {
     await FirebaseAuth.instance.verifyPhoneNumber(
       phoneNumber: phone,
       timeout: Duration(seconds: 30),
-      verificationCompleted: verificationCompleted,
-      verificationFailed: verificationFailed,
-      codeSent: phoneCodeSent,
-      codeAutoRetrievalTimeout: phoneTimeout,
-
+      verificationCompleted: await verificationCompleted,
+      verificationFailed: await verificationFailed,
+      codeSent: await phoneCodeSent,
+      codeAutoRetrievalTimeout: await phoneTimeout,
     );
     print("Login Done");
   }
@@ -136,12 +139,20 @@ class LoginViewModel extends BaseModel {
   Future<void> onsignInWithOTP(smsCode, verificationId) async {
     print("DN = OTP");
     showLoadingDialog();
+
     try {
       final authCredential =
           await AuthService().signInWithOTP(smsCode, verificationId);
       final userInfo = await signIn(authCredential);
-      userInfo.phone = _phoneNb;
       print("User info: " + userInfo.toString());
+
+      StoreDAO storeDAO = new StoreDAO();
+      List<StoreDTO> listStore = await storeDAO.getStores();
+      for (StoreDTO dto in listStore) {
+        if (dto.id == UNIBEAN_STORE) {
+          await setStore(dto);
+        }
+      }
 
       if (userInfo.isFirstLogin || userInfo.isFirstLogin == null) {
         // Navigate to sign up screen

@@ -1,14 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:shimmer/shimmer.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
+import 'package:unidelivery_mobile/acessories/loading.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
 import 'package:unidelivery_mobile/route_constraint.dart';
-import 'package:unidelivery_mobile/utils/index.dart';
-
 import '../constraints.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -21,15 +21,16 @@ class ProfileScreen extends StatefulWidget {
   }
 }
 
-class _UpdateAccountState extends State<ProfileScreen> {
-  Image _userImage;
+class _UpdateAccountState extends State<ProfileScreen>
+    with SingleTickerProviderStateMixin {
+  AnimationController _controller;
 
   @override
   void initState() {
     super.initState();
-    _userImage = Image(
-      image: NetworkImage(defaultImage),
-      fit: BoxFit.cover,
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 2000),
+      vsync: this,
     );
   }
 
@@ -37,77 +38,71 @@ class _UpdateAccountState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-      body: userInfo(),
+      body: SafeArea(
+          child: Stack(
+        children: [
+          userInfo(),
+          Positioned(right: 8, top: 16, child: refreshButton())
+        ],
+      )),
     );
   }
 
   Widget userInfo() {
-    return ScopedModel(
-      model: RootViewModel.getInstance(),
-      child: ScopedModelDescendant<RootViewModel>(
-        builder: (context, child, model) {
-          final status = model.status;
-          if (status == ViewStatus.Loading)
-            return Shimmer.fromColors(
-              baseColor: Colors.grey[300],
-              highlightColor: Colors.grey[100],
-              enabled: true,
-              child: Container(
-                width: MediaQuery.of(context).size.width * 0.45,
-                height: 20,
-                color: Colors.grey,
-              ),
-            );
-          else if (status == ViewStatus.Error)
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text("＞﹏＜"),
-                  signoutButton(),
-                ],
-              ),
-            );
-
-          return Container(
-            color: kBackgroundGrey[0],
-            margin: EdgeInsets.only(top: 16),
+    return ScopedModelDescendant<RootViewModel>(
+      builder: (context, child, model) {
+        final status = model.status;
+        if (status == ViewStatus.Loading)
+          return Center(child: LoadingBean());
+        else if (status == ViewStatus.Error)
+          return Center(
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Expanded(
-                  child: ListView(
-                    shrinkWrap: true,
-                    children: <Widget>[
-                      userImage(),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      userAccount(model.currentUser),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      userButton("Cập nhật", model),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      signoutButton()
-                    ],
-                  ),
-                ),
-                systemInfo()
+                Text("＞﹏＜"),
+                signoutButton(),
               ],
             ),
           );
-        },
-      ),
+
+        return Container(
+          color: kBackgroundGrey[0],
+          padding: EdgeInsets.only(top: 16),
+          child: Column(
+            children: [
+              Expanded(
+                child: ListView(
+                  shrinkWrap: true,
+                  children: <Widget>[
+                    userImage(),
+                    SizedBox(
+                      height: 8,
+                    ),
+                    userAccount(model.currentUser),
+                    SizedBox(
+                      height: 8,
+                    ),
+                    userButton("Cập nhật", model),
+                    SizedBox(
+                      height: 4,
+                    ),
+                    signoutButton()
+                  ],
+                ),
+              ),
+              systemInfo(model)
+            ],
+          ),
+        );
+      },
     );
   }
 
   Widget userImage() {
     return Center(
       child: Container(
-        height: 250,
-        width: 250,
+        height: Get.width * 0.5,
+        width: Get.width * 0.5,
         decoration: BoxDecoration(
             border: Border.all(width: 5.0, color: kPrimary),
             shape: BoxShape.circle),
@@ -126,7 +121,10 @@ class _UpdateAccountState extends State<ProfileScreen> {
             ),
             Text(
               user.name.toUpperCase(),
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.orange),
             ),
             SizedBox(
               height: 8,
@@ -134,22 +132,79 @@ class _UpdateAccountState extends State<ProfileScreen> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  "Số tiền trong ví: ${formatPrice(user.balance)}",
-                  style: TextStyle(fontSize: 15),
-                ),
-                Text(
-                  "Số đậu trong ví: ${user.point.round().toString()} Bean",
-                  style: TextStyle(fontSize: 15),
-                ),
+                infoDetail("Số tiền trong ví: ", list: [
+                  WidgetSpan(
+                      child: SizedBox(
+                    width: 8,
+                  )),
+                  TextSpan(
+                      text: "${user.balance} xu",
+                      style: TextStyle(fontWeight: FontWeight.normal))
+                ]),
+                infoDetail("Số bean trong ví: ", list: [
+                  WidgetSpan(
+                      child: SizedBox(
+                    width: 8,
+                  )),
+                  TextSpan(
+                      text: "${user.point} ",
+                      style: TextStyle(fontWeight: FontWeight.normal)),
+                  WidgetSpan(
+                      alignment: PlaceholderAlignment.bottom,
+                      child: Image(
+                        image: AssetImage("assets/images/icons/bean_coin.png"),
+                        width: 20,
+                        height: 20,
+                      ))
+                ]),
+                infoDetail("Ngày sinh: ", list: [
+                  WidgetSpan(
+                      child: SizedBox(
+                    width: 8,
+                  )),
+                  TextSpan(
+                      text:
+                          "${DateFormat('dd/MM/yyyy').format(user.birthdate)}",
+                      style: TextStyle(fontWeight: FontWeight.normal))
+                ]),
+                infoDetail("Giới tính: ", list: [
+                  WidgetSpan(
+                      child: SizedBox(
+                    width: 8,
+                  )),
+                  TextSpan(
+                      text: "${user.gender}",
+                      style: TextStyle(fontWeight: FontWeight.normal))
+                ]),
+                infoDetail("Email: ", list: [
+                  WidgetSpan(
+                      child: SizedBox(
+                    width: 8,
+                  )),
+                  TextSpan(
+                      text: "${user.email}",
+                      style: TextStyle(fontWeight: FontWeight.normal))
+                ]),
               ],
-            ),
-            SizedBox(
-              height: 8,
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget infoDetail(String title,
+      {int size, Color color, List<InlineSpan> list}) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8.0),
+      child: RichText(
+          text: TextSpan(
+              text: title,
+              style: TextStyle(
+                  color: color ?? Colors.black,
+                  fontSize: size ?? 16,
+                  fontWeight: FontWeight.bold),
+              children: list ?? [])),
     );
   }
 
@@ -172,7 +227,7 @@ class _UpdateAccountState extends State<ProfileScreen> {
               arguments: model.currentUser);
           if (result != null) {
             if (result) {
-              await model.fetchUser(true);
+              await model.fetchUser();
             }
           }
         },
@@ -204,7 +259,7 @@ class _UpdateAccountState extends State<ProfileScreen> {
     });
   }
 
-  Widget systemInfo() {
+  Widget systemInfo(RootViewModel model) {
     return Container(
       margin: EdgeInsets.only(left: 32, right: 32, bottom: 0, top: 16),
       padding: EdgeInsets.only(left: 32, right: 32),
@@ -216,7 +271,7 @@ class _UpdateAccountState extends State<ProfileScreen> {
         child: Column(
           children: <Widget>[
             Text(
-              "Version $VERSION by UniTeam",
+              "Version ${model.version} by UniTeam",
               style: TextStyle(fontSize: 13, color: kBackgroundGrey[5]),
             ),
             SizedBox(
@@ -252,5 +307,29 @@ class _UpdateAccountState extends State<ProfileScreen> {
         ),
       ),
     );
+  }
+
+  Widget refreshButton() {
+    return ScopedModelDescendant<RootViewModel>(
+        builder: (context, child, model) {
+      return RotationTransition(
+        turns: Tween(begin: 0.0, end: 1.0).animate(_controller),
+        child: Center(
+          child: IconButton(
+              icon: Icon(
+                AntDesign.sync,
+                color: Colors.blue,
+                size: 30,
+              ),
+              onPressed: () async {
+                if (model.status != ViewStatus.Loading) {
+                  _controller.repeat();
+                  await model.fetchUser();
+                  _controller.reset();
+                }
+              }),
+        ),
+      );
+    });
   }
 }

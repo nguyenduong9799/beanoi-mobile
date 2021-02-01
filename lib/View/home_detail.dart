@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:get/get.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shimmer/shimmer.dart';
@@ -10,7 +11,9 @@ import 'package:unidelivery_mobile/Model/DTO/CollectionDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/StoreDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
+import 'package:unidelivery_mobile/acessories/cart_button.dart';
 import 'package:unidelivery_mobile/acessories/loading.dart';
+import 'package:unidelivery_mobile/acessories/product_promotion.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
 import 'package:unidelivery_mobile/utils/index.dart';
@@ -28,18 +31,18 @@ class HomeScreenDetail extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreenDetail> {
   bool switcher = false;
   PageController _scrollController = new PageController();
-  static HomeViewModel model = HomeViewModel.getInstance();
-  DateTime now = DateTime.now();
-
+  HomeViewModel model;
 
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       new GlobalKey<RefreshIndicatorState>();
-  final double height = 200;
 
   @override
   void initState() {
     super.initState();
-    model.getProducts(widget.store.id);
+    model = HomeViewModel.getInstance();
+    model.supplierId = widget.store.id;
+    model.getProducts();
+    model.getGifts();
   }
 
   @override
@@ -49,160 +52,127 @@ class _HomeScreenState extends State<HomeScreenDetail> {
   }
 
   Future<void> _refresh() async {
-    await model.getProducts(widget.store.id);
+    await model.getProducts();
   }
 
   @override
   Widget build(BuildContext context) {
     // print(widget?.user.uid);
     return ScopedModel(
-      model: RootViewModel.getInstance(),
-      child: ScopedModelDescendant<RootViewModel>(
-        builder:
-            (BuildContext context, Widget child, RootViewModel rootViewModel) {
-          return ScopedModel(
-            model: model,
-            child: Scaffold(
-              floatingActionButton: buildCartButton(rootViewModel),
-              body: SafeArea(
-                child: Container(
-                  height: MediaQuery.of(context).size.height,
-                  child: Center(
-                    child: RefreshIndicator(
-                      key: _refreshIndicatorKey,
-                      onRefresh: _refresh,
-                      child: CustomScrollView(
-                        slivers: [
-                          SliverAppBar(
-                            leading: CupertinoNavigationBarBackButton(color: Colors.white),
-                            backgroundColor: kPrimary,
-                            elevation: 10,
-                            pinned: true,
-                            floating: false,
-                            expandedHeight: height,
-                            bottom: PreferredSize(
-                                preferredSize: Size.fromHeight(50),
-                                child: tag()),
-                            title:  Text(
-                              widget.store.name,
-                              style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold, color: kBackgroundGrey[0]),
-                            ),
-                            flexibleSpace: LayoutBuilder(
-                              builder: (context, constraints) {
-                                var top = constraints.biggest.height;
-                                if (top <= kToolbarHeight + 50) {
-                                  model.updateShrinkStatus(true);
-                                } else {
-                                  model.updateShrinkStatus(false);
-                                }
-                                return  Container(
-                                  width: Get.width,
-                                  margin: EdgeInsets.only(top: kToolbarHeight),
-                                  decoration: BoxDecoration(
-                                    color: kBackgroundGrey[0],
-                                  ),
-                                  child: Container(
-                                    width: Get.width,
-                                    margin: EdgeInsets.all(16),
-                                    decoration: BoxDecoration(
-                                      color: kPrimary,
-                                      borderRadius: BorderRadius.all(Radius.circular(16)),
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                          SliverList(
-                              delegate: SliverChildListDelegate(<Widget>[
-                            buildProducts(rootViewModel),
-                          ]))
-                        ],
+      model: model,
+      child: Scaffold(
+        floatingActionButton: buildCartButton(),
+        body: SafeArea(
+          child: Center(
+            child: RefreshIndicator(
+              key: _refreshIndicatorKey,
+              onRefresh: _refresh,
+              child: CustomScrollView(
+                controller: model.scrollController,
+                physics: AlwaysScrollableScrollPhysics(),
+                slivers: [
+                  SliverAppBar(
+                    leading: Container(
+                      margin: EdgeInsets.only(left: 8),
+                      padding: EdgeInsets.only(left: 8),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: kPrimary.withOpacity(0.8),
                       ),
+                      child:
+                          CupertinoNavigationBarBackButton(color: Colors.white),
+                    ),
+                    centerTitle: true,
+                    backgroundColor: Colors.white,
+                    elevation: 10,
+                    pinned: true,
+                    floating: false,
+                    expandedHeight: Get.width * 0.25 + kToolbarHeight + 32 + 50,
+                    bottom: PreferredSize(
+                        preferredSize: Size.fromHeight(50), child: tag()),
+                    title: Text(
+                      widget.store.name,
+                      style: TextStyle(color: kPrimary),
+                    ),
+                    flexibleSpace: ScopedModelDescendant<HomeViewModel>(
+                      builder: (context, child, model) {
+                        if (model.isLoadGift) {
+                          return Container(
+                            margin: EdgeInsets.only(top: kToolbarHeight),
+                            width: Get.width,
+                            color: Colors.grey[200],
+                          );
+                        } else if (model.status == ViewStatus.Error ||
+                            model.gifts.isEmpty ||
+                            model.gifts == null) {
+                          return Container(
+                            margin: EdgeInsets.only(top: kToolbarHeight),
+                            child: CachedNetworkImage(
+                              imageUrl: defaultPromotionImage,
+                              imageBuilder: (context, imageProvider) =>
+                                  Container(
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: imageProvider,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                              progressIndicatorBuilder:
+                                  (context, url, downloadProgress) =>
+                                      Shimmer.fromColors(
+                                baseColor: Colors.grey[300],
+                                highlightColor: Colors.grey[100],
+                                enabled: true,
+                                child: Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              errorWidget: (context, url, error) => Icon(
+                                MaterialIcons.broken_image,
+                                color: kPrimary.withOpacity(0.5),
+                              ),
+                            ),
+                          );
+                        } else {
+                          return Container(
+                            margin: EdgeInsets.only(top: kToolbarHeight),
+                            height: Get.width * 0.25 + 32,
+                            color: kBackgroundGrey[3],
+                            child: Swiper(
+                                itemCount: model.gifts.length,
+                                itemBuilder: (context, index) => Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: StorePromotion(
+                                      model.gifts[index],
+                                    )), // -> Text widget.
+                                //viewportFraction: 1,
+                                loop: false,
+                                control: new SwiperControl(
+                                  color: Color(0xffEE9617),
+                                  iconPrevious: AntDesign.leftcircle,
+                                  iconNext: AntDesign.rightcircle,
+                                )),
+                          );
+                        }
+                      },
                     ),
                   ),
-                ),
+                  SliverList(
+                      delegate: SliverChildListDelegate(
+                    <Widget>[buildProducts(), loadMoreIcon()],
+                  ))
+                ],
               ),
             ),
-          );
-        },
+          ),
+        ),
       ),
     );
   }
 
-  Widget buildCartButton(rootViewModel) {
-    return ScopedModelDescendant(
-        rebuildOnChange: true,
-        builder: (context, child, HomeViewModel model) {
-          return FutureBuilder(
-              future: model.cart,
-              builder: (context, snapshot) {
-                Cart cart = snapshot.data;
-                if (cart == null) return SizedBox.shrink();
-                int quantity = cart?.itemQuantity();
-                return Container(
-                  margin: EdgeInsets.only(bottom: 40),
-                  child: FloatingActionButton(
-                    backgroundColor: Colors.transparent,
-                    elevation: 8,
-                    heroTag: CART_TAG,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                      // side: BorderSide(color: Colors.red),
-                    ),
-                    onPressed: () async {
-                      print('Tap order');
-                      await model.openCart();
-                    },
-                    child: Stack(
-                      overflow: Overflow.visible,
-                      children: [
-                        Container(
-                          width: 48,
-                          height: 48,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Icon(
-                            AntDesign.shoppingcart,
-                            color: kPrimary,
-                          ),
-                        ),
-                        Positioned(
-                          top: -10,
-                          left: 32,
-                          child: Container(
-                            width: 24,
-                            height: 24,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(16),
-                              color: Colors.red,
-                              //border: Border.all(color: Colors.grey),
-                            ),
-                            child: Center(
-                              child: Text(
-                                quantity.toString(),
-                                style: kTextPrimary.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                );
-              });
-        });
-  }
-
-  ScopedModelDescendant<HomeViewModel> buildProducts(
-      RootViewModel rootViewModel) {
+  ScopedModelDescendant<HomeViewModel> buildProducts() {
     return ScopedModelDescendant<HomeViewModel>(
       builder: (context, child, model) {
         ViewStatus status = model.status;
@@ -264,18 +234,18 @@ class _HomeScreenState extends State<HomeScreenDetail> {
               ),
             );
           case ViewStatus.Completed:
+          case ViewStatus.LoadMore:
             return ListView.builder(
               physics: NeverScrollableScrollPhysics(),
-              controller: model.scrollController,
               shrinkWrap: true,
               itemCount: model.collections.length,
               itemBuilder: (context, index) {
-                if(model.collections.every((element) => !element.isSelected) || model.collections[index].isSelected){
+                if (model.collections.every((element) => !element.isSelected) ||
+                    model.collections[index].isSelected) {
                   return homeContent(model.collections[index]);
                 }
                 return SizedBox.shrink();
               },
-
             );
           default:
             return Text("Some thing wrong");
@@ -284,141 +254,198 @@ class _HomeScreenState extends State<HomeScreenDetail> {
     );
   }
 
-
-
   Widget homeContent(CollectionDTO collection) {
     return ScopedModelDescendant<HomeViewModel>(
         builder: (context, child, model) {
-          List<Widget> listProducts = List();
-          if(collection.products != null && collection.products.isNotEmpty){
-            collection.products.forEach((product) {
-              double price = product.prices[0];
-              if(product.type == ProductType.MASTER_PRODUCT){
-                price = product.minPrice;
-              }
-              listProducts.add(InkWell(
-                onTap: () {
-                  model.openProductDetail(product);
-                },
-                child: Container(
-                  padding: EdgeInsets.fromLTRB(8, 16, 8, 16),
-                  decoration: BoxDecoration(border: Border(bottom: BorderSide(color: kBackgroundGrey[3]))),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Flexible(
-                              child: Text(
-                                product.name,
-                                style: TextStyle(fontWeight: FontWeight.bold, decorationThickness: 0.5),
-                              )),
-                          Flexible(
-                              child: Text(product.type != ProductType.MASTER_PRODUCT ? formatPrice(price) : "từ " + formatPrice(price),
-                                  style: TextStyle(color: kPrimary)))
-                        ],
-                      ),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      Container(
-                          width: Get.width * 0.65,
-                          child: Text(
-                            product.description ?? "",
-                            maxLines: 1,
-                            style: TextStyle( decorationThickness: 0.5),
-                            overflow: TextOverflow.ellipsis,
-                          ))
-                    ],
-                  ),
-                ),
-              ));
-            });
-            return Container(
-              margin: EdgeInsets.only(top: 8, bottom: 0),
-              color: kBackgroundGrey[0],
+      List<Widget> listProducts = List();
+      if (collection.products != null && collection.products.isNotEmpty) {
+        collection.products.forEach((product) {
+          double price = product.price;
+          if (product.type == ProductType.MASTER_PRODUCT) {
+            price = product.minPrice;
+          }
+          listProducts.add(InkWell(
+            onTap: () {
+              model.openProductDetail(product);
+            },
+            child: Container(
+              padding: EdgeInsets.fromLTRB(8, 16, 8, 8),
+              decoration: BoxDecoration(
+                  border:
+                      Border(bottom: BorderSide(color: kBackgroundGrey[3]))),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
-                    child: Text(collection.name, style: TextStyle(color: kPrimary, fontSize: 18, fontWeight: FontWeight.bold),),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Flexible(
+                          child: Text(
+                        product.name,
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            decorationThickness: 0.5),
+                      )),
+                      Flexible(
+                          child: Text(
+                              product.type != ProductType.MASTER_PRODUCT
+                                  ? formatPrice(price)
+                                  : "từ " + formatPrice(price),
+                              style: TextStyle(color: kPrimary)))
+                    ],
                   ),
-                  ...listProducts
+                  SizedBox(
+                    height: 8,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                          width: Get.width * 0.6,
+                          child: Text(
+                            product.description ?? "",
+                            maxLines: 1,
+                            style: TextStyle(decorationThickness: 0.5),
+                            overflow: TextOverflow.ellipsis,
+                          )),
+                      Flexible(
+                        child: RichText(
+                            text: TextSpan(
+                                style: TextStyle(
+                                    fontSize: 13, color: Colors.orange),
+                                text: "+ " + product.bean.toString() + " ",
+                                children: [
+                              WidgetSpan(
+                                  alignment: PlaceholderAlignment.bottom,
+                                  child: Image(
+                                    image: AssetImage(
+                                        "assets/images/icons/bean_coin.png"),
+                                    width: 20,
+                                    height: 20,
+                                  ))
+                            ])),
+                      )
+                    ],
+                  )
                 ],
               ),
-            );
-          } return SizedBox.shrink();
+            ),
+          ));
+        });
+        return Container(
+          margin: EdgeInsets.only(top: 8, bottom: 0),
+          color: kBackgroundGrey[0],
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+                child: Center(
+                  child: Text(
+                    collection.name,
+                    style: TextStyle(
+                        color: kPrimary,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+              Center(
+                child: Container(
+                  width: collection.name.length * 0.8 * 8,
+                  child: Divider(
+                    color: kPrimary,
+                  ),
+                ),
+              ),
+              ...listProducts
+            ],
+          ),
+        );
+      }
+      return SizedBox.shrink();
+    });
+  }
 
-        } );
+  Widget loadMoreIcon() {
+    return ScopedModelDescendant<HomeViewModel>(
+      builder: (context, child, model) {
+        switch (model.status) {
+          case ViewStatus.LoadMore:
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Center(child: CircularProgressIndicator()),
+            );
+          default:
+            return SizedBox.shrink();
+        }
+      },
+    );
   }
 
   Widget tag() {
-    double screenWidth = MediaQuery.of(context).size.width;
     return Container(
       height: 50,
-      width: screenWidth,
+      width: Get.width,
       decoration: BoxDecoration(
         color: Colors.white,
       ),
       child: Animator(
-        tween:
-            Tween<Offset>(begin: Offset(-screenWidth, 0), end: Offset(-0, 0)),
+        tween: Tween<Offset>(begin: Offset(-Get.width, 0), end: Offset(-0, 0)),
         duration: Duration(milliseconds: 700),
         builder: (context, animatorState, child) => Transform.translate(
           offset: animatorState.value,
           child: Container(
-            width: screenWidth,
+            width: Get.width,
             child: ScopedModelDescendant<HomeViewModel>(
               builder: (context, child, model) {
                 final filterCategories = model.collections;
-                switch(model.status){
+                switch (model.status) {
                   case ViewStatus.Loading:
                     return Shimmer.fromColors(
                       baseColor: kBackgroundGrey[0],
                       highlightColor: Colors.grey[100],
                       enabled: true,
                       child: Container(
-                        width: screenWidth,
+                        width: Get.width,
                         color: Colors.grey,
                       ),
                     );
-                  default:
-                    if(model.collections != null && model.collections.isNotEmpty){
-                      return Stack(
-                        children: [
-                          Row(
-                            children: [
-                              Expanded(
-                                flex: 2,
-                                child: PageView(
-                                  controller: _scrollController,
-                                  scrollDirection: Axis.horizontal,
-                                  children: [
-                                    Container(
-                                      width: screenWidth,
-                                      padding: const EdgeInsets.all(10),
-                                      child: ListView.separated(
-                                        itemBuilder: (context, index) =>
-                                            filterButton(filterCategories[index]),
-                                        scrollDirection: Axis.horizontal,
-                                        itemCount: filterCategories.length,
-                                        separatorBuilder:
-                                            (BuildContext context, int index) =>
-                                            SizedBox(width: 8),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      );
-                    }
+                  case ViewStatus.Empty:
+                  case ViewStatus.Error:
                     return Container(
-                        color: kBackgroundGrey[3],
+                      color: kBackgroundGrey[3],
+                    );
+                  default:
+                    return Stack(
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              flex: 2,
+                              child: PageView(
+                                controller: _scrollController,
+                                scrollDirection: Axis.horizontal,
+                                children: [
+                                  Container(
+                                    width: Get.width,
+                                    padding: const EdgeInsets.all(10),
+                                    child: ListView.separated(
+                                      itemBuilder: (context, index) =>
+                                          filterButton(filterCategories[index]),
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount: filterCategories.length,
+                                      separatorBuilder:
+                                          (BuildContext context, int index) =>
+                                              SizedBox(width: 8),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     );
                 }
               },
@@ -433,7 +460,6 @@ class _HomeScreenState extends State<HomeScreenDetail> {
     final title = filter.name;
     final id = filter.id;
     final isSelected = filter.isSelected;
-
 
     return ButtonTheme(
       minWidth: 62,
@@ -464,10 +490,9 @@ class _HomeScreenState extends State<HomeScreenDetail> {
               Text(
                 title,
                 style: isSelected
-                    ? kTextPrimary.copyWith(
-                        fontStyle: FontStyle.italic
-                      )
-                    : kTextPrimary.copyWith(color: Colors.black, fontStyle: FontStyle.italic),
+                    ? kTextPrimary.copyWith(fontStyle: FontStyle.italic)
+                    : kTextPrimary.copyWith(
+                        color: Colors.black, fontStyle: FontStyle.italic),
               ),
             ],
           ),
@@ -480,112 +505,112 @@ class _HomeScreenState extends State<HomeScreenDetail> {
   }
 }
 
-class FoodItem extends StatefulWidget {
-  final ProductDTO product;
-  FoodItem({Key key, this.product}) : super(key: key);
-
-  @override
-  _FoodItemState createState() => _FoodItemState();
-}
-
-class _FoodItemState extends State<FoodItem> {
-  @override
-  Widget build(BuildContext context) {
-    final product = widget.product;
-    final name = product.name;
-    final imageURL = product.imageURL;
-    return Container(
-      // width: MediaQuery.of(context).size.width * 0.3,
-      margin: const EdgeInsets.only(
-        left: 10,
-        right: 10,
-      ),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(10)),
-        // color: Colors.white,
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: ScopedModelDescendant<HomeViewModel>(
-            builder: (context, child, model) {
-          return InkWell(
-            customBorder: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            onTap: () async {
-              print('Add item to cart');
-              model.openProductDetail(product);
-            },
-            child: Opacity(
-              opacity: 1,
-              child: Column(
-                children: [
-                  Hero(
-                    tag: product.id,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(16),
-                      child: Opacity(
-                        opacity: 1,
-                        child: AspectRatio(
-                          aspectRatio: 1.14,
-                          child: (imageURL == null || imageURL == "")
-                              ? Icon(
-                                  MaterialIcons.broken_image,
-                                  color: kPrimary.withOpacity(0.5),
-                                )
-                              : CachedNetworkImage(
-                                  imageUrl: imageURL,
-                                  imageBuilder: (context, imageProvider) =>
-                                      Container(
-                                    decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                        image: imageProvider,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                  ),
-                                  progressIndicatorBuilder:
-                                      (context, url, downloadProgress) =>
-                                          Shimmer.fromColors(
-                                    baseColor: Colors.grey[300],
-                                    highlightColor: Colors.grey[100],
-                                    enabled: true,
-                                    child: Container(
-                                      width: 100,
-                                      height: 100,
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                  errorWidget: (context, url, error) => Icon(
-                                    MaterialIcons.broken_image,
-                                    color: kPrimary.withOpacity(0.5),
-                                  ),
-                                ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Container(
-                      // color: Colors.blue,
-                      height: 60,
-                      child: Text(
-                        name,
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 2,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 13,
-                        ),
-                      ),
-                    ),
-                  )
-                ],
-              ),
-            ),
-          );
-        }),
-      ),
-    );
-  }
-}
+// class FoodItem extends StatefulWidget {
+//   final ProductDTO product;
+//   FoodItem({Key key, this.product}) : super(key: key);
+//
+//   @override
+//   _FoodItemState createState() => _FoodItemState();
+// }
+//
+// class _FoodItemState extends State<FoodItem> {
+//   @override
+//   Widget build(BuildContext context) {
+//     final product = widget.product;
+//     final name = product.name;
+//     final imageURL = product.imageURL;
+//     return Container(
+//       // width: MediaQuery.of(context).size.width * 0.3,
+//       margin: const EdgeInsets.only(
+//         left: 10,
+//         right: 10,
+//       ),
+//       decoration: BoxDecoration(
+//         borderRadius: BorderRadius.all(Radius.circular(10)),
+//         // color: Colors.white,
+//       ),
+//       child: Material(
+//         color: Colors.transparent,
+//         child: ScopedModelDescendant<HomeViewModel>(
+//             builder: (context, child, model) {
+//           return InkWell(
+//             customBorder: RoundedRectangleBorder(
+//               borderRadius: BorderRadius.circular(10),
+//             ),
+//             onTap: () async {
+//               print('Add item to cart');
+//               model.openProductDetail(product);
+//             },
+//             child: Opacity(
+//               opacity: 1,
+//               child: Column(
+//                 children: [
+//                   Hero(
+//                     tag: product.id,
+//                     child: ClipRRect(
+//                       borderRadius: BorderRadius.circular(16),
+//                       child: Opacity(
+//                         opacity: 1,
+//                         child: AspectRatio(
+//                           aspectRatio: 1.14,
+//                           child: (imageURL == null || imageURL == "")
+//                               ? Icon(
+//                                   MaterialIcons.broken_image,
+//                                   color: kPrimary.withOpacity(0.5),
+//                                 )
+//                               : CachedNetworkImage(
+//                                   imageUrl: imageURL,
+//                                   imageBuilder: (context, imageProvider) =>
+//                                       Container(
+//                                     decoration: BoxDecoration(
+//                                       image: DecorationImage(
+//                                         image: imageProvider,
+//                                         fit: BoxFit.cover,
+//                                       ),
+//                                     ),
+//                                   ),
+//                                   progressIndicatorBuilder:
+//                                       (context, url, downloadProgress) =>
+//                                           Shimmer.fromColors(
+//                                     baseColor: Colors.grey[300],
+//                                     highlightColor: Colors.grey[100],
+//                                     enabled: true,
+//                                     child: Container(
+//                                       width: 100,
+//                                       height: 100,
+//                                       color: Colors.grey,
+//                                     ),
+//                                   ),
+//                                   errorWidget: (context, url, error) => Icon(
+//                                     MaterialIcons.broken_image,
+//                                     color: kPrimary.withOpacity(0.5),
+//                                   ),
+//                                 ),
+//                         ),
+//                       ),
+//                     ),
+//                   ),
+//                   Expanded(
+//                     child: Container(
+//                       // color: Colors.blue,
+//                       height: 60,
+//                       child: Text(
+//                         name,
+//                         overflow: TextOverflow.ellipsis,
+//                         maxLines: 2,
+//                         style: TextStyle(
+//                           fontWeight: FontWeight.bold,
+//                           fontSize: 13,
+//                         ),
+//                       ),
+//                     ),
+//                   )
+//                 ],
+//               ),
+//             ),
+//           );
+//         }),
+//       ),
+//     );
+//   }
+// }

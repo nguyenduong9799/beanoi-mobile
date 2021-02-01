@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:unidelivery_mobile/Bussiness/BussinessHandler.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 
 class ProductDTO {
@@ -11,11 +10,11 @@ class ProductDTO {
   String imageURL;
   List<ProductDTO> listChild;
   int catergoryId;
-  // List<int> extraId;
   int supplierId;
+  String supplierName;
   List<ProductDTO> extras;
   // update
-  List<double> prices;
+  double price;
   bool hasExtra;
   Map attributes;
   int defaultQuantity;
@@ -25,10 +24,11 @@ class ProductDTO {
   int generalId;
   double minPrice;
   List<int> collections;
+  int bean;
 
   @override
   String toString() {
-    return 'ProductDTO{id: $id, name: $name, description: $description, type: $type, imageURL: $imageURL, listChild: $listChild, catergoryId: $catergoryId, supplierId: $supplierId, extras: $extras, prices: $prices, hasExtra: $hasExtra, attributes: $attributes, defaultQuantity: $defaultQuantity, min: $min, max: $max, isAnd: $isAnd}';
+    return 'ProductDTO{id: $id, name: $name, description: $description, type: $type, imageURL: $imageURL, listChild: $listChild, catergoryId: $catergoryId, supplierId: $supplierId, extras: $extras, prices: $price, hasExtra: $hasExtra, attributes: $attributes, defaultQuantity: $defaultQuantity, min: $min, max: $max, isAnd: $isAnd}';
   }
 
   ProductDTO(this.id,
@@ -39,20 +39,22 @@ class ProductDTO {
       this.type,
       this.listChild,
       this.catergoryId,
-      this.prices,
+      this.price,
       this.supplierId,
+      this.supplierName,
       this.attributes,
       this.hasExtra,
       this.defaultQuantity,
       this.isAnd,
       this.max,
       this.min,
-      this.generalId, this.minPrice, this.collections}); // balance. point;
+      this.generalId,
+      this.minPrice,
+      this.collections,
+      this.bean}); // balance. point;
 
   factory ProductDTO.fromJson(dynamic json) {
     var type = json['product_type_id'] as int;
-    var jsonExtra = json['extra_category_id'] as List;
-    List<double> prices = List.filled(10, 0);
     // List<int> listExtra = jsonExtra.cast<int>().toList();
 
     ProductDTO product = ProductDTO(json["product_id"],
@@ -64,6 +66,7 @@ class ProductDTO {
         imageURL: json['pic_url'] as String,
         catergoryId: json['category_id'],
         supplierId: json['supplier_id'] as int,
+        supplierName: json['supplier_name'],
         // prices: prices,
         // extraId: listExtra,
         hasExtra: json['has_extra'] as bool,
@@ -71,18 +74,14 @@ class ProductDTO {
         defaultQuantity: json["default"] ?? 0,
         min: json["min"] ?? 0,
         max: json["max"] ?? 0,
-        generalId: json['general_product_id']);
+        generalId: json['general_product_id'],
+        bean: json['bean']);
 
-    // prices
-    for (int i = 0; i < BussinessHandler.PRICE_QUANTITY; i++) {
-      prices[i] = (json["price${i + 1}"] as double) ?? json["price"] as double;
+    if (json['collection_id'] != null) {
+      var listCollection = json['collection_id'] as List;
+      product.collections = listCollection.cast<int>().toList();
     }
-
-    if(json['collection_id'] != null){
-        var listCollection = json['collection_id'] as List;
-        product.collections = listCollection.cast<int>().toList();
-    }
-    product.prices = prices;
+    product.price = json["price"];
 
     switch (type) {
       case ProductType.MASTER_PRODUCT:
@@ -123,6 +122,7 @@ class ProductDTO {
       "catergory_id": catergoryId,
       "child_products": listChild,
       "supplier_id": supplierId,
+      "supplier_name": supplierName,
       "hasExtra": hasExtra,
       "attributes": attributes,
       "default": defaultQuantity,
@@ -131,16 +131,12 @@ class ProductDTO {
       "extras": extras,
       "general_product_id": generalId,
       "min_price": minPrice,
-      "collection_id": collections
+      "collection_id": collections,
+      "price": price,
+      "bean": bean
     };
 
-    Map<String, dynamic> pricesMap = new Map();
-
-    for (var i = 0; i < prices.length; i++) {
-      pricesMap.addAll({"price${i + 1}": prices[i]});
-    }
-
-    return prodJson..addAll(pricesMap);
+    return prodJson;
   }
 
   static List<ProductDTO> fromList(dynamic jsonList) {
@@ -154,5 +150,3 @@ class ProductDTO {
         .firstWhere((child) => mapEquals(child.attributes, attributes));
   }
 }
-
-
