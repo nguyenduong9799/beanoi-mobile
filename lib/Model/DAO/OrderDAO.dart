@@ -7,7 +7,6 @@ import 'package:unidelivery_mobile/ViewModel/orderHistory_viewModel.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/enums/order_status.dart';
 import 'package:unidelivery_mobile/utils/request.dart';
-import 'package:unidelivery_mobile/utils/shared_pref.dart';
 
 class OrderDAO extends BaseDAO {
   Future<List<OrderListDTO>> getOrders(OrderFilter filter,
@@ -37,11 +36,9 @@ class OrderDAO extends BaseDAO {
     return orderDetail;
   }
 
-  Future<OrderAmountDTO> prepareOrder(int store_id, int payment) async {
-    Cart cart = await getCart();
+  Future<OrderAmountDTO> prepareOrder(int store_id, Cart cart) async {
     if (cart != null) {
       // print("Request Note: " + note);
-      cart.payment = payment;
       print(cart.toJsonAPi());
       final res = await request.post('orders/prepare',
           queryParameters: {"store-id": store_id}, data: cart.toJsonAPi());
@@ -64,15 +61,13 @@ class OrderDAO extends BaseDAO {
   }
 
   // TODO: nen dep cart ra ngoai truyen vao parameter
-  Future<OrderStatus> createOrders(int store_id, int payment) async {
+  Future<OrderStatus> createOrders(int store_id, Cart cart) async {
     try {
-      Cart cart = await getCart();
       if (cart != null) {
         // print("Request Note: " + note);
-        cart.payment = payment;
         print(cart.toJsonAPi());
         final res = await request.post('/orders',
-            queryParameters: {"store-id": store_id}, data: cart.toJsonAPi());
+            queryParameters: {"location-id": store_id}, data: cart.toJsonAPi());
         return OrderStatus(
             statusCode: res.statusCode,
             code: res.data['code'],

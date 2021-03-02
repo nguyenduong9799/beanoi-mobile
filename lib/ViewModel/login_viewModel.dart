@@ -9,8 +9,6 @@ import 'package:unidelivery_mobile/ViewModel/base_model.dart';
 import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
 import 'package:unidelivery_mobile/services/push_notification_service.dart';
-import 'package:unidelivery_mobile/utils/shared_pref.dart';
-import '../constraints.dart';
 import '../route_constraint.dart';
 
 class LoginViewModel extends BaseModel {
@@ -39,7 +37,6 @@ class LoginViewModel extends BaseModel {
     try {
       // lay thong tin user tu firebase
       final userCredential = await AuthService().signIn(authCredential);
-
       await _analyticsService.logLogin(authCredential.signInMethod);
       // TODO: Thay uid = idToken
       String token = await userCredential.user.getIdToken();
@@ -66,13 +63,6 @@ class LoginViewModel extends BaseModel {
       try {
         showLoadingDialog();
         final userInfo = await signIn(authCredential);
-        StoreDAO storeDAO = new StoreDAO();
-        List<StoreDTO> listStore = await storeDAO.getStores();
-        for (StoreDTO dto in listStore) {
-          if (dto.id == UNIBEAN_STORE) {
-            await setStore(dto);
-          }
-        }
         hideDialog();
         // TODO: Kiem tra xem user moi hay cu
         if (userInfo.isFirstLogin) {
@@ -112,10 +102,10 @@ class LoginViewModel extends BaseModel {
     await FirebaseAuth.instance.verifyPhoneNumber(
       phoneNumber: phone,
       timeout: Duration(seconds: 30),
-      verificationCompleted: await verificationCompleted,
-      verificationFailed: await verificationFailed,
-      codeSent: await phoneCodeSent,
-      codeAutoRetrievalTimeout: await phoneTimeout,
+      verificationCompleted: verificationCompleted,
+      verificationFailed: verificationFailed,
+      codeSent: phoneCodeSent,
+      codeAutoRetrievalTimeout: phoneTimeout,
     );
     print("Login Done");
   }
@@ -129,7 +119,7 @@ class LoginViewModel extends BaseModel {
       return Get.offAllNamed(RouteHandler.NAV);
     } on FirebaseAuthException catch (e) {
       print("=====OTP Fail: ${e.message}  ");
-      await await showStatusDialog(
+      await showStatusDialog(
           "assets/images/global_error.png", "Error", e.message);
     } finally {
       hideDialog();
@@ -145,14 +135,6 @@ class LoginViewModel extends BaseModel {
           await AuthService().signInWithOTP(smsCode, verificationId);
       final userInfo = await signIn(authCredential);
       print("User info: " + userInfo.toString());
-
-      StoreDAO storeDAO = new StoreDAO();
-      List<StoreDTO> listStore = await storeDAO.getStores();
-      for (StoreDTO dto in listStore) {
-        if (dto.id == UNIBEAN_STORE) {
-          await setStore(dto);
-        }
-      }
 
       if (userInfo.isFirstLogin || userInfo.isFirstLogin == null) {
         // Navigate to sign up screen

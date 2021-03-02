@@ -1,6 +1,5 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
-import 'package:flutter/foundation.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 
 class AnalyticsService {
@@ -24,9 +23,18 @@ class AnalyticsService {
   // User properties tells us what the user is
   Future setUserProperties(AccountDTO user) async {
     await _analytics.setUserId(user.uid.toString());
-    await _analytics.setUserProperty(name: 'name', value: user.name,);
-    await _analytics.setUserProperty(name: 'sex', value: user.gender,);
-    await _analytics.setUserProperty(name: 'birthdate', value: user.birthdate.toString(),);
+    await _analytics.setUserProperty(
+      name: 'name',
+      value: user.name,
+    );
+    await _analytics.setUserProperty(
+      name: 'sex',
+      value: user.gender,
+    );
+    await _analytics.setUserProperty(
+      name: 'birthdate',
+      value: user.birthdate.toString(),
+    );
     // property to indicate if it's a pro paying member
     // property that might tell us it's a regular poster, etc
   }

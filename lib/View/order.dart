@@ -7,18 +7,15 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:unidelivery_mobile/Model/DTO/StoreDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/View/start_up.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
 import 'package:unidelivery_mobile/acessories/appbar.dart';
 import 'package:unidelivery_mobile/acessories/dash_border.dart';
-import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/acessories/loading.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
 import 'package:unidelivery_mobile/utils/index.dart';
-import 'package:unidelivery_mobile/utils/shared_pref.dart';
 
 class OrderScreen extends StatefulWidget {
   @override
@@ -31,7 +28,7 @@ class _OrderScreenState extends State<OrderScreen> {
   @override
   void initState() {
     super.initState();
-    orderViewModel = OrderViewModel.getInstance();
+    orderViewModel = OrderViewModel();
     orderViewModel.prepareOrder();
   }
 
@@ -40,6 +37,7 @@ class _OrderScreenState extends State<OrderScreen> {
     return ScopedModel(
       model: orderViewModel,
       child: Scaffold(
+        backgroundColor: kBackgroundGrey[0],
         appBar: DefaultAppBar(title: "Đơn hàng của bạn"),
         bottomNavigationBar: bottomBar(),
         body: ScopedModelDescendant<OrderViewModel>(
@@ -49,66 +47,28 @@ class _OrderScreenState extends State<OrderScreen> {
               case ViewStatus.Loading:
                 return Center(child: LoadingBean());
               case ViewStatus.Completed:
-                return FutureBuilder(
-                  future: model.cart,
-                  builder:
-                      (BuildContext context, AsyncSnapshot<Cart> snapshot) {
-                    if (snapshot.hasData) {
-                      if (snapshot.data != null) {
-                        Cart cart = snapshot.data;
-                        return FutureBuilder(
-                          future: getStore(),
-                          builder: (BuildContext context,
-                              AsyncSnapshot<StoreDTO> snapshot) {
-                            if (snapshot.hasData) {
-                              if (snapshot.data != null) {
-                                StoreDTO dto = snapshot.data;
-                                return SingleChildScrollView(
-                                  child: Center(
-                                    child: Column(
-                                      children: [
-                                        Hero(
-                                          tag: CART_TAG,
-                                          child: Container(
-                                              margin:
-                                                  const EdgeInsets.only(top: 8),
-                                              child:
-                                                  layoutAddress(dto.location)),
-                                        ),
-                                        timeRecieve(),
-
-                                        Container(
-                                            margin:
-                                                const EdgeInsets.only(top: 8),
-                                            child: buildBeanReward()),
-                                        Container(
-                                            margin:
-                                                const EdgeInsets.only(top: 8),
-                                            child: layoutOrder(cart, dto.name)),
-                                        layoutSubtotal(),
-                                        selectPaymentMethods()
-                                        //SizedBox(height: 16),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              }
-                            }
-                            return Container();
-                          },
-                        );
-                      } else {
-                        return Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Center(child: Text("Không có đơn hàng nào")),
-                        );
-                      }
-                    }
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Center(child: CircularProgressIndicator()),
-                    );
-                  },
+                return ListView(
+                  shrinkWrap: true,
+                  children: [
+                    Hero(
+                      tag: CART_TAG,
+                      child: Container(
+                          margin: const EdgeInsets.only(top: 8),
+                          child: layoutAddress(model.campusDTO)),
+                    ),
+                    Divider(),
+                    timeRecieve(model.campusDTO),
+                    Container(
+                        margin: const EdgeInsets.only(top: 8),
+                        child: buildBeanReward()),
+                    Container(
+                        margin: const EdgeInsets.only(top: 8),
+                        child: layoutOrder(
+                            model.currentCart, model.campusDTO.name)),
+                    layoutSubtotal(),
+                    selectPaymentMethods()
+                    //SizedBox(height: 16),
+                  ],
                 );
               case ViewStatus.Error:
                 return ListView(
@@ -424,77 +384,106 @@ class _OrderScreenState extends State<OrderScreen> {
     );
   }
 
-  Widget layoutAddress(String location) {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-          color: kBackgroundGrey[0],
-          borderRadius: BorderRadius.all(Radius.circular(5))),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(Icons.location_on, color: Colors.grey),
-              SizedBox(
-                width: 10,
-              ),
-              Flexible(
-                child: Text(
-                  location,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 15,
+  Widget layoutAddress(CampusDTO store) {
+    return ScopedModelDescendant<OrderViewModel>(
+      builder: (context, child, model) {
+        return Column(
+          children: [
+            Row(
+              children: [
+                Icon(Icons.location_on, color: Colors.orange),
+                SizedBox(
+                  width: 8,
+                ),
+                Flexible(
+                  child: Text(
+                    store.name,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 4,
+            ),
+            Container(
+              width: Get.width,
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color:
+                    model.location != null ? Colors.white : Colors.yellow[100],
+              ),
+              child: RichText(
+                text: TextSpan(
+                    text: "Nhận đơn tại ",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                        color: kPrimary),
+                    children: [
+                      TextSpan(
+                          text: "(*)",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15,
+                              color: Colors.red))
+                    ]),
+              ),
+            ),
+            SizedBox(
+              height: 4,
+            ),
+            InkWell(
+              onTap: () async {
+                await model.processChangeLocation();
+              },
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Flexible(
+                      child: Text(
+                          model.location != null
+                              ? model.location.address
+                              : "Bạn vui lòng chọn địa điểm giao hàng",
+                          style: TextStyle(fontSize: 14)),
+                    ),
+                    Icon(
+                      Icons.navigate_next,
+                      color: Colors.orange,
+                      size: 24,
+                    )
+                  ],
                 ),
               ),
-            ],
-          ),
-        ],
-      ),
+            )
+          ],
+        );
+      },
     );
   }
 
-  Widget timeRecieve() {
-    return ScopedModelDescendant<OrderViewModel>(
-      builder: (context, child, model) {
-        Color color = Colors.yellow[100];
-        String text = "Chọn thời gian nhận hàng";
-        if (model.receiveTime != null) {
-          if (!model.isChangeTime) {
-            color = Colors.white;
-            text = "⏰ ${model.receiveTime}";
-          }
-          return InkWell(
-            child: Container(
-              color: color,
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Flexible(
-                    child: Text(
-                      text,
-                      style: kTextSecondary,
-                    ),
-                  ),
-                  Text(
-                    "Thay đổi",
-                    style: TextStyle(color: Colors.red),
-                  )
-                ],
-              ),
-            ),
-            onTap: () async {
-              await showTimeDialog(model);
-            },
-          );
-        }
-        return Container();
-      },
+  Widget timeRecieve(CampusDTO dto) {
+
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: RichText(
+        text: TextSpan(
+            text: "⏰ Khung giờ: ",
+            style: TextStyle(
+                fontWeight: FontWeight.bold, fontSize: 15, color: kPrimary),
+            children: [
+              TextSpan(
+                  text: "${dto.selectedTimeSlot.from.substring(0, 5)} - ${dto.selectedTimeSlot.to.substring(0, 5)}",
+                  style: TextStyle(fontSize: 14, color: Colors.black))
+            ]),
+      ),
     );
   }
 
@@ -560,39 +549,51 @@ class _OrderScreenState extends State<OrderScreen> {
   }
 
   Widget selectPaymentMethods() {
-    List<Widget> listPayments = new List();
-    Map<String, dynamic> paymentsType = orderViewModel.listPayments;
-    for (int i = 0; i < paymentsType.length; i++) {
-      listPayments.add(RadioListTile(
-        activeColor: kPrimary,
-        groupValue: orderViewModel.payment,
-        value: paymentsType.values.elementAt(i),
-        title: Text(paymentsType.keys.elementAt(i)),
-        onChanged: (value) async {
-          await orderViewModel.changeOption(value);
-          if (orderViewModel.receiveTime == null) {
-            await showTimeDialog(orderViewModel);
-          }
-        },
-      ));
-    }
-    return Container(
-      color: kBackgroundGrey[0],
-      padding: const EdgeInsets.only(bottom: 8, top: 8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
-            child: Text(
-              "Phương thức thanh toán",
-              style: TextStyle(
-                  fontSize: 15, fontWeight: FontWeight.bold, color: kPrimary),
+    return ScopedModelDescendant<OrderViewModel>(
+      builder: (context, child, model) {
+        List<Widget> listPayments = new List();
+        Map<String, dynamic> paymentsType = model.listPayments;
+        for (int i = 0; i < paymentsType.length; i++) {
+          listPayments.add(RadioListTile(
+            activeColor: kPrimary,
+            groupValue: model.currentCart.payment,
+            value: paymentsType.values.elementAt(i),
+            title: Text(paymentsType.keys.elementAt(i)),
+            onChanged: (value) async {
+              await model.changeOption(value);
+            },
+          ));
+        }
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: Get.width,
+              color: model.currentCart.payment != null
+                  ? kBackgroundGrey[0]
+                  : Colors.yellow[100],
+              padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
+              child: RichText(
+                text: TextSpan(
+                    text: "Phương thức thanh toán ",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                        color: kPrimary),
+                    children: [
+                      TextSpan(
+                          text: "(*)",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15,
+                              color: Colors.red))
+                    ]),
+              ),
             ),
-          ),
-          ...listPayments
-        ],
-      ),
+            ...listPayments
+          ],
+        );
+      },
     );
   }
 
@@ -613,7 +614,7 @@ class _OrderScreenState extends State<OrderScreen> {
                   ),
                 ],
               ),
-              child: orderViewModel.payment != null
+              child: model.currentCart.payment != null && model.location != null
                   ? ListView(
                       shrinkWrap: true,
                       children: [
@@ -631,8 +632,7 @@ class _OrderScreenState extends State<OrderScreen> {
                               ),
                               Text(
                                 NumberFormat.simpleCurrency(locale: 'vi')
-                                    .format(
-                                        orderViewModel.orderAmount.finalAmount),
+                                    .format(model.orderAmount.finalAmount),
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold, fontSize: 18),
                               )
@@ -644,9 +644,9 @@ class _OrderScreenState extends State<OrderScreen> {
                         ),
                         FlatButton(
                           onPressed: () async {
-                            if (orderViewModel.payment != null &&
-                                orderViewModel.receiveTime != null) {
-                              await orderViewModel.orderCart();
+                            if (model.currentCart.payment != null &&
+                                model.location != null) {
+                              await model.orderCart();
                             }
                             // pr.hide();
                             // showStateDialog();
@@ -698,10 +698,22 @@ class _OrderScreenState extends State<OrderScreen> {
                                 SizedBox(
                                   height: 16,
                                 ),
-                                Text("Vui lòng chọn phương thức thanh toán",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 15)),
+                                RichText(
+                                  text: TextSpan(
+                                      text:
+                                          "Vui lòng chọn những phần bắt buộc ",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 15),
+                                      children: [
+                                        TextSpan(
+                                            text: "(*)",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 15,
+                                                color: Colors.red))
+                                      ]),
+                                ),
                                 SizedBox(
                                   height: 16,
                                 )

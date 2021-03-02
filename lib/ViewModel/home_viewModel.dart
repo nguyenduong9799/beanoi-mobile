@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:unidelivery_mobile/Model/DAO/CollectionDAO.dart';
 import 'package:unidelivery_mobile/Model/DAO/index.dart';
-import 'package:unidelivery_mobile/Model/DTO/CollectionDTO.dart';
-import 'package:unidelivery_mobile/Model/DTO/StoreDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
 import 'package:unidelivery_mobile/acessories/dialog.dart';
@@ -64,8 +61,6 @@ class HomeViewModel extends BaseModel {
 
   Future<void> openProductDetail(ProductDTO product) async {
     await AnalyticsService.getInstance().logViewItem(product);
-    String fcm = await PushNotificationService.getInstance().getFcmToken();
-    print("fcm: " + fcm);
     bool result =
         await Get.toNamed(RouteHandler.PRODUCT_DETAIL, arguments: product);
     hideSnackbar();
@@ -104,9 +99,11 @@ class HomeViewModel extends BaseModel {
   Future<void> getProducts() async {
     try {
       setState(ViewStatus.Loading);
-      StoreDTO store = await getStore();
-      collections = await _collectionDAO.getCollections(store.id, supplierId);
-      products = await _productDAO.getProducts(store.id, supplierId);
+      CampusDTO store = await getStore();
+      collections = await _collectionDAO.getCollections(
+          store.id, supplierId, store.selectedTimeSlot);
+      products = await _productDAO.getProducts(
+          store.id, supplierId, store.selectedTimeSlot);
       print("Length: " + products.length.toString());
       if (collections != null && collections.isNotEmpty) {
         collections.forEach((element) {
@@ -144,8 +141,9 @@ class HomeViewModel extends BaseModel {
     try {
       isLoadGift = true;
       notifyListeners();
-      StoreDTO store = await getStore();
-      gifts = await _productDAO.getProducts(store.id, supplierId,
+      CampusDTO store = await getStore();
+      gifts = await _productDAO.getProducts(
+          store.id, supplierId, store.selectedTimeSlot,
           type: ProductType.GIFT_PRODUCT);
       await Future.delayed(Duration(microseconds: 500));
       // check truong hop product tra ve rong (do khong co menu nao trong TG do)
@@ -165,10 +163,11 @@ class HomeViewModel extends BaseModel {
   Future<void> getMoreProducts() async {
     try {
       setState(ViewStatus.LoadMore);
-      StoreDTO store = await getStore();
+      CampusDTO store = await getStore();
 
       print("Get products...");
-      products += await _productDAO.getProducts(store.id, supplierId,
+      products += await _productDAO.getProducts(
+          store.id, supplierId, store.selectedTimeSlot,
           page: _productDAO.metaDataDTO.page + 1);
 
       if (collections != null && collections.isNotEmpty) {
