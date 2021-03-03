@@ -56,13 +56,20 @@ class _OrderScreenState extends State<OrderScreen> {
                           margin: const EdgeInsets.only(top: 8),
                           child: layoutAddress(model.campusDTO)),
                     ),
-                    Divider(),
+
                     timeRecieve(model.campusDTO),
+                    SizedBox(
+                        height: 8,
+                        child: Container(
+                          color: kBackgroundGrey[2],
+                        )),
+                    Container(child: buildBeanReward()),
+                    SizedBox(
+                        height: 8,
+                        child: Container(
+                          color: kBackgroundGrey[2],
+                        )),
                     Container(
-                        margin: const EdgeInsets.only(top: 8),
-                        child: buildBeanReward()),
-                    Container(
-                        margin: const EdgeInsets.only(top: 8),
                         child: layoutOrder(
                             model.currentCart, model.campusDTO.name)),
                     layoutSubtotal(),
@@ -161,7 +168,7 @@ class _OrderScreenState extends State<OrderScreen> {
       children: [
         Container(
           color: kBackgroundGrey[0],
-          padding: const EdgeInsets.all(8),
+          padding: const EdgeInsets.only(left: 8, right: 8),
           child: Column(
             children: [
               Row(
@@ -436,14 +443,14 @@ class _OrderScreenState extends State<OrderScreen> {
               ),
             ),
             SizedBox(
-              height: 4,
+              height: 0,
             ),
             InkWell(
               onTap: () async {
                 await model.processChangeLocation();
               },
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+                padding: const EdgeInsets.fromLTRB(8, 0, 4, 4),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -452,7 +459,9 @@ class _OrderScreenState extends State<OrderScreen> {
                           model.location != null
                               ? model.location.address
                               : "Bạn vui lòng chọn địa điểm giao hàng",
-                          style: TextStyle(fontSize: 14)),
+                          style: kTextSecondary.copyWith(
+                            color: Colors.grey,
+                          )),
                     ),
                     Icon(
                       Icons.navigate_next,
@@ -470,7 +479,6 @@ class _OrderScreenState extends State<OrderScreen> {
   }
 
   Widget timeRecieve(CampusDTO dto) {
-
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: RichText(
@@ -480,7 +488,8 @@ class _OrderScreenState extends State<OrderScreen> {
                 fontWeight: FontWeight.bold, fontSize: 15, color: kPrimary),
             children: [
               TextSpan(
-                  text: "${dto.selectedTimeSlot.from.substring(0, 5)} - ${dto.selectedTimeSlot.to.substring(0, 5)}",
+                  text:
+                      "${dto.selectedTimeSlot.from.substring(0, 5)} - ${dto.selectedTimeSlot.to.substring(0, 5)}",
                   style: TextStyle(fontSize: 14, color: Colors.black))
             ]),
       ),
@@ -490,7 +499,7 @@ class _OrderScreenState extends State<OrderScreen> {
   Widget layoutSubtotal() {
     return Container(
       width: MediaQuery.of(context).size.width,
-      padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
       // margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
         color: kBackgroundGrey[0],
@@ -554,15 +563,17 @@ class _OrderScreenState extends State<OrderScreen> {
         List<Widget> listPayments = new List();
         Map<String, dynamic> paymentsType = model.listPayments;
         for (int i = 0; i < paymentsType.length; i++) {
-          listPayments.add(RadioListTile(
-            activeColor: kPrimary,
-            groupValue: model.currentCart.payment,
-            value: paymentsType.values.elementAt(i),
-            title: Text(paymentsType.keys.elementAt(i)),
-            onChanged: (value) async {
-              await model.changeOption(value);
-            },
-          ));
+          listPayments.add(
+            RadioListTile(
+              activeColor: kPrimary,
+              groupValue: model.currentCart.payment,
+              value: paymentsType.values.elementAt(i),
+              title: Text(paymentsType.keys.elementAt(i)),
+              onChanged: (value) async {
+                await model.changeOption(value);
+              },
+            ),
+          );
         }
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -665,7 +676,7 @@ class _OrderScreenState extends State<OrderScreen> {
                               SizedBox(
                                 height: 16,
                               ),
-                              Text("Chốt đơn",
+                              Text("Chốt đơn 👌",
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 15)),
@@ -781,9 +792,28 @@ class _OrderScreenState extends State<OrderScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text("${amountObj.name}", style: TextStyle()),
-                  Text(
-                      "${formatter.format(amountObj.amount)} ${amountObj.unit}",
-                      style: TextStyle()),
+                  RichText(
+                    text: new TextSpan(
+                      text: amountObj.amount < 0 ? '🌟' : '',
+                      children: <TextSpan>[
+                        new TextSpan(
+                          text:
+                              "${formatter.format(amountObj.amount)} ${amountObj.unit}",
+                          style: new TextStyle(
+                            color: amountObj.amount < 0
+                                ? Colors.orange
+                                : Colors.grey,
+                            decoration: amountObj.amount < 0
+                                ? TextDecoration.lineThrough
+                                : TextDecoration.none,
+                          ),
+                        ),
+                        new TextSpan(
+                          text: amountObj.amount < 0 ? '🌟' : '',
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ))

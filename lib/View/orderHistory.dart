@@ -119,14 +119,31 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
         return Center(
           child: LoadingBean(),
         );
-      else if (status == ViewStatus.Empty || orderSummaryList == null)
-        return Container(
-          child: SvgPicture.asset(
-            'assets/images/order_history.svg',
-            semanticsLabel: 'Acme Logo',
-            fit: BoxFit.cover,
+      else if (status == ViewStatus.Empty ||
+          orderSummaryList == null ||
+          orderSummaryList.length == 0)
+        return Center(
+          child: Container(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('Bạn chưa đặt đơn hàng nào hôm nay 😵'),
+                FlatButton(
+                  onPressed: () {
+                    Get.back();
+                  },
+                  child: Text(
+                    '🥡 Đặt ngay 🥡',
+                    style: kTextPrimary.copyWith(
+                      color: kPrimary,
+                    ),
+                  ),
+                )
+              ],
+            ),
           ),
         );
+
       if (status == ViewStatus.Error)
         return Center(
           child: AspectRatio(
