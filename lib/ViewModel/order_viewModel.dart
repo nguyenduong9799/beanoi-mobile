@@ -2,7 +2,6 @@ import 'package:get/get.dart';
 import 'package:unidelivery_mobile/Model/DAO/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/CartDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/OrderAmountDTO.dart';
-import 'package:unidelivery_mobile/Model/DTO/StoreDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/Services/analytic_service.dart';
 import 'package:unidelivery_mobile/ViewModel/base_model.dart';
@@ -11,37 +10,18 @@ import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/enums/order_status.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
 import 'package:unidelivery_mobile/utils/shared_pref.dart';
-
 import '../constraints.dart';
 
 class OrderViewModel extends BaseModel {
-  int payment;
-  String receiveTime;
   OrderAmountDTO orderAmount;
   Map<String, dynamic> listPayments;
-  bool isChangeTime;
-  static OrderViewModel _instance;
-
-  static OrderViewModel getInstance() {
-    if (_instance == null) {
-      _instance = OrderViewModel();
-    }
-    return _instance;
-  }
-
-  static void destroyInstance() {
-    _instance = null;
-  }
-
+  LocationDTO location, tmpLocation;
+  CampusDTO campusDTO;
   OrderDAO dao;
+  Cart currentCart;
 
   OrderViewModel() {
-    isChangeTime = false;
     dao = new OrderDAO();
-  }
-
-  Future<Cart> get cart async {
-    return await getCart();
   }
 
   Future<void> prepareOrder() async {
@@ -50,9 +30,23 @@ class OrderViewModel extends BaseModel {
         setState(ViewStatus.Loading);
       }
 
-      StoreDTO storeDTO = await getStore();
+      if (campusDTO == null) {
+        campusDTO = await getStore();
+      }
 
-      orderAmount = await dao.prepareOrder(storeDTO.id, payment);
+      if (location == null) {
+        campusDTO.locations.forEach((element) {
+          if (element.isSelected) {
+            location = element;
+          }
+        });
+      }
+
+      if (currentCart == null) {
+        currentCart = await getCart();
+      }
+
+      orderAmount = await dao.prepareOrder(campusDTO.id, currentCart);
       if (listPayments == null) {
         listPayments = await dao.getPayments();
       }
@@ -115,10 +109,8 @@ class OrderViewModel extends BaseModel {
       }
 
       showLoadingDialog();
-      StoreDTO storeDTO = await getStore();
-      // LOG ORDER
 
-      OrderStatus result = await dao.createOrders(storeDTO.id, payment);
+      OrderStatus result = await dao.createOrders(location.id, currentCart);
       if (result.statusCode == 200) {
         await deleteCart();
         hideDialog();
@@ -142,7 +134,8 @@ class OrderViewModel extends BaseModel {
 
   Future<void> changeOption(int option) async {
     showLoadingDialog();
-    payment = option;
+    currentCart.payment = option;
+    await setCart(currentCart);
     await prepareOrder();
   }
 
@@ -159,15 +152,42 @@ class OrderViewModel extends BaseModel {
     }
   }
 
-  void selectReceiveTime(String value){
-    isChangeTime = true;
-    receiveTime = value;
+  Future<void> processChangeLocation() async {
+    tmpLocation = location;
+    notifyListeners();
+    await changeLocationDialog(this);
+  }
+
+  // void selectReceiveTime(String value){
+  //   isChangeTime = true;
+  //   receiveTime = value;
+  //   notifyListeners();
+  // }
+
+  // void confirmReceiveTime(){
+  //   isChangeTime = false;
+  //   notifyListeners();
+  // }
+
+  void selectLocation(int id) {
+    campusDTO.locations.forEach((element) {
+      if (element.id == id) {
+        tmpLocation = element;
+      }
+    });
     notifyListeners();
   }
 
-  void confirmReceiveTime(){
-    isChangeTime = false;
+  Future<void> confirmLocation() async {
+    campusDTO.locations.forEach((element) {
+      if (element.id == tmpLocation.id) {
+        element.isSelected = true;
+      } else {
+        element.isSelected = false;
+      }
+    });
+    await setStore(campusDTO);
+    location = tmpLocation;
     notifyListeners();
   }
-
 }

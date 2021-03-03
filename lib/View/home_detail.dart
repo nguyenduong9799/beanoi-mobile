@@ -8,7 +8,6 @@ import 'package:get/get.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:unidelivery_mobile/Model/DTO/CollectionDTO.dart';
-import 'package:unidelivery_mobile/Model/DTO/StoreDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
 import 'package:unidelivery_mobile/acessories/cart_button.dart';
@@ -21,8 +20,8 @@ import 'package:unidelivery_mobile/utils/index.dart';
 const ORDER_TIME = 11;
 
 class HomeScreenDetail extends StatefulWidget {
-  final StoreDTO store;
-  const HomeScreenDetail({Key key, @required this.store}) : super(key: key);
+  final SupplierDTO supplier;
+  const HomeScreenDetail({Key key, @required this.supplier}) : super(key: key);
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -40,7 +39,7 @@ class _HomeScreenState extends State<HomeScreenDetail> {
   void initState() {
     super.initState();
     model = HomeViewModel.getInstance();
-    model.supplierId = widget.store.id;
+    model.supplierId = widget.supplier.id;
     model.getProducts();
     model.getGifts();
   }
@@ -73,14 +72,16 @@ class _HomeScreenState extends State<HomeScreenDetail> {
                 slivers: [
                   SliverAppBar(
                     leading: Container(
-                      margin: EdgeInsets.only(left: 8),
-                      padding: EdgeInsets.only(left: 8),
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: kPrimary.withOpacity(0.8),
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.arrow_back_ios,
+                          size: 24,
+                          color: kPrimary,
+                        ),
+                        onPressed: () {
+                          Get.back();
+                        },
                       ),
-                      child:
-                          CupertinoNavigationBarBackButton(color: Colors.white),
                     ),
                     centerTitle: true,
                     backgroundColor: Colors.white,
@@ -91,7 +92,7 @@ class _HomeScreenState extends State<HomeScreenDetail> {
                     bottom: PreferredSize(
                         preferredSize: Size.fromHeight(50), child: tag()),
                     title: Text(
-                      widget.store.name,
+                      widget.supplier.name,
                       style: TextStyle(color: kPrimary),
                     ),
                     flexibleSpace: ScopedModelDescendant<HomeViewModel>(

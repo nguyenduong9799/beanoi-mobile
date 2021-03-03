@@ -8,16 +8,12 @@ import 'package:unidelivery_mobile/View/home_detail.dart';
 import 'package:unidelivery_mobile/View/onboard.dart';
 import 'package:unidelivery_mobile/View/orderDetail.dart';
 import 'package:unidelivery_mobile/View/start_up.dart';
-import 'package:unidelivery_mobile/acessories/product_promotion.dart';
 import 'package:unidelivery_mobile/route_constraint.dart';
 import 'package:unidelivery_mobile/setup.dart';
 import 'package:unidelivery_mobile/utils/pageNavigation.dart';
 import 'package:unidelivery_mobile/constraints.dart';
-
 import 'package:unidelivery_mobile/View/index.dart';
 import 'package:unidelivery_mobile/utils/request.dart';
-
-import 'Model/DTO/index.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -64,7 +60,7 @@ class MyApp extends StatelessWidget {
           case RouteHandler.HOME_DETAIL:
             return CupertinoPageRoute<bool>(
                 builder: (context) => HomeScreenDetail(
-                      store: settings.arguments,
+                      supplier: settings.arguments,
                     ),
                 settings: settings);
           case RouteHandler.NAV:

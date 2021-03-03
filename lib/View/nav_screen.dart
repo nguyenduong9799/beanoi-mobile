@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/View/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
 import 'package:unidelivery_mobile/acessories/bottomnavigator.dart';
 import 'package:unidelivery_mobile/acessories/cart_button.dart';
-import 'package:unidelivery_mobile/utils/request.dart';
-
-import '../constraints.dart';
 
 class RootScreen extends StatefulWidget {
   final int initScreenIndex;
@@ -35,6 +31,10 @@ class _RootScreenState extends State<RootScreen> {
   void initState() {
     super.initState();
     _selectedIndex = widget.initScreenIndex;
+    RootViewModel.getInstance().fetchStore().then((value) {
+      RootViewModel.getInstance().getSuppliers();
+      RootViewModel.getInstance().getGifts();
+    });
   }
 
   @override

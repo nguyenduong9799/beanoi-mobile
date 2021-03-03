@@ -1,10 +1,8 @@
-import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/ViewModel/startup_viewModel.dart';
 import 'package:unidelivery_mobile/acessories/loading.dart';
 import 'package:unidelivery_mobile/constraints.dart';
-import 'package:unidelivery_mobile/enums/view_status.dart';
 
 class StartUpView extends StatelessWidget {
   const StartUpView({Key key}) : super(key: key);

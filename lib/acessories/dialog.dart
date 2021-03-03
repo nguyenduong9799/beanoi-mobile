@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
-
 import '../constraints.dart';
 
 Future<void> showStatusDialog(
@@ -44,9 +43,7 @@ Future<void> showStatusDialog(
               child: Text(
                 content,
                 style: TextStyle(fontSize: 16, color: kPrimary),
-                overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.left,
-                maxLines: 2,
               ),
             ),
             SizedBox(
@@ -105,69 +102,65 @@ void showLoadingDialog() {
 
 Future<bool> showErrorDialog() async {
   hideDialog();
-  bool result;
+  bool result = false;
   await Get.dialog(
-      WillPopScope(
-        onWillPop: () {},
-        child: Dialog(
-          backgroundColor: Colors.white,
-          elevation: 8.0,
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(16.0))),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Align(
-                alignment: Alignment.topRight,
-                child: IconButton(
-                  icon: Icon(
-                    AntDesign.closecircleo,
-                    color: Colors.red,
-                  ),
-                  onPressed: () {
-                    result = false;
-                    hideDialog();
-                  },
+      Dialog(
+        backgroundColor: Colors.white,
+        elevation: 8.0,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(16.0))),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Align(
+              alignment: Alignment.topRight,
+              child: IconButton(
+                icon: Icon(
+                  AntDesign.closecircleo,
+                  color: Colors.red,
                 ),
+                onPressed: () {
+                  hideDialog();
+                },
               ),
-              Text(
-                "Có một chút trục trặc nhỏ!!",
-                style: TextStyle(fontSize: 16, color: kPrimary),
-              ),
-              SizedBox(
-                height: 8,
-              ),
-              Image(
-                width: 96,
-                height: 96,
-                image: AssetImage("assets/images/error.png"),
-              ),
-              SizedBox(
-                height: 8,
-              ),
-              Container(
-                width: double.infinity,
-                child: FlatButton(
-                  color: kPrimary,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.only(
-                          bottomRight: Radius.circular(16),
-                          bottomLeft: Radius.circular(16))),
-                  onPressed: () {
-                    result = true;
-                    hideDialog();
-                  },
-                  child: Padding(
-                    padding: EdgeInsets.only(top: 16, bottom: 16),
-                    child: Text(
-                      "Thử lại",
-                      style: kTextPrimary,
-                    ),
+            ),
+            Text(
+              "Có một chút trục trặc nhỏ!!",
+              style: TextStyle(fontSize: 16, color: kPrimary),
+            ),
+            SizedBox(
+              height: 8,
+            ),
+            Image(
+              width: 96,
+              height: 96,
+              image: AssetImage("assets/images/error.png"),
+            ),
+            SizedBox(
+              height: 8,
+            ),
+            Container(
+              width: double.infinity,
+              child: FlatButton(
+                color: kPrimary,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(
+                        bottomRight: Radius.circular(16),
+                        bottomLeft: Radius.circular(16))),
+                onPressed: () {
+                  result = true;
+                  hideDialog();
+                },
+                child: Padding(
+                  padding: EdgeInsets.only(top: 16, bottom: 16),
+                  child: Text(
+                    "Thử lại",
+                    style: kTextPrimary,
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
       barrierDismissible: false);
@@ -308,7 +301,7 @@ void hideSnackbar() {
   }
 }
 
-Future<void> changeAddressDialog(RootViewModel model, Function function) async {
+Future<void> changeCampusDialog(RootViewModel model, Function function) async {
   hideDialog();
   await Get.dialog(
       WillPopScope(
@@ -333,13 +326,13 @@ Future<void> changeAddressDialog(RootViewModel model, Function function) async {
                           child: Icon(
                             Icons.location_on,
                             color: Colors.red,
-                            size: 32,
+                            size: 30,
                           )),
                       Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Text(
-                            "Chọn một địa chỉ",
-                            style: TextStyle(color: kGreyTitle, fontSize: 16),
+                            "Chọn khu vực",
+                            style: TextStyle(color: kPrimary, fontSize: 16),
                           )),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -363,13 +356,15 @@ Future<void> changeAddressDialog(RootViewModel model, Function function) async {
                   for (int i = 0; i < model.campuses.length; i++)
                     RadioListTile(
                       activeColor: kFail,
-                      groupValue: model.tmp.id,
+                      groupValue: model.tmpStore.id,
                       value: model.campuses[i].id,
                       title: Text(
-                        "${model.campuses[i].name} - ${model.campuses[i].location}",
+                        "${model.campuses[i].name}",
                         style: kTextSecondary.copyWith(
-                          fontSize: 14,
-                        ),
+                            fontSize: 14,
+                            color: model.campuses[i].available
+                                ? Colors.black
+                                : Colors.grey),
                       ),
                       onChanged: (value) {
                         model.changeLocation(value);
@@ -405,71 +400,172 @@ Future<void> changeAddressDialog(RootViewModel model, Function function) async {
       barrierDismissible: false);
 }
 
-Future<void> showTimeDialog(OrderViewModel model) async {
+Future<void> changeLocationDialog(
+  OrderViewModel model,
+) async {
+  await Get.dialog(
+      WillPopScope(
+          onWillPop: () {},
+          child: ScopedModel(
+            model: model,
+            child: ScopedModelDescendant<OrderViewModel>(
+              builder: (context, child, model) {
+                return Dialog(
+                  backgroundColor: Colors.white,
+                  elevation: 8.0,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(16.0))),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                "Chọn địa chỉ nhận hàng",
+                                style:
+                                    TextStyle(color: kGreyTitle, fontSize: 16),
+                              )),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: IconButton(
+                              icon: Icon(
+                                AntDesign.closecircleo,
+                                color: Colors.red,
+                              ),
+                              onPressed: () {
+                                hideDialog();
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 8,
+                      ),
+                      for (int i = 0; i < model.campusDTO.locations.length; i++)
+                        RadioListTile(
+                          activeColor: kFail,
+                          groupValue: model.tmpLocation != null
+                              ? model.tmpLocation.id
+                              : null,
+                          value: model.campusDTO.locations[i].id,
+                          title: Text(
+                            "${model.campusDTO.locations[i].address}",
+                            style: kTextSecondary.copyWith(
+                              fontSize: 14,
+                            ),
+                          ),
+                          onChanged: (value) {
+                            model.selectLocation(value);
+                          },
+                        ),
+                      SizedBox(
+                        height: 8,
+                      ),
+                      Container(
+                        width: double.infinity,
+                        child: model.tmpLocation != null
+                            ? FlatButton(
+                                color: kPrimary,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.only(
+                                        bottomRight: Radius.circular(16),
+                                        bottomLeft: Radius.circular(16))),
+                                onPressed: () async {
+                                  await model.confirmLocation();
+                                  hideDialog();
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 16, bottom: 16),
+                                  child: Text(
+                                    "Xác nhận",
+                                    style: kTextPrimary,
+                                  ),
+                                ),
+                              )
+                            : SizedBox.shrink(),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          )),
+      barrierDismissible: false);
+}
+
+Future<void> showTimeDialog(RootViewModel model) async {
   await Get.dialog(
       ScopedModel(
         model: model,
-        child: ScopedModelDescendant<OrderViewModel>(
+        child: ScopedModelDescendant<RootViewModel>(
             builder: (context, child, model) {
-              return  WillPopScope(
-                onWillPop: () {},
-                child: Dialog(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(16.0))),
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Center(
-                            child: Text(
-                              "Chọn thời gian nhận hàng",
-                              style: TextStyle(color: Colors.grey, fontSize: 15),
-                            )),
-                        SizedBox(
-                          height: 16,
-                        ),
-                        Text(
-                            "📅  Hôm nay, ${DateFormat("dd/MM/yyyy").format(DateTime.now())}",
-                            style: TextStyle(fontSize: 16)),
-                        for (String time in TIMES)
-                          RadioListTile(
-                            activeColor: Colors.red,
-                            value: time,
-                            title: Text(
-                              time,
-                              style: TextStyle(color: kPrimary),
-                            ),
-                            groupValue: model.receiveTime,
-                            onChanged: (value) {
-                              model.selectReceiveTime(value);
-                            },
-                          ),
-                        model.receiveTime != null
-                            ? Container(
-                          width: double.infinity,
-                          child: FlatButton(
-                              padding: EdgeInsets.all(8),
-                              textColor: Colors.white,
-                              color: kPrimary,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.all(
-                                      Radius.circular(8))),
-                              onPressed: () {
-                                model.confirmReceiveTime();
-                                hideDialog();
-                              },
-                              child: Text("OK")),
-                        )
-                            : SizedBox.shrink()
-                      ],
-                    ),
-                  ),
+          List<Widget> timeSlots = new List();
+          model.currentStore.timeSlots.forEach((element) {
+            timeSlots.add(
+              RadioListTile(
+                activeColor: Colors.red,
+                value: element.menuId,
+                title: Text(
+                  "${element.from.substring(0, 5)} - ${element.to.substring(0, 5)}",
+                  style: TextStyle(
+                      color: element.available ? kPrimary : Colors.grey),
                 ),
-              );
-            }
-        ),
+                groupValue: model.tmpTimeSlot.menuId,
+                onChanged: (value) {
+                  model.selectTimeSlot(value);
+                },
+              ),
+            );
+          });
+
+          return WillPopScope(
+            onWillPop: () {},
+            child: Dialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(16.0))),
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Center(
+                        child: Text(
+                      "Chọn khung giờ",
+                      style: TextStyle(color: Colors.grey, fontSize: 15),
+                    )),
+                    SizedBox(
+                      height: 16,
+                    ),
+                    Text(
+                        "📅  Hôm nay, ${DateFormat("dd/MM/yyyy").format(DateTime.now())}",
+                        style: TextStyle(fontSize: 16)),
+                    ...timeSlots,
+                    Container(
+                      width: double.infinity,
+                      child: FlatButton(
+                          padding: EdgeInsets.all(8),
+                          textColor: Colors.white,
+                          color: kPrimary,
+                          shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(8))),
+                          onPressed: () {
+                            model.confirmTimeSlot();
+                          },
+                          child: Text("OK")),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          );
+        }),
       ),
       barrierDismissible: false);
 }
