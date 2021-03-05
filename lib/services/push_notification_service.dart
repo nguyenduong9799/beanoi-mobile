@@ -36,21 +36,23 @@ class PushNotificationService {
           print('onMessage: $message');
           hideSnackbar();
           Get.snackbar(
-            message['notification']['title'], // title
-            message['notification']['body'],
-            colorText: kPrimary,
-            icon: Icon(Icons.alarm),
-            shouldIconPulse: true,
-            backgroundColor: kBackgroundGrey[0],
-            isDismissible: true,
-            duration: Duration(minutes: 1),
-            mainButton: FlatButton(
-              child: Text("OK", style: kTextPrimary,),
-              onPressed: (){
-              hideSnackbar();
-          },
-            )
-          );
+              message['aps']['alert']['title'], // title
+              message['aps']['alert']['body'],
+              colorText: kPrimary,
+              icon: Icon(Icons.alarm),
+              shouldIconPulse: true,
+              backgroundColor: kBackgroundGrey[0],
+              isDismissible: true,
+              duration: Duration(minutes: 1),
+              mainButton: FlatButton(
+                child: Text(
+                  "OK",
+                  style: kTextPrimary,
+                ),
+                onPressed: () {
+                  hideSnackbar();
+                },
+              ));
           // Get.rawSnackbar(
           //     message: message['notification']['title'],
           //     duration: ,
