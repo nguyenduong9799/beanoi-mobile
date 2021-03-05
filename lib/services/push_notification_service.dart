@@ -36,15 +36,19 @@ class PushNotificationService {
           print('onMessage: $message');
           hideSnackbar();
           Get.snackbar(
-              message['aps']['alert']['title'], // title
-              message['aps']['alert']['body'],
-              colorText: kPrimary,
-              icon: Icon(Icons.alarm),
+              Platform.isIOS
+                  ? message['aps']['alert']['title']
+                  : message['notification']['title'], // title
+              Platform.isIOS
+                  ? message['aps']['alert']['body']
+                  : message['notification']['body'],
+              colorText: kBackgroundGrey[0],
               shouldIconPulse: true,
-              backgroundColor: kBackgroundGrey[0],
+              backgroundColor: kPrimary,
               isDismissible: true,
               duration: Duration(minutes: 1),
               mainButton: FlatButton(
+                color: kPrimary,
                 child: Text(
                   "OK",
                   style: kTextPrimary,
@@ -53,17 +57,6 @@ class PushNotificationService {
                   hideSnackbar();
                 },
               ));
-          // Get.rawSnackbar(
-          //     message: message['notification']['title'],
-          //     duration: ,
-          //     snackPosition: SnackPosition.TOP,
-          //     margin: EdgeInsets.only(top: 8, left: 8, right: 8, bottom: 32),
-          //     backgroundColor: kPrimary,
-          //     borderRadius: 8);
-          // await showStatusDialog(
-          //     Icon(Icons.info_outline),
-          //     message['notification']['title'],
-          //     message['notification']['body']);
         },
         //Called when the app has been closed completely and its opened
         onLaunch: (Map<String, dynamic> message) async {
