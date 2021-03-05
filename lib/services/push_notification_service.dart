@@ -36,32 +36,27 @@ class PushNotificationService {
           print('onMessage: $message');
           hideSnackbar();
           Get.snackbar(
-            message['notification']['title'], // title
-            message['notification']['body'],
-            colorText: kPrimary,
-            icon: Icon(Icons.alarm),
-            shouldIconPulse: true,
-            backgroundColor: kBackgroundGrey[0],
-            isDismissible: true,
-            duration: Duration(minutes: 1),
-            mainButton: FlatButton(
-              child: Text("OK", style: kTextPrimary,),
-              onPressed: (){
-              hideSnackbar();
-          },
-            )
-          );
-          // Get.rawSnackbar(
-          //     message: message['notification']['title'],
-          //     duration: ,
-          //     snackPosition: SnackPosition.TOP,
-          //     margin: EdgeInsets.only(top: 8, left: 8, right: 8, bottom: 32),
-          //     backgroundColor: kPrimary,
-          //     borderRadius: 8);
-          // await showStatusDialog(
-          //     Icon(Icons.info_outline),
-          //     message['notification']['title'],
-          //     message['notification']['body']);
+              Platform.isIOS
+                  ? message['aps']['alert']['title']
+                  : message['notification']['title'], // title
+              Platform.isIOS
+                  ? message['aps']['alert']['body']
+                  : message['notification']['body'],
+              colorText: kBackgroundGrey[0],
+              shouldIconPulse: true,
+              backgroundColor: kPrimary,
+              isDismissible: true,
+              duration: Duration(minutes: 1),
+              mainButton: FlatButton(
+                color: kPrimary,
+                child: Text(
+                  "OK",
+                  style: kTextPrimary,
+                ),
+                onPressed: () {
+                  hideSnackbar();
+                },
+              ));
         },
         //Called when the app has been closed completely and its opened
         onLaunch: (Map<String, dynamic> message) async {
