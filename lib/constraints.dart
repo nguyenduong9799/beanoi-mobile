@@ -17,7 +17,7 @@ final kBackgroundGrey = [
 final kGreyTitle = Color(0xFF575757);
 
 final kTextPrimary = TextStyle(color: Color(0xFFFFFFFF));
-final kTextSecondary = TextStyle(color: kPrimary);
+final kTextSecondary = TextStyle(color: Colors.grey);
 
 const String CART_TAG = "cartTag";
 

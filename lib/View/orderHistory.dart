@@ -1,4 +1,3 @@
-import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -7,7 +6,6 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
 import 'package:unidelivery_mobile/acessories/appbar.dart';
-import 'package:unidelivery_mobile/acessories/dash_border.dart';
 import 'package:unidelivery_mobile/acessories/loading.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
@@ -121,14 +119,31 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
         return Center(
           child: LoadingBean(),
         );
-      else if (status == ViewStatus.Empty || orderSummaryList == null)
-        return Container(
-          child: SvgPicture.asset(
-            'assets/images/order_history.svg',
-            semanticsLabel: 'Acme Logo',
-            fit: BoxFit.cover,
+      else if (status == ViewStatus.Empty ||
+          orderSummaryList == null ||
+          orderSummaryList.length == 0)
+        return Center(
+          child: Container(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('Bạn chưa đặt đơn hàng nào hôm nay 😵'),
+                FlatButton(
+                  onPressed: () {
+                    Get.back();
+                  },
+                  child: Text(
+                    '🥡 Đặt ngay 🥡',
+                    style: kTextPrimary.copyWith(
+                      color: kPrimary,
+                    ),
+                  ),
+                )
+              ],
+            ),
           ),
         );
+
       if (status == ViewStatus.Error)
         return Center(
           child: AspectRatio(

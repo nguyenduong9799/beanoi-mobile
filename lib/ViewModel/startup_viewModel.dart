@@ -23,10 +23,7 @@ class StartUpViewModel extends BaseModel {
   }
 
   Future handleStartUpLogic() async {
-    //await PermissionsService.requestPermission(Permission.storage);
     AccountDAO _accountDAO = AccountDAO();
-    // Register for push notifications
-    // await _pushNotificationService.initialise();
     await Future.delayed(Duration(seconds: 3));
     var hasLoggedInUser = await _accountDAO.isUserLoggedIn();
     bool isFirstOnBoard = await getIsFirstOnboard() ?? true;

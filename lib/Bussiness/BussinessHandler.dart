@@ -1,3 +1,5 @@
+import 'package:unidelivery_mobile/Model/DTO/index.dart';
+
 class BussinessHandler {
   static const double BEAN_RATE = 1000; // 1k VND = 1 bean
   static const int PRICE_QUANTITY = 10;
@@ -20,5 +22,20 @@ class BussinessHandler {
     print("total: " + total.toString());
 
     return total;
+  }
+
+  static CampusDTO setSelectedTime(CampusDTO campus){
+    campus.selectedTimeSlot = null;
+    for (int i = 0; i < campus.timeSlots.length; i++) {
+      if (campus.timeSlots[i].available) {
+        campus.selectedTimeSlot = campus.timeSlots[i];
+        break;
+      }
+    }
+    if (campus.selectedTimeSlot == null) {
+      campus.selectedTimeSlot =
+      campus.timeSlots[campus.timeSlots.length - 1];
+    }
+    return campus;
   }
 }

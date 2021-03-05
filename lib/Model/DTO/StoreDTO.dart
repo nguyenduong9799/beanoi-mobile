@@ -1,26 +1,13 @@
-class StoreDTO{
+abstract class StoreDTO {
   int id;
   String name;
-  String location;
-  String imageUrl;
+  bool available;
 
-  StoreDTO({this.id, this.name, this.location, this.imageUrl});
+  StoreDTO({this.id, this.name, this.available});
 
-  factory StoreDTO.fromJson(dynamic json){
-    return StoreDTO(
-      id: json['id'],
-      name: json['name'],
-      location: json['address'],
-      imageUrl: json['image_url']
-    );
-  }
+  StoreDTO.fromJson(dynamic json);
 
-  Map<String, dynamic> toJson(){
-    return {
-      "id" : id,
-      "name" : name,
-      "address": location,
-      "image_url" : imageUrl
-    };
-  }
+  Map<String, dynamic> toJson();
 }
+
+

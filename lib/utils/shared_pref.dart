@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:unidelivery_mobile/Model/DTO/StoreDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 
 Future<bool> setIsFirstOnboard(bool isFirstOnboard) async {
@@ -91,18 +90,18 @@ Future<void> updateItemFromCart(CartItem item) async {
   print("Cart: " + cart.items[0].quantity.toString());
 }
 
-Future<void> setStore(StoreDTO dto) async {
+Future<void> setStore(CampusDTO dto) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   if (dto != null) {
     prefs.setString('STORE', jsonEncode(dto?.toJson()));
   }
 }
 
-Future<StoreDTO> getStore() async {
+Future<CampusDTO> getStore() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   String encodedCart = prefs.getString('STORE');
   if (encodedCart != null) {
-    return StoreDTO.fromJson(jsonDecode(encodedCart));
+    return CampusDTO.fromJson(jsonDecode(encodedCart));
   }
   return null;
 }

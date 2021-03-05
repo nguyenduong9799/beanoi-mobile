@@ -37,25 +37,35 @@ class OrderHistoryViewModel extends BaseModel {
   }
 
   Future<void> cancelOrder(int orderId) async {
-    int option = await showOptionDialog("Thanh xuân như một tách trà");
-    if (option == 1) {
-      StoreDTO storeDTO = await getStore();
-      final success = await _orderDAO.cancelOrder(
-        orderId,
-        storeDTO.id,
-      );
-
-      if (success) {
-        await showStatusDialog("assets/images/global_sucsess.png", "Thành công",
-            "Hãy xem thử các món khác bạn nhé 😓");
-        Get.back();
-      } else {
-        await showStatusDialog(
-          "assets/images/global_error.png",
-          "Thất bại",
-          "Chưa hủy đươc đơn bạn vui lòng thử lại nhé 😓",
+    try{
+      int option = await showOptionDialog("Thanh xuân như một tách trà");
+      if (option == 1) {
+        showLoadingDialog();
+        CampusDTO storeDTO = await getStore();
+        final success = await _orderDAO.cancelOrder(
+          orderId,
+          storeDTO.id,
         );
+
+        if (success) {
+          await showStatusDialog("assets/images/global_sucsess.png", "Thành công",
+              "Hãy xem thử các món khác bạn nhé 😓");
+          Get.back();
+          await getOrders();
+        } else {
+          await showStatusDialog(
+            "assets/images/global_error.png",
+            "Thất bại",
+            "Chưa hủy đươc đơn bạn vui lòng thử lại nhé 😓",
+          );
+        }
       }
+    }catch(e){
+      await showStatusDialog(
+        "assets/images/global_error.png",
+        "Thất bại",
+        "Chưa hủy đươc đơn bạn vui lòng thử lại nhé 😓",
+      );
     }
   }
 

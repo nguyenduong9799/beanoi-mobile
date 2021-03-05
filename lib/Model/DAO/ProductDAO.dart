@@ -1,22 +1,23 @@
 import 'package:dio/dio.dart';
 import 'package:unidelivery_mobile/Model/DAO/BaseDAO.dart';
-import 'package:unidelivery_mobile/Model/DTO/MetaDataDTO.dart';
-import 'package:unidelivery_mobile/Model/DTO/ProductDTO.dart';
+import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/utils/request.dart';
 
 class ProductDAO extends BaseDAO {
   // 1. Get Product List from API
-  Future<List<ProductDTO>> getProducts(int store_id, int supplier_id,
+  Future<List<ProductDTO>> getProducts(
+      int store_id, int supplier_id, TimeSlot time_slot,
       {int page, int size, int type}) async {
     Response res;
+
     if (type != null) {
       res = await request.get(
-          'stores/$store_id/suppliers/$supplier_id/products?fields=ChildProducts&fields=CollectionId&fields=Extras',
+          'stores/$store_id/suppliers/$supplier_id/products?fields=ChildProducts&fields=CollectionId&fields=Extras&time-slot=${time_slot.from.toString()}&time-slot=${time_slot.to.toString()}',
           queryParameters: {"page": page ?? 1, "product-type-id": type});
     } else {
       res = await request.get(
-          'stores/$store_id/suppliers/$supplier_id/products?fields=ChildProducts&fields=CollectionId&fields=Extras',
+          'stores/$store_id/suppliers/$supplier_id/products?fields=ChildProducts&fields=CollectionId&fields=Extras&time-slot=${time_slot.from.toString()}&time-slot=${time_slot.to.toString()}',
           queryParameters: {"page": page ?? 1});
     }
 
@@ -26,9 +27,10 @@ class ProductDAO extends BaseDAO {
     return products;
   }
 
-  Future<List<ProductDTO>> getGifts(int store_id,
+  Future<List<ProductDTO>> getGifts(int store_id, TimeSlot time_slot,
       {int page, int size, int type}) async {
-    Response res = await request.get('stores/$store_id/gifts',
+    Response res = await request.get(
+        'stores/$store_id/gifts?time-slot=${time_slot.from.toString()}&time-slot=${time_slot.to.toString()}',
         queryParameters: {"page": page ?? 1, "size": size ?? DEFAULT_SIZE});
 
     //final res = await Dio().get("http://api.dominos.reso.vn/api/v1/products");

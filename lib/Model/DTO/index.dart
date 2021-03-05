@@ -7,3 +7,5 @@ export 'StoreDTO.dart';
 export 'MetaDataDTO.dart';
 export 'CollectionDTO.dart';
 export 'OrderAmountDTO.dart';
+export 'CampusDTO.dart';
+export 'SupplierDTO.dart';

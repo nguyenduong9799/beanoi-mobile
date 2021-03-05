@@ -1,6 +1,5 @@
 import 'package:logger/logger.dart';
 import 'package:unidelivery_mobile/Model/DTO/ProductDTO.dart';
-import 'package:unidelivery_mobile/constraints.dart';
 
 final logger = Logger(
     printer: PrettyPrinter(
@@ -14,13 +13,13 @@ final logger = Logger(
 
 class Cart {
   List<CartItem> items;
+  int payment;
   // User info
 
   Cart.get({
     this.items,
+    this.payment
   });
-
-  int payment;
 
   Cart() {
     items = List();
@@ -34,6 +33,7 @@ class Cart {
     }
     return Cart.get(
       items: list,
+      payment: json['payment'],
     );
   }
 
@@ -42,6 +42,7 @@ class Cart {
     print("Items: " + listCartItem.toString());
     return {
       "items": listCartItem,
+      "payment": payment,
     };
   }
 

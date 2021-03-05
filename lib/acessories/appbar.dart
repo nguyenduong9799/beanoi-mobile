@@ -33,35 +33,20 @@ class _AppBarSate extends State<DefaultAppBar> {
       backgroundColor: Colors.white,
       elevation: 5.0,
       centerTitle: true,
-      leading: Container(
-        width: 12,
-        height: 12,
-        margin: EdgeInsets.only(left: 8),
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: kPrimary.withOpacity(0.8),
-          // borderRadius:
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            widget.backButton != null
-                ? widget.backButton
-                : Container(
-                    child: IconButton(
-                      icon: Icon(
-                        Icons.arrow_back,
-                        size: 24,
-                        color: Colors.white,
-                      ),
-                      onPressed: () {
-                        Get.back();
-                      },
-                    ),
-                  ),
-          ],
-        ),
-      ),
+      leading: widget.backButton != null
+          ? widget.backButton
+          : Container(
+              child: IconButton(
+                icon: Icon(
+                  Icons.arrow_back_ios,
+                  size: 24,
+                  color: kPrimary,
+                ),
+                onPressed: () {
+                  Get.back();
+                },
+              ),
+            ),
       title: Text(
         widget.title,
         style: TextStyle(
