@@ -20,16 +20,12 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  bool switcher = false;
-  DateTime now = DateTime.now();
-
-  // int endTime = DateTime.now().millisecondsSinceEpoch + 1000 * 60 * 60;
 
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       new GlobalKey<RefreshIndicatorState>();
 
   Future<void> _refresh() async {
-    await RootViewModel.getInstance().getSuppliers();
+    await HomeViewModel.getInstance().getSuppliers();
   }
 
   @override
@@ -38,40 +34,43 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       //bottomNavigationBar: bottomBar(),
-      body: SafeArea(
-        child: Stack(
-          children: [
-            Center(
-              child: Padding(
-                padding: EdgeInsets.only(top: Get.height * 0.12),
-                child: RefreshIndicator(
-                  key: _refreshIndicatorKey,
-                  onRefresh: _refresh,
-                  child: Column(
-                    children: [
-                      banner(),
-                      location(),
-                      timeRecieve(),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      Expanded(child: storeList()),
-                      //loadMoreButton(),
-                      SizedBox(height: 16),
-                    ],
+      body: ScopedModel(
+        model: HomeViewModel.getInstance(),
+        child: SafeArea(
+          child: Stack(
+            children: [
+              Center(
+                child: Padding(
+                  padding: EdgeInsets.only(top: Get.height * 0.12),
+                  child: RefreshIndicator(
+                    key: _refreshIndicatorKey,
+                    onRefresh: _refresh,
+                    child: Column(
+                      children: [
+                        banner(),
+                        location(),
+                        timeRecieve(),
+                        SizedBox(
+                          height: 8,
+                        ),
+                        Expanded(child: storeList()),
+                        //loadMoreButton(),
+                        SizedBox(height: 16),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-            HomeAppBar(),
-          ],
+              HomeAppBar(),
+            ],
+          ),
         ),
       ),
     );
   }
 
   Widget location() {
-    return ScopedModelDescendant<RootViewModel>(
+    return ScopedModelDescendant<HomeViewModel>(
       builder: (context, child, root) {
         String text = "Đợi tý đang load...";
         if (root.changeAddress) {
@@ -131,7 +130,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget timeRecieve() {
-    return ScopedModelDescendant<RootViewModel>(
+    return ScopedModelDescendant<HomeViewModel>(
       builder: (context, child, model) {
         if (model.currentStore != null) {
           return Container(
@@ -190,7 +189,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget storeList() {
-    return ScopedModelDescendant<RootViewModel>(
+    return ScopedModelDescendant<HomeViewModel>(
       builder: (context, child, model) {
         ViewStatus status = model.status;
         switch (status) {
@@ -217,7 +216,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: LoadingBean(),
                 ));
           default:
-            if (model.suppliers.isEmpty || model.suppliers == null) {
+            if (model.suppliers == null || model.suppliers.isEmpty) {
               return Container(
                 padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
                 color: Colors.black45,
@@ -335,7 +334,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget banner() {
     return Container(
-      child: ScopedModelDescendant<RootViewModel>(
+      child: ScopedModelDescendant<HomeViewModel>(
         builder: (context, child, model) {
           ViewStatus status = model.status;
           switch (status) {

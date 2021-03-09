@@ -31,47 +31,44 @@ class _RootScreenState extends State<RootScreen> {
   void initState() {
     super.initState();
     _selectedIndex = widget.initScreenIndex;
-    RootViewModel.getInstance().fetchStore().then((value) {
-      RootViewModel.getInstance().getSuppliers();
-      RootViewModel.getInstance().getGifts();
+    HomeViewModel.getInstance().fetchStore().then((value) {
+      HomeViewModel.getInstance().getSuppliers();
+      HomeViewModel.getInstance().getGifts();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return ScopedModel<RootViewModel>(
-      model: RootViewModel.getInstance(),
-      child: DefaultTabController(
-        length: _icons.length,
-        child: GestureDetector(
-          behavior: HitTestBehavior.translucent,
-          onHorizontalDragStart: (e) {
-            print("On Drag");
-          },
-          onLongPress: () {
-            print("Press screen");
-          },
-          onTap: () {
-            print("Tap screen");
-            // TODO:
-            // FEATURE: HIEN GOI Y KHI USER KHONG TAP VAO SCREEN MOT KHOANG THOI GIAN
-          },
-          child: Scaffold(
-              floatingActionButton: buildCartButton(),
-              body: IndexedStack(
-                index: _selectedIndex,
-                children: _screens,
+    return DefaultTabController(
+      length: _icons.length,
+      child: GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onHorizontalDragStart: (e) {
+          print("On Drag");
+        },
+        onLongPress: () {
+          print("Press screen");
+        },
+        onTap: () {
+          print("Tap screen");
+          // TODO:
+          // FEATURE: HIEN GOI Y KHI USER KHONG TAP VAO SCREEN MOT KHOANG THOI GIAN
+        },
+        child: Scaffold(
+            floatingActionButton: buildCartButton(),
+            body: IndexedStack(
+              index: _selectedIndex,
+              children: _screens,
+            ),
+            bottomNavigationBar: Container(
+              // padding: const EdgeInsets.only(bottom: 12.0),
+              color: Colors.white,
+              child: CustomTabBar(
+                icons: _icons,
+                selectedIndex: _selectedIndex,
+                onTap: (index) => setState(() => _selectedIndex = index),
               ),
-              bottomNavigationBar: Container(
-                // padding: const EdgeInsets.only(bottom: 12.0),
-                color: Colors.white,
-                child: CustomTabBar(
-                  icons: _icons,
-                  selectedIndex: _selectedIndex,
-                  onTap: (index) => setState(() => _selectedIndex = index),
-                ),
-              )),
-        ),
+            )),
       ),
     );
   }

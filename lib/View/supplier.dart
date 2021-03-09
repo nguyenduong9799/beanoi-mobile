@@ -10,6 +10,7 @@ import 'package:shimmer/shimmer.dart';
 import 'package:unidelivery_mobile/Model/DTO/CollectionDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
+import 'package:unidelivery_mobile/ViewModel/supplier_viewModel.dart';
 import 'package:unidelivery_mobile/acessories/cart_button.dart';
 import 'package:unidelivery_mobile/acessories/loading.dart';
 import 'package:unidelivery_mobile/acessories/product_promotion.dart';
@@ -17,20 +18,18 @@ import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
 import 'package:unidelivery_mobile/utils/index.dart';
 
-const ORDER_TIME = 11;
-
-class HomeScreenDetail extends StatefulWidget {
+class SupplierScreen extends StatefulWidget {
   final SupplierDTO supplier;
-  const HomeScreenDetail({Key key, @required this.supplier}) : super(key: key);
+  const SupplierScreen({Key key, @required this.supplier}) : super(key: key);
 
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  _SupplierScreenState createState() => _SupplierScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreenDetail> {
+class _SupplierScreenState extends State<SupplierScreen> {
   bool switcher = false;
   PageController _scrollController = new PageController();
-  HomeViewModel model;
+  SupplierViewModel model;
 
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       new GlobalKey<RefreshIndicatorState>();
@@ -38,8 +37,7 @@ class _HomeScreenState extends State<HomeScreenDetail> {
   @override
   void initState() {
     super.initState();
-    model = HomeViewModel.getInstance();
-    model.supplierId = widget.supplier.id;
+    model = SupplierViewModel(widget.supplier.id);
     model.getProducts();
     model.getGifts();
   }
@@ -95,7 +93,7 @@ class _HomeScreenState extends State<HomeScreenDetail> {
                       widget.supplier.name,
                       style: TextStyle(color: kPrimary),
                     ),
-                    flexibleSpace: ScopedModelDescendant<HomeViewModel>(
+                    flexibleSpace: ScopedModelDescendant<SupplierViewModel>(
                       builder: (context, child, model) {
                         if (model.isLoadGift) {
                           return Container(
@@ -173,8 +171,8 @@ class _HomeScreenState extends State<HomeScreenDetail> {
     );
   }
 
-  ScopedModelDescendant<HomeViewModel> buildProducts() {
-    return ScopedModelDescendant<HomeViewModel>(
+  ScopedModelDescendant<SupplierViewModel> buildProducts() {
+    return ScopedModelDescendant<SupplierViewModel>(
       builder: (context, child, model) {
         ViewStatus status = model.status;
         // status = ViewStatus.Loading;
@@ -256,7 +254,7 @@ class _HomeScreenState extends State<HomeScreenDetail> {
   }
 
   Widget homeContent(CollectionDTO collection) {
-    return ScopedModelDescendant<HomeViewModel>(
+    return ScopedModelDescendant<SupplierViewModel>(
         builder: (context, child, model) {
       List<Widget> listProducts = List();
       if (collection.products != null && collection.products.isNotEmpty) {
@@ -267,7 +265,7 @@ class _HomeScreenState extends State<HomeScreenDetail> {
           }
           listProducts.add(InkWell(
             onTap: () {
-              model.openProductDetail(product);
+              HomeViewModel.getInstance().openProductDetail(product);
             },
             child: Container(
               padding: EdgeInsets.fromLTRB(8, 16, 8, 8),
@@ -369,7 +367,7 @@ class _HomeScreenState extends State<HomeScreenDetail> {
   }
 
   Widget loadMoreIcon() {
-    return ScopedModelDescendant<HomeViewModel>(
+    return ScopedModelDescendant<SupplierViewModel>(
       builder: (context, child, model) {
         switch (model.status) {
           case ViewStatus.LoadMore:
@@ -398,7 +396,7 @@ class _HomeScreenState extends State<HomeScreenDetail> {
           offset: animatorState.value,
           child: Container(
             width: Get.width,
-            child: ScopedModelDescendant<HomeViewModel>(
+            child: ScopedModelDescendant<SupplierViewModel>(
               builder: (context, child, model) {
                 final filterCategories = model.collections;
                 switch (model.status) {
@@ -468,7 +466,7 @@ class _HomeScreenState extends State<HomeScreenDetail> {
       focusColor: kPrimary,
       hoverColor: kPrimary,
       textTheme: ButtonTextTheme.normal,
-      child: ScopedModelDescendant<HomeViewModel>(
+      child: ScopedModelDescendant<SupplierViewModel>(
           builder: (context, child, model) {
         final onChangeFilter = model.updateFilter;
         return FlatButton(
@@ -505,113 +503,3 @@ class _HomeScreenState extends State<HomeScreenDetail> {
     );
   }
 }
-
-// class FoodItem extends StatefulWidget {
-//   final ProductDTO product;
-//   FoodItem({Key key, this.product}) : super(key: key);
-//
-//   @override
-//   _FoodItemState createState() => _FoodItemState();
-// }
-//
-// class _FoodItemState extends State<FoodItem> {
-//   @override
-//   Widget build(BuildContext context) {
-//     final product = widget.product;
-//     final name = product.name;
-//     final imageURL = product.imageURL;
-//     return Container(
-//       // width: MediaQuery.of(context).size.width * 0.3,
-//       margin: const EdgeInsets.only(
-//         left: 10,
-//         right: 10,
-//       ),
-//       decoration: BoxDecoration(
-//         borderRadius: BorderRadius.all(Radius.circular(10)),
-//         // color: Colors.white,
-//       ),
-//       child: Material(
-//         color: Colors.transparent,
-//         child: ScopedModelDescendant<HomeViewModel>(
-//             builder: (context, child, model) {
-//           return InkWell(
-//             customBorder: RoundedRectangleBorder(
-//               borderRadius: BorderRadius.circular(10),
-//             ),
-//             onTap: () async {
-//               print('Add item to cart');
-//               model.openProductDetail(product);
-//             },
-//             child: Opacity(
-//               opacity: 1,
-//               child: Column(
-//                 children: [
-//                   Hero(
-//                     tag: product.id,
-//                     child: ClipRRect(
-//                       borderRadius: BorderRadius.circular(16),
-//                       child: Opacity(
-//                         opacity: 1,
-//                         child: AspectRatio(
-//                           aspectRatio: 1.14,
-//                           child: (imageURL == null || imageURL == "")
-//                               ? Icon(
-//                                   MaterialIcons.broken_image,
-//                                   color: kPrimary.withOpacity(0.5),
-//                                 )
-//                               : CachedNetworkImage(
-//                                   imageUrl: imageURL,
-//                                   imageBuilder: (context, imageProvider) =>
-//                                       Container(
-//                                     decoration: BoxDecoration(
-//                                       image: DecorationImage(
-//                                         image: imageProvider,
-//                                         fit: BoxFit.cover,
-//                                       ),
-//                                     ),
-//                                   ),
-//                                   progressIndicatorBuilder:
-//                                       (context, url, downloadProgress) =>
-//                                           Shimmer.fromColors(
-//                                     baseColor: Colors.grey[300],
-//                                     highlightColor: Colors.grey[100],
-//                                     enabled: true,
-//                                     child: Container(
-//                                       width: 100,
-//                                       height: 100,
-//                                       color: Colors.grey,
-//                                     ),
-//                                   ),
-//                                   errorWidget: (context, url, error) => Icon(
-//                                     MaterialIcons.broken_image,
-//                                     color: kPrimary.withOpacity(0.5),
-//                                   ),
-//                                 ),
-//                         ),
-//                       ),
-//                     ),
-//                   ),
-//                   Expanded(
-//                     child: Container(
-//                       // color: Colors.blue,
-//                       height: 60,
-//                       child: Text(
-//                         name,
-//                         overflow: TextOverflow.ellipsis,
-//                         maxLines: 2,
-//                         style: TextStyle(
-//                           fontWeight: FontWeight.bold,
-//                           fontSize: 13,
-//                         ),
-//                       ),
-//                     ),
-//                   )
-//                 ],
-//               ),
-//             ),
-//           );
-//         }),
-//       ),
-//     );
-//   }
-// }
