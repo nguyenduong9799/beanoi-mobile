@@ -108,6 +108,7 @@ class HomeViewModel extends BaseModel {
           currentStore.id, currentStore.selectedTimeSlot);
       if(blogs == null){
         blogs = await _storeDAO.getBlogs(currentStore.id);
+        
       }
 
       // int total_page = (_storeDAO.metaDataDTO.total / DEFAULT_SIZE).ceil();

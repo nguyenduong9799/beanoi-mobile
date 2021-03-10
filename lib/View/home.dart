@@ -13,6 +13,7 @@ import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/acessories/loading.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
+import 'package:unidelivery_mobile/route_constraint.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -20,7 +21,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       new GlobalKey<RefreshIndicatorState>();
 
@@ -358,7 +358,7 @@ class _HomeScreenState extends State<HomeScreen> {
               }
               return Container(
                 //padding: EdgeInsets.only(top: 8, bottom: 8),
-                height: Get.height * 0.2,
+                height: Get.height * 0.15,
                 width: Get.width,
                 child: Swiper(
                     onTap: (index) async {
@@ -367,6 +367,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     },
                     autoplay: model.blogs.length > 1 ? true : false,
                     autoplayDelay: 2000,
+                    viewportFraction: 0.85,
+                    scale: 0.95,
                     pagination:
                         new SwiperPagination(alignment: Alignment.bottomCenter),
                     itemCount: model.blogs.length,
@@ -380,11 +382,19 @@ class _HomeScreenState extends State<HomeScreen> {
 
                       return CachedNetworkImage(
                         imageUrl: model.blogs[index].imageUrl,
-                        imageBuilder: (context, imageProvider) => Container(
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: imageProvider,
-                              fit: BoxFit.cover,
+                        imageBuilder: (context, imageProvider) => InkWell(
+                          onTap: () {
+                            Get.toNamed(RouteHandler.BANNER_DETAIL,
+                                arguments: model.blogs[index]);
+                          },
+                          child: Container(
+                            margin: EdgeInsets.only(left: 8, right: 8),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              image: DecorationImage(
+                                image: imageProvider,
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
                         ),
