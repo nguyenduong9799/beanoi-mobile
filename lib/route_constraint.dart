@@ -16,4 +16,5 @@ class RouteHandler {
   static const String NETWORK_ERROR = "network_error";
   static const String LOADING = "loading";
   static const String ONBOARD = "onboard";
+  static const String BANNER_DETAIL = "banner_detail";
 }

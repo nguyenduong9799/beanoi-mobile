@@ -37,14 +37,17 @@ class _UpdateAccountState extends State<ProfileScreen>
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return Scaffold(
-      body: SafeArea(
-          child: Stack(
-        children: [
-          userInfo(),
-          Positioned(right: 8, top: 16, child: refreshButton())
-        ],
-      )),
+    return ScopedModel(
+      model: RootViewModel.getInstance(),
+      child: Scaffold(
+        body: SafeArea(
+            child: Stack(
+          children: [
+            userInfo(),
+            Positioned(right: 8, top: 16, child: refreshButton())
+          ],
+        )),
+      ),
     );
   }
 

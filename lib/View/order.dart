@@ -340,7 +340,7 @@ class _OrderScreenState extends State<OrderScreen> {
                         width: 8,
                       ),
                       Container(
-                        width: MediaQuery.of(context).size.width * 0.65 - 110,
+                        width: MediaQuery.of(context).size.width * 0.65 - 120,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -754,7 +754,7 @@ class _OrderScreenState extends State<OrderScreen> {
         IconButton(
           icon: Icon(
             AntDesign.minuscircleo,
-            size: 20,
+            size: 16,
             color: minusColor,
           ),
           onPressed: () async {
@@ -768,14 +768,15 @@ class _OrderScreenState extends State<OrderScreen> {
         IconButton(
           icon: Icon(
             AntDesign.pluscircleo,
-            size: 20,
+            size: 16,
             color: plusColor,
           ),
           onPressed: () async {
             item.quantity++;
             await orderViewModel.updateQuantity(item);
           },
-        )
+        ),
+        Icon(Icons.arrow_back_ios_outlined, color: Colors.orange, size: 16,)
       ],
     );
   }
@@ -787,7 +788,7 @@ class _OrderScreenState extends State<OrderScreen> {
     formatter.maximumFractionDigits = 2;
     return otherAmounts
         .map((amountObj) => Padding(
-              padding: const EdgeInsets.only(top: 5, bottom: 5),
+              padding: const EdgeInsets.only(top: 8, bottom: 8),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
