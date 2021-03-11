@@ -44,13 +44,10 @@ class _RootScreenState extends State<RootScreen> {
       child: GestureDetector(
         behavior: HitTestBehavior.translucent,
         onHorizontalDragStart: (e) {
-          print("On Drag");
         },
         onLongPress: () {
-          print("Press screen");
         },
         onTap: () {
-          print("Tap screen");
           // TODO:
           // FEATURE: HIEN GOI Y KHI USER KHONG TAP VAO SCREEN MOT KHOANG THOI GIAN
         },

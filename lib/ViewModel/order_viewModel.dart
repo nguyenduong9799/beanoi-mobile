@@ -55,8 +55,6 @@ class OrderViewModel extends BaseModel {
       hideDialog();
       setState(ViewStatus.Completed);
     } catch (e, stacktra) {
-      print(e.toString());
-      print(stacktra.toString());
       bool result = await showErrorDialog();
       if (result) {
         await prepareOrder();

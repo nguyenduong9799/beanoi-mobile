@@ -71,13 +71,10 @@ class _BannerDetailScreenState extends State<BannerDetailScreen> {
             Html(
               data: htmlData,
               onLinkTap: (url) {
-                print("Opening $url...");
               },
               onImageTap: (src) {
-                print(src);
               },
               onImageError: (exception, stackTrace) {
-                print(exception);
               },
             ),
           ],

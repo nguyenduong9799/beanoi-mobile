@@ -255,10 +255,8 @@ class _OrderScreenState extends State<OrderScreen> {
     List<Widget> list = new List();
     double price = 0;
     if (item.master.type != ProductType.MASTER_PRODUCT) {
-      print("Khác" + item.master.type.toString());
       price = item.master.price * item.quantity;
     }
-    print("Price: " + price.toString());
 
     list.add(Text(item.master.name,
         style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)));

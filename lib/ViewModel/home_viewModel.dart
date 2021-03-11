@@ -120,7 +120,6 @@ class HomeViewModel extends BaseModel {
       // check truong hop product tra ve rong (do khong co menu nao trong TG do)
       setState(ViewStatus.Completed);
     } catch (e, stacktrace) {
-      print("Excception: " + e.toString() + stacktrace.toString());
       bool result = await showErrorDialog();
       if (result) {
         await getSuppliers();
@@ -169,7 +168,6 @@ class HomeViewModel extends BaseModel {
       // check truong hop product tra ve rong (do khong co menu nao trong TG do)
       setState(ViewStatus.Completed);
     } catch (e, stacktrace) {
-      print("Excception: " + e.toString() + stacktrace.toString());
       bool result = await showErrorDialog();
       if (result) {
         await getGifts();
@@ -182,7 +180,6 @@ class HomeViewModel extends BaseModel {
     try {
       setState(ViewStatus.LoadMore);
 
-      print("Get products...");
       gifts += await _productDAO.getGifts(
           currentStore.id, currentStore.selectedTimeSlot,
           page: _productDAO.metaDataDTO.page + 1);
@@ -191,7 +188,6 @@ class HomeViewModel extends BaseModel {
       // check truong hop product tra ve rong (do khong co menu nao trong TG do)
       setState(ViewStatus.Completed);
     } catch (e, stacktrace) {
-      print("Excception: " + e.toString() + stacktrace.toString());
       bool result = await showErrorDialog();
       if (result) {
         await getMoreGifts();
@@ -226,7 +222,6 @@ class HomeViewModel extends BaseModel {
           }
 
           if (option == 1) {
-            print("Changing index...");
             showLoadingDialog();
             currentStore = BussinessHandler.setSelectedTime(tmpStore);
             await deleteCart();

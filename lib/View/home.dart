@@ -30,7 +30,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // print(widget?.user.uid);
     return Scaffold(
       backgroundColor: Colors.white,
       //bottomNavigationBar: bottomBar(),
