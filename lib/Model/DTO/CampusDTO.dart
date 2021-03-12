@@ -83,19 +83,27 @@ class TimeSlot {
   int menuId;
   String from;
   String to;
+  String arrive;
   bool available;
 
-  TimeSlot({this.menuId, this.from, this.to, this.available});
+  TimeSlot({this.menuId, this.from, this.to, this.available, this.arrive});
 
   factory TimeSlot.fromJson(dynamic json) {
     return TimeSlot(
         menuId: json['menu_id'],
         from: json['from'],
         to: json['to'].toString(),
-        available: json['available'] ?? false);
+        available: json['available'] ?? false,
+        arrive: json['arrive_time']);
   }
 
   Map<String, dynamic> toJson() {
-    return {"menu_id": menuId, "from": from, "to": to, "available": available};
+    return {
+      "menu_id": menuId,
+      "from": from,
+      "to": to,
+      "available": available,
+      'arrive_time': arrive
+    };
   }
 }

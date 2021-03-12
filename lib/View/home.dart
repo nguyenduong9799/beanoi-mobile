@@ -146,22 +146,20 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Flexible(
-                    child: RichText(
-                      text: TextSpan(
-                          text: "Khung giờ: ",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15,
-                              color: Colors.yellow),
-                          children: [
-                            TextSpan(
-                                text:
-                                    "${model.currentStore.selectedTimeSlot.from.substring(0, 5)} - ${model.currentStore.selectedTimeSlot.to.substring(0, 5)}",
-                                style: TextStyle(
-                                    fontSize: 14, color: Colors.white))
-                          ]),
-                    ),
+                  RichText(
+                    text: TextSpan(
+                        text: "Khung giờ: ",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
+                            color: Colors.yellow),
+                        children: [
+                          TextSpan(
+                              text:
+                              "${model.currentStore.selectedTimeSlot.from.substring(0, 5)} - ${model.currentStore.selectedTimeSlot.to.substring(0, 5)}",
+                              style: TextStyle(
+                                  fontSize: 14, color: Colors.white))
+                        ]),
                   ),
                   model.currentStore.selectedTimeSlot.available
                       ? Icon(
@@ -365,7 +363,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           "https://www.youtube.com/embed/wu32Wj_Uix4");
                     },
                     autoplay: model.blogs.length > 1 ? true : false,
-                    autoplayDelay: 2000,
+                    autoplayDelay: 5000,
                     viewportFraction: 0.85,
                     scale: 0.95,
                     pagination:
