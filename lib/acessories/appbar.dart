@@ -152,7 +152,7 @@ class _HomeAppBarSate extends State<HomeAppBar> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Flexible(child: _buildWelcome()),
-                      SizedBox(height: 5),
+                      SizedBox(height: 8),
                       Row(
                         children: [
                           Image(
@@ -160,7 +160,7 @@ class _HomeAppBarSate extends State<HomeAppBar> {
                             width: 18,
                             height: 18,
                           ),
-                          SizedBox(width: 10),
+                          SizedBox(width: 8),
                           Flexible(child: _buildBalance()),
                         ],
                       )
@@ -267,7 +267,7 @@ class _HomeAppBarSate extends State<HomeAppBar> {
               ),
               children: [
                 TextSpan(
-                  text: "${user.balance} xu",
+                  text: "${user.balance.floor()} xu",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 14,
@@ -276,7 +276,7 @@ class _HomeAppBarSate extends State<HomeAppBar> {
                 ),
                 TextSpan(text: " và "),
                 TextSpan(
-                  text: "${user.point} ",
+                  text: "${user.point.floor()} ",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 14,
