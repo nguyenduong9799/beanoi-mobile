@@ -146,22 +146,20 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Flexible(
-                    child: RichText(
-                      text: TextSpan(
-                          text: "Khung giờ: ",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15,
-                              color: Colors.yellow),
-                          children: [
-                            TextSpan(
-                                text:
-                                    "${model.currentStore.selectedTimeSlot.from.substring(0, 5)} - ${model.currentStore.selectedTimeSlot.to.substring(0, 5)}",
-                                style: TextStyle(
-                                    fontSize: 14, color: Colors.white))
-                          ]),
-                    ),
+                  RichText(
+                    text: TextSpan(
+                        text: "Khung giờ: ",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
+                            color: Colors.yellow),
+                        children: [
+                          TextSpan(
+                              text:
+                              "${model.currentStore.selectedTimeSlot.from.substring(0, 5)} - ${model.currentStore.selectedTimeSlot.to.substring(0, 5)}",
+                              style: TextStyle(
+                                  fontSize: 14, color: Colors.white))
+                        ]),
                   ),
                   model.currentStore.selectedTimeSlot.available
                       ? Icon(

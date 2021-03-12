@@ -326,7 +326,7 @@ class HomeViewModel extends BaseModel {
       campus.timeSlots = listStore[0].timeSlots;
       bool found = false;
       campus.timeSlots.forEach((element) {
-        if (element.menuId == campus.selectedTimeSlot.menuId && element.from == campus.selectedTimeSlot.from && element.to == campus.selectedTimeSlot.to) {
+        if (element.menuId == campus.selectedTimeSlot.menuId && element.from == campus.selectedTimeSlot.from && element.to == campus.selectedTimeSlot.to && element.arrive == campus.selectedTimeSlot.arrive) {
           campus.selectedTimeSlot.available = element.available;
           found = true;
         }

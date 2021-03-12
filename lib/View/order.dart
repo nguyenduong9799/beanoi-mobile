@@ -472,7 +472,7 @@ class _OrderScreenState extends State<OrderScreen> {
                 await model.processChangeLocation();
               },
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(8, 0, 4, 4),
+                padding: const EdgeInsets.fromLTRB(8, 8, 4, 8),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -505,13 +505,13 @@ class _OrderScreenState extends State<OrderScreen> {
       padding: const EdgeInsets.all(8.0),
       child: RichText(
         text: TextSpan(
-            text: "⏰ Khung giờ: ",
+            text: "🔔 Nhận hàng lúc: ",
             style: TextStyle(
                 fontWeight: FontWeight.bold, fontSize: 15, color: kPrimary),
             children: [
               TextSpan(
                   text:
-                      "${dto.selectedTimeSlot.from.substring(0, 5)} - ${dto.selectedTimeSlot.to.substring(0, 5)}",
+                      "${dto.selectedTimeSlot.arrive.substring(0, 5)}",
                   style: TextStyle(fontSize: 14, color: Colors.black))
             ]),
       ),
