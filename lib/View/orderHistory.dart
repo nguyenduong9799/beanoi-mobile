@@ -207,7 +207,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
             ),
           ),
         ),
-        ...orderSummary.orders.reversed
+        ...orderSummary.orders
             .toList()
             .map((order) => _buildOrderItem(order))
             .toList(),

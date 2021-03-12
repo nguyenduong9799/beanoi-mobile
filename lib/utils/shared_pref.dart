@@ -35,7 +35,6 @@ Future<String> getToken() async {
 
 Future<Cart> setCart(Cart cart) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  print("Cart: " + cart.toString());
   prefs.setString('CART', jsonEncode(cart.toJson()));
   return cart;
 }
@@ -87,7 +86,6 @@ Future<void> updateItemFromCart(CartItem item) async {
   }
   cart.updateQuantity(item);
   setCart(cart);
-  print("Cart: " + cart.items[0].quantity.toString());
 }
 
 Future<void> setStore(CampusDTO dto) async {

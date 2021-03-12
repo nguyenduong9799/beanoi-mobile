@@ -28,7 +28,6 @@ Widget buildCartButton() {
                       // side: BorderSide(color: Colors.red),
                     ),
                     onPressed: () async {
-                      print('Tap order');
                       await model.openCart();
                     },
                     child: Stack(

@@ -86,7 +86,6 @@ class OrderHistoryViewModel extends BaseModel {
       setState(ViewStatus.Completed);
     } catch (e) {
       bool result = await showErrorDialog();
-      print(e.toString());
       if (result) {
         await getOrders();
       } else
@@ -108,7 +107,6 @@ class OrderHistoryViewModel extends BaseModel {
       setState(ViewStatus.Completed);
     } catch (e) {
       bool result = await showErrorDialog();
-      print(e.toString());
       if (result) {
         await getMoreOrders();
       } else
@@ -127,7 +125,6 @@ class OrderHistoryViewModel extends BaseModel {
       orderDetail = data;
       setState(ViewStatus.Completed);
     } catch (e, str) {
-      print(str.toString());
       bool result = await showErrorDialog();
       if (result) {
         await getOrderDetail(orderId);

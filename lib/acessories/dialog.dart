@@ -11,7 +11,8 @@ Future<void> showStatusDialog(
     String imageUrl, String status, String content) async {
   hideDialog();
   await Get.dialog(WillPopScope(
-    onWillPop: () {},
+    onWillPop: () {
+    },
     child: Dialog(
       backgroundColor: Colors.white,
       elevation: 8.0,
@@ -301,14 +302,14 @@ void hideSnackbar() {
   }
 }
 
-Future<void> changeCampusDialog(RootViewModel model, Function function) async {
+Future<void> changeCampusDialog(HomeViewModel model, Function function) async {
   hideDialog();
   await Get.dialog(
       WillPopScope(
         onWillPop: () {},
         child: ScopedModel(
           model: model,
-          child: ScopedModelDescendant<RootViewModel>(
+          child: ScopedModelDescendant<HomeViewModel>(
               builder: (context, child, model) {
             return Dialog(
               backgroundColor: Colors.white,
@@ -498,11 +499,11 @@ Future<void> changeLocationDialog(
       barrierDismissible: false);
 }
 
-Future<void> showTimeDialog(RootViewModel model) async {
+Future<void> showTimeDialog(HomeViewModel model) async {
   await Get.dialog(
       ScopedModel(
         model: model,
-        child: ScopedModelDescendant<RootViewModel>(
+        child: ScopedModelDescendant<HomeViewModel>(
             builder: (context, child, model) {
           List<Widget> timeSlots = new List();
           model.currentStore.timeSlots.forEach((element) {

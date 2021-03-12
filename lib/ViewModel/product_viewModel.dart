@@ -52,7 +52,6 @@ class ProductDetailViewModel extends BaseModel {
       if (dto.type == ProductType.COMPLEX_PRODUCT &&
           dto.hasExtra != null &&
           dto.hasExtra) {
-        print("add extra!");
         getExtra(dto);
         isExtra = true;
       } else {
@@ -166,11 +165,9 @@ class ProductDetailViewModel extends BaseModel {
       if (master.type == ProductType.MASTER_PRODUCT) {
         try {
           ProductDTO dto = master.getChildByAttributes(choice);
-          print("dto: " + dto.toString());
           fixTotal = dto.price * count;
           extraTotal = 0;
           if (dto.hasExtra != null && dto.hasExtra) {
-            print("add extra!");
             getExtra(dto);
           } else {
             this.extra = null;
@@ -250,7 +247,6 @@ class ProductDetailViewModel extends BaseModel {
     String description = "";
     CartItem item = new CartItem(master, listChoices, description, count);
 
-    print("Save product: " + master.toString());
 
     if (master.type == ProductType.GIFT_PRODUCT) {
       if (RootViewModel.getInstance().currentUser == null) {

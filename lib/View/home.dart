@@ -13,6 +13,7 @@ import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/acessories/loading.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
+import 'package:unidelivery_mobile/route_constraint.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -20,58 +21,55 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  bool switcher = false;
-  DateTime now = DateTime.now();
-
-  // int endTime = DateTime.now().millisecondsSinceEpoch + 1000 * 60 * 60;
-
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       new GlobalKey<RefreshIndicatorState>();
 
   Future<void> _refresh() async {
-    await RootViewModel.getInstance().getSuppliers();
+    await HomeViewModel.getInstance().getSuppliers();
   }
 
   @override
   Widget build(BuildContext context) {
-    // print(widget?.user.uid);
     return Scaffold(
       backgroundColor: Colors.white,
       //bottomNavigationBar: bottomBar(),
-      body: SafeArea(
-        child: Stack(
-          children: [
-            Center(
-              child: Padding(
-                padding: EdgeInsets.only(top: Get.height * 0.12),
-                child: RefreshIndicator(
-                  key: _refreshIndicatorKey,
-                  onRefresh: _refresh,
-                  child: Column(
-                    children: [
-                      banner(),
-                      location(),
-                      timeRecieve(),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      Expanded(child: storeList()),
-                      //loadMoreButton(),
-                      SizedBox(height: 16),
-                    ],
+      body: ScopedModel(
+        model: HomeViewModel.getInstance(),
+        child: SafeArea(
+          child: Stack(
+            children: [
+              Center(
+                child: Padding(
+                  padding: EdgeInsets.only(top: Get.height * 0.12),
+                  child: RefreshIndicator(
+                    key: _refreshIndicatorKey,
+                    onRefresh: _refresh,
+                    child: Column(
+                      children: [
+                        banner(),
+                        location(),
+                        timeRecieve(),
+                        SizedBox(
+                          height: 8,
+                        ),
+                        Expanded(child: storeList()),
+                        //loadMoreButton(),
+                        SizedBox(height: 16),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-            HomeAppBar(),
-          ],
+              HomeAppBar(),
+            ],
+          ),
         ),
       ),
     );
   }
 
   Widget location() {
-    return ScopedModelDescendant<RootViewModel>(
+    return ScopedModelDescendant<HomeViewModel>(
       builder: (context, child, root) {
         String text = "Đợi tý đang load...";
         if (root.changeAddress) {
@@ -131,7 +129,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget timeRecieve() {
-    return ScopedModelDescendant<RootViewModel>(
+    return ScopedModelDescendant<HomeViewModel>(
       builder: (context, child, model) {
         if (model.currentStore != null) {
           return Container(
@@ -190,7 +188,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget storeList() {
-    return ScopedModelDescendant<RootViewModel>(
+    return ScopedModelDescendant<HomeViewModel>(
       builder: (context, child, model) {
         ViewStatus status = model.status;
         switch (status) {
@@ -217,7 +215,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: LoadingBean(),
                 ));
           default:
-            if (model.suppliers.isEmpty || model.suppliers == null) {
+            if (model.suppliers == null || model.suppliers.isEmpty) {
               return Container(
                 padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
                 color: Colors.black45,
@@ -335,7 +333,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget banner() {
     return Container(
-      child: ScopedModelDescendant<RootViewModel>(
+      child: ScopedModelDescendant<HomeViewModel>(
         builder: (context, child, model) {
           ViewStatus status = model.status;
           switch (status) {
@@ -359,7 +357,7 @@ class _HomeScreenState extends State<HomeScreen> {
               }
               return Container(
                 //padding: EdgeInsets.only(top: 8, bottom: 8),
-                height: Get.height * 0.2,
+                height: Get.height * 0.15,
                 width: Get.width,
                 child: Swiper(
                     onTap: (index) async {
@@ -368,6 +366,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     },
                     autoplay: model.blogs.length > 1 ? true : false,
                     autoplayDelay: 2000,
+                    viewportFraction: 0.85,
+                    scale: 0.95,
                     pagination:
                         new SwiperPagination(alignment: Alignment.bottomCenter),
                     itemCount: model.blogs.length,
@@ -381,11 +381,19 @@ class _HomeScreenState extends State<HomeScreen> {
 
                       return CachedNetworkImage(
                         imageUrl: model.blogs[index].imageUrl,
-                        imageBuilder: (context, imageProvider) => Container(
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: imageProvider,
-                              fit: BoxFit.cover,
+                        imageBuilder: (context, imageProvider) => InkWell(
+                          onTap: () {
+                            Get.toNamed(RouteHandler.BANNER_DETAIL,
+                                arguments: model.blogs[index]);
+                          },
+                          child: Container(
+                            margin: EdgeInsets.only(left: 8, right: 8),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              image: DecorationImage(
+                                image: imageProvider,
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
                         ),

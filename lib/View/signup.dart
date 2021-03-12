@@ -58,7 +58,6 @@ class _SignUpState extends State<SignUp> {
         "email": user.email,
         "gender": user.gender,
       };
-      print("Phone: " + user.phone);
     }
 
   }
@@ -69,7 +68,6 @@ class _SignUpState extends State<SignUp> {
     if (form.valid) {
       try {
         updatedUser = await model.updateUser(form.value);
-        print('Updated User ${updatedUser.name}');
         updateSucces = true;
       } catch (e) {
         await _showMyDialog("Lỗi", e.toString());
@@ -77,7 +75,6 @@ class _SignUpState extends State<SignUp> {
 
         // Chuyen trang
         if (updateSucces) {
-          print('Update Success');
           if (widget.user != null && !widget.user.isFirstLogin) {
             Get.back(result: true);
           } else {

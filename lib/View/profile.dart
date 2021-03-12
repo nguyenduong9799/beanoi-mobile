@@ -37,14 +37,17 @@ class _UpdateAccountState extends State<ProfileScreen>
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return Scaffold(
-      body: SafeArea(
-          child: Stack(
-        children: [
-          userInfo(),
-          Positioned(right: 8, top: 16, child: refreshButton())
-        ],
-      )),
+    return ScopedModel(
+      model: RootViewModel.getInstance(),
+      child: Scaffold(
+        body: SafeArea(
+            child: Stack(
+          children: [
+            userInfo(),
+            Positioned(right: 8, top: 16, child: refreshButton())
+          ],
+        )),
+      ),
     );
   }
 
@@ -222,7 +225,6 @@ class _UpdateAccountState extends State<ProfileScreen>
           style: TextStyle(fontSize: 16),
         ),
         onPressed: () async {
-          print("Update: ");
           bool result = await Get.toNamed(RouteHandler.SIGN_UP,
               arguments: model.currentUser);
           if (result != null) {
