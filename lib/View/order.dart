@@ -700,22 +700,37 @@ class _OrderScreenState extends State<OrderScreen> {
                           ),
                         ),
                         message != null
-                            ? Padding(
-                                padding: const EdgeInsets.fromLTRB(0, 4, 0, 4),
+                            ? Material(
+                                color: Colors.transparent,
                                 child: InkWell(
                                   onTap: () {
                                     if (message['action'] != null) {
-                                      Get.toNamed(
+                                      Get.offAndToNamed(
                                         message['action'],
                                         arguments: message['arguments'],
                                       );
                                     }
                                   },
-                                  child: Text(
-                                    message['content'],
-                                    style: TextStyle(
-                                      color: Colors.orange,
-                                      fontSize: 14,
+                                  child: Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(0, 8, 0, 8),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Flexible(
+                                          child: Text(
+                                            message['content'],
+                                            style: TextStyle(
+                                              color: Colors.orange,
+                                              fontSize: 14,
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(width: 40),
+                                        Text('Quất ngay',
+                                            style: TextStyle(color: kPrimary)),
+                                      ],
                                     ),
                                   ),
                                 ),
