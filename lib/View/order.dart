@@ -16,6 +16,7 @@ import 'package:unidelivery_mobile/acessories/loading.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
 import 'package:unidelivery_mobile/utils/index.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 
 class OrderScreen extends StatefulWidget {
   @override
@@ -24,10 +25,16 @@ class OrderScreen extends StatefulWidget {
 
 class _OrderScreenState extends State<OrderScreen> {
   OrderViewModel orderViewModel;
+  AutoScrollController controller;
+  final scrollDirection = Axis.vertical;
 
   @override
   void initState() {
     super.initState();
+    controller = AutoScrollController(
+        viewportBoundaryGetter: () =>
+            Rect.fromLTRB(0, 0, 0, MediaQuery.of(context).padding.bottom),
+        axis: scrollDirection);
     orderViewModel = OrderViewModel();
     orderViewModel.prepareOrder();
   }
@@ -44,39 +51,6 @@ class _OrderScreenState extends State<OrderScreen> {
           builder: (BuildContext context, Widget child, OrderViewModel model) {
             ViewStatus status = model.status;
             switch (status) {
-              case ViewStatus.Loading:
-                return Center(child: LoadingBean());
-              case ViewStatus.Completed:
-                return ListView(
-                  shrinkWrap: true,
-                  children: [
-                    Hero(
-                      tag: CART_TAG,
-                      child: Container(
-                          margin: const EdgeInsets.only(top: 8),
-                          child: layoutAddress(model.campusDTO)),
-                    ),
-
-                    timeRecieve(model.campusDTO),
-                    SizedBox(
-                        height: 8,
-                        child: Container(
-                          color: kBackgroundGrey[2],
-                        )),
-                    Container(child: buildBeanReward()),
-                    SizedBox(
-                        height: 8,
-                        child: Container(
-                          color: kBackgroundGrey[2],
-                        )),
-                    Container(
-                        child: layoutOrder(
-                            model.currentCart, model.campusDTO.name)),
-                    layoutSubtotal(),
-                    selectPaymentMethods()
-                    //SizedBox(height: 16),
-                  ],
-                );
               case ViewStatus.Error:
                 return ListView(
                   children: [
@@ -94,6 +68,56 @@ class _OrderScreenState extends State<OrderScreen> {
                     ),
                   ],
                 );
+              case ViewStatus.Loading:
+                return Center(child: LoadingBean());
+              case ViewStatus.Completed:
+                return ListView(
+                  shrinkWrap: true,
+                  children: [
+                    Hero(
+                      tag: CART_TAG,
+                      child: Container(
+                          margin: const EdgeInsets.only(top: 8),
+                          child: layoutAddress(model.campusDTO)),
+                    ),
+
+                    AutoScrollTag(
+                      index: 1,
+                      key: ValueKey(1),
+                      controller: controller,
+                      highlightColor: Colors.black.withOpacity(0.1),
+                      child: timeRecieve(model.campusDTO),
+                    ),
+                    SizedBox(
+                        height: 8,
+                        child: Container(
+                          color: kBackgroundGrey[2],
+                        )),
+                    Container(child: buildBeanReward()),
+                    SizedBox(
+                        height: 8,
+                        child: Container(
+                          color: kBackgroundGrey[2],
+                        )),
+                    Container(
+                        child: layoutOrder(
+                            model.currentCart, model.campusDTO.name)),
+                    SizedBox(
+                        height: 8,
+                        child: Container(
+                          color: kBackgroundGrey[2],
+                        )),
+                    layoutSubtotal(),
+                    SizedBox(
+                        height: 8,
+                        child: Container(
+                          color: kBackgroundGrey[2],
+                        )),
+                    selectPaymentMethods()
+                    //SizedBox(height: 16),
+                  ],
+                );
+
               default:
                 return LoadingScreen();
             }
@@ -497,7 +521,7 @@ class _OrderScreenState extends State<OrderScreen> {
   Widget layoutSubtotal() {
     return Container(
       width: MediaQuery.of(context).size.width,
-      padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
+      padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8, top: 8),
       // margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
         color: kBackgroundGrey[0],
@@ -505,6 +529,14 @@ class _OrderScreenState extends State<OrderScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Text(
+            'Chi phí',
+            style: TextStyle(
+                fontWeight: FontWeight.bold, fontSize: 15, color: kPrimary),
+          ),
+          SizedBox(
+            height: 8,
+          ),
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
@@ -562,14 +594,17 @@ class _OrderScreenState extends State<OrderScreen> {
         Map<String, dynamic> paymentsType = model.listPayments;
         for (int i = 0; i < paymentsType.length; i++) {
           listPayments.add(
-            RadioListTile(
-              activeColor: kPrimary,
-              groupValue: model.currentCart.payment,
-              value: paymentsType.values.elementAt(i),
-              title: Text(paymentsType.keys.elementAt(i)),
-              onChanged: (value) async {
-                await model.changeOption(value);
-              },
+            Container(
+              height: 45,
+              child: RadioListTile(
+                activeColor: kPrimary,
+                groupValue: model.currentCart.payment,
+                value: paymentsType.values.elementAt(i),
+                title: Text(paymentsType.keys.elementAt(i)),
+                onChanged: (value) async {
+                  await model.changeOption(value);
+                },
+              ),
             ),
           );
         }
@@ -581,7 +616,8 @@ class _OrderScreenState extends State<OrderScreen> {
               color: model.currentCart.payment != null
                   ? kBackgroundGrey[0]
                   : Colors.yellow[100],
-              padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
+              padding:
+                  const EdgeInsets.only(left: 8, right: 8, bottom: 8, top: 4),
               child: RichText(
                 text: TextSpan(
                     text: "Phương thức thanh toán ",
@@ -599,7 +635,8 @@ class _OrderScreenState extends State<OrderScreen> {
                     ]),
               ),
             ),
-            ...listPayments
+            ...listPayments,
+            SizedBox(height: 8),
           ],
         );
       },
@@ -609,8 +646,18 @@ class _OrderScreenState extends State<OrderScreen> {
   Widget bottomBar() {
     return ScopedModelDescendant<OrderViewModel>(
       builder: (context, child, model) {
-        switch (model.status) {
+        ViewStatus status = model.status;
+        String errorMsg = null;
+
+        if (model.location == null) {
+          errorMsg = "Vui lòng chọn địa điểm giao";
+        } else if (model.currentCart?.payment == null) {
+          errorMsg = "Vui lòng chọn phương thức thanh toán 💰";
+        }
+
+        switch (status) {
           case ViewStatus.Completed:
+            Map message = model.orderAmount.message;
             return Container(
               padding: const EdgeInsets.only(left: 8, right: 8),
               decoration: BoxDecoration(
@@ -623,20 +670,24 @@ class _OrderScreenState extends State<OrderScreen> {
                   ),
                 ],
               ),
-              child: model.currentCart.payment != null && model.location != null
+              child: model.currentCart?.payment != null &&
+                      model.location != null
                   ? ListView(
                       shrinkWrap: true,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+                          padding: const EdgeInsets.only(top: 8.0),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "Tổng tiền",
+                                status == ViewStatus.Loading
+                                    ? '...'
+                                    : "Tổng tiền",
                                 style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18,
+                                  fontSize: 14,
+                                  color: Colors.black87,
+                                  fontWeight: FontWeight.w100,
                                 ),
                               ),
                               Text(
@@ -648,13 +699,35 @@ class _OrderScreenState extends State<OrderScreen> {
                             ],
                           ),
                         ),
-                        SizedBox(
-                          height: 8,
-                        ),
+                        message != null
+                            ? Padding(
+                                padding: const EdgeInsets.fromLTRB(0, 4, 0, 4),
+                                child: InkWell(
+                                  onTap: () {
+                                    if (message['action'] != null) {
+                                      Get.toNamed(
+                                        message['action'],
+                                        arguments: message['arguments'],
+                                      );
+                                    }
+                                  },
+                                  child: Text(
+                                    message['content'],
+                                    style: TextStyle(
+                                      color: Colors.orange,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : SizedBox(
+                                height: 8,
+                              ),
                         FlatButton(
                           onPressed: () async {
                             if (model.currentCart.payment != null &&
-                                model.location != null) {
+                                model.location != null &&
+                                model.status != ViewStatus.Loading) {
                               await model.orderCart();
                             }
                             // pr.hide();
@@ -695,7 +768,13 @@ class _OrderScreenState extends State<OrderScreen> {
                         shrinkWrap: true,
                         children: [
                           FlatButton(
-                            onPressed: () async {},
+                            onPressed: () async {
+                              print('Scroll');
+                              await controller.scrollToIndex(
+                                1,
+                                preferPosition: AutoScrollPosition.begin,
+                              );
+                            },
                             padding: EdgeInsets.only(right: 8.0, left: 8.0),
                             textColor: Colors.white,
                             color: kBackgroundGrey[4],
@@ -709,19 +788,11 @@ class _OrderScreenState extends State<OrderScreen> {
                                 ),
                                 RichText(
                                   text: TextSpan(
-                                      text:
-                                          "Vui lòng chọn những phần bắt buộc ",
+                                      text: errorMsg,
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 15),
-                                      children: [
-                                        TextSpan(
-                                            text: "(*)",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 15,
-                                                color: Colors.red))
-                                      ]),
+                                      children: []),
                                 ),
                                 SizedBox(
                                   height: 16,
@@ -774,7 +845,11 @@ class _OrderScreenState extends State<OrderScreen> {
             await orderViewModel.updateQuantity(item);
           },
         ),
-        Icon(Icons.arrow_back_ios_outlined, color: Colors.orange, size: 16,)
+        Icon(
+          Icons.arrow_back_ios_outlined,
+          color: Colors.orange,
+          size: 16,
+        )
       ],
     );
   }
@@ -786,7 +861,7 @@ class _OrderScreenState extends State<OrderScreen> {
     formatter.maximumFractionDigits = 2;
     return otherAmounts
         .map((amountObj) => Padding(
-              padding: const EdgeInsets.only(top: 8, bottom: 8),
+              padding: const EdgeInsets.only(top: 4, bottom: 4),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

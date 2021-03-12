@@ -365,7 +365,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           "https://www.youtube.com/embed/wu32Wj_Uix4");
                     },
                     autoplay: model.blogs.length > 1 ? true : false,
-                    autoplayDelay: 2000,
+                    autoplayDelay: 5000,
                     viewportFraction: 0.85,
                     scale: 0.95,
                     pagination:
