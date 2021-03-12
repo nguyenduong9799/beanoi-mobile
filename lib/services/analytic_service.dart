@@ -40,7 +40,6 @@ class AnalyticsService {
   }
 
   Future logLogin(String method) async {
-    print("LOG_LOGIN");
     await _analytics.logLogin(loginMethod: method);
   }
 
@@ -55,7 +54,6 @@ class AnalyticsService {
       itemName: product.name,
       itemCategory: product.catergoryId.toString(),
     );
-    print("Loged order");
   }
 
   // View product details
@@ -75,8 +73,6 @@ class AnalyticsService {
         quantity: quantity,
       );
     }
-
-    print("Loged order");
   }
 
   // Initiate the checkout process
@@ -87,7 +83,6 @@ class AnalyticsService {
   // Make purchases or refunds
   Future logOrderCreated(double value) async {
     await _analytics.logEcommercePurchase(value: value, currency: "VND");
-    print("Loged order");
   }
   // Apply promotions
 

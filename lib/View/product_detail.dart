@@ -30,7 +30,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
   @override
   void initState() {
     super.initState();
-    print("Product: " + widget.dto.toString());
     productDetailViewModel = new ProductDetailViewModel(widget.dto);
     if (widget.dto.type == ProductType.MASTER_PRODUCT ||
         widget.dto.type == ProductType.COMPLEX_PRODUCT) {
@@ -38,7 +37,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
       List<String> affectkeys =
           productDetailViewModel.affectPriceContent.keys.toList();
       for (int i = 0; i < affectkeys.length; i++) {
-        print(affectkeys[i].toString());
         affectPriceTabs.add(affectkeys[i].toUpperCase() + " *");
       }
     }
@@ -221,7 +219,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
   Widget AffectAtributeContent() {
     List<Widget> attributes;
     List<String> listOptions;
-    print("Đây là content");
     return ScopedModelDescendant(
       builder:
           (BuildContext context, Widget child, ProductDetailViewModel model) {
@@ -238,7 +235,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
               child: Text("Empty list"),
             );
           case ViewStatus.Completed:
-            print("Complete");
             if (!model.isExtra) {
               attributes = new List();
               if (widget.dto.type == ProductType.MASTER_PRODUCT) {

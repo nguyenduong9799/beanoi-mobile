@@ -39,7 +39,6 @@ class Cart {
 
   Map<String, dynamic> toJson() {
     List listCartItem = items.map((e) => e.toJson()).toList();
-    print("Items: " + listCartItem.toString());
     return {
       "items": listCartItem,
       "payment": payment,
@@ -137,7 +136,6 @@ class CartItem {
 
   Map<String, dynamic> toJson() {
     List listProducts = products.map((e) => e.toJson()).toList();
-    print("Products: " + listProducts.toString());
     return {
       "master": master.toJson(),
       "products": listProducts,

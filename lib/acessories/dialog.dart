@@ -11,7 +11,9 @@ Future<void> showStatusDialog(
     String imageUrl, String status, String content) async {
   hideDialog();
   await Get.dialog(WillPopScope(
-    onWillPop: () {},
+    onWillPop: () {
+      return true;
+    },
     child: Dialog(
       backgroundColor: Colors.white,
       elevation: 8.0,

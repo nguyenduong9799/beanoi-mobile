@@ -33,7 +33,6 @@ class PushNotificationService {
       _fcm.configure(
         //Called when the app is in the foreground and we receive a push notification
         onMessage: (Map<String, dynamic> message) async {
-          print('onMessage: $message');
           hideSnackbar();
           Get.snackbar(
               Platform.isIOS
@@ -60,11 +59,9 @@ class PushNotificationService {
         },
         //Called when the app has been closed completely and its opened
         onLaunch: (Map<String, dynamic> message) async {
-          print('onLaunch: $message');
         },
         //Called when the app is in the background
         onResume: (Map<String, dynamic> message) async {
-          print('onResume: $message');
         },
       );
       _initialized = true;
@@ -73,7 +70,6 @@ class PushNotificationService {
 
   Future<String> getFcmToken() async {
     String token = await _fcm.getToken();
-    print("FirebaseMessaging token: $token");
     return token;
   }
 }

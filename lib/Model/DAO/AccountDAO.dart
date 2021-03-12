@@ -13,21 +13,18 @@ class AccountDAO extends BaseDAO {
     try {
       String fcmToken =
           await PushNotificationService.getInstance().getFcmToken();
-      print("FCM_token: " + fcmToken);
 
       Response response = await request
           .post("login", data: {"id_token": idToken, "fcm_token": fcmToken});
-      print(response.request.headers.toString());
       // set access token
       final user = response.data["data"];
       final userDTO = AccountDTO.fromJson(user);
       final accessToken = user["access_token"] as String;
-      print("accessToken    $accessToken");
+      // print("accessToken    $accessToken");
       requestObj.setToken = accessToken;
       setToken(accessToken);
       return userDTO;
     } catch (e) {
-      print("error: " + e.toString());
     }
     return null;
     // return AccountDTO(uid: idToken, name: "Default Name");
@@ -56,8 +53,6 @@ class AccountDAO extends BaseDAO {
 
   Future<AccountDTO> updateUser(AccountDTO updateUser) async {
     final updateJSON = updateUser.toJson();
-    print('updateUser');
-    print(updateJSON.toString());
     Response res = await request.put("me", data: updateUser.toJson());
     return AccountDTO.fromJson(res.data["data"]);
   }

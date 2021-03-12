@@ -39,10 +39,8 @@ class OrderDAO extends BaseDAO {
   Future<OrderAmountDTO> prepareOrder(int store_id, Cart cart) async {
     if (cart != null) {
       // print("Request Note: " + note);
-      print(cart.toJsonAPi());
       final res = await request.post('orders/prepare',
           queryParameters: {"store-id": store_id}, data: cart.toJsonAPi());
-      print(cart.toString());
       if (res.statusCode == 200) {
         return OrderAmountDTO.fromJson(res.data['data']);
       }
@@ -65,7 +63,6 @@ class OrderDAO extends BaseDAO {
     try {
       if (cart != null) {
         // print("Request Note: " + note);
-        print(cart.toJsonAPi());
         final res = await request.post('/orders',
             queryParameters: {"location-id": store_id}, data: cart.toJsonAPi());
         return OrderStatus(

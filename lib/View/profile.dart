@@ -225,7 +225,6 @@ class _UpdateAccountState extends State<ProfileScreen>
           style: TextStyle(fontSize: 16),
         ),
         onPressed: () async {
-          print("Update: ");
           bool result = await Get.toNamed(RouteHandler.SIGN_UP,
               arguments: model.currentUser);
           if (result != null) {

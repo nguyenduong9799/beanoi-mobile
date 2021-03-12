@@ -99,7 +99,6 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                                       ? TyperAnimatedTextKit(
                                           speed: Duration(milliseconds: 100),
                                           onTap: () {
-                                            print("Tap Event");
                                           },
                                           text: ['Mới ☕'],
                                           textStyle: TextStyle(
