@@ -9,6 +9,7 @@ import 'package:unidelivery_mobile/ViewModel/index.dart';
 import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/enums/order_status.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
+import 'package:unidelivery_mobile/route_constraint.dart';
 import 'package:unidelivery_mobile/utils/shared_pref.dart';
 import '../constraints.dart';
 
@@ -114,7 +115,11 @@ class OrderViewModel extends BaseModel {
         hideDialog();
         await showStatusDialog(
             "assets/images/global_sucsess.png", result.code, result.message);
-        Get.back(result: true);
+        Get.offAndToNamed(
+          RouteHandler.ORDER_HISTORY_DETAIL,
+          arguments: result.order,
+        );
+        // Get.back(result: true);
       } else {
         hideDialog();
         await showStatusDialog(

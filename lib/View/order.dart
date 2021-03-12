@@ -13,6 +13,7 @@ import 'package:unidelivery_mobile/ViewModel/index.dart';
 import 'package:unidelivery_mobile/acessories/appbar.dart';
 import 'package:unidelivery_mobile/acessories/dash_border.dart';
 import 'package:unidelivery_mobile/acessories/loading.dart';
+import 'package:unidelivery_mobile/acessories/otherAmount.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
 import 'package:unidelivery_mobile/utils/index.dart';
@@ -510,8 +511,7 @@ class _OrderScreenState extends State<OrderScreen> {
                 fontWeight: FontWeight.bold, fontSize: 15, color: kPrimary),
             children: [
               TextSpan(
-                  text:
-                      "${dto.selectedTimeSlot.arrive.substring(0, 5)}",
+                  text: "${dto.selectedTimeSlot.arrive.substring(0, 5)}",
                   style: TextStyle(fontSize: 14, color: Colors.black))
             ]),
       ),
@@ -728,7 +728,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                           ),
                                         ),
                                         SizedBox(width: 40),
-                                        Text('Quất ngay',
+                                        Text('Quất ngay 🤘',
                                             style: TextStyle(color: kPrimary)),
                                       ],
                                     ),
@@ -871,40 +871,10 @@ class _OrderScreenState extends State<OrderScreen> {
 
   List<Widget> _buildOtherAmount(List<OtherAmount> otherAmounts) {
     if (otherAmounts == null) return [SizedBox.shrink()];
-    NumberFormat formatter = NumberFormat();
-    formatter.minimumFractionDigits = 0;
-    formatter.maximumFractionDigits = 2;
+
     return otherAmounts
-        .map((amountObj) => Padding(
-              padding: const EdgeInsets.only(top: 4, bottom: 4),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text("${amountObj.name}", style: TextStyle()),
-                  RichText(
-                    text: new TextSpan(
-                      text: amountObj.amount < 0 ? '🌟' : '',
-                      children: <TextSpan>[
-                        new TextSpan(
-                          text:
-                              "${formatter.format(amountObj.amount)} ${amountObj.unit}",
-                          style: new TextStyle(
-                            color: amountObj.amount < 0
-                                ? Colors.orange
-                                : Colors.grey,
-                            decoration: amountObj.amount < 0
-                                ? TextDecoration.lineThrough
-                                : TextDecoration.none,
-                          ),
-                        ),
-                        new TextSpan(
-                          text: amountObj.amount < 0 ? '🌟' : '',
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+        .map((amountObj) => OtherAmountWidget(
+              otherAmount: amountObj,
             ))
         .toList();
   }
