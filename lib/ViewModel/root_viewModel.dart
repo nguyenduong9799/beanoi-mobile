@@ -3,6 +3,7 @@ import 'package:package_info/package_info.dart';
 import 'package:unidelivery_mobile/Model/DAO/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/ViewModel/base_model.dart';
+import 'package:unidelivery_mobile/ViewModel/home_viewModel.dart';
 import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
 import 'package:unidelivery_mobile/utils/shared_pref.dart';
@@ -59,6 +60,7 @@ class RootViewModel extends BaseModel {
       await _dao.logOut();
       await removeALL();
       destroyInstance();
+      HomeViewModel.destroyInstance();
       Get.offAllNamed(RouteHandler.LOGIN);
     }
   }
