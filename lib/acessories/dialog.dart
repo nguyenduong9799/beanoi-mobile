@@ -12,7 +12,6 @@ Future<void> showStatusDialog(
   hideDialog();
   await Get.dialog(WillPopScope(
     onWillPop: () {
-      return true;
     },
     child: Dialog(
       backgroundColor: Colors.white,
