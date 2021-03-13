@@ -41,7 +41,7 @@ class ProductDetailViewModel extends BaseModel {
       for (int i = 0; i < master.attributes.keys.length; i++) {
         String attributeKey = master.attributes.keys.elementAt(i);
         List<String> listAttributesName =
-            master.attributes[attributeKey].split(",");
+        master.attributes[attributeKey].split(",");
         listAttributesName.forEach((element) {
           element.trim();
         });
@@ -50,8 +50,8 @@ class ProductDetailViewModel extends BaseModel {
       }
     } else {
       if (dto.type == ProductType.COMPLEX_PRODUCT &&
-          dto.hasExtra != null &&
-          dto.hasExtra) {
+          dto.extras != null &&
+          dto.extras.isNotEmpty) {
         getExtra(dto);
         isExtra = true;
       } else {
@@ -149,22 +149,17 @@ class ProductDetailViewModel extends BaseModel {
   }
 
   void changeAffectPriceAtrribute(String attributeValue) {
-    Map choice = new Map();
-    String attributeKey = affectPriceContent.keys.elementAt(affectIndex);
 
+    String attributeKey = affectPriceContent.keys.elementAt(affectIndex);
     selectedAttributes[attributeKey] = attributeValue;
 
     verifyOrder();
 
     if (order) {
-      for (int i = 0; i < affectPriceContent.keys.toList().length; i++) {
-        choice[affectPriceContent.keys.elementAt(i)] =
-            selectedAttributes[affectPriceContent.keys.elementAt(i)];
-      }
 
       if (master.type == ProductType.MASTER_PRODUCT) {
         try {
-          ProductDTO dto = master.getChildByAttributes(choice);
+          ProductDTO dto = master.getChildByAttributes(selectedAttributes);
           fixTotal = dto.price * count;
           extraTotal = 0;
           if (dto.hasExtra != null && dto.hasExtra) {
@@ -174,7 +169,7 @@ class ProductDetailViewModel extends BaseModel {
           }
         } catch (e) {
           showStatusDialog("assets/images/global_error.png",
-              "Sản phẩm không tồn tại", choice.toString());
+              "Sản phẩm không tồn tại", selectedAttributes.toString());
           selectedAttributes[attributeKey] = null;
           verifyOrder();
         }

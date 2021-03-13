@@ -35,7 +35,7 @@ const int ORDER_NEW_STATUS = 1;
 const int ORDER_DONE_STATUS = 3;
 const int ORDER_CANCEL_STATUS = 4;
 const int VIRTUAL_STORE_TYPE = 8;
-const int DEFAULT_SIZE = 30;
+const int DEFAULT_SIZE = 50;
 
 class ProductType {
   static const int MASTER_PRODUCT = 6;
