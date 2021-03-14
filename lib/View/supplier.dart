@@ -289,7 +289,7 @@ class _SupplierScreenState extends State<SupplierScreen> {
                           child: Text(
                               product.type != ProductType.MASTER_PRODUCT
                                   ? formatPrice(price)
-                                  : "từ " + formatPrice(price),
+                                  : "từ " + formatPrice(price ?? product.price),
                               style: TextStyle(color: kPrimary)))
                     ],
                   ),

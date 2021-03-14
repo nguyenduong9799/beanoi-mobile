@@ -12,20 +12,9 @@ import 'package:unidelivery_mobile/services/push_notification_service.dart';
 import '../route_constraint.dart';
 
 class LoginViewModel extends BaseModel {
-  static LoginViewModel _instance;
   AccountDAO dao = AccountDAO();
   String verificationId;
   AnalyticsService _analyticsService;
-  static LoginViewModel getInstance() {
-    if (_instance == null) {
-      _instance = LoginViewModel();
-    }
-    return _instance;
-  }
-
-  static void destroyInstance() {
-    _instance = null;
-  }
 
   AccountDTO user;
 
