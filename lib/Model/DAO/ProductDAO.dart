@@ -14,11 +14,11 @@ class ProductDAO extends BaseDAO {
     if (type != null) {
       res = await request.get(
           'stores/$store_id/suppliers/$supplier_id/products?fields=ChildProducts&fields=CollectionId&fields=Extras&time-slot=${time_slot.from.toString()}&time-slot=${time_slot.to.toString()}',
-          queryParameters: {"page": page ?? 1, "product-type-id": type});
+          queryParameters: {"page": page ?? 1, "product-type-id": type, "size" : size ?? DEFAULT_SIZE});
     } else {
       res = await request.get(
           'stores/$store_id/suppliers/$supplier_id/products?fields=ChildProducts&fields=CollectionId&fields=Extras&time-slot=${time_slot.from.toString()}&time-slot=${time_slot.to.toString()}',
-          queryParameters: {"page": page ?? 1});
+          queryParameters: {"page": page ?? 1, "size" : size ?? DEFAULT_SIZE});
     }
 
     //final res = await Dio().get("http://api.dominos.reso.vn/api/v1/products");

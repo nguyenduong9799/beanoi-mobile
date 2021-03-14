@@ -8,7 +8,6 @@ import 'package:unidelivery_mobile/utils/shared_pref.dart';
 import '../constraints.dart';
 
 class SupplierViewModel extends BaseModel {
-
   int supplierId;
   ProductDAO _productDAO;
   CollectionDAO _collectionDAO;
@@ -55,8 +54,8 @@ class SupplierViewModel extends BaseModel {
         collections.forEach((element) {
           element.products = products
               .where((product) =>
-          product.collections.any((e) => e == element.id) &&
-              product.type != ProductType.GIFT_PRODUCT)
+                  product.collections.any((e) => e == element.id) &&
+                  product.type != ProductType.GIFT_PRODUCT)
               .toList();
         });
       }
@@ -72,6 +71,7 @@ class SupplierViewModel extends BaseModel {
         setState(ViewStatus.Completed);
       }
     } catch (e, stacktrace) {
+      print(e.toString() + stacktrace.toString());
       bool result = await showErrorDialog();
       if (result) {
         await getProducts();
@@ -117,8 +117,8 @@ class SupplierViewModel extends BaseModel {
         collections.forEach((element) {
           element.products = products
               .where((product) =>
-          product.collections.any((e) => e == element.id) &&
-              product.type != ProductType.GIFT_PRODUCT)
+                  product.collections.any((e) => e == element.id) &&
+                  product.type != ProductType.GIFT_PRODUCT)
               .toList();
         });
       }

@@ -57,10 +57,18 @@ class ProductDTO {
     var type = json['product_type_id'] as int;
     // List<int> listExtra = jsonExtra.cast<int>().toList();
 
+    Map attribute = json['attributes'] as Map;
+    if (attribute != null) {
+      for (int i = 0; i < attribute.keys.length; i++) {
+        if (attribute.values.elementAt(i) == null) {
+          attribute.remove(attribute.keys.elementAt(i));
+        }
+      }
+    }
+
     ProductDTO product = ProductDTO(json["product_id"],
         name: json['product_name'] as String,
         productInMenuId: json['product_in_menu_id'],
-        // price: double.parse(json['price'].toString()),
         description: json['description'] as String,
         type: type,
         imageURL: json['pic_url'] as String,
@@ -70,7 +78,7 @@ class ProductDTO {
         // prices: prices,
         // extraId: listExtra,
         hasExtra: json['has_extra'] as bool,
-        attributes: json["attributes"] as Map,
+        attributes: attribute,
         defaultQuantity: json["default"] ?? 0,
         min: json["min"] ?? 0,
         max: json["max"] ?? 0,
@@ -145,6 +153,7 @@ class ProductDTO {
   }
 
   ProductDTO getChildByAttributes(Map attributes) {
+    print(listChild[0].attributes.toString() + " - " + attributes.toString());
     return this
         .listChild
         .firstWhere((child) => mapEquals(child.attributes, attributes));
