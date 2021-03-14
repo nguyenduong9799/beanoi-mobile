@@ -39,7 +39,6 @@ class HomeViewModel extends BaseModel {
   String version;
   ScrollController giftScrollController;
 
-
   HomeViewModel() {
     _storeDAO = StoreDAO();
     _productDAO = ProductDAO();
@@ -92,7 +91,6 @@ class HomeViewModel extends BaseModel {
     return await getCart();
   }
 
-
   Future<void> getSuppliers() async {
     try {
       if (status != ViewStatus.Loading) {
@@ -106,9 +104,8 @@ class HomeViewModel extends BaseModel {
       tmpTimeSlot = currentStore.selectedTimeSlot;
       suppliers = await _storeDAO.getSuppliers(
           currentStore.id, currentStore.selectedTimeSlot);
-      if(blogs == null){
+      if (blogs == null) {
         blogs = await _storeDAO.getBlogs(currentStore.id);
-        
       }
 
       // int total_page = (_storeDAO.metaDataDTO.total / DEFAULT_SIZE).ceil();
@@ -317,47 +314,52 @@ class HomeViewModel extends BaseModel {
     Function eq = const ListEquality().equals;
     List<CampusDTO> listStore;
     CampusDTO campus = await getStore();
-
-    if (campus == null) {
-      listStore = await _storeDAO.getStores(id: UNIBEAN_STORE);
-      campus = BussinessHandler.setSelectedTime(listStore[0]);
-    } else {
-      listStore = await _storeDAO.getStores(id: campus.id);
-      campus.timeSlots = listStore[0].timeSlots;
-      bool found = false;
-      campus.timeSlots.forEach((element) {
-        if (element.menuId == campus.selectedTimeSlot.menuId && element.from == campus.selectedTimeSlot.from && element.to == campus.selectedTimeSlot.to && element.arrive == campus.selectedTimeSlot.arrive) {
-          campus.selectedTimeSlot.available = element.available;
-          found = true;
+    try {
+      if (campus == null) {
+        listStore = await _storeDAO.getStores(id: UNIBEAN_STORE);
+        campus = BussinessHandler.setSelectedTime(listStore[0]);
+      } else {
+        listStore = await _storeDAO.getStores(id: campus.id);
+        campus.timeSlots = listStore[0].timeSlots;
+        bool found = false;
+        campus.timeSlots.forEach((element) {
+          if (element.menuId == campus.selectedTimeSlot.menuId &&
+              element.from == campus.selectedTimeSlot.from &&
+              element.to == campus.selectedTimeSlot.to &&
+              element.arrive == campus.selectedTimeSlot.arrive) {
+            campus.selectedTimeSlot.available = element.available;
+            found = true;
+          }
+        });
+        if (found == false) {
+          await deleteCart();
+          campus = BussinessHandler.setSelectedTime(campus);
+          await showStatusDialog(
+              "assets/images/global_error.png",
+              "Khung giờ đã thay đổi",
+              "Các sản phẩm trong giỏ hàng đã bị xóa, còn nhiều món ngon đang chờ bạn nhé");
         }
-      });
-      if (found == false) {
-        await deleteCart();
-        campus = BussinessHandler.setSelectedTime(campus);
-        await showStatusDialog(
-            "assets/images/global_error.png",
-            "Khung giờ đã thay đổi",
-            "Các sản phẩm trong giỏ hàng đã bị xóa, còn nhiều món ngon đang chờ bạn nhé");
       }
-    }
 
-    await setStore(campus);
-
-    List<LocationDTO> locations = await _storeDAO.getLocations(campus.id);
-    if (!eq(locations, campus.locations)) {
-      campus.locations.forEach((location) {
-        if (location.isSelected) {
-          locations.forEach((element) {
-            if (element.id == location.id) {
-              element.isSelected = true;
-            }
-          });
-        }
-      });
-
-      campus.locations = locations;
       await setStore(campus);
+
+      List<LocationDTO> locations = await _storeDAO.getLocations(campus.id);
+      if (!eq(locations, campus.locations)) {
+        campus.locations.forEach((location) {
+          if (location.isSelected) {
+            locations.forEach((element) {
+              if (element.id == location.id) {
+                element.isSelected = true;
+              }
+            });
+          }
+        });
+
+        campus.locations = locations;
+        await setStore(campus);
+      }
+    } catch (e) {
+      print(e.toString());
     }
   }
-
 }
