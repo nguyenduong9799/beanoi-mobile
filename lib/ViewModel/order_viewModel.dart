@@ -73,18 +73,15 @@ class OrderViewModel extends BaseModel {
       }
       double totalBean = RootViewModel.getInstance().currentUser.point;
 
-      Cart cart = await getCart();
-      if (cart != null) {
-        cart.items.forEach((element) {
-          if (element.master.type == ProductType.GIFT_PRODUCT) {
-            if (element.master.id != item.master.id) {
-              totalBean -= (element.master.price * element.quantity);
-            } else {
-              originalQuantity = element.quantity;
-            }
+      currentCart.items.forEach((element) {
+        if (element.master.type == ProductType.GIFT_PRODUCT) {
+          if (element.master.id != item.master.id) {
+            totalBean -= (element.master.price * element.quantity);
+          } else {
+            originalQuantity = element.quantity;
           }
-        });
-      }
+        }
+      });
 
       if (totalBean < (item.master.price * item.quantity)) {
         await showStatusDialog("assets/images/global_error.png", "ERR_BALANCE",
@@ -151,6 +148,7 @@ class OrderViewModel extends BaseModel {
       hideDialog();
       Get.back(result: false);
     } else {
+      currentCart = await getCart();
       await prepareOrder();
     }
   }

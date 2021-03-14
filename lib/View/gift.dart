@@ -44,46 +44,53 @@ class _GiftScreenState extends State<GiftScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text(
-                        "Danh sách quà tặng",
-                        style: TextStyle(
-                          fontSize: 24,
-                          color: kPrimary,
+                      Material(
+                        elevation: 2,
+                        child: Container(
+                          width: Get.width,
+                          padding: const EdgeInsets.fromLTRB(0, 4, 0, 4),
+                          child: Center(
+                            child: Text(
+                              "🎁 Danh sách quà tặng 🎁",
+                              style: TextStyle(
+                                fontSize: 22,
+                                color: Colors.orange,
+                              ),
+                            ),
+                          ),
                         ),
                       ),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      ScopedModelDescendant<HomeViewModel>(
-                        builder: (context, child, model) {
-                          switch (model.status) {
-                            case ViewStatus.Error:
-                              return ListView(
-                                shrinkWrap: true,
-                                children: [
-                                  Center(
-                                    child: Text(
-                                      "Có gì đó sai sai..\n Vui lòng thử lại.",
-                                      // style: kTextPrimary,
+                      Expanded(
+                        child: ScopedModelDescendant<HomeViewModel>(
+                          builder: (context, child, model) {
+                            switch (model.status) {
+                              case ViewStatus.Error:
+                                return ListView(
+                                  shrinkWrap: true,
+                                  children: [
+                                    Center(
+                                      child: Text(
+                                        "Có gì đó sai sai..\n Vui lòng thử lại.",
+                                        // style: kTextPrimary,
+                                      ),
                                     ),
-                                  ),
-                                  SizedBox(height: 8),
-                                  Image.asset(
-                                    'assets/images/global_error.png',
-                                    fit: BoxFit.contain,
-                                  ),
-                                ],
-                              );
-                            case ViewStatus.Loading:
-                              return AspectRatio(
-                                  aspectRatio: 1,
-                                  child: Center(
-                                    child: LoadingBean(),
-                                  ));
-                            default:
-                              if (model.gifts == null || model.gifts.isEmpty) {
-                                return Expanded(
-                                  child: Container(
+                                    SizedBox(height: 8),
+                                    Image.asset(
+                                      'assets/images/global_error.png',
+                                      fit: BoxFit.contain,
+                                    ),
+                                  ],
+                                );
+                              case ViewStatus.Loading:
+                                return AspectRatio(
+                                    aspectRatio: 1,
+                                    child: Center(
+                                      child: LoadingBean(),
+                                    ));
+                              default:
+                                if (model.gifts == null ||
+                                    model.gifts.isEmpty) {
+                                  return Container(
                                     padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
                                     color: Colors.black45,
                                     child: ListView(
@@ -107,24 +114,24 @@ class _GiftScreenState extends State<GiftScreen> {
                                         ),
                                       ],
                                     ),
-                                  ),
+                                  );
+                                }
+                                return ListView.builder(
+                                  controller: model.giftScrollController,
+                                  physics: AlwaysScrollableScrollPhysics(),
+                                  shrinkWrap: true,
+                                  itemCount: model.gifts.length,
+                                  itemBuilder: (context, index) => Container(
+                                      padding: EdgeInsets.all(8.0),
+                                      height: Get.width * 0.25 + 32,
+                                      child: StorePromotion(
+                                        model.gifts[index],
+                                      )), // -> Text widget.
+                                  //viewportFraction: 1,
                                 );
-                              }
-                              return ListView.builder(
-                                controller: model.giftScrollController,
-                                physics: AlwaysScrollableScrollPhysics(),
-                                shrinkWrap: true,
-                                itemCount: model.gifts.length,
-                                itemBuilder: (context, index) => Container(
-                                    padding: EdgeInsets.all(8.0),
-                                    height: Get.width * 0.25 + 32,
-                                    child: StorePromotion(
-                                      model.gifts[index],
-                                    )), // -> Text widget.
-                                //viewportFraction: 1,
-                              );
-                          }
-                        },
+                            }
+                          },
+                        ),
                       ),
                     ],
                   ),

@@ -40,121 +40,122 @@ class _StorePromotionState extends State<StorePromotion> {
         borderRadius: BorderRadius.all(Radius.circular(16.0)),
         child: ScopedModelDescendant<HomeViewModel>(
           builder: (context, child, model) {
-            return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(16),
-                        child: CachedNetworkImage(
-                          width: Get.width * 0.25,
-                          height: Get.width * 0.25,
-                          fit: BoxFit.fill,
-                          imageUrl: widget.dto.imageURL ?? defaultImage,
-                          imageBuilder: (context, imageProvider) => Container(
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                image: imageProvider,
-                                fit: BoxFit.cover,
+            return InkWell(
+              borderRadius: BorderRadius.all(Radius.circular(16.0)),
+              onTap: () async {
+                await model.openProductDetail(widget.dto);
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(16),
+                          child: CachedNetworkImage(
+                            width: Get.width * 0.25,
+                            height: Get.width * 0.25,
+                            fit: BoxFit.fill,
+                            imageUrl: widget.dto.imageURL ?? defaultImage,
+                            imageBuilder: (context, imageProvider) => Container(
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image: imageProvider,
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                             ),
+                            progressIndicatorBuilder:
+                                (context, url, downloadProgress) =>
+                                    Shimmer.fromColors(
+                              baseColor: Colors.grey[300],
+                              highlightColor: Colors.grey[100],
+                              enabled: true,
+                              child: Container(
+                                width: Get.width * 0.25,
+                                // height: 100,
+                                color: Colors.grey,
+                              ),
+                            ),
+                            errorWidget: (context, url, error) =>
+                                Icon(Icons.error),
                           ),
-                          progressIndicatorBuilder:
-                              (context, url, downloadProgress) =>
-                                  Shimmer.fromColors(
-                            baseColor: Colors.grey[300],
-                            highlightColor: Colors.grey[100],
-                            enabled: true,
-                            child: Container(
-                              width: Get.width * 0.25,
-                              // height: 100,
-                              color: Colors.grey,
+                        ),
+                        SizedBox(
+                          width: 8,
+                        ),
+                        SingleChildScrollView(
+                          child: Container(
+                            width: Get.width * 0.35,
+                            height: Get.width * 0.25,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  widget.dto.name,
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: kBackgroundGrey[0]),
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 2,
+                                ),
+                                SizedBox(
+                                  height: 8,
+                                ),
+                                Text(
+                                  widget.dto.supplierName,
+                                  style: TextStyle(
+                                      fontSize: 14, color: kBackgroundGrey[0]),
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                )
+                              ],
                             ),
                           ),
-                          errorWidget: (context, url, error) =>
-                              Icon(Icons.error),
                         ),
-                      ),
-                      SizedBox(
-                        width: 8,
-                      ),
-                      SingleChildScrollView(
-                        child: Container(
-                          width: Get.width * 0.35,
-                          height: Get.width * 0.25,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                widget.dto.name,
-                                style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: kBackgroundGrey[0]),
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 2,
-                              ),
-                              SizedBox(
-                                height: 8,
-                              ),
-                              Text(
-                                widget.dto.supplierName,
-                                style: TextStyle(
-                                    fontSize: 14, color: kBackgroundGrey[0]),
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 1,
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  SingleChildScrollView(
-                    child: Container(
-                      width: Get.width * 0.25,
-                      height: Get.width * 0.25,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          RichText(
-                            text: TextSpan(
-                                text: "${widget.dto.price} ",
-                                style: TextStyle(color: kBackgroundGrey[0]),
-                                children: [
-                                  WidgetSpan(
-                                    alignment: PlaceholderAlignment.bottom,
-                                    child: Image(
-                                      image: AssetImage(
-                                          "assets/images/icons/bean_coin.png"),
-                                      width: 20,
-                                      height: 20,
-                                    ),
-                                  )
-                                ]),
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
-                          ),
-                          InkWell(
-                            onTap: () async {
-                              await model.openProductDetail(widget.dto);
-                            },
-                            child: Text(
+                      ],
+                    ),
+                    SingleChildScrollView(
+                      child: Container(
+                        width: Get.width * 0.25,
+                        height: Get.width * 0.25,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            RichText(
+                              text: TextSpan(
+                                  text: "${widget.dto.price} ",
+                                  style: TextStyle(color: kBackgroundGrey[0]),
+                                  children: [
+                                    WidgetSpan(
+                                      alignment: PlaceholderAlignment.bottom,
+                                      child: Image(
+                                        image: AssetImage(
+                                            "assets/images/icons/bean_coin.png"),
+                                        width: 20,
+                                        height: 20,
+                                      ),
+                                    )
+                                  ]),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                            ),
+                            Text(
                               "Đổi ngay",
                               style: TextStyle(color: kBean),
                               overflow: TextOverflow.ellipsis,
                               maxLines: 2,
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  )
-                ],
+                    )
+                  ],
+                ),
               ),
             );
           },
