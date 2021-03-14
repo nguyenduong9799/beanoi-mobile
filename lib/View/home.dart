@@ -156,9 +156,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         children: [
                           TextSpan(
                               text:
-                              "${model.currentStore.selectedTimeSlot.from.substring(0, 5)} - ${model.currentStore.selectedTimeSlot.to.substring(0, 5)}",
-                              style: TextStyle(
-                                  fontSize: 14, color: Colors.white))
+                                  "${model.currentStore.selectedTimeSlot.from.substring(0, 5)} - ${model.currentStore.selectedTimeSlot.to.substring(0, 5)}",
+                              style:
+                                  TextStyle(fontSize: 14, color: Colors.white))
                         ]),
                   ),
                   model.currentStore.selectedTimeSlot.available
@@ -334,6 +334,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: ScopedModelDescendant<HomeViewModel>(
         builder: (context, child, model) {
           ViewStatus status = model.status;
+          double bannerHeight = 120;
           switch (status) {
             case ViewStatus.Loading:
               return Shimmer.fromColors(
@@ -341,7 +342,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 highlightColor: Colors.grey[100],
                 enabled: true,
                 child: Container(
-                  height: Get.height * 0.2,
+                  height: bannerHeight,
                   width: Get.width,
                   color: Colors.grey,
                 ),
@@ -355,7 +356,7 @@ class _HomeScreenState extends State<HomeScreen> {
               }
               return Container(
                 //padding: EdgeInsets.only(top: 8, bottom: 8),
-                height: Get.height * 0.15,
+                height: bannerHeight,
                 width: Get.width,
                 child: Swiper(
                     onTap: (index) async {
