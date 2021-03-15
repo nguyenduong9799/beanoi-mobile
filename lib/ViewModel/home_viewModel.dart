@@ -26,11 +26,9 @@ class HomeViewModel extends BaseModel {
   List<ProductDTO> gifts;
   List<BlogDTO> blogs;
 
-
   HomeViewModel() {
     _storeDAO = StoreDAO();
   }
-
 
   Future<void> getSuppliers() async {
     try {
@@ -42,9 +40,8 @@ class HomeViewModel extends BaseModel {
 
       suppliers = await _storeDAO.getSuppliers(
           currentStore.id, currentStore.selectedTimeSlot);
-      if(blogs == null){
+      if (blogs == null) {
         blogs = await _storeDAO.getBlogs(currentStore.id);
-        
       }
 
       // int total_page = (_storeDAO.metaDataDTO.total / DEFAULT_SIZE).ceil();
@@ -72,5 +69,4 @@ class HomeViewModel extends BaseModel {
           "Cửa hàng đang tạm đóng 😓");
     }
   }
-
 }
