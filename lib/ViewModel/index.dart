@@ -6,3 +6,5 @@ export 'order_viewModel.dart';
 export 'product_viewModel.dart';
 export 'root_viewModel.dart';
 export 'signup_viewModel.dart';
+export 'account_viewModel.dart';
+export 'gift_viewModel.dart';

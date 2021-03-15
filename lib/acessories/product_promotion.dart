@@ -9,7 +9,8 @@ import 'package:unidelivery_mobile/constraints.dart';
 
 class StorePromotion extends StatefulWidget {
   final ProductDTO dto;
-  StorePromotion(this.dto);
+  StorePromotion({this.dto});
+  BaseModel model;
 
   @override
   State<StatefulWidget> createState() {
@@ -32,13 +33,13 @@ class _StorePromotionState extends State<StorePromotion> {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return ScopedModel(
-      model: HomeViewModel.getInstance(),
-      child: Material(
-        elevation: 10,
-        color: kPrimary,
-        borderRadius: BorderRadius.all(Radius.circular(16.0)),
-        child: ScopedModelDescendant<HomeViewModel>(
+    return Material(
+      elevation: 10,
+      color: kPrimary,
+      borderRadius: BorderRadius.all(Radius.circular(16.0)),
+      child: ScopedModel(
+        model: RootViewModel.getInstance(),
+        child: ScopedModelDescendant<RootViewModel>(
           builder: (context, child, model) {
             return InkWell(
               borderRadius: BorderRadius.all(Radius.circular(16.0)),

@@ -56,6 +56,7 @@ class OrderViewModel extends BaseModel {
       hideDialog();
       setState(ViewStatus.Completed);
     } catch (e, stacktra) {
+      print(stacktra.toString());
       bool result = await showErrorDialog();
       if (result) {
         await prepareOrder();
@@ -68,10 +69,10 @@ class OrderViewModel extends BaseModel {
     showLoadingDialog();
     if (item.master.type == ProductType.GIFT_PRODUCT) {
       int originalQuantity = 0;
-      if (RootViewModel.getInstance().currentUser == null) {
-        await RootViewModel.getInstance().fetchUser();
+      if (AccountViewModel.getInstance().currentUser == null) {
+        await AccountViewModel.getInstance().fetchUser();
       }
-      double totalBean = RootViewModel.getInstance().currentUser.point;
+      double totalBean = AccountViewModel.getInstance().currentUser.point;
 
       currentCart.items.forEach((element) {
         if (element.master.type == ProductType.GIFT_PRODUCT) {
@@ -107,6 +108,7 @@ class OrderViewModel extends BaseModel {
       showLoadingDialog();
 
       OrderStatus result = await dao.createOrders(location.id, currentCart);
+      await AccountViewModel.getInstance().fetchUser();
       if (result.statusCode == 200) {
         await deleteCart();
         hideDialog();
@@ -121,7 +123,6 @@ class OrderViewModel extends BaseModel {
         hideDialog();
         await showStatusDialog(
             "assets/images/global_error.png", result.code, result.message);
-        await RootViewModel.getInstance().fetchUser();
       }
     } catch (e) {
       bool result = await showErrorDialog();

@@ -301,14 +301,14 @@ void hideSnackbar() {
   }
 }
 
-Future<void> changeCampusDialog(HomeViewModel model, Function function) async {
+Future<void> changeCampusDialog(RootViewModel model, Function function) async {
   hideDialog();
   await Get.dialog(
       WillPopScope(
         onWillPop: () {},
         child: ScopedModel(
           model: model,
-          child: ScopedModelDescendant<HomeViewModel>(
+          child: ScopedModelDescendant<RootViewModel>(
               builder: (context, child, model) {
             return Dialog(
               backgroundColor: Colors.white,
@@ -498,11 +498,11 @@ Future<void> changeLocationDialog(
       barrierDismissible: false);
 }
 
-Future<void> showTimeDialog(HomeViewModel model) async {
+Future<void> showTimeDialog(RootViewModel model) async {
   await Get.dialog(
       ScopedModel(
         model: model,
-        child: ScopedModelDescendant<HomeViewModel>(
+        child: ScopedModelDescendant<RootViewModel>(
             builder: (context, child, model) {
           List<Widget> timeSlots = new List();
           model.currentStore.timeSlots.forEach((element) {
@@ -563,7 +563,8 @@ Future<void> showTimeDialog(HomeViewModel model) async {
           DateTime currentDate = DateTime.now();
           int hour = double.parse(model.tmpTimeSlot.arrive.split(":")[0]).toInt();
           int minute = double.parse(model.tmpTimeSlot.arrive.split(":")[1]).toInt();
-          DateTime recieveTime = DateFormat("yyyy-MM-dd hh:mm:ss").parse("${currentDate.year}-${currentDate.month}-${currentDate.day} $hour:$minute:00");
+          DateTime recieveTime = DateFormat("yyyy-MM-dd HH:mm:ss").parse("${currentDate.year}-${currentDate.month}-${currentDate.day} $hour:$minute:00");
+          print(recieveTime.toString());
           if(recieveTime.compareTo(currentDate) < 0){
             recieveDate = "Ngày mai";
           }

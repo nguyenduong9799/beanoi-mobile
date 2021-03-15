@@ -144,7 +144,7 @@ class _SupplierScreenState extends State<SupplierScreen> {
                                 itemBuilder: (context, index) => Padding(
                                     padding: EdgeInsets.all(8.0),
                                     child: StorePromotion(
-                                      model.gifts[index],
+                                      dto: model.gifts[index],
                                     )), // -> Text widget.
                                 //viewportFraction: 1,
                                 loop: false,
@@ -265,7 +265,7 @@ class _SupplierScreenState extends State<SupplierScreen> {
           }
           listProducts.add(InkWell(
             onTap: () {
-              HomeViewModel.getInstance().openProductDetail(product);
+              RootViewModel.getInstance().openProductDetail(product);
             },
             child: Container(
               padding: EdgeInsets.fromLTRB(8, 16, 8, 8),

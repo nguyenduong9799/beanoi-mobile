@@ -69,119 +69,125 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget location() {
-    return ScopedModelDescendant<HomeViewModel>(
-      builder: (context, child, root) {
-        String text = "Đợi tý đang load...";
-        if (root.changeAddress) {
-          text = "Đang thay đổi...";
-        } else {
-          if (root.currentStore != null) {
-            text = "${root.currentStore.name}";
+    return ScopedModel(
+      model: RootViewModel.getInstance(),
+      child: ScopedModelDescendant<RootViewModel>(
+        builder: (context, child, root) {
+          String text = "Đợi tý đang load...";
+          if (root.changeAddress) {
+            text = "Đang thay đổi...";
+          } else {
+            if (root.currentStore != null) {
+              text = "${root.currentStore.name}";
+            }
           }
-        }
 
-        if (root.status == ViewStatus.Error) {
-          text = "Có lỗi xảy ra...";
-        }
+          if (root.status == ViewStatus.Error) {
+            text = "Có lỗi xảy ra...";
+          }
 
-        return InkWell(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    Icon(
-                      Icons.location_on,
-                      color: Colors.red,
-                      size: 24,
-                    ),
-                    SizedBox(
-                      width: 8,
-                    ),
-                    Container(
-                      width: Get.width * 0.75,
-                      child: Text(
-                        text,
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 15,
-                            color: kPrimary),
+          return InkWell(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.location_on,
+                        color: Colors.red,
+                        size: 24,
                       ),
-                    ),
-                  ],
-                ),
-                Icon(
-                  Icons.navigate_next,
-                  color: Colors.orange,
-                  size: 24,
-                ),
-              ],
+                      SizedBox(
+                        width: 8,
+                      ),
+                      Container(
+                        width: Get.width * 0.75,
+                        child: Text(
+                          text,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15,
+                              color: kPrimary),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Icon(
+                    Icons.navigate_next,
+                    color: Colors.orange,
+                    size: 24,
+                  ),
+                ],
+              ),
             ),
-          ),
-          onTap: () async {
-            await root.processChangeLocation();
-          },
-        );
-      },
+            onTap: () async {
+              await root.processChangeLocation();
+            },
+          );
+        },
+      ),
     );
   }
 
   Widget timeRecieve() {
-    return ScopedModelDescendant<HomeViewModel>(
-      builder: (context, child, model) {
-        if (model.currentStore != null) {
-          return Container(
-            padding: const EdgeInsets.all(12.0),
-            decoration: BoxDecoration(
-                color: Colors.red,
-                borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(8),
-                    bottomRight: Radius.circular(8))),
-            child: InkWell(
-              onTap: () async {
-                await showTimeDialog(model);
-              },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  RichText(
-                    text: TextSpan(
-                        text: "Khung giờ: ",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 15,
-                            color: Colors.yellow),
-                        children: [
-                          TextSpan(
-                              text:
-                              "${model.currentStore.selectedTimeSlot.from.substring(0, 5)} - ${model.currentStore.selectedTimeSlot.to.substring(0, 5)}",
-                              style: TextStyle(
-                                  fontSize: 14, color: Colors.white))
-                        ]),
-                  ),
-                  model.currentStore.selectedTimeSlot.available
-                      ? Icon(
-                          Icons.more_horiz,
-                          color: Colors.white,
-                          size: 24,
-                        )
-                      : Text(
-                          "Hết giờ",
+    return ScopedModel(
+      model: RootViewModel.getInstance(),
+      child: ScopedModelDescendant<RootViewModel>(
+        builder: (context, child, model) {
+          if (model.currentStore != null) {
+            return Container(
+              padding: const EdgeInsets.all(12.0),
+              decoration: BoxDecoration(
+                  color: Colors.red,
+                  borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(8),
+                      bottomRight: Radius.circular(8))),
+              child: InkWell(
+                onTap: () async {
+                  await showTimeDialog(model);
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    RichText(
+                      text: TextSpan(
+                          text: "Khung giờ: ",
                           style: TextStyle(
                               fontWeight: FontWeight.bold,
-                              fontSize: 14,
-                              color: Colors.white),
-                        )
-                  //Text("Thay đổi", style: TextStyle(color: Colors.grey[200]),)
-                ],
+                              fontSize: 15,
+                              color: Colors.yellow),
+                          children: [
+                            TextSpan(
+                                text:
+                                    "${model.currentStore.selectedTimeSlot.from.substring(0, 5)} - ${model.currentStore.selectedTimeSlot.to.substring(0, 5)}",
+                                style: TextStyle(
+                                    fontSize: 14, color: Colors.white))
+                          ]),
+                    ),
+                    model.currentStore.selectedTimeSlot.available
+                        ? Icon(
+                            Icons.more_horiz,
+                            color: Colors.white,
+                            size: 24,
+                          )
+                        : Text(
+                            "Hết giờ",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                                color: Colors.white),
+                          )
+                    //Text("Thay đổi", style: TextStyle(color: Colors.grey[200]),)
+                  ],
+                ),
               ),
-            ),
-          );
-        }
-        return Container();
-      },
+            );
+          }
+          return Container();
+        },
+      ),
     );
   }
 

@@ -5,7 +5,6 @@ import 'package:unidelivery_mobile/ViewModel/index.dart';
 import 'package:unidelivery_mobile/acessories/appbar.dart';
 import 'package:unidelivery_mobile/acessories/loading.dart';
 import 'package:unidelivery_mobile/acessories/product_promotion.dart';
-import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
 
 class GiftScreen extends StatefulWidget {
@@ -23,14 +22,14 @@ class _GiftScreenState extends State<GiftScreen> {
       new GlobalKey<RefreshIndicatorState>();
 
   Future<void> _refresh() async {
-    await HomeViewModel.getInstance().getGifts();
+    await GiftViewModel.getInstance().getGifts();
   }
 
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return ScopedModel(
-      model: HomeViewModel.getInstance(),
+      model: GiftViewModel.getInstance(),
       child: Scaffold(
         backgroundColor: Colors.white,
         body: SafeArea(
@@ -61,7 +60,7 @@ class _GiftScreenState extends State<GiftScreen> {
                         ),
                       ),
                       Expanded(
-                        child: ScopedModelDescendant<HomeViewModel>(
+                        child: ScopedModelDescendant<GiftViewModel>(
                           builder: (context, child, model) {
                             switch (model.status) {
                               case ViewStatus.Error:
@@ -125,7 +124,7 @@ class _GiftScreenState extends State<GiftScreen> {
                                       padding: EdgeInsets.all(8.0),
                                       height: Get.width * 0.25 + 32,
                                       child: StorePromotion(
-                                        model.gifts[index],
+                                        dto: model.gifts[index],
                                       )), // -> Text widget.
                                   //viewportFraction: 1,
                                 );

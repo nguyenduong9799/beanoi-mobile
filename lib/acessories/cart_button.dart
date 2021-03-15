@@ -8,8 +8,8 @@ import '../constraints.dart';
 
 Widget buildCartButton() {
   return ScopedModel(
-    model: HomeViewModel.getInstance(),
-    child: ScopedModelDescendant<HomeViewModel>(
+    model: RootViewModel.getInstance(),
+    child: ScopedModelDescendant<RootViewModel>(
         builder: (context, child, model) {
           return FutureBuilder(
               future: model.cart,

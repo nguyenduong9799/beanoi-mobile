@@ -41,7 +41,7 @@ class ProductDetailViewModel extends BaseModel {
       for (int i = 0; i < master.attributes.keys.length; i++) {
         String attributeKey = master.attributes.keys.elementAt(i);
         List<String> listAttributesName =
-        master.attributes[attributeKey].split(",");
+            master.attributes[attributeKey].split(",");
         listAttributesName.forEach((element) {
           element.trim();
         });
@@ -149,14 +149,12 @@ class ProductDetailViewModel extends BaseModel {
   }
 
   void changeAffectPriceAtrribute(String attributeValue) {
-
     String attributeKey = affectPriceContent.keys.elementAt(affectIndex);
     selectedAttributes[attributeKey] = attributeValue;
 
     verifyOrder();
 
     if (order) {
-
       if (master.type == ProductType.MASTER_PRODUCT) {
         try {
           ProductDTO dto = master.getChildByAttributes(selectedAttributes);
@@ -242,13 +240,12 @@ class ProductDetailViewModel extends BaseModel {
     String description = "";
     CartItem item = new CartItem(master, listChoices, description, count);
 
-
     if (master.type == ProductType.GIFT_PRODUCT) {
-      if (RootViewModel.getInstance().currentUser == null) {
-        await RootViewModel.getInstance().fetchUser();
+      if (AccountViewModel.getInstance().currentUser == null) {
+        await AccountViewModel.getInstance().fetchUser();
       }
 
-      double totalBean = RootViewModel.getInstance().currentUser.point;
+      double totalBean = AccountViewModel.getInstance().currentUser.point;
 
       Cart cart = await getCart();
       if (cart != null) {
