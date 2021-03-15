@@ -8,7 +8,6 @@ import 'package:unidelivery_mobile/utils/shared_pref.dart';
 import '../constraints.dart';
 
 class SupplierViewModel extends BaseModel {
-
   int supplierId;
   ProductDAO _productDAO;
   CollectionDAO _collectionDAO;
@@ -51,13 +50,12 @@ class SupplierViewModel extends BaseModel {
           store.id, supplierId, store.selectedTimeSlot);
       products = await _productDAO.getProducts(
           store.id, supplierId, store.selectedTimeSlot);
-      print("Length: " + products.length.toString());
       if (collections != null && collections.isNotEmpty) {
         collections.forEach((element) {
           element.products = products
               .where((product) =>
-          product.collections.any((e) => e == element.id) &&
-              product.type != ProductType.GIFT_PRODUCT)
+                  product.collections.any((e) => e == element.id) &&
+                  product.type != ProductType.GIFT_PRODUCT)
               .toList();
         });
       }
@@ -73,7 +71,7 @@ class SupplierViewModel extends BaseModel {
         setState(ViewStatus.Completed);
       }
     } catch (e, stacktrace) {
-      print("Excception: " + e.toString() + stacktrace.toString());
+      print(e.toString() + stacktrace.toString());
       bool result = await showErrorDialog();
       if (result) {
         await getProducts();
@@ -96,7 +94,6 @@ class SupplierViewModel extends BaseModel {
       // check truong hop product tra ve rong (do khong co menu nao trong TG do)
       isLoadGift = false;
     } catch (e, stacktrace) {
-      print("Excception: " + e.toString() + stacktrace.toString());
       bool result = await showErrorDialog();
       if (result) {
         await getGifts();
@@ -112,7 +109,6 @@ class SupplierViewModel extends BaseModel {
       setState(ViewStatus.LoadMore);
       CampusDTO store = await getStore();
 
-      print("Get products...");
       products += await _productDAO.getProducts(
           store.id, supplierId, store.selectedTimeSlot,
           page: _productDAO.metaDataDTO.page + 1);
@@ -121,8 +117,8 @@ class SupplierViewModel extends BaseModel {
         collections.forEach((element) {
           element.products = products
               .where((product) =>
-          product.collections.any((e) => e == element.id) &&
-              product.type != ProductType.GIFT_PRODUCT)
+                  product.collections.any((e) => e == element.id) &&
+                  product.type != ProductType.GIFT_PRODUCT)
               .toList();
         });
       }
@@ -130,7 +126,6 @@ class SupplierViewModel extends BaseModel {
       // check truong hop product tra ve rong (do khong co menu nao trong TG do)
       setState(ViewStatus.Completed);
     } catch (e, stacktrace) {
-      print("Excception: " + e.toString() + stacktrace.toString());
       bool result = await showErrorDialog();
       if (result) {
         await getMoreProducts();

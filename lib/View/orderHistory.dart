@@ -284,8 +284,9 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
     );
   }
 
-  void _onTapOrderHistory(order) {
+  void _onTapOrderHistory(order) async {
     // get orderDetail
-    Get.toNamed(RouteHandler.ORDER_HISTORY_DETAIL, arguments: order);
+    await Get.toNamed(RouteHandler.ORDER_HISTORY_DETAIL, arguments: order);
+    model.getOrders();
   }
 }

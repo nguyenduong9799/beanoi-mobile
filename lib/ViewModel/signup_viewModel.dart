@@ -5,20 +5,9 @@ import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
 
 class SignUpViewModel extends BaseModel {
-  static SignUpViewModel _instance;
   AccountDAO dao = AccountDAO();
 
   SignUpViewModel() {}
-  static SignUpViewModel getInstance() {
-    if (_instance == null) {
-      _instance = SignUpViewModel();
-    }
-    return _instance;
-  }
-
-  static void destroyInstance() {
-    _instance = null;
-  }
 
   Future<AccountDTO> updateUser(Map<String, dynamic> user) async {
     try {

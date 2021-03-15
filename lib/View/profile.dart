@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -21,51 +20,63 @@ class ProfileScreen extends StatefulWidget {
   }
 }
 
-class _UpdateAccountState extends State<ProfileScreen>
-    with SingleTickerProviderStateMixin {
-  AnimationController _controller;
-
+class _UpdateAccountState extends State<ProfileScreen> {
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 2000),
-      vsync: this,
-    );
+  }
+
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
+      new GlobalKey<RefreshIndicatorState>();
+
+  Future<void> _refresh() async {
+    await AccountViewModel.getInstance().fetchUser();
   }
 
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return ScopedModel(
-      model: RootViewModel.getInstance(),
+      model: AccountViewModel.getInstance(),
       child: Scaffold(
         body: SafeArea(
-            child: Stack(
-          children: [
-            userInfo(),
-            Positioned(right: 8, top: 16, child: refreshButton())
-          ],
-        )),
+            child: RefreshIndicator(
+                key: _refreshIndicatorKey,
+                onRefresh: _refresh,
+                child: userInfo())),
       ),
     );
   }
 
   Widget userInfo() {
-    return ScopedModelDescendant<RootViewModel>(
+    return ScopedModelDescendant<AccountViewModel>(
       builder: (context, child, model) {
         final status = model.status;
         if (status == ViewStatus.Loading)
           return Center(child: LoadingBean());
         else if (status == ViewStatus.Error)
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text("＞﹏＜"),
-                signoutButton(),
-              ],
-            ),
+          return ListView(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(40.0),
+                child: Center(
+                  child: Column(
+                    children: [
+                      Image.asset(
+                        'assets/images/global_error.png',
+                        fit: BoxFit.contain,
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        "Có gì đó sai sai..\n Vui lòng thử lại.",
+                        // style: kTextPrimary,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              signoutButton(),
+            ],
           );
 
         return Container(
@@ -211,7 +222,7 @@ class _UpdateAccountState extends State<ProfileScreen>
     );
   }
 
-  Widget userButton(String text, RootViewModel model) {
+  Widget userButton(String text, AccountViewModel model) {
     return Container(
       margin: const EdgeInsets.only(left: 80.0, right: 80.0),
       child: FlatButton(
@@ -225,7 +236,6 @@ class _UpdateAccountState extends State<ProfileScreen>
           style: TextStyle(fontSize: 16),
         ),
         onPressed: () async {
-          print("Update: ");
           bool result = await Get.toNamed(RouteHandler.SIGN_UP,
               arguments: model.currentUser);
           if (result != null) {
@@ -239,7 +249,7 @@ class _UpdateAccountState extends State<ProfileScreen>
   }
 
   Widget signoutButton() {
-    return ScopedModelDescendant<RootViewModel>(
+    return ScopedModelDescendant<AccountViewModel>(
         builder: (context, child, model) {
       return Container(
         margin: const EdgeInsets.only(left: 80.0, right: 80.0),
@@ -262,7 +272,7 @@ class _UpdateAccountState extends State<ProfileScreen>
     });
   }
 
-  Widget systemInfo(RootViewModel model) {
+  Widget systemInfo(AccountViewModel model) {
     return Container(
       margin: EdgeInsets.only(left: 32, right: 32, bottom: 0, top: 16),
       padding: EdgeInsets.only(left: 32, right: 32),
@@ -310,29 +320,5 @@ class _UpdateAccountState extends State<ProfileScreen>
         ),
       ),
     );
-  }
-
-  Widget refreshButton() {
-    return ScopedModelDescendant<RootViewModel>(
-        builder: (context, child, model) {
-      return RotationTransition(
-        turns: Tween(begin: 0.0, end: 1.0).animate(_controller),
-        child: Center(
-          child: IconButton(
-              icon: Icon(
-                AntDesign.sync,
-                color: Colors.blue,
-                size: 30,
-              ),
-              onPressed: () async {
-                if (model.status != ViewStatus.Loading) {
-                  _controller.repeat();
-                  await model.fetchUser();
-                  _controller.reset();
-                }
-              }),
-        ),
-      );
-    });
   }
 }

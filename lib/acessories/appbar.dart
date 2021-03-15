@@ -76,7 +76,7 @@ class _HomeAppBarSate extends State<HomeAppBar> {
   Widget build(BuildContext context) {
     // TODO: implement build
     return ScopedModel(
-      model: RootViewModel.getInstance(),
+      model: AccountViewModel.getInstance(),
       child: Container(
         height: MediaQuery.of(context).size.height * 0.11,
         padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
@@ -112,7 +112,7 @@ class _HomeAppBarSate extends State<HomeAppBar> {
                           borderRadius: BorderRadius.all(
                             Radius.circular(10),
                           )),
-                      child: ScopedModelDescendant<RootViewModel>(
+                      child: ScopedModelDescendant<AccountViewModel>(
                         builder: (context, child, model) {
                           return GestureDetector(
                             onTap: () async {
@@ -152,7 +152,7 @@ class _HomeAppBarSate extends State<HomeAppBar> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Flexible(child: _buildWelcome()),
-                      SizedBox(height: 5),
+                      SizedBox(height: 8),
                       Row(
                         children: [
                           Image(
@@ -160,7 +160,7 @@ class _HomeAppBarSate extends State<HomeAppBar> {
                             width: 18,
                             height: 18,
                           ),
-                          SizedBox(width: 10),
+                          SizedBox(width: 8),
                           Flexible(child: _buildBalance()),
                         ],
                       )
@@ -199,7 +199,7 @@ class _HomeAppBarSate extends State<HomeAppBar> {
   }
 
   Widget _buildWelcome() {
-    return ScopedModelDescendant<RootViewModel>(
+    return ScopedModelDescendant<AccountViewModel>(
       builder: (context, child, model) {
         final status = model.status;
         final user = model.currentUser;
@@ -241,7 +241,7 @@ class _HomeAppBarSate extends State<HomeAppBar> {
   }
 
   Widget _buildBalance() {
-    return ScopedModelDescendant<RootViewModel>(
+    return ScopedModelDescendant<AccountViewModel>(
       builder: (context, child, model) {
         final status = model.status;
         final user = model.currentUser;
@@ -267,7 +267,7 @@ class _HomeAppBarSate extends State<HomeAppBar> {
               ),
               children: [
                 TextSpan(
-                  text: "${user.balance} xu",
+                  text: "${user.balance.floor()} xu",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 14,
@@ -276,7 +276,7 @@ class _HomeAppBarSate extends State<HomeAppBar> {
                 ),
                 TextSpan(text: " và "),
                 TextSpan(
-                  text: "${user.point} ",
+                  text: "${user.point.floor()} ",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 14,

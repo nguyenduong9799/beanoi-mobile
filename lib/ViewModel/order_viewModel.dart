@@ -9,6 +9,7 @@ import 'package:unidelivery_mobile/ViewModel/index.dart';
 import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/enums/order_status.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
+import 'package:unidelivery_mobile/route_constraint.dart';
 import 'package:unidelivery_mobile/utils/shared_pref.dart';
 import '../constraints.dart';
 
@@ -55,7 +56,6 @@ class OrderViewModel extends BaseModel {
       hideDialog();
       setState(ViewStatus.Completed);
     } catch (e, stacktra) {
-      print(e.toString());
       print(stacktra.toString());
       bool result = await showErrorDialog();
       if (result) {
@@ -69,23 +69,20 @@ class OrderViewModel extends BaseModel {
     showLoadingDialog();
     if (item.master.type == ProductType.GIFT_PRODUCT) {
       int originalQuantity = 0;
-      if (RootViewModel.getInstance().currentUser == null) {
-        await RootViewModel.getInstance().fetchUser();
+      if (AccountViewModel.getInstance().currentUser == null) {
+        await AccountViewModel.getInstance().fetchUser();
       }
-      double totalBean = RootViewModel.getInstance().currentUser.point;
+      double totalBean = AccountViewModel.getInstance().currentUser.point;
 
-      Cart cart = await getCart();
-      if (cart != null) {
-        cart.items.forEach((element) {
-          if (element.master.type == ProductType.GIFT_PRODUCT) {
-            if (element.master.id != item.master.id) {
-              totalBean -= (element.master.price * element.quantity);
-            } else {
-              originalQuantity = element.quantity;
-            }
+      currentCart.items.forEach((element) {
+        if (element.master.type == ProductType.GIFT_PRODUCT) {
+          if (element.master.id != item.master.id) {
+            totalBean -= (element.master.price * element.quantity);
+          } else {
+            originalQuantity = element.quantity;
           }
-        });
-      }
+        }
+      });
 
       if (totalBean < (item.master.price * item.quantity)) {
         await showStatusDialog("assets/images/global_error.png", "ERR_BALANCE",
@@ -111,17 +108,21 @@ class OrderViewModel extends BaseModel {
       showLoadingDialog();
 
       OrderStatus result = await dao.createOrders(location.id, currentCart);
+      await AccountViewModel.getInstance().fetchUser();
       if (result.statusCode == 200) {
         await deleteCart();
         hideDialog();
         await showStatusDialog(
             "assets/images/global_sucsess.png", result.code, result.message);
-        Get.back(result: true);
+        Get.offAndToNamed(
+          RouteHandler.ORDER_HISTORY_DETAIL,
+          arguments: result.order,
+        );
+        // Get.back(result: true);
       } else {
         hideDialog();
         await showStatusDialog(
             "assets/images/global_error.png", result.code, result.message);
-        await RootViewModel.getInstance().fetchUser();
       }
     } catch (e) {
       bool result = await showErrorDialog();
@@ -148,6 +149,7 @@ class OrderViewModel extends BaseModel {
       hideDialog();
       Get.back(result: false);
     } else {
+      currentCart = await getCart();
       await prepareOrder();
     }
   }

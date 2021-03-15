@@ -8,8 +8,8 @@ import '../constraints.dart';
 
 Widget buildCartButton() {
   return ScopedModel(
-    model: HomeViewModel.getInstance(),
-    child: ScopedModelDescendant<HomeViewModel>(
+    model: RootViewModel.getInstance(),
+    child: ScopedModelDescendant<RootViewModel>(
         builder: (context, child, model) {
           return FutureBuilder(
               future: model.cart,
@@ -28,7 +28,6 @@ Widget buildCartButton() {
                       // side: BorderSide(color: Colors.red),
                     ),
                     onPressed: () async {
-                      print('Tap order');
                       await model.openCart();
                     },
                     child: Stack(

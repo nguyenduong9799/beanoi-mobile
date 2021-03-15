@@ -12,20 +12,9 @@ import 'package:unidelivery_mobile/services/push_notification_service.dart';
 import '../route_constraint.dart';
 
 class LoginViewModel extends BaseModel {
-  static LoginViewModel _instance;
   AccountDAO dao = AccountDAO();
   String verificationId;
   AnalyticsService _analyticsService;
-  static LoginViewModel getInstance() {
-    if (_instance == null) {
-      _instance = LoginViewModel();
-    }
-    return _instance;
-  }
-
-  static void destroyInstance() {
-    _instance = null;
-  }
 
   AccountDTO user;
 
@@ -40,12 +29,10 @@ class LoginViewModel extends BaseModel {
       await _analyticsService.logLogin(authCredential.signInMethod);
       // TODO: Thay uid = idToken
       String token = await userCredential.user.getIdToken();
-      print("token: " + token);
       final userInfo = await dao.login(token);
       await PushNotificationService.getInstance().init();
 
       await _analyticsService.setUserProperties(userInfo);
-      print("User: " + userInfo.toString());
       return userInfo;
     } catch (e) {
       bool result = await showErrorDialog();
@@ -82,8 +69,6 @@ class LoginViewModel extends BaseModel {
 
     final PhoneVerificationFailed verificationFailed =
         (FirebaseAuthException authException) async {
-      print(
-          "===== Dang nhap fail: ${authException.toString()} ${authException.message}");
       await showStatusDialog("assets/images/global_error.png", "Xảy ra lỗi",
           authException.message);
       Get.back();
@@ -107,7 +92,6 @@ class LoginViewModel extends BaseModel {
       codeSent: phoneCodeSent,
       codeAutoRetrievalTimeout: phoneTimeout,
     );
-    print("Login Done");
   }
 
   Future<void> onSignInWithGmail() async {
@@ -118,7 +102,6 @@ class LoginViewModel extends BaseModel {
       showLoadingDialog();
       return Get.offAllNamed(RouteHandler.NAV);
     } on FirebaseAuthException catch (e) {
-      print("=====OTP Fail: ${e.message}  ");
       await showStatusDialog(
           "assets/images/global_error.png", "Error", e.message);
     } finally {
@@ -127,14 +110,12 @@ class LoginViewModel extends BaseModel {
   }
 
   Future<void> onsignInWithOTP(smsCode, verificationId) async {
-    print("DN = OTP");
     showLoadingDialog();
 
     try {
       final authCredential =
           await AuthService().signInWithOTP(smsCode, verificationId);
       final userInfo = await signIn(authCredential);
-      print("User info: " + userInfo.toString());
 
       if (userInfo.isFirstLogin || userInfo.isFirstLogin == null) {
         // Navigate to sign up screen
@@ -149,12 +130,9 @@ class LoginViewModel extends BaseModel {
         await Get.offAllNamed(RouteHandler.NAV);
       }
     } on FirebaseAuthException catch (e) {
-      print("Error: " + e.toString());
-      print("=====OTP Fail: ${e.message}  ");
       await showStatusDialog(
           "assets/images/global_error.png", "Error", e.message);
     } catch (e, strack) {
-      print("Error: " + e.toString() + strack.toString());
       await showStatusDialog(
           "assets/images/global_error.png", "Error", e.toString());
     } finally {

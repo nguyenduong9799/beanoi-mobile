@@ -31,9 +31,9 @@ class _RootScreenState extends State<RootScreen> {
   void initState() {
     super.initState();
     _selectedIndex = widget.initScreenIndex;
-    HomeViewModel.getInstance().fetchStore().then((value) {
+    RootViewModel.getInstance().fetchStore().then((value) {
       HomeViewModel.getInstance().getSuppliers();
-      HomeViewModel.getInstance().getGifts();
+      GiftViewModel.getInstance().getGifts();
     });
   }
 
@@ -43,14 +43,9 @@ class _RootScreenState extends State<RootScreen> {
       length: _icons.length,
       child: GestureDetector(
         behavior: HitTestBehavior.translucent,
-        onHorizontalDragStart: (e) {
-          print("On Drag");
-        },
-        onLongPress: () {
-          print("Press screen");
-        },
+        onHorizontalDragStart: (e) {},
+        onLongPress: () {},
         onTap: () {
-          print("Tap screen");
           // TODO:
           // FEATURE: HIEN GOI Y KHI USER KHONG TAP VAO SCREEN MOT KHOANG THOI GIAN
         },

@@ -10,7 +10,6 @@ class AuthService {
   Future<UserCredential> signIn(AuthCredential authCredential) async {
     UserCredential userCredential =
         await auth.signInWithCredential(authCredential);
-    print(await userCredential.user.getIdToken());
     return userCredential;
   }
 
@@ -33,7 +32,6 @@ class AuthService {
       );
       return credential;
     } catch (err) {
-      print('Error Login: $err');
       throw (err);
     }
   }

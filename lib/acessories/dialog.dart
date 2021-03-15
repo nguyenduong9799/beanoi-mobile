@@ -301,14 +301,14 @@ void hideSnackbar() {
   }
 }
 
-Future<void> changeCampusDialog(HomeViewModel model, Function function) async {
+Future<void> changeCampusDialog(RootViewModel model, Function function) async {
   hideDialog();
   await Get.dialog(
       WillPopScope(
         onWillPop: () {},
         child: ScopedModel(
           model: model,
-          child: ScopedModelDescendant<HomeViewModel>(
+          child: ScopedModelDescendant<RootViewModel>(
               builder: (context, child, model) {
             return Dialog(
               backgroundColor: Colors.white,
@@ -498,22 +498,59 @@ Future<void> changeLocationDialog(
       barrierDismissible: false);
 }
 
-Future<void> showTimeDialog(HomeViewModel model) async {
+Future<void> showTimeDialog(RootViewModel model) async {
   await Get.dialog(
       ScopedModel(
         model: model,
-        child: ScopedModelDescendant<HomeViewModel>(
+        child: ScopedModelDescendant<RootViewModel>(
             builder: (context, child, model) {
           List<Widget> timeSlots = new List();
           model.currentStore.timeSlots.forEach((element) {
+            // int fromHour = double.parse(element.from.split(":")[0]).toInt();
+            // int fromMinute = double.parse(element.from.split(":")[1]).toInt();
+            //
+            // int toHour = double.parse(element.from.split(":")[0]).toInt();
+            // int toMinute = double.parse(element.from.split(":")[1]).toInt();
+
             timeSlots.add(
               RadioListTile(
                 activeColor: Colors.red,
                 value: element.menuId,
-                title: Text(
-                  "${element.from.substring(0, 5)} - ${element.to.substring(0, 5)}",
-                  style: TextStyle(
-                      color: element.available ? kPrimary : Colors.grey),
+                title: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text.rich(
+                      TextSpan(
+                        text: "Bắt đầu: ",
+                        children: [
+                          TextSpan(
+                            text: "${element.from.substring(0, 5)}",
+                            style: TextStyle(
+                              fontSize: 13,
+                                color:
+                                    element.available ? kPrimary : Colors.grey),
+                          )
+                        ],
+                        style: TextStyle(color: Colors.black, fontSize: 13,),
+                      ),
+                    ),
+                    SizedBox(height: 4,),
+                    Text.rich(
+                      TextSpan(
+                        text: "Chốt đơn: ",
+                        children: [
+                          TextSpan(
+                            text: "${element.to.substring(0, 5)}",
+                            style: TextStyle(
+                                fontSize: 13,
+                                color:
+                                element.available ? kPrimary : Colors.grey),
+                          )
+                        ],
+                        style: TextStyle(color: Colors.black, fontSize: 13,),
+                      ),
+                    ),
+                  ],
                 ),
                 groupValue: model.tmpTimeSlot.menuId,
                 onChanged: (value) {
@@ -522,6 +559,15 @@ Future<void> showTimeDialog(HomeViewModel model) async {
               ),
             );
           });
+          String recieveDate = "Hôm nay";
+          DateTime currentDate = DateTime.now();
+          int hour = double.parse(model.tmpTimeSlot.arrive.split(":")[0]).toInt();
+          int minute = double.parse(model.tmpTimeSlot.arrive.split(":")[1]).toInt();
+          DateTime recieveTime = DateFormat("yyyy-MM-dd HH:mm:ss").parse("${currentDate.year}-${currentDate.month}-${currentDate.day} $hour:$minute:00");
+          print(recieveTime.toString());
+          if(recieveTime.compareTo(currentDate) < 0){
+            recieveDate = "Ngày mai";
+          }
 
           return WillPopScope(
             onWillPop: () {},
@@ -529,22 +575,26 @@ Future<void> showTimeDialog(HomeViewModel model) async {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(16.0))),
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Center(
-                        child: Text(
-                      "Chọn khung giờ",
-                      style: TextStyle(color: Colors.grey, fontSize: 15),
-                    )),
-                    SizedBox(
-                      height: 16,
+                      child: Text(
+                        "Đặt lúc",
+                        style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.bold),
+                      ),
                     ),
-                    Text(
-                        "📅  Hôm nay, ${DateFormat("dd/MM/yyyy").format(DateTime.now())}",
-                        style: TextStyle(fontSize: 16)),
+                    SizedBox(
+                      height: 8,
+                    ),
+                    Text.rich(
+                      TextSpan(text:  "🔔 Dự kiến giao: $recieveDate vào ", children: [
+                        TextSpan(text: "${model.tmpTimeSlot.arrive.substring(0, 5)}", style: TextStyle(color: Colors.orange, fontWeight: FontWeight.bold))
+                      ]),
+                        style: TextStyle(fontSize: 14)),
+                    SizedBox(height: 4,),
                     ...timeSlots,
                     Container(
                       width: double.infinity,

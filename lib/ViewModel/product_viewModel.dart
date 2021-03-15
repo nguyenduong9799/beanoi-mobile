@@ -50,9 +50,8 @@ class ProductDetailViewModel extends BaseModel {
       }
     } else {
       if (dto.type == ProductType.COMPLEX_PRODUCT &&
-          dto.hasExtra != null &&
-          dto.hasExtra) {
-        print("add extra!");
+          dto.extras != null &&
+          dto.extras.isNotEmpty) {
         getExtra(dto);
         isExtra = true;
       } else {
@@ -150,34 +149,25 @@ class ProductDetailViewModel extends BaseModel {
   }
 
   void changeAffectPriceAtrribute(String attributeValue) {
-    Map choice = new Map();
     String attributeKey = affectPriceContent.keys.elementAt(affectIndex);
-
     selectedAttributes[attributeKey] = attributeValue;
 
     verifyOrder();
 
     if (order) {
-      for (int i = 0; i < affectPriceContent.keys.toList().length; i++) {
-        choice[affectPriceContent.keys.elementAt(i)] =
-            selectedAttributes[affectPriceContent.keys.elementAt(i)];
-      }
-
       if (master.type == ProductType.MASTER_PRODUCT) {
         try {
-          ProductDTO dto = master.getChildByAttributes(choice);
-          print("dto: " + dto.toString());
+          ProductDTO dto = master.getChildByAttributes(selectedAttributes);
           fixTotal = dto.price * count;
           extraTotal = 0;
           if (dto.hasExtra != null && dto.hasExtra) {
-            print("add extra!");
             getExtra(dto);
           } else {
             this.extra = null;
           }
         } catch (e) {
           showStatusDialog("assets/images/global_error.png",
-              "Sản phẩm không tồn tại", choice.toString());
+              "Sản phẩm không tồn tại", selectedAttributes.toString());
           selectedAttributes[attributeKey] = null;
           verifyOrder();
         }
@@ -250,14 +240,12 @@ class ProductDetailViewModel extends BaseModel {
     String description = "";
     CartItem item = new CartItem(master, listChoices, description, count);
 
-    print("Save product: " + master.toString());
-
     if (master.type == ProductType.GIFT_PRODUCT) {
-      if (RootViewModel.getInstance().currentUser == null) {
-        await RootViewModel.getInstance().fetchUser();
+      if (AccountViewModel.getInstance().currentUser == null) {
+        await AccountViewModel.getInstance().fetchUser();
       }
 
-      double totalBean = RootViewModel.getInstance().currentUser.point;
+      double totalBean = AccountViewModel.getInstance().currentUser.point;
 
       Cart cart = await getCart();
       if (cart != null) {

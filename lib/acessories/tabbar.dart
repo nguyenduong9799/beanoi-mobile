@@ -24,7 +24,8 @@ class CustomTabView extends StatefulWidget {
   _CustomTabsState createState() => _CustomTabsState();
 }
 
-class _CustomTabsState extends State<CustomTabView> with TickerProviderStateMixin {
+class _CustomTabsState extends State<CustomTabView>
+    with TickerProviderStateMixin {
   TabController controller;
   int _currentCount;
   int _currentPosition;
@@ -56,11 +57,10 @@ class _CustomTabsState extends State<CustomTabView> with TickerProviderStateMixi
 
       if (_currentPosition > widget.itemCount - 1) {
         _currentPosition = widget.itemCount - 1;
-        _currentPosition = _currentPosition < 0 ? 0 :
-        _currentPosition;
+        _currentPosition = _currentPosition < 0 ? 0 : _currentPosition;
         if (widget.onPositionChange is ValueChanged<int>) {
-          WidgetsBinding.instance.addPostFrameCallback((_){
-            if(mounted) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted) {
               widget.onPositionChange(_currentPosition);
             }
           });
@@ -101,12 +101,14 @@ class _CustomTabsState extends State<CustomTabView> with TickerProviderStateMixi
       unselectedLabelColor: kBackgroundGrey[0],
       indicatorSize: TabBarIndicatorSize.tab,
       indicator: BoxDecoration(
-          borderRadius: BorderRadius.all(
-           Radius.circular(16),
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(10),
+            topRight: Radius.circular(10),
           ),
           color: kBackgroundGrey[0]),
       isScrollable: true,
-      tabs: List.generate(widget.itemCount, (index) => widget.tabBuilder(context, index)),
+      tabs: List.generate(
+          widget.itemCount, (index) => widget.tabBuilder(context, index)),
       indicatorColor: kBackgroundGrey[0],
       controller: controller,
     );
@@ -127,4 +129,3 @@ class _CustomTabsState extends State<CustomTabView> with TickerProviderStateMixi
     }
   }
 }
-

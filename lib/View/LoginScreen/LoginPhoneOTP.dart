@@ -42,9 +42,6 @@ class _LoginWithPhoneOTPState extends State<LoginWithPhoneOTP> {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
-    print("Verification ID: " + widget.verificationId);
-    print("Phone number: " + widget.phoneNumber);
-
     return SafeArea(
       child: ScopedModel<LoginViewModel>(
         model: LoginViewModel(),
@@ -253,10 +250,8 @@ class _LoginWithPhoneOTPState extends State<LoginWithPhoneOTP> {
       enableActiveFill: true,
       errorAnimationController: errorController,
       onCompleted: (v) {
-        print("Completed");
       },
       onChanged: (value) {
-        print(value);
         form.control('otp').value = value;
       },
       validator: (v) {

@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shimmer/shimmer.dart';
@@ -30,7 +31,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
   @override
   void initState() {
     super.initState();
-    print("Product: " + widget.dto.toString());
     productDetailViewModel = new ProductDetailViewModel(widget.dto);
     if (widget.dto.type == ProductType.MASTER_PRODUCT ||
         widget.dto.type == ProductType.COMPLEX_PRODUCT) {
@@ -38,8 +38,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
       List<String> affectkeys =
           productDetailViewModel.affectPriceContent.keys.toList();
       for (int i = 0; i < affectkeys.length; i++) {
-        print(affectkeys[i].toString());
-        affectPriceTabs.add(affectkeys[i].toUpperCase() + " *");
+        affectPriceTabs.add(affectkeys[i].toUpperCase());
       }
     }
   }
@@ -195,19 +194,27 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
               affectPriceTabs.add(extraTab);
             }
           } else {
-            if (affectPriceTabs.last == extraTab) {
+            if (affectPriceTabs.isEmpty) {
+              return SizedBox.shrink();
+            } else if (affectPriceTabs.last == extraTab) {
               affectPriceTabs.removeLast();
             }
           }
 
           return Container(
-              width: MediaQuery.of(context).size.width,
+              width: Get.width,
               color: kPrimary,
-              padding: EdgeInsets.all(8),
+              padding: EdgeInsets.fromLTRB(8, 16, 8, 0),
               child: CustomTabView(
                 itemCount: affectPriceTabs.length,
-                tabBuilder: (context, index) =>
-                    Tab(text: affectPriceTabs[index]),
+                tabBuilder: (context, index) => Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
+                  child: Text.rich(
+                      TextSpan(text: affectPriceTabs[index], children: [
+                    TextSpan(
+                        text: affectPriceTabs[index] != extraTab ? " *" : "", style: TextStyle(color: Colors.red))
+                  ])),
+                ),
                 onPositionChange: (index) {
                   model.changeAffectIndex(index);
                 },
@@ -221,7 +228,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
   Widget AffectAtributeContent() {
     List<Widget> attributes;
     List<String> listOptions;
-    print("Đây là content");
     return ScopedModelDescendant(
       builder:
           (BuildContext context, Widget child, ProductDetailViewModel model) {
@@ -238,7 +244,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
               child: Text("Empty list"),
             );
           case ViewStatus.Completed:
-            print("Complete");
             if (!model.isExtra) {
               attributes = new List();
               if (widget.dto.type == ProductType.MASTER_PRODUCT) {

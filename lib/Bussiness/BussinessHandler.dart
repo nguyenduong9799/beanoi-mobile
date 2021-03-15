@@ -19,7 +19,6 @@ class BussinessHandler {
       else total += prices[i];
     }
 
-    print("total: " + total.toString());
 
     return total;
   }

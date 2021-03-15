@@ -9,6 +9,7 @@ import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
 import 'package:unidelivery_mobile/acessories/appbar.dart';
 import 'package:unidelivery_mobile/acessories/dash_border.dart';
+import 'package:unidelivery_mobile/acessories/otherAmount.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
 import 'package:unidelivery_mobile/utils/index.dart';
@@ -38,7 +39,7 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
       child: Scaffold(
         bottomNavigationBar: _buildCancelBtn(),
         appBar: DefaultAppBar(
-          title: widget.order.invoiceId.toString(),
+          title: widget.order.invoiceId.toString() ?? 'Đơn hàng',
           backButton: Container(
             child: IconButton(
               icon: Icon(
@@ -98,9 +99,7 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                                   child: orderDetail.status == OrderFilter.NEW
                                       ? TyperAnimatedTextKit(
                                           speed: Duration(milliseconds: 100),
-                                          onTap: () {
-                                            print("Tap Event");
-                                          },
+                                          onTap: () {},
                                           text: ['Mới ☕'],
                                           textStyle: TextStyle(
                                             fontFamily: "Bobbers",
@@ -413,21 +412,10 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
 
   List<Widget> _buildOtherAmount(List<OtherAmount> otherAmounts) {
     if (otherAmounts == null) return [SizedBox.shrink()];
-    NumberFormat formatter = NumberFormat();
-    formatter.minimumFractionDigits = 0;
-    formatter.maximumFractionDigits = 2;
+
     return otherAmounts
-        .map((amountObj) => Padding(
-              padding: const EdgeInsets.only(top: 5, bottom: 5),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text("${amountObj.name}", style: TextStyle()),
-                  Text(
-                      "${formatter.format(amountObj.amount)} ${amountObj.unit}",
-                      style: TextStyle()),
-                ],
-              ),
+        .map((amountObj) => OtherAmountWidget(
+              otherAmount: amountObj,
             ))
         .toList();
   }
