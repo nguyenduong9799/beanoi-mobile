@@ -46,7 +46,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     onRefresh: _refresh,
                     child: Column(
                       children: [
-                        banner(),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8, bottom: 8),
+                          child: banner(),
+                        ),
                         location(),
                         timeRecieve(),
                         SizedBox(
@@ -347,7 +350,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 highlightColor: Colors.grey[100],
                 enabled: true,
                 child: Container(
-                  height: Get.height * 0.2,
+                  height: Get.height * 0.3,
                   width: Get.width,
                   color: Colors.grey,
                 ),
@@ -361,16 +364,14 @@ class _HomeScreenState extends State<HomeScreen> {
               }
               return Container(
                 //padding: EdgeInsets.only(top: 8, bottom: 8),
-                height: Get.height * 0.15,
+                height: Get.height * 0.23,
                 width: Get.width,
+
                 child: Swiper(
-                    onTap: (index) async {
-                      await _launchURL(
-                          "https://www.youtube.com/embed/wu32Wj_Uix4");
-                    },
+                    onTap: (index) async {},
                     autoplay: model.blogs.length > 1 ? true : false,
                     autoplayDelay: 5000,
-                    viewportFraction: 0.85,
+                    viewportFraction: 0.9,
                     scale: 0.95,
                     pagination:
                         new SwiperPagination(alignment: Alignment.bottomCenter),
@@ -391,13 +392,24 @@ class _HomeScreenState extends State<HomeScreen> {
                                 arguments: model.blogs[index]);
                           },
                           child: Container(
-                            margin: EdgeInsets.only(left: 8, right: 8),
+                            margin: EdgeInsets.all(8),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(8),
                               image: DecorationImage(
                                 image: imageProvider,
                                 fit: BoxFit.cover,
                               ),
+                              boxShadow: [
+                                BoxShadow(
+                                    color: Colors.grey.withOpacity(0.7),
+                                    spreadRadius: 1,
+                                    blurRadius: 6,
+                                    offset: Offset(
+                                      0,
+                                      3,
+                                    ) // changes position of shadow
+                                    ),
+                              ],
                             ),
                           ),
                         ),
@@ -426,4 +438,3 @@ class _HomeScreenState extends State<HomeScreen> {
 
   _launchURL(String url) async {}
 }
-
