@@ -8,8 +8,8 @@ import 'package:shimmer/shimmer.dart';
 import 'package:unidelivery_mobile/Model/DTO/SupplierDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
-import 'package:unidelivery_mobile/acessories/appbar.dart';
 import 'package:unidelivery_mobile/acessories/dialog.dart';
+import 'package:unidelivery_mobile/acessories/home_appbar.dart';
 import 'package:unidelivery_mobile/acessories/loading.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
@@ -30,43 +30,191 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    double appBarExtraHeight = 70;
     return Scaffold(
       backgroundColor: Colors.white,
       //bottomNavigationBar: bottomBar(),
       body: ScopedModel(
         model: HomeViewModel.getInstance(),
-        child: SafeArea(
-          child: Stack(
-            children: [
-              Center(
-                child: Padding(
-                  padding: EdgeInsets.only(top: Get.height * 0.12),
-                  child: RefreshIndicator(
-                    key: _refreshIndicatorKey,
-                    onRefresh: _refresh,
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(top: 8, bottom: 8),
-                          child: banner(),
+        child: Container(
+          child: SafeArea(
+            top: false,
+            child: CustomScrollView(
+              slivers: [
+                SliverAppBar(
+                  //backgroundColor: Colors.blueGrey,
+                  title: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: _location(),
+                      ),
+                      SizedBox(width: 20),
+                      Container(
+                        padding: EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(16),
+                          color: Colors.grey[300],
                         ),
-                        location(),
-                        timeRecieve(),
-                        SizedBox(
-                          height: 8,
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(25),
+                            child: Container(
+                                child: Image.asset(
+                              'assets/images/history.png',
+                              width: 20,
+                            )),
+                            onTap: () {
+                              Get.toNamed(RouteHandler.ORDER_HISTORY);
+                            },
+                          ),
                         ),
-                        Expanded(child: storeList()),
-                        //loadMoreButton(),
-                        SizedBox(height: 16),
-                      ],
+                      ),
+                    ],
+                  ),
+                  // Allows the user to reveal the app bar if they begin scrolling back
+                  // up the list of items.
+                  pinned: true,
+                  floating: false,
+
+                  // Display a placeholder widget to visualize the shrinking size.
+                  expandedHeight: Get.height * 0.4,
+                  flexibleSpace: FlexibleSpaceBar(
+                    background: Container(
+                      margin: EdgeInsets.only(
+                        top: kToolbarHeight + 20,
+                      ),
+                      color: Colors.white,
+                      child: Stack(
+                        overflow: Overflow.visible,
+                        children: [
+                          Container(
+                            height: Get.height * 0.15,
+                            width: Get.width,
+                            color: kPrimary,
+                          ),
+                          Container(
+                            height: 50,
+                            margin: EdgeInsets.only(bottom: 20),
+                            color: Colors.red,
+                            child: Text('Thời gian giao hàng'),
+                          ),
+                          Positioned(
+                            top: 50,
+                            child: banner(),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
+                  // Make the initial height of the SliverAppBar larger than normal.
                 ),
-              ),
-              HomeAppBar(),
-            ],
+                SliverList(
+                    delegate: SliverChildListDelegate(
+                  <Widget>[
+                    Center(
+                      child: Padding(
+                        padding: EdgeInsets.only(top: Get.height * 0),
+                        child: RefreshIndicator(
+                          key: _refreshIndicatorKey,
+                          onRefresh: _refresh,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Stack(
+                              //   overflow: Overflow.visible,
+                              //   children: [
+                              //     Container(height: 150, width: Get.width),
+                              //   ],
+                              // ),
+                              // (),
+                              // timeRecieve(),
+                              SizedBox(
+                                height: 8,
+                              ),
+                              Padding(
+                                padding: EdgeInsets.fromLTRB(8, 8, 16, 0),
+                                child: Text('Danh sánh nhà hàng',
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.grey[850])),
+                              ),
+                              storeList(),
+                              storeList(),
+                              storeList(),
+                              // stor
+
+                              //loadMoreButton(),
+                              SizedBox(height: 16),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ))
+              ],
+            ),
           ),
         ),
+      ),
+    );
+  }
+
+  InkWell _location() {
+    return InkWell(
+      onTap: () async {
+        // await root.processChangeLocation();
+        print('Tap');
+      },
+      child: Row(
+        children: [
+          Icon(
+            Icons.location_on,
+            color: Colors.red[400],
+            size: 30,
+          ),
+          SizedBox(
+            width: 4,
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "KHU VỰC",
+                style: TextStyle(color: Colors.white, fontSize: 12),
+              ),
+              SizedBox(
+                height: 4,
+              ),
+              Container(
+                child: Row(
+                  children: [
+                    Text(
+                      'Unibean',
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        color: Colors.white,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 8,
+                    ),
+                    Icon(
+                      Icons.arrow_drop_down_outlined,
+                      color: Colors.orange,
+                      size: 24,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
@@ -253,7 +401,8 @@ class _HomeScreenState extends State<HomeScreen> {
               );
             }
             return ListView.separated(
-              physics: AlwaysScrollableScrollPhysics(),
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
               itemBuilder: (context, index) {
                 return InkWell(
                     onTap: () async {
@@ -350,7 +499,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 highlightColor: Colors.grey[100],
                 enabled: true,
                 child: Container(
-                  height: Get.height * 0.3,
+                  height: Get.height * 0.25,
                   width: Get.width,
                   color: Colors.grey,
                 ),
