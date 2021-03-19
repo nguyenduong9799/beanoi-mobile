@@ -1,13 +1,18 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
+import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/acessories/loading.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
 import 'package:unidelivery_mobile/route_constraint.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../constraints.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -39,6 +44,7 @@ class _UpdateAccountState extends State<ProfileScreen> {
     return ScopedModel(
       model: AccountViewModel.getInstance(),
       child: Scaffold(
+        backgroundColor: kBackgroundGrey[0],
         body: SafeArea(
             child: RefreshIndicator(
                 key: _refreshIndicatorKey,
@@ -75,34 +81,16 @@ class _UpdateAccountState extends State<ProfileScreen> {
                   ),
                 ),
               ),
-              signoutButton(),
             ],
           );
 
-        return Container(
-          color: kBackgroundGrey[0],
-          padding: EdgeInsets.only(top: 16),
+        return SingleChildScrollView(
           child: Column(
             children: [
-              Expanded(
-                child: ListView(
-                  shrinkWrap: true,
-                  children: <Widget>[
-                    userImage(),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    userAccount(model.currentUser),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    userButton("Cập nhật", model),
-                    SizedBox(
-                      height: 4,
-                    ),
-                    signoutButton()
-                  ],
-                ),
+              account(),
+              userAccount(model),
+              SizedBox(
+                height: 4,
               ),
               systemInfo(model)
             ],
@@ -112,95 +100,172 @@ class _UpdateAccountState extends State<ProfileScreen> {
     );
   }
 
-  Widget userImage() {
-    return Center(
-      child: Container(
-        height: Get.width * 0.5,
-        width: Get.width * 0.5,
-        decoration: BoxDecoration(
-            border: Border.all(width: 5.0, color: kPrimary),
-            shape: BoxShape.circle),
-        child: ClipOval(child: Image.asset('assets/images/avatar.png')),
-      ),
-    );
+  Widget account() {
+    return ScopedModelDescendant<AccountViewModel>(
+        builder: (context, child, model) {
+      return Container(
+        //color: Color(0xFFddf1ed),
+        padding: const EdgeInsets.all(8.0),
+        margin: EdgeInsets.fromLTRB(32, 0, 0, 8),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Flexible(
+              child: Column(
+                children: [
+                  Container(
+                    height: Get.width * 0.3,
+                    width: Get.width * 0.3,
+                    decoration:
+                        BoxDecoration(color: kPrimary, shape: BoxShape.circle),
+                    child: ClipOval(
+                        child: Image.asset('assets/images/avatar.png')),
+                  ),
+                  SizedBox(
+                    height: 8,
+                  ),
+                  Text(
+                    model.currentUser.name.toUpperCase(),
+                    style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.orange),
+                  ),
+                ],
+              ),
+            ),
+            Flexible(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  infoDetail("Số xu: ", color: Colors.grey, list: [
+                    WidgetSpan(
+                        child: SizedBox(
+                      width: 8,
+                    )),
+                    TextSpan(
+                        text: "${model.currentUser.balance} xu",
+                        style: TextStyle(fontWeight: FontWeight.normal))
+                  ]),
+                  infoDetail("Số bean: ", color: Colors.grey, list: [
+                    WidgetSpan(
+                        child: SizedBox(
+                      width: 8,
+                    )),
+                    TextSpan(
+                        text: "${model.currentUser.point} ",
+                        style: TextStyle(fontWeight: FontWeight.normal)),
+                    WidgetSpan(
+                        alignment: PlaceholderAlignment.bottom,
+                        child: Image(
+                          image:
+                              AssetImage("assets/images/icons/bean_coin.png"),
+                          width: 20,
+                          height: 20,
+                        ))
+                  ]),
+                  infoDetail("Mã giới thiệu: ", color: Colors.grey, list: [
+                    WidgetSpan(
+                        child: SizedBox(
+                      width: 8,
+                    )),
+                    TextSpan(
+                        text: model.currentUser.referalCode ?? "-",
+                        style: TextStyle(fontWeight: FontWeight.normal))
+                  ]),
+                ],
+              ),
+            )
+          ],
+        ),
+      );
+    });
   }
 
-  Widget userAccount(AccountDTO user) {
+  Widget userAccount(AccountViewModel model) {
     return Container(
       child: Center(
         child: Column(
           children: <Widget>[
-            SizedBox(
-              height: 8,
-            ),
-            Text(
-              user.name.toUpperCase(),
-              style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.orange),
-            ),
-            SizedBox(
-              height: 8,
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                infoDetail("Số tiền trong ví: ", list: [
-                  WidgetSpan(
-                      child: SizedBox(
-                    width: 8,
-                  )),
-                  TextSpan(
-                      text: "${user.balance} xu",
-                      style: TextStyle(fontWeight: FontWeight.normal))
-                ]),
-                infoDetail("Số bean trong ví: ", list: [
-                  WidgetSpan(
-                      child: SizedBox(
-                    width: 8,
-                  )),
-                  TextSpan(
-                      text: "${user.point} ",
-                      style: TextStyle(fontWeight: FontWeight.normal)),
-                  WidgetSpan(
-                      alignment: PlaceholderAlignment.bottom,
-                      child: Image(
-                        image: AssetImage("assets/images/icons/bean_coin.png"),
-                        width: 20,
-                        height: 20,
-                      ))
-                ]),
-                infoDetail("Ngày sinh: ", list: [
-                  WidgetSpan(
-                      child: SizedBox(
-                    width: 8,
-                  )),
-                  TextSpan(
-                      text:
-                          "${DateFormat('dd/MM/yyyy').format(user.birthdate)}",
-                      style: TextStyle(fontWeight: FontWeight.normal))
-                ]),
-                infoDetail("Giới tính: ", list: [
-                  WidgetSpan(
-                      child: SizedBox(
-                    width: 8,
-                  )),
-                  TextSpan(
-                      text: "${user.gender}",
-                      style: TextStyle(fontWeight: FontWeight.normal))
-                ]),
-                infoDetail("Email: ", list: [
-                  WidgetSpan(
-                      child: SizedBox(
-                    width: 8,
-                  )),
-                  TextSpan(
-                      text: "${user.email}",
-                      style: TextStyle(fontWeight: FontWeight.normal))
-                ]),
-              ],
-            ),
+            Divider(),
+            section(
+                icon: Icon(Icons.person, color: Colors.black54),
+                title:
+                    Text("Cập nhật", style: TextStyle(color: Colors.black54)),
+                function: () async {
+                  bool result = await Get.toNamed(RouteHandler.UPDATE,
+                      arguments: model.currentUser);
+                  if (result != null) {
+                    if (result) {
+                      await model.fetchUser();
+                    }
+                  }
+                }),
+            Divider(),
+            section(
+                icon: Icon(Icons.history, color: Colors.black54),
+                title: Text("Lịch sử giao dịch",
+                    style: TextStyle(color: Colors.black54)),
+                function: () async {
+                  await showStatusDialog("assets/images/coming_soon.gif",
+                      "Tính năng đang được triển khai", "");
+                }),
+            Divider(),
+            section(
+                icon: Icon(Icons.credit_card_outlined, color: Colors.black54),
+                title: Text("Nhập mã giới thiệu",
+                    style: TextStyle(color: Colors.black54)),
+                function: () async {
+                  await model.showRefferalMessage();
+                }),
+            Divider(),
+            section(
+                icon: Icon(
+                  AntDesign.facebook_square,
+                  color: Colors.black54,
+                ),
+                title: Text("Theo dõi BeanOi",
+                    style: TextStyle(color: Colors.black54)),
+                function: () async {
+                  await _launchUrl(
+                      "https://www.facebook.com/Bean-%C6%A0i-103238875095890",
+                      isFB: true);
+                }),
+            Divider(),
+            section(
+                icon: Icon(Icons.info_outline, color: Colors.black54),
+                title: Text("Giới thiệu ứng dụng",
+                    style: TextStyle(color: Colors.black54)),
+                function: () async {
+                  await _launchUrl(
+                      "https://unidelivery-fad6f.web.app/?fbclid=IwAR1_t9Tlz6YCulz1idfZ4jIJ0AVDP6Pdno7qQ1pKMEi0kwR6zAG-qUJC5K8");
+                }),
+            Divider(),
+            section(
+                icon: Icon(Icons.help_outline, color: Colors.black54),
+                title: Text("Hỗ trợ", style: TextStyle(color: Colors.black54)),
+                function: () async {
+                  int option = await showOptionDialog(
+                      "Vui lòng liên hệ FanPage",
+                      firstOption: "Quay lại",
+                      secondOption: "Liên hệ");
+                  if (option == 1) {
+                    _launchUrl(
+                        "https://www.facebook.com/Bean-%C6%A0i-103238875095890",
+                        isFB: true);
+                  }
+                }),
+            Divider(),
+            section(
+                icon: Icon(Icons.logout, color: Colors.black54),
+                title: Text(
+                  "Đăng xuất",
+                  style: TextStyle(color: Colors.red),
+                ),
+                function: () async {
+                  await model.processSignout();
+                }),
+            Divider(),
           ],
         ),
       ),
@@ -209,8 +274,8 @@ class _UpdateAccountState extends State<ProfileScreen> {
 
   Widget infoDetail(String title,
       {int size, Color color, List<InlineSpan> list}) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8.0),
+    return Container(
+      padding: const EdgeInsets.only(left: 8.0, right: 8.0),
       child: RichText(
           text: TextSpan(
               text: title,
@@ -222,59 +287,36 @@ class _UpdateAccountState extends State<ProfileScreen> {
     );
   }
 
-  Widget userButton(String text, AccountViewModel model) {
-    return Container(
-      margin: const EdgeInsets.only(left: 80.0, right: 80.0),
-      child: FlatButton(
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(8))),
-        textColor: kBackgroundGrey[0],
-        color: kPrimary,
-        splashColor: kSecondary,
-        child: Text(
-          text,
-          style: TextStyle(fontSize: 16),
+  Widget section({Icon icon, Text title, Function function}) {
+    return InkWell(
+      onTap: function ?? () {},
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                icon ?? SizedBox.shrink(),
+                SizedBox(
+                  width: 8,
+                ),
+                title ?? Text("Mặc định"),
+              ],
+            ),
+            Icon(
+              Icons.arrow_forward_ios,
+              color: Colors.grey,
+            )
+          ],
         ),
-        onPressed: () async {
-          bool result = await Get.toNamed(RouteHandler.SIGN_UP,
-              arguments: model.currentUser);
-          if (result != null) {
-            if (result) {
-              await model.fetchUser();
-            }
-          }
-        },
       ),
     );
   }
 
-  Widget signoutButton() {
-    return ScopedModelDescendant<AccountViewModel>(
-        builder: (context, child, model) {
-      return Container(
-        margin: const EdgeInsets.only(left: 80.0, right: 80.0),
-        child: OutlineButton(
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(8))),
-          textColor: kBackgroundGrey[0],
-          color: kBackgroundGrey[0],
-          borderSide: BorderSide(color: Colors.red),
-          splashColor: kBackgroundGrey[3],
-          child: Text(
-            "Đăng xuất",
-            style: TextStyle(fontSize: 16, color: kFail),
-          ),
-          onPressed: () async {
-            await model.processSignout();
-          },
-        ),
-      );
-    });
-  }
-
   Widget systemInfo(AccountViewModel model) {
     return Container(
-      margin: EdgeInsets.only(left: 32, right: 32, bottom: 0, top: 16),
+      margin: EdgeInsets.only(left: 32, right: 32, bottom: 0, top: 8),
       padding: EdgeInsets.only(left: 32, right: 32),
       // decoration: BoxDecoration(
       //   border: Border(top: BorderSide(color: kBackgroundGrey[3], width: 1)),
@@ -288,7 +330,7 @@ class _UpdateAccountState extends State<ProfileScreen> {
               style: TextStyle(fontSize: 13, color: kBackgroundGrey[5]),
             ),
             SizedBox(
-              height: 8,
+              height: 4,
             ),
             Container(
               // height: 40,
@@ -320,5 +362,30 @@ class _UpdateAccountState extends State<ProfileScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _launchUrl(String url, {bool isFB = false}) async {
+    // if(isFB){
+    //   String fbProtocolUrl;
+    //   if (Platform.isIOS) {
+    //     fbProtocolUrl = 'fb://profile/Bean-Ơi-103238875095890';
+    //   } else {
+    //     fbProtocolUrl = 'fb://page/Bean-Ơi-103238875095890';
+    //   }
+    //   try {
+    //     bool launched = await launch(fbProtocolUrl, forceSafariVC: false);
+    //
+    //     if (!launched) {
+    //       await launch(url, forceSafariVC: false);
+    //     }
+    //   } catch (e) {
+    //     await launch(url, forceSafariVC: false);
+    //   }
+    // }else
+    if (await canLaunch(url)) {
+      await launch(url, forceWebView: true, forceSafariVC: true);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 }

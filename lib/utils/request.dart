@@ -75,12 +75,14 @@ class MyRequest {
         return response; // continue
       },
       onError: (DioError e) async {
-        // Do something with response error
+        // Do something with response
+        print(e.response.data.toString());
         if (e.response.statusCode == 401) {
           await showStatusDialog("assets/images/global_error.png", "Lỗi",
               "Vui lòng đăng nhập lại");
           Get.Get.offAllNamed(RouteHandler.LOGIN);
         } else{
+
           throw e;
         }
          //continue

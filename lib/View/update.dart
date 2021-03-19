@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -8,16 +9,15 @@ import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
 import 'package:unidelivery_mobile/utils/regex.dart';
 
-class SignUp extends StatefulWidget {
+class Update extends StatefulWidget {
+  const Update({Key key, this.user}) : super(key: key);
   final AccountDTO user;
 
   @override
-  _SignUpState createState() => _SignUpState();
-
-  SignUp({this.user});
+  _UpdateState createState() => _UpdateState();
 }
 
-class _SignUpState extends State<SignUp> {
+class _UpdateState extends State<Update> {
   final form = FormGroup({
     'name': FormControl(validators: [
       Validators.required,
@@ -27,14 +27,28 @@ class _SignUpState extends State<SignUp> {
       Validators.pattern(phoneReg),
       // Validators.number,
     ], touched: false),
+    'birthdate': FormControl(validators: [], touched: false),
+    'email': FormControl(validators: [
+      Validators.email,
+    ], touched: false),
+    'gender': FormControl(validators: [
+      Validators.required,
+    ], touched: false, value: 'nam'),
   });
 
   @override
   void initState() {
     super.initState();
-    if (widget.user != null) {
+
+    final user = widget.user;
+    // UPDATE USER INFO INTO FORM
+    if (user != null) {
       form.value = {
-        "phone": widget.user.phone,
+        "name": user.name,
+        "phone": user.phone,
+        "birthdate": user.birthdate,
+        "email": user.email,
+        "gender": user.gender,
       };
     }
   }
@@ -53,43 +67,73 @@ class _SignUpState extends State<SignUp> {
             child: Container(
               color: Color(0xFFddf1ed),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  // SIGN-UP FORM
                   Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadiusDirectional.circular(16),
                       color: Colors.white,
                     ),
-                    margin: EdgeInsets.fromLTRB(8, 0, 8, 0),
+                    margin: EdgeInsets.fromLTRB(8, 8, 8, 0),
                     padding: EdgeInsets.fromLTRB(8, 16, 8, 0),
+                    width: screenWidth,
+                    height: screenHeight * 0.75,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         // HELLO SECTION
                         Text(
-                          "Cho mình xin cái tên nhé ☺",
+                          "Cập nhật thông tin dưới đây nhé ☺",
                           style: TextStyle(
                             color: Color(0xFF00d286),
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                         SizedBox(height: 16),
                         // FORM ITEM
-                        FormItem("Họ Tên", "vd: Nguyễn Văn A", "name"),
-                        FormItem(
-                          "Số Điện Thoại",
-                          "012345678",
-                          "phone",
-                          isReadOnly: true,
+                        Expanded(
+                          child: ListView(
+                            shrinkWrap: true,
+                            children: [
+                              FormItem("Họ Tên", "vd: Nguyễn Văn A", "name"),
+                              FormItem(
+                                "Số Điện Thoại",
+                                "012345678",
+                                "phone",
+                                isReadOnly: true,
+                              ),
+                              FormItem("Email", "vd: abc@gmail.com", "email"),
+                              FormItem(
+                                "Ngày sinh",
+                                "01/01/2020",
+                                "birthdate",
+                                keyboardType: "datetime",
+                              ),
+                              FormItem(
+                                "Giới tính",
+                                null,
+                                "gender",
+                                keyboardType: "radio",
+                                radioGroup: [
+                                  {
+                                    "title": "Nam",
+                                    "value": "nam",
+                                  },
+                                  {
+                                    "title": "Nữ",
+                                    "value": "nữ",
+                                  }
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
-
                         //SIGN UP BUTTON
                         ReactiveFormConsumer(builder: (context, form, child) {
                           return AnimatedContainer(
                             duration: Duration(milliseconds: 2000),
                             curve: Curves.easeInOut,
-                            margin: EdgeInsets.fromLTRB(0, 8, 0, 10),
                             child: Center(
                               child: ScopedModelDescendant<SignUpViewModel>(
                                 builder: (context, child, model) =>
@@ -104,11 +148,11 @@ class _SignUpState extends State<SignUp> {
                                   onPressed: () async {
                                     if (model.status ==
                                         ViewStatus.Completed) if (form.valid) {
-                                      await model.signupUser(form.value);
+                                      await model.updateUser(form.value);
                                     }
                                   },
                                   child: Padding(
-                                    padding: const EdgeInsets.all(10.0),
+                                    padding: const EdgeInsets.all(8.0),
                                     child: model.status == ViewStatus.Loading
                                         ? CircularProgressIndicator(
                                             backgroundColor: Color(0xFFFFFFFF))
@@ -128,7 +172,23 @@ class _SignUpState extends State<SignUp> {
                             ),
                           );
                         }),
-                        // BACK TO NAV SCREEN
+                        Center(
+                          child: InkWell(
+                            onTap: () {
+                              Get.back();
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                "Quay lại",
+                                style: TextStyle(
+                                  color: Colors.grey[400],
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -145,8 +205,8 @@ class _SignUpState extends State<SignUp> {
                         ),
                       ),
                       Container(
-                        height: screenHeight * 0.25,
-                        // width: 250,
+                        height: screenHeight * 0.25 - 32,
+                        padding: EdgeInsets.only(top: 8),
                         child: Image.asset(
                           'assets/images/sign_up_character.png',
                         ),
@@ -275,7 +335,6 @@ class FormItem extends StatelessWidget {
             //   borderSide: BorderSide.none,
             // ),
             // focusColor: Colors.red,
-            hintStyle: TextStyle(color: Colors.grey),
             hintText: hintText,
             // labelText: label,
           ),

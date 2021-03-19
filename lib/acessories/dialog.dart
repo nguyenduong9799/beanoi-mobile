@@ -30,13 +30,13 @@ Future<void> showStatusDialog(
             SizedBox(
               height: 8,
             ),
-            Text(
-              status,
-              style: TextStyle(
-                  fontWeight: FontWeight.bold, fontSize: 18, color: kPrimary),
-            ),
-            SizedBox(
-              height: 8,
+            Padding(
+              padding: EdgeInsets.fromLTRB(8, 0, 8, 0),
+              child: Text(
+                status,
+                style: TextStyle(
+                    fontWeight: FontWeight.bold, fontSize: 16, color: kPrimary),
+              ),
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
@@ -167,7 +167,8 @@ Future<bool> showErrorDialog() async {
   return result;
 }
 
-Future<int> showOptionDialog(String text) async {
+Future<int> showOptionDialog(String text,
+    {String firstOption, String secondOption}) async {
   hideDialog();
   int option;
   await Get.dialog(
@@ -228,7 +229,7 @@ Future<int> showOptionDialog(String text) async {
                                 const EdgeInsets.only(top: 16.0, bottom: 16.0),
                             child: Center(
                               child: Text(
-                                "Hủy",
+                                firstOption ?? "Hủy",
                                 style: TextStyle(
                                   color: Colors.grey,
                                 ),
@@ -255,7 +256,7 @@ Future<int> showOptionDialog(String text) async {
                                 const EdgeInsets.only(top: 16.0, bottom: 16.0),
                             child: Center(
                               child: Text(
-                                "Đồng ý",
+                                secondOption ?? "Đồng ý",
                                 style: kTextPrimary,
                               ),
                             ),
@@ -526,15 +527,20 @@ Future<void> showTimeDialog(RootViewModel model) async {
                           TextSpan(
                             text: "${element.from.substring(0, 5)}",
                             style: TextStyle(
-                              fontSize: 13,
+                                fontSize: 13,
                                 color:
                                     element.available ? kPrimary : Colors.grey),
                           )
                         ],
-                        style: TextStyle(color: Colors.black, fontSize: 13,),
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 13,
+                        ),
                       ),
                     ),
-                    SizedBox(height: 4,),
+                    SizedBox(
+                      height: 4,
+                    ),
                     Text.rich(
                       TextSpan(
                         text: "Chốt đơn: ",
@@ -544,10 +550,13 @@ Future<void> showTimeDialog(RootViewModel model) async {
                             style: TextStyle(
                                 fontSize: 13,
                                 color:
-                                element.available ? kPrimary : Colors.grey),
+                                    element.available ? kPrimary : Colors.grey),
                           )
                         ],
-                        style: TextStyle(color: Colors.black, fontSize: 13,),
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 13,
+                        ),
                       ),
                     ),
                   ],
@@ -561,11 +570,14 @@ Future<void> showTimeDialog(RootViewModel model) async {
           });
           String recieveDate = "Hôm nay";
           DateTime currentDate = DateTime.now();
-          int hour = double.parse(model.tmpTimeSlot.arrive.split(":")[0]).toInt();
-          int minute = double.parse(model.tmpTimeSlot.arrive.split(":")[1]).toInt();
-          DateTime recieveTime = DateFormat("yyyy-MM-dd HH:mm:ss").parse("${currentDate.year}-${currentDate.month}-${currentDate.day} $hour:$minute:00");
+          int hour =
+              double.parse(model.tmpTimeSlot.arrive.split(":")[0]).toInt();
+          int minute =
+              double.parse(model.tmpTimeSlot.arrive.split(":")[1]).toInt();
+          DateTime recieveTime = DateFormat("yyyy-MM-dd HH:mm:ss").parse(
+              "${currentDate.year}-${currentDate.month}-${currentDate.day} $hour:$minute:00");
           print(recieveTime.toString());
-          if(recieveTime.compareTo(currentDate) < 0){
+          if (recieveTime.compareTo(currentDate) < 0) {
             recieveDate = "Ngày mai";
           }
 
@@ -583,18 +595,30 @@ Future<void> showTimeDialog(RootViewModel model) async {
                     Center(
                       child: Text(
                         "Đặt lúc",
-                        style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold),
                       ),
                     ),
                     SizedBox(
                       height: 8,
                     ),
                     Text.rich(
-                      TextSpan(text:  "🔔 Dự kiến giao: $recieveDate vào ", children: [
-                        TextSpan(text: "${model.tmpTimeSlot.arrive.substring(0, 5)}", style: TextStyle(color: Colors.orange, fontWeight: FontWeight.bold))
-                      ]),
+                        TextSpan(
+                            text: "🔔 Dự kiến giao: $recieveDate vào ",
+                            children: [
+                              TextSpan(
+                                  text:
+                                      "${model.tmpTimeSlot.arrive.substring(0, 5)}",
+                                  style: TextStyle(
+                                      color: Colors.orange,
+                                      fontWeight: FontWeight.bold))
+                            ]),
                         style: TextStyle(fontSize: 14)),
-                    SizedBox(height: 4,),
+                    SizedBox(
+                      height: 4,
+                    ),
                     ...timeSlots,
                     Container(
                       width: double.infinity,
@@ -618,4 +642,87 @@ Future<void> showTimeDialog(RootViewModel model) async {
         }),
       ),
       barrierDismissible: false);
+}
+
+Future<String> inputDialog(String title, String buttonTitle) async {
+  hideDialog();
+  String code = null;
+  await Get.dialog(
+      Dialog(
+        backgroundColor: Colors.white,
+        elevation: 8.0,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(16.0))),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Align(
+              alignment: Alignment.topRight,
+              child: IconButton(
+                icon: Icon(
+                  AntDesign.closecircleo,
+                  color: Colors.red,
+                ),
+                onPressed: () {
+                  code = null;
+                  hideDialog();
+                },
+              ),
+            ),
+            Text(
+              title,
+              style: TextStyle(fontSize: 16, color: kPrimary),
+            ),
+            SizedBox(
+              height: 8,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(8)),
+                    border: Border.all(color: kPrimary)),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+                  child: TextField(
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                    ),
+                    style: TextStyle(color: Colors.grey),
+                    autofocus: true,
+                    onChanged: (value) {
+                      code = value;
+                    },
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 8,
+            ),
+            Container(
+              width: double.infinity,
+              child: FlatButton(
+                color: kPrimary,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(
+                        bottomRight: Radius.circular(16),
+                        bottomLeft: Radius.circular(16))),
+                onPressed: () {
+                  hideDialog();
+                },
+                child: Padding(
+                  padding: EdgeInsets.only(top: 16, bottom: 16),
+                  child: Text(
+                    buttonTitle,
+                    style: kTextPrimary,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      barrierDismissible: false);
+  return code;
 }

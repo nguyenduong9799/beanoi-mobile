@@ -40,8 +40,14 @@ class AccountDAO extends BaseDAO {
     Response response = await request.get("me");
     // set access token
     final user = response.data["data"];
-
     return AccountDTO.fromJson(user);
+    // return AccountDTO(uid: idToken, name: "Default Name");
+  }
+
+  Future<String> getRefferalMessage(String refferalCode) async {
+    Response response = await request.post("/me/refferal", data: "'$refferalCode'");
+    // set access token
+    return response.data['message'];
     // return AccountDTO(uid: idToken, name: "Default Name");
   }
 

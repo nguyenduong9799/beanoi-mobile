@@ -18,6 +18,7 @@ import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
 import 'package:unidelivery_mobile/utils/index.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
+import "package:collection/collection.dart";
 
 class OrderScreen extends StatefulWidget {
   @override
@@ -188,6 +189,7 @@ class _OrderScreenState extends State<OrderScreen> {
   }
 
   Widget layoutOrder(Cart cart, String store) {
+    Map<int, List<CartItem>> map = groupBy(cart.items, (CartItem item) => item.master.supplierId);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -224,12 +226,21 @@ class _OrderScreenState extends State<OrderScreen> {
             ],
           ),
         ),
-        layoutStore(cart.items, cart.itemQuantity(), store),
+        ListView.separated(
+          physics: NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          itemBuilder: (context, index) {
+            return layoutStore(map.values.elementAt(index));
+          },
+          itemCount: map.keys.length,
+          separatorBuilder: (context, index) => Divider(color: kBackgroundGrey[3],),
+
+        )
       ],
     );
   }
 
-  Widget layoutStore(List<CartItem> list, int quantity, String store) {
+  Widget layoutStore(List<CartItem> list) {
     List<Widget> card = new List();
 
     for (CartItem item in list) {
@@ -260,13 +271,13 @@ class _OrderScreenState extends State<OrderScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  store,
+                  list[0].master.supplierName,
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                Text(quantity.toString() + " món")
+                Text(list.fold(0, (previousValue, element) => previousValue + element.quantity).toString() + " món", style: TextStyle(color: Colors.orange),)
               ],
             ),
           ),

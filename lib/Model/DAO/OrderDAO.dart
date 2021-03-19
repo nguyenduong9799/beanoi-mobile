@@ -59,12 +59,12 @@ class OrderDAO extends BaseDAO {
   }
 
   // TODO: nen dep cart ra ngoai truyen vao parameter
-  Future<OrderStatus> createOrders(int store_id, Cart cart) async {
+  Future<OrderStatus> createOrders(int locationId, Cart cart) async {
     try {
       if (cart != null) {
         // print("Request Note: " + note);
         final res = await request.post('/orders',
-            queryParameters: {"location-id": store_id}, data: cart.toJsonAPi());
+            queryParameters: {"location-id": locationId}, data: cart.toJsonAPi());
         return OrderStatus(
           statusCode: res.statusCode,
           code: res.data['code'],

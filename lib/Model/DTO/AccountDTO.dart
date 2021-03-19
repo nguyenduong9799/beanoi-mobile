@@ -5,6 +5,7 @@ class AccountDTO {
   final DateTime birthdate;
   final double balance;
   final double point;
+  final String referalCode;
   // balance. point;
   final bool isFirstLogin;
   AccountDTO({
@@ -17,6 +18,7 @@ class AccountDTO {
     this.isFirstLogin = true,
     this.balance,
     this.point,
+    this.referalCode
   });
 
   factory AccountDTO.fromJson(dynamic json) => AccountDTO(
@@ -31,6 +33,7 @@ class AccountDTO {
         birthdate: json['birth_day'] as String != null
             ? DateTime.parse(json['birth_day'] as String)
             : null,
+    referalCode: json['ref_code']
       );
 
   @override
@@ -45,8 +48,9 @@ class AccountDTO {
       "email": email,
       "phone": phone,
       "gender": gender == 'nam',
-      "birth_day": birthdate.toString(),
+      "birth_day": birthdate?.toString() ,
       "pic_url": "https://randomuser.me/api/portraits/women/28.jpg",
+      "ref_code": referalCode
     };
   }
 }

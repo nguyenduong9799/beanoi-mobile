@@ -9,6 +9,7 @@ import 'package:unidelivery_mobile/View/onboard.dart';
 import 'package:unidelivery_mobile/View/orderDetail.dart';
 import 'package:unidelivery_mobile/View/start_up.dart';
 import 'package:unidelivery_mobile/View/supplier.dart';
+import 'package:unidelivery_mobile/View/update.dart';
 import 'package:unidelivery_mobile/route_constraint.dart';
 import 'package:unidelivery_mobile/setup.dart';
 import 'package:unidelivery_mobile/utils/pageNavigation.dart';
@@ -99,6 +100,12 @@ class MyApp extends StatelessWidget {
           case RouteHandler.SIGN_UP:
             return CupertinoPageRoute<bool>(
                 builder: (context) => SignUp(
+                      user: settings.arguments,
+                    ),
+                settings: settings);
+          case RouteHandler.UPDATE:
+            return CupertinoPageRoute<bool>(
+                builder: (context) => Update(
                       user: settings.arguments,
                     ),
                 settings: settings);

@@ -1,15 +1,18 @@
+import 'package:get/get.dart';
 import 'package:unidelivery_mobile/Model/DAO/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/AccountDTO.dart';
 import 'package:unidelivery_mobile/ViewModel/base_model.dart';
 import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
 
+import '../route_constraint.dart';
+
 class SignUpViewModel extends BaseModel {
   AccountDAO dao = AccountDAO();
 
   SignUpViewModel() {}
 
-  Future<AccountDTO> updateUser(Map<String, dynamic> user) async {
+  Future<void> updateUser(Map<String, dynamic> user) async {
     try {
       setState(ViewStatus.Loading);
       final userDTO = AccountDTO(
@@ -19,15 +22,36 @@ class SignUpViewModel extends BaseModel {
         phone: user["phone"],
         gender: user["gender"],
       );
-      final updatedUser = await dao.updateUser(userDTO);
+      await dao.updateUser(userDTO);
       // setToken here
       setState(ViewStatus.Completed);
+      Get.back(result: true);
       // await Future.delayed(Duration(seconds: 3));
-      return updatedUser;
     } catch (e) {
       bool result = await showErrorDialog();
       if (result) {
         await updateUser(user);
+      } else
+        setState(ViewStatus.Error);
+    }
+  }
+
+  Future<void> signupUser(Map<String, dynamic> user) async {
+    try {
+      setState(ViewStatus.Loading);
+      final userDTO = AccountDTO(
+        name: user["name"],
+        phone: user["phone"],
+      );
+      await dao.updateUser(userDTO);
+      // setToken here
+      setState(ViewStatus.Completed);
+      Get.offAllNamed(RouteHandler.NAV);
+      // await Future.delayed(Duration(seconds: 3));
+    } catch (e) {
+      bool result = await showErrorDialog();
+      if (result) {
+        await signupUser(user);
       } else
         setState(ViewStatus.Error);
     }

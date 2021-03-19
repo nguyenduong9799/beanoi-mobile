@@ -5,7 +5,6 @@ import 'package:unidelivery_mobile/ViewModel/index.dart';
 import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
 import 'package:unidelivery_mobile/route_constraint.dart';
-import 'package:unidelivery_mobile/utils/shared_pref.dart';
 
 class HomeViewModel extends BaseModel {
   static HomeViewModel _instance;
@@ -48,16 +47,16 @@ class HomeViewModel extends BaseModel {
       // if (total_page > _storeDAO.metaDataDTO.page){
       //   isLoadmore = true;
       // }else isLoadmore = false;
-
       await Future.delayed(Duration(microseconds: 500));
       // check truong hop product tra ve rong (do khong co menu nao trong TG do)
       setState(ViewStatus.Completed);
     } catch (e, stacktrace) {
-      bool result = await showErrorDialog();
-      if (result) {
+      await RootViewModel.getInstance().fetchStore();
+      if (RootViewModel.getInstance().status == ViewStatus.Completed) {
         await getSuppliers();
-      } else
+      } else {
         setState(ViewStatus.Error);
+      }
     }
   }
 
@@ -70,4 +69,3 @@ class HomeViewModel extends BaseModel {
     }
   }
 }
-

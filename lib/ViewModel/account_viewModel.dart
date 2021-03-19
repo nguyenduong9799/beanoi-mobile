@@ -39,6 +39,9 @@ class AccountViewModel extends BaseModel {
       final user = await _dao.getUser();
       currentUser = user;
 
+      String token = await getToken();
+      print(token.toString());
+
       if (version == null) {
         PackageInfo packageInfo = await PackageInfo.fromPlatform();
         version = packageInfo.version;
@@ -49,6 +52,24 @@ class AccountViewModel extends BaseModel {
       bool result = await showErrorDialog();
       if (result) {
         await fetchUser();
+      } else
+        setState(ViewStatus.Error);
+    }
+  }
+
+  Future<void> showRefferalMessage() async {
+    try {
+      String refferalCode = await inputDialog("Nhập mã giới thiệu 🤩", "Xác nhận");
+      if (refferalCode != null && refferalCode.isNotEmpty) {
+        showLoadingDialog();
+        String message = await _dao.getRefferalMessage(refferalCode);
+        await showStatusDialog("assets/images/option.png", "", message);
+      }
+    } catch (e, stacktrace) {
+      print(e.toString() + stacktrace.toString());
+      bool result = await showErrorDialog();
+      if (result) {
+        await showRefferalMessage();
       } else
         setState(ViewStatus.Error);
     }

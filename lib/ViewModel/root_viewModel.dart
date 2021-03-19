@@ -139,58 +139,68 @@ class RootViewModel extends BaseModel {
   }
 
   Future<void> fetchStore() async {
-    setState(ViewStatus.Loading);
-    HomeViewModel.getInstance().setState(ViewStatus.Loading);
-    GiftViewModel.getInstance().setState(ViewStatus.Loading);
-    StoreDAO _storeDAO = new StoreDAO();
-    Function eq = const ListEquality().equals;
-    List<CampusDTO> listStore;
-    currentStore = await getStore();
+    try {
+      setState(ViewStatus.Loading);
+      HomeViewModel.getInstance().setState(ViewStatus.Loading);
+      GiftViewModel.getInstance().setState(ViewStatus.Loading);
+      StoreDAO _storeDAO = new StoreDAO();
+      Function eq = const ListEquality().equals;
+      List<CampusDTO> listStore;
+      currentStore = await getStore();
 
-    if (currentStore == null) {
-      listStore = await _storeDAO.getStores(id: UNIBEAN_STORE);
-      currentStore = BussinessHandler.setSelectedTime(listStore[0]);
-    } else {
-      listStore = await _storeDAO.getStores(id: currentStore.id);
-      currentStore.timeSlots = listStore[0].timeSlots;
-      bool found = false;
-      currentStore.timeSlots.forEach((element) {
-        if (element.menuId == currentStore.selectedTimeSlot.menuId &&
-            element.from == currentStore.selectedTimeSlot.from &&
-            element.to == currentStore.selectedTimeSlot.to &&
-            element.arrive == currentStore.selectedTimeSlot.arrive) {
-          currentStore.selectedTimeSlot.available = element.available;
-          found = true;
+      if (currentStore == null) {
+        listStore = await _storeDAO.getStores(id: UNIBEAN_STORE);
+        currentStore = BussinessHandler.setSelectedTime(listStore[0]);
+      } else {
+        listStore = await _storeDAO.getStores(id: currentStore.id);
+        currentStore.timeSlots = listStore[0].timeSlots;
+        bool found = false;
+        currentStore.timeSlots.forEach((element) {
+          if (element.menuId == currentStore.selectedTimeSlot.menuId &&
+              element.from == currentStore.selectedTimeSlot.from &&
+              element.to == currentStore.selectedTimeSlot.to &&
+              element.arrive == currentStore.selectedTimeSlot.arrive) {
+            currentStore.selectedTimeSlot.available = element.available;
+            found = true;
+          }
+        });
+        if (found == false) {
+          await deleteCart();
+          currentStore = BussinessHandler.setSelectedTime(currentStore);
+          await showStatusDialog(
+              "assets/images/global_error.png",
+              "Khung giờ đã thay đổi",
+              "Các sản phẩm trong giỏ hàng đã bị xóa, còn nhiều món ngon đang chờ bạn nhé");
         }
-      });
-      if (found == false) {
-        await deleteCart();
-        currentStore = BussinessHandler.setSelectedTime(currentStore);
-        await showStatusDialog(
-            "assets/images/global_error.png",
-            "Khung giờ đã thay đổi",
-            "Các sản phẩm trong giỏ hàng đã bị xóa, còn nhiều món ngon đang chờ bạn nhé");
       }
-    }
 
-    await setStore(currentStore);
-
-    List<LocationDTO> locations = await _storeDAO.getLocations(currentStore.id);
-    if (!eq(locations, currentStore.locations)) {
-      currentStore.locations.forEach((location) {
-        if (location.isSelected) {
-          locations.forEach((element) {
-            if (element.id == location.id) {
-              element.isSelected = true;
-            }
-          });
-        }
-      });
-
-      currentStore.locations = locations;
       await setStore(currentStore);
-      tmpTimeSlot = currentStore.selectedTimeSlot;
-      setState(ViewStatus.Completed);
+
+      List<LocationDTO> locations =
+          await _storeDAO.getLocations(currentStore.id);
+      if (!eq(locations, currentStore.locations)) {
+        currentStore.locations.forEach((location) {
+          if (location.isSelected) {
+            locations.forEach((element) {
+              if (element.id == location.id) {
+                element.isSelected = true;
+              }
+            });
+          }
+        });
+
+        currentStore.locations = locations;
+        await setStore(currentStore);
+        tmpTimeSlot = currentStore.selectedTimeSlot;
+        setState(ViewStatus.Completed);
+      }
+    } catch (e) {
+      bool result = await showErrorDialog();
+      if (result) {
+        await fetchStore();
+      } else {
+        setState(ViewStatus.Error);
+      }
     }
   }
 

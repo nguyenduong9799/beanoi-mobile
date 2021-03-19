@@ -54,12 +54,12 @@ class GiftViewModel extends BaseModel {
       // check truong hop product tra ve rong (do khong co menu nao trong TG do)
       setState(ViewStatus.Completed);
     } catch (e, stacktrace) {
-      print(stacktrace.toString());
-      bool result = await showErrorDialog();
-      if (result) {
+      await RootViewModel.getInstance().fetchStore();
+      if(RootViewModel.getInstance().status == ViewStatus.Completed){
         await getGifts();
-      } else
+      }else{
         setState(ViewStatus.Error);
+      }
     }
   }
 
