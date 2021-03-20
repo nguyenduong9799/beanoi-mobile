@@ -146,7 +146,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       bottomRight: Radius.circular(8))),
               child: InkWell(
                 onTap: () async {
-                  await showTimeDialog(model);
+                  if (model.currentStore.selectedTimeSlot != null) {
+                    await showTimeDialog(model);
+                  }
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -160,25 +162,29 @@ class _HomeScreenState extends State<HomeScreen> {
                               color: Colors.yellow),
                           children: [
                             TextSpan(
-                                text:
-                                    "${model.currentStore.selectedTimeSlot.from.substring(0, 5)} - ${model.currentStore.selectedTimeSlot.to.substring(0, 5)}",
+                                text: model.currentStore.selectedTimeSlot !=
+                                        null
+                                    ? "${model.currentStore.selectedTimeSlot.from.substring(0, 5)} - ${model.currentStore.selectedTimeSlot.to.substring(0, 5)}"
+                                    : "Hôm nay Bean tạm nghỉ 😓",
                                 style: TextStyle(
                                     fontSize: 14, color: Colors.white))
                           ]),
                     ),
-                    model.currentStore.selectedTimeSlot.available
-                        ? Icon(
-                            Icons.more_horiz,
-                            color: Colors.white,
-                            size: 24,
-                          )
-                        : Text(
-                            "Hết giờ",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14,
-                                color: Colors.white),
-                          )
+                    model.currentStore.selectedTimeSlot != null
+                        ? model.currentStore.selectedTimeSlot.available
+                            ? Icon(
+                                Icons.more_horiz,
+                                color: Colors.white,
+                                size: 24,
+                              )
+                            : Text(
+                                "Hết giờ",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14,
+                                    color: Colors.white),
+                              )
+                        : SizedBox.shrink()
                     //Text("Thay đổi", style: TextStyle(color: Colors.grey[200]),)
                   ],
                 ),
@@ -237,7 +243,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       Text(
-                        "Aaa, hiện tại chưa có nhà hàng nào tại địa chỉ này, bạn vui lòng quay lại sau nhé",
+                        "Aaa, hiện tại chưa có nhà hàng nào, bạn vui lòng quay lại sau nhé",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 18,
@@ -426,4 +432,3 @@ class _HomeScreenState extends State<HomeScreen> {
 
   _launchURL(String url) async {}
 }
-

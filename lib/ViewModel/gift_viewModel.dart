@@ -43,21 +43,23 @@ class GiftViewModel extends BaseModel {
 
   Future<void> getGifts() async {
     try {
-      if (status != ViewStatus.Loading) {
-        setState(ViewStatus.Loading);
-      }
       CampusDTO currentStore = RootViewModel.getInstance().currentStore;
+      if (currentStore.selectedTimeSlot == null) {
+        return;
+      }
 
+      setState(ViewStatus.Loading);
       gifts = await _productDAO.getGifts(
           currentStore.id, currentStore.selectedTimeSlot);
       await Future.delayed(Duration(microseconds: 500));
       // check truong hop product tra ve rong (do khong co menu nao trong TG do)
       setState(ViewStatus.Completed);
     } catch (e, stacktrace) {
+      setState(ViewStatus.Loading);
       await RootViewModel.getInstance().fetchStore();
-      if(RootViewModel.getInstance().status == ViewStatus.Completed){
+      if (RootViewModel.getInstance().status == ViewStatus.Completed) {
         await getGifts();
-      }else{
+      } else {
         setState(ViewStatus.Error);
       }
     }

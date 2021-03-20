@@ -31,11 +31,12 @@ class HomeViewModel extends BaseModel {
 
   Future<void> getSuppliers() async {
     try {
-      if (status != ViewStatus.Loading) {
-        setState(ViewStatus.Loading);
+      CampusDTO currentStore = RootViewModel.getInstance().currentStore;
+      if (currentStore.selectedTimeSlot == null) {
+        return;
       }
 
-      CampusDTO currentStore = RootViewModel.getInstance().currentStore;
+      setState(ViewStatus.Loading);
 
       suppliers = await _storeDAO.getSuppliers(
           currentStore.id, currentStore.selectedTimeSlot);
@@ -51,6 +52,7 @@ class HomeViewModel extends BaseModel {
       // check truong hop product tra ve rong (do khong co menu nao trong TG do)
       setState(ViewStatus.Completed);
     } catch (e, stacktrace) {
+      setState(ViewStatus.Loading);
       await RootViewModel.getInstance().fetchStore();
       if (RootViewModel.getInstance().status == ViewStatus.Completed) {
         await getSuppliers();

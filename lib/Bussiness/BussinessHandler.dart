@@ -12,28 +12,28 @@ class BussinessHandler {
       [double weight = 1]) {
     double total = 0;
 
-    for(int i = 0; i < quantity; i++){
-      if(i >= PRICE_QUANTITY){
+    for (int i = 0; i < quantity; i++) {
+      if (i >= PRICE_QUANTITY) {
         total += prices[PRICE_QUANTITY - 1];
-      }
-      else total += prices[i];
+      } else
+        total += prices[i];
     }
-
 
     return total;
   }
 
-  static CampusDTO setSelectedTime(CampusDTO campus){
+  static CampusDTO setSelectedTime(CampusDTO campus) {
     campus.selectedTimeSlot = null;
-    for (int i = 0; i < campus.timeSlots.length; i++) {
-      if (campus.timeSlots[i].available) {
-        campus.selectedTimeSlot = campus.timeSlots[i];
-        break;
+    if (campus.timeSlots != null && campus.timeSlots.isNotEmpty) {
+      for (int i = 0; i < campus.timeSlots.length; i++) {
+        if (campus.timeSlots[i].available) {
+          campus.selectedTimeSlot = campus.timeSlots[i];
+          break;
+        }
       }
-    }
-    if (campus.selectedTimeSlot == null) {
-      campus.selectedTimeSlot =
-      campus.timeSlots[campus.timeSlots.length - 1];
+      if (campus.selectedTimeSlot == null) {
+        campus.selectedTimeSlot = campus.timeSlots[campus.timeSlots.length - 1];
+      }
     }
     return campus;
   }

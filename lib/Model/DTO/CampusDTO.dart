@@ -45,7 +45,7 @@ class CampusDTO extends StoreDTO {
       "locations": locations.map((e) => e.toJson()).toList(),
       "is_available": available,
       "time_slots": timeSlots.map((e) => e.toJson()).toList(),
-      "selected_time_slot": selectedTimeSlot.toJson()
+      "selected_time_slot": selectedTimeSlot?.toJson()
     };
   }
 }

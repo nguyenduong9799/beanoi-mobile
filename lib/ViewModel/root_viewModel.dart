@@ -141,8 +141,6 @@ class RootViewModel extends BaseModel {
   Future<void> fetchStore() async {
     try {
       setState(ViewStatus.Loading);
-      HomeViewModel.getInstance().setState(ViewStatus.Loading);
-      GiftViewModel.getInstance().setState(ViewStatus.Loading);
       StoreDAO _storeDAO = new StoreDAO();
       Function eq = const ListEquality().equals;
       List<CampusDTO> listStore;
@@ -165,12 +163,14 @@ class RootViewModel extends BaseModel {
           }
         });
         if (found == false) {
-          await deleteCart();
           currentStore = BussinessHandler.setSelectedTime(currentStore);
-          await showStatusDialog(
-              "assets/images/global_error.png",
-              "Khung giờ đã thay đổi",
-              "Các sản phẩm trong giỏ hàng đã bị xóa, còn nhiều món ngon đang chờ bạn nhé");
+          if (currentStore.selectedTimeSlot != null) {
+            await deleteCart();
+            await showStatusDialog(
+                "assets/images/global_error.png",
+                "Khung giờ đã thay đổi",
+                "Các sản phẩm trong giỏ hàng đã bị xóa, còn nhiều món ngon đang chờ bạn nhé");
+          }
         }
       }
 
@@ -194,7 +194,8 @@ class RootViewModel extends BaseModel {
         tmpTimeSlot = currentStore.selectedTimeSlot;
         setState(ViewStatus.Completed);
       }
-    } catch (e) {
+    } catch (e, stacktrace) {
+      print(stacktrace.toString());
       bool result = await showErrorDialog();
       if (result) {
         await fetchStore();
