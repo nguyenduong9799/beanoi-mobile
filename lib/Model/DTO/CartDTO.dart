@@ -1,5 +1,6 @@
 import 'package:logger/logger.dart';
 import 'package:unidelivery_mobile/Model/DTO/ProductDTO.dart';
+import 'package:unidelivery_mobile/Model/DTO/index.dart';
 
 final logger = Logger(
     printer: PrettyPrinter(
@@ -14,12 +15,10 @@ final logger = Logger(
 class Cart {
   List<CartItem> items;
   int payment;
+  List<SupplierNoteDTO> notes;
   // User info
 
-  Cart.get({
-    this.items,
-    this.payment
-  });
+  Cart.get({this.items, this.payment, this.notes});
 
   Cart() {
     items = List();
@@ -34,6 +33,7 @@ class Cart {
     return Cart.get(
       items: list,
       payment: json['payment'],
+      notes: (json['supplier_notes'] as List)?.map((e) => SupplierNoteDTO.fromJson(e))?.toList()
     );
   }
 
@@ -42,6 +42,7 @@ class Cart {
     return {
       "items": listCartItem,
       "payment": payment,
+      "supplier_notes": notes != null ? notes.map((e) => e.toJson())?.toList() : []
     };
   }
 
@@ -54,7 +55,9 @@ class Cart {
     Map<String, dynamic> map = {
       "payment": payment,
       "products_list": listCartItem,
+      "supplier_notes": notes != null ? notes.map((e) => e.toJson())?.toList() : []
     };
+    print(map.toString());
     logger.i("Order: " + map.toString());
     return map;
   }
@@ -180,3 +183,4 @@ class CartItem {
     // return map;
   }
 }
+

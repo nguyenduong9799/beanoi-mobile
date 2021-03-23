@@ -23,6 +23,7 @@ class _BannerDetailScreenState extends State<BannerDetailScreen> {
   Widget build(BuildContext context) {
     final htmlData = widget.blog.content;
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: DefaultAppBar(
         title: widget.blog.title,
         backButton: Container(

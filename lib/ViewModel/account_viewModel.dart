@@ -59,11 +59,32 @@ class AccountViewModel extends BaseModel {
 
   Future<void> showRefferalMessage() async {
     try {
-      String refferalCode = await inputDialog("Nhập mã giới thiệu 🤩", "Xác nhận");
+      String refferalCode =
+          await inputDialog("Nhập mã giới thiệu 🤩", "Xác nhận");
       if (refferalCode != null && refferalCode.isNotEmpty) {
         showLoadingDialog();
         String message = await _dao.getRefferalMessage(refferalCode);
         await showStatusDialog("assets/images/option.png", "", message);
+      }
+    } catch (e, stacktrace) {
+      print(e.toString() + stacktrace.toString());
+      bool result = await showErrorDialog();
+      if (result) {
+        await showRefferalMessage();
+      } else
+        setState(ViewStatus.Error);
+    }
+  }
+
+  Future<void> sendFeedback() async {
+    try {
+      String feedback =
+          await inputDialog("Bạn cho mình xin feedback nha 🤗", "Gửi thôi 💛");
+      if (feedback != null && feedback.isNotEmpty) {
+        showLoadingDialog();
+        await _dao.sendFeedback(feedback);
+        await showStatusDialog("assets/images/option.png", "Cảm ơn bạn",
+            "Feedback của bạn sẽ giúp tụi mình cải thiện app tốt hơn 😊");
       }
     } catch (e, stacktrace) {
       print(e.toString() + stacktrace.toString());

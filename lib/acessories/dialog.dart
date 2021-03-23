@@ -426,8 +426,7 @@ Future<void> changeLocationDialog(
                               padding: const EdgeInsets.all(8.0),
                               child: Text(
                                 "Chọn địa chỉ nhận hàng",
-                                style:
-                                    TextStyle(color: kGreyTitle, fontSize: 16),
+                                style: TextStyle(color: kPrimary, fontSize: 16),
                               )),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
@@ -585,7 +584,7 @@ Future<void> showTimeDialog(RootViewModel model) async {
             onWillPop: () {},
             child: Dialog(
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(16.0))),
+                  borderRadius: BorderRadius.all(Radius.circular(8.0))),
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
                 child: Column(
@@ -644,85 +643,108 @@ Future<void> showTimeDialog(RootViewModel model) async {
       barrierDismissible: false);
 }
 
-Future<String> inputDialog(String title, String buttonTitle) async {
+Future<String> inputDialog(String title, String buttonTitle,
+    {String value}) async {
   hideDialog();
-  String code = null;
+  TextEditingController controller = TextEditingController(text: value);
   await Get.dialog(
       Dialog(
         backgroundColor: Colors.white,
         elevation: 8.0,
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(16.0))),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Align(
-              alignment: Alignment.topRight,
-              child: IconButton(
-                icon: Icon(
-                  AntDesign.closecircleo,
-                  color: Colors.red,
-                ),
-                onPressed: () {
-                  code = null;
-                  hideDialog();
-                },
-              ),
-            ),
-            Text(
-              title,
-              style: TextStyle(fontSize: 16, color: kPrimary),
-            ),
-            SizedBox(
-              height: 8,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(8)),
-                    border: Border.all(color: kPrimary)),
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
-                  child: TextField(
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Flexible(
+                      child: Text(
+                        title,
+                        style: TextStyle(fontSize: 16, color: kPrimary),
+                      ),
                     ),
-                    style: TextStyle(color: Colors.grey),
-                    autofocus: true,
-                    onChanged: (value) {
-                      code = value;
-                    },
+                    IconButton(
+                      icon: Icon(
+                        AntDesign.closecircleo,
+                        color: Colors.red,
+                      ),
+                      onPressed: () {
+                        if (value == null || value.isEmpty) {
+                          controller.clear();
+                        } else {
+                          controller.text = value;
+                        }
+                        hideDialog();
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                      border: Border.all(color: kPrimary)),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
+                    child: TextFormField(
+                      controller: controller,
+                      decoration: InputDecoration(
+                          border: InputBorder.none,
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              Icons.clear,
+                              size: 16,
+                              color: Colors.grey,
+                            ),
+                            onPressed: () {
+                              controller.clear();
+                            },
+                          )),
+                      style: TextStyle(color: Colors.grey),
+                      keyboardType: TextInputType.multiline,
+                      maxLines: null,
+                      autofocus: true,
+                      onFieldSubmitted: (value) {
+                        controller.text = value;
+                      },
+                    ),
                   ),
                 ),
               ),
-            ),
-            SizedBox(
-              height: 8,
-            ),
-            Container(
-              width: double.infinity,
-              child: FlatButton(
-                color: kPrimary,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(
-                        bottomRight: Radius.circular(16),
-                        bottomLeft: Radius.circular(16))),
-                onPressed: () {
-                  hideDialog();
-                },
-                child: Padding(
-                  padding: EdgeInsets.only(top: 16, bottom: 16),
-                  child: Text(
-                    buttonTitle,
-                    style: kTextPrimary,
+              SizedBox(
+                height: 8,
+              ),
+              Container(
+                width: double.infinity,
+                child: FlatButton(
+                  color: kPrimary,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                          bottomRight: Radius.circular(16),
+                          bottomLeft: Radius.circular(16))),
+                  onPressed: () {
+                    hideDialog();
+                  },
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 16, bottom: 16),
+                    child: Text(
+                      buttonTitle,
+                      style: kTextPrimary,
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
       barrierDismissible: false);
-  return code;
+  return controller.text;
 }

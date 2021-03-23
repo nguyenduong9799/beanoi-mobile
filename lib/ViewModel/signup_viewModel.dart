@@ -41,7 +41,6 @@ class SignUpViewModel extends BaseModel {
       setState(ViewStatus.Loading);
       final userDTO = AccountDTO(
         name: user["name"],
-        phone: user["phone"],
       );
       await dao.updateUser(userDTO);
       // setToken here

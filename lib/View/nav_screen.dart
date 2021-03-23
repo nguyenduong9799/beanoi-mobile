@@ -31,10 +31,8 @@ class _RootScreenState extends State<RootScreen> {
   void initState() {
     super.initState();
     _selectedIndex = widget.initScreenIndex;
-    RootViewModel.getInstance().fetchStore().then((value) {
-      HomeViewModel.getInstance().getSuppliers();
-      GiftViewModel.getInstance().getGifts();
-    });
+    HomeViewModel.getInstance().getSuppliers();
+    GiftViewModel.getInstance().getGifts();
   }
 
   @override

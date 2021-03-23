@@ -154,6 +154,9 @@ class RootViewModel extends BaseModel {
         currentStore.timeSlots = listStore[0].timeSlots;
         bool found = false;
         currentStore.timeSlots.forEach((element) {
+          if(currentStore.selectedTimeSlot == null){
+            return;
+          }
           if (element.menuId == currentStore.selectedTimeSlot.menuId &&
               element.from == currentStore.selectedTimeSlot.from &&
               element.to == currentStore.selectedTimeSlot.to &&
@@ -164,7 +167,8 @@ class RootViewModel extends BaseModel {
         });
         if (found == false) {
           currentStore = BussinessHandler.setSelectedTime(currentStore);
-          if (currentStore.selectedTimeSlot != null) {
+          Cart cart = await getCart();
+          if (cart != null) {
             await deleteCart();
             await showStatusDialog(
                 "assets/images/global_error.png",

@@ -106,24 +106,23 @@ class _UpdateAccountState extends State<ProfileScreen> {
       return Container(
         //color: Color(0xFFddf1ed),
         padding: const EdgeInsets.all(8.0),
-        margin: EdgeInsets.fromLTRB(32, 0, 0, 8),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
+            Container(
+              height: Get.width * 0.3,
+              width: Get.width * 0.3,
+              decoration:
+                  BoxDecoration(color: kPrimary, shape: BoxShape.circle),
+              child: ClipOval(child: Image.asset('assets/images/avatar.png')),
+            ),
+            SizedBox(
+              width: 16,
+            ),
             Flexible(
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    height: Get.width * 0.3,
-                    width: Get.width * 0.3,
-                    decoration:
-                        BoxDecoration(color: kPrimary, shape: BoxShape.circle),
-                    child: ClipOval(
-                        child: Image.asset('assets/images/avatar.png')),
-                  ),
-                  SizedBox(
-                    height: 8,
-                  ),
                   Text(
                     model.currentUser.name.toUpperCase(),
                     style: TextStyle(
@@ -131,27 +130,15 @@ class _UpdateAccountState extends State<ProfileScreen> {
                         fontWeight: FontWeight.bold,
                         color: Colors.orange),
                   ),
-                ],
-              ),
-            ),
-            Flexible(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+                  SizedBox(
+                    height: 4,
+                  ),
                   infoDetail("Số xu: ", color: Colors.grey, list: [
-                    WidgetSpan(
-                        child: SizedBox(
-                      width: 8,
-                    )),
                     TextSpan(
                         text: "${model.currentUser.balance} xu",
                         style: TextStyle(fontWeight: FontWeight.normal))
                   ]),
                   infoDetail("Số bean: ", color: Colors.grey, list: [
-                    WidgetSpan(
-                        child: SizedBox(
-                      width: 8,
-                    )),
                     TextSpan(
                         text: "${model.currentUser.point} ",
                         style: TextStyle(fontWeight: FontWeight.normal)),
@@ -165,10 +152,6 @@ class _UpdateAccountState extends State<ProfileScreen> {
                         ))
                   ]),
                   infoDetail("Mã giới thiệu: ", color: Colors.grey, list: [
-                    WidgetSpan(
-                        child: SizedBox(
-                      width: 8,
-                    )),
                     TextSpan(
                         text: model.currentUser.referalCode ?? "-",
                         style: TextStyle(fontWeight: FontWeight.normal))
@@ -190,8 +173,8 @@ class _UpdateAccountState extends State<ProfileScreen> {
             Divider(),
             section(
                 icon: Icon(Icons.person, color: Colors.black54),
-                title:
-                    Text("Cập nhật", style: TextStyle(color: Colors.black54)),
+                title: Text("Cập nhật thông tin",
+                    style: TextStyle(color: Colors.black54)),
                 function: () async {
                   bool result = await Get.toNamed(RouteHandler.UPDATE,
                       arguments: model.currentUser);
@@ -238,7 +221,16 @@ class _UpdateAccountState extends State<ProfileScreen> {
                     style: TextStyle(color: Colors.black54)),
                 function: () async {
                   await _launchUrl(
-                      "https://unidelivery-fad6f.web.app/?fbclid=IwAR1_t9Tlz6YCulz1idfZ4jIJ0AVDP6Pdno7qQ1pKMEi0kwR6zAG-qUJC5K8");
+                      "https://unidelivery-fad6f.web.app/?fbclid=IwAR1_t9Tlz6YCulz1idfZ4jIJ0AVDP6Pdno7qQ1pKMEi0kwR6zAG-qUJC5K8",
+                      forceWebView: true);
+                }),
+            Divider(),
+            section(
+                icon: Icon(Icons.feedback_outlined, color: Colors.black54),
+                title:
+                    Text("Feedback", style: TextStyle(color: Colors.black54)),
+                function: () async {
+                  await model.sendFeedback();
                 }),
             Divider(),
             section(
@@ -274,17 +266,14 @@ class _UpdateAccountState extends State<ProfileScreen> {
 
   Widget infoDetail(String title,
       {int size, Color color, List<InlineSpan> list}) {
-    return Container(
-      padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-      child: RichText(
-          text: TextSpan(
-              text: title,
-              style: TextStyle(
-                  color: color ?? Colors.black,
-                  fontSize: size ?? 16,
-                  fontWeight: FontWeight.bold),
-              children: list ?? [])),
-    );
+    return RichText(
+        text: TextSpan(
+            text: title,
+            style: TextStyle(
+                color: color ?? Colors.black,
+                fontSize: size ?? 14,
+                fontWeight: FontWeight.bold),
+            children: list ?? []));
   }
 
   Widget section({Icon icon, Text title, Function function}) {
@@ -364,7 +353,8 @@ class _UpdateAccountState extends State<ProfileScreen> {
     );
   }
 
-  Future<void> _launchUrl(String url, {bool isFB = false}) async {
+  Future<void> _launchUrl(String url,
+      {bool isFB = false, forceWebView = false}) async {
     // if(isFB){
     //   String fbProtocolUrl;
     //   if (Platform.isIOS) {
@@ -383,7 +373,7 @@ class _UpdateAccountState extends State<ProfileScreen> {
     //   }
     // }else
     if (await canLaunch(url)) {
-      await launch(url, forceWebView: true, forceSafariVC: true);
+      await launch(url, forceWebView: forceWebView);
     } else {
       throw 'Could not launch $url';
     }

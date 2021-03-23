@@ -22,7 +22,6 @@ class HomeViewModel extends BaseModel {
 
   StoreDAO _storeDAO;
   List<SupplierDTO> suppliers;
-  List<ProductDTO> gifts;
   List<BlogDTO> blogs;
 
   HomeViewModel() {
@@ -31,12 +30,18 @@ class HomeViewModel extends BaseModel {
 
   Future<void> getSuppliers() async {
     try {
+      setState(ViewStatus.Loading);
+      await RootViewModel.getInstance().fetchStore();
       CampusDTO currentStore = RootViewModel.getInstance().currentStore;
-      if (currentStore.selectedTimeSlot == null) {
+      if(RootViewModel.getInstance().status == ViewStatus.Error){
+        setState(ViewStatus.Error);
         return;
       }
-
-      setState(ViewStatus.Loading);
+      if (currentStore.selectedTimeSlot == null) {
+        suppliers = null;
+        setState(ViewStatus.Completed);
+        return;
+      }
 
       suppliers = await _storeDAO.getSuppliers(
           currentStore.id, currentStore.selectedTimeSlot);
@@ -52,13 +57,7 @@ class HomeViewModel extends BaseModel {
       // check truong hop product tra ve rong (do khong co menu nao trong TG do)
       setState(ViewStatus.Completed);
     } catch (e, stacktrace) {
-      setState(ViewStatus.Loading);
-      await RootViewModel.getInstance().fetchStore();
-      if (RootViewModel.getInstance().status == ViewStatus.Completed) {
-        await getSuppliers();
-      } else {
-        setState(ViewStatus.Error);
-      }
+      setState(ViewStatus.Error);
     }
   }
 

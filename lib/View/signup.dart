@@ -22,21 +22,11 @@ class _SignUpState extends State<SignUp> {
     'name': FormControl(validators: [
       Validators.required,
     ], touched: false),
-    'phone': FormControl(validators: [
-      Validators.required,
-      Validators.pattern(phoneReg),
-      // Validators.number,
-    ], touched: false),
   });
 
   @override
   void initState() {
     super.initState();
-    if (widget.user != null) {
-      form.value = {
-        "phone": widget.user.phone,
-      };
-    }
   }
 
   @override
@@ -77,12 +67,6 @@ class _SignUpState extends State<SignUp> {
                         SizedBox(height: 16),
                         // FORM ITEM
                         FormItem("Họ Tên", "vd: Nguyễn Văn A", "name"),
-                        FormItem(
-                          "Số Điện Thoại",
-                          "012345678",
-                          "phone",
-                          isReadOnly: true,
-                        ),
 
                         //SIGN UP BUTTON
                         ReactiveFormConsumer(builder: (context, form, child) {

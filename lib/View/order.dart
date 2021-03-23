@@ -189,7 +189,8 @@ class _OrderScreenState extends State<OrderScreen> {
   }
 
   Widget layoutOrder(Cart cart, String store) {
-    Map<int, List<CartItem>> map = groupBy(cart.items, (CartItem item) => item.master.supplierId);
+    Map<int, List<CartItem>> map =
+        groupBy(cart.items, (CartItem item) => item.master.supplierId);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -233,14 +234,16 @@ class _OrderScreenState extends State<OrderScreen> {
             return layoutStore(map.values.elementAt(index));
           },
           itemCount: map.keys.length,
-          separatorBuilder: (context, index) => Divider(color: kBackgroundGrey[3],),
-
+          separatorBuilder: (context, index) => Divider(
+            color: kBackgroundGrey[3],
+          ),
         )
       ],
     );
   }
 
   Widget layoutStore(List<CartItem> list) {
+    SupplierNoteDTO supplierNote = orderViewModel.currentCart.notes?.firstWhere((element) => element.supplierId == list[0].master.supplierId, orElse: () => null,);
     List<Widget> card = new List();
 
     for (CartItem item in list) {
@@ -261,26 +264,52 @@ class _OrderScreenState extends State<OrderScreen> {
 
     return Container(
       color: kBackgroundGrey[0],
-      padding: const EdgeInsets.only(bottom: 8, top: 8),
+      padding: const EdgeInsets.only(top: 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  list[0].master.supplierName,
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
+                Padding(
+                  padding: const EdgeInsets.only(left: 8, right: 8),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        list[0].master.supplierName,
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        list
+                            .fold(
+                            0,
+                                (previousValue, element) =>
+                            previousValue + element.quantity)
+                            .toString() +
+                            " món",
+                        style: TextStyle(color: Colors.orange),
+                      )
+                    ],
                   ),
                 ),
-                Text(list.fold(0, (previousValue, element) => previousValue + element.quantity).toString() + " món", style: TextStyle(color: Colors.orange),)
-              ],
+            Material(
+              color: Colors.transparent,
+              child: InkWell(
+                  onTap: (){
+                orderViewModel.addSupplierNote(list[0].master.supplierId);
+              }, child: Padding(
+                padding: EdgeInsets.all(8),
+                child: (supplierNote == null) ? Text("Thêm ghi chú", style: TextStyle(color: Colors.blue, fontSize: 12)) : Text("Sửa ghi chú", style: TextStyle(color: Colors.blue, fontSize: 12)),
+              )
+
+
+              ),
             ),
-          ),
+          ]),
           ...card
         ],
       ),
@@ -293,12 +322,9 @@ class _OrderScreenState extends State<OrderScreen> {
     if (item.master.type != ProductType.MASTER_PRODUCT) {
       price = item.master.price * item.quantity;
     }
-
-    list.add(Text(item.master.name,
-        style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)));
     for (int i = 0; i < item.products.length; i++) {
       list.add(SizedBox(
-        height: 10,
+        height: 4,
       ));
       list.add(Text(
           item.products[i].name.contains("Extra")
@@ -310,7 +336,7 @@ class _OrderScreenState extends State<OrderScreen> {
 
     if (item.description != null && item.description.isNotEmpty) {
       list.add(SizedBox(
-        height: 8,
+        height: 4,
       ));
       list.add(Text(
         item.description,
@@ -325,89 +351,89 @@ class _OrderScreenState extends State<OrderScreen> {
 
     return Slidable(
       actionPane: SlidableDrawerActionPane(),
-      actionExtentRatio: 0.25,
       child: Container(
         color: kBackgroundGrey[0],
-        padding: EdgeInsets.only(right: 5, left: 5, top: 10, bottom: 10),
+        padding: EdgeInsets.all(8),
         child: InkWell(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
-                        child: CachedNetworkImage(
-                          width: MediaQuery.of(context).size.width * 0.25,
-                          height: MediaQuery.of(context).size.width * 0.25,
-                          fit: BoxFit.fill,
-                          imageUrl: item.master.imageURL ?? defaultImage,
-                          imageBuilder: (context, imageProvider) => Container(
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                image: imageProvider,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                          progressIndicatorBuilder:
-                              (context, url, downloadProgress) =>
-                                  Shimmer.fromColors(
-                            baseColor: Colors.grey[300],
-                            highlightColor: Colors.grey[100],
-                            enabled: true,
-                            child: Container(
-                              width: MediaQuery.of(context).size.width * 0.25,
-                              // height: 100,
-                              color: Colors.grey,
-                            ),
-                          ),
-                          errorWidget: (context, url, error) =>
-                              Icon(Icons.error),
-                        ),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: CachedNetworkImage(
+                  width: MediaQuery.of(context).size.width * 0.25,
+                  height: MediaQuery.of(context).size.width * 0.25,
+                  fit: BoxFit.fill,
+                  imageUrl: item.master.imageURL ?? defaultImage,
+                  imageBuilder: (context, imageProvider) => Container(
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: imageProvider,
+                        fit: BoxFit.cover,
                       ),
-                      SizedBox(
-                        width: 8,
-                      ),
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.65 - 120,
-                        child: Column(
+                    ),
+                  ),
+                  progressIndicatorBuilder:
+                      (context, url, downloadProgress) =>
+                          Shimmer.fromColors(
+                    baseColor: Colors.grey[300],
+                    highlightColor: Colors.grey[100],
+                    enabled: true,
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 0.25,
+                      // height: 100,
+                      color: Colors.grey,
+                    ),
+                  ),
+                  errorWidget: (context, url, error) =>
+                      Icon(Icons.error),
+                ),
+              ),
+              SizedBox(
+                width: 8,
+              ),
+              Flexible(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(item.master.name,
+                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             ...list,
                             SizedBox(
-                              height: 8,
+                              height: 4,
                             ),
                             RichText(
                               text: TextSpan(
                                   text:
-                                      isGift ? "${price} " : formatPrice(price),
+                                  isGift ? "${price} " : formatPrice(price),
                                   style: TextStyle(color: Colors.black),
                                   children: [
                                     WidgetSpan(
                                       alignment: PlaceholderAlignment.bottom,
                                       child: isGift
                                           ? Image(
-                                              image: AssetImage(
-                                                  "assets/images/icons/bean_coin.png"),
-                                              width: 20,
-                                              height: 20,
-                                            )
+                                        image: AssetImage(
+                                            "assets/images/icons/bean_coin.png"),
+                                        width: 20,
+                                        height: 20,
+                                      )
                                           : Container(),
                                     )
                                   ]),
                             )
                           ],
                         ),
-                      ),
-                    ],
-                  ),
-                  selectQuantity(item)
-                ],
+                        selectQuantity(item)
+                      ],
+                    )
+                  ],
+                ),
               ),
             ],
           ),

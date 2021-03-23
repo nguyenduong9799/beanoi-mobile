@@ -192,4 +192,31 @@ class OrderViewModel extends BaseModel {
     location = tmpLocation;
     notifyListeners();
   }
+
+  Future<void> addSupplierNote(int id) async {
+    SupplierNoteDTO supplierNote = currentCart.notes?.firstWhere((element) => element.supplierId == id, orElse: () => null,);
+    String note = await inputDialog("Ghi chú cho cửa hàng 🏪", "Xác nhận", value: supplierNote?.content);
+    bool update = true;
+    if(supplierNote != null){
+      if(note != null && note.isNotEmpty){
+        supplierNote.content = note;
+      }else{
+        currentCart.notes.remove(supplierNote);
+      }
+    }else{
+      if(note != null && note.isNotEmpty){
+        if(currentCart.notes == null){
+          currentCart.notes = List();
+        }
+        currentCart.notes.add(SupplierNoteDTO(content: note, supplierId: id));
+      }else{
+        update = false;
+      }
+    }
+    if(update){
+      setCart(currentCart);
+    }
+    notifyListeners();
+
+  }
 }

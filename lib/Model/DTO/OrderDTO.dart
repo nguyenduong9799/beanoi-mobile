@@ -1,3 +1,4 @@
+import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/ViewModel/orderHistory_viewModel.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 
@@ -30,6 +31,7 @@ class OrderDTO {
   final int paymentType;
   final List<OtherAmount> otherAmounts;
   final String address;
+  final List<SupplierNoteDTO> notes;
 
   OrderDTO(this.id,
       {this.otherAmounts,
@@ -41,7 +43,8 @@ class OrderDTO {
       this.orderItems,
       this.paymentType,
       this.invoiceId = "INVOICE-ID-###",
-      this.address});
+      this.address,
+      this.notes});
 
   factory OrderDTO.fromJSON(Map<String, dynamic> map) =>
       OrderDTO(map["order_id"],
@@ -60,7 +63,10 @@ class OrderDTO {
               ?.map((otherAmountJSON) => OtherAmount.fromJSON(otherAmountJSON))
               ?.toList(),
           paymentType: map["payment_type"],
-          address: map['delivery_address'] ?? "Into the unknown");
+          address: map['delivery_address'] ?? "Into the unknown",
+          notes: (map["supplier_notes"] as List)
+              ?.map((e) => SupplierNoteDTO.fromJson(e))
+              ?.toList());
 
   static List<OrderDTO> fromList(List list) =>
       list?.map((e) => OrderDTO.fromJSON(e))?.toList();
@@ -73,6 +79,8 @@ class OrderItemDTO {
   final int quantity;
   final List<OrderItemDTO> productChilds;
   final int type;
+  final String supplierName;
+  final int supplierId;
 
   OrderItemDTO(
       {this.masterProductName,
@@ -80,14 +88,18 @@ class OrderItemDTO {
       this.amount,
       this.productChilds,
       this.quantity,
-      this.type});
+      this.type,
+      this.supplierName,
+      this.supplierId});
 
   factory OrderItemDTO.fromJSON(Map<String, dynamic> map) => OrderItemDTO(
       masterProductName: map["product_name"],
       quantity: map["quantity"],
       amount: map["final_amount"],
       productChilds: OrderItemDTO.fromList(map["list_of_childs"]),
-      type: map['product_type']);
+      type: map['product_type'],
+      supplierId: map['supplier_id'],
+      supplierName: map['supplier_store_name']);
 
   static List<OrderItemDTO> fromList(List list) =>
       list?.map((e) => OrderItemDTO.fromJSON(e))?.toList() ?? [];

@@ -13,6 +13,7 @@ import 'package:unidelivery_mobile/acessories/otherAmount.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
 import 'package:unidelivery_mobile/utils/index.dart';
+import "package:collection/collection.dart";
 
 class OrderHistoryDetail extends StatefulWidget {
   final OrderDTO order;
@@ -53,17 +54,7 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
             ),
           ),
         ),
-        body: Container(
-          width: Get.width,
-          padding: EdgeInsets.fromLTRB(16, 8, 16, 0),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(16),
-              topRight: Radius.circular(16),
-            ),
-            // color: Colors.grey,
-          ),
-          // height: 500,
+        body: SingleChildScrollView(
           child: ScopedModel<OrderHistoryViewModel>(
             model: orderDetailModel,
             child: ScopedModelDescendant<OrderHistoryViewModel>(
@@ -157,18 +148,11 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                         ),
                       ),
                       SizedBox(height: 8),
-                      SizedBox(height: 8),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.all(0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: kBackgroundGrey[0],
-                              borderRadius: BorderRadius.circular(4),
-                            ),
-                            child: buildOrderSummaryList(orderDetail),
-                          ),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: kBackgroundGrey[0],
                         ),
+                        child: buildOrderSummaryList(orderDetail),
                       ),
                       SizedBox(height: 8),
                       layoutSubtotal(orderDetail),
@@ -189,14 +173,18 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
     if (status == OrderFilter.NEW) {
       return ScopedModelDescendant<OrderHistoryViewModel>(
           builder: (context, child, model) {
-        return FlatButton(
-          onPressed: () {
-            model.cancelOrder(this.widget.order.id);
-          },
-          child: Text(
-            "Hủy đơn",
-            style: TextStyle(
-              color: Colors.grey,
+        return Material(
+          elevation: 2,
+          color: Color(0xFFF0F2F5),
+          child: FlatButton(
+            onPressed: () {
+              model.cancelOrder(this.widget.order.id);
+            },
+            child: Text(
+              "Hủy đơn",
+              style: TextStyle(
+                color: Colors.grey,
+              ),
             ),
           ),
         );
@@ -226,90 +214,145 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
     }
   }
 
-  ListView buildOrderSummaryList(OrderDTO orderDetail) {
-    return ListView.separated(
-      itemBuilder: (context, index) {
-        final orderMaster = orderDetail.orderItems[index];
-        final orderChilds = orderMaster.productChilds;
-
-        double orderItemPrice = orderMaster.amount;
-        orderChilds?.forEach((element) {
-          orderItemPrice += element.amount;
-        });
-        // orderItemPrice *= orderMaster.quantity;
-        Widget displayPrice = Text("${formatPrice(orderItemPrice)}");
-        if (orderMaster.type == ProductType.GIFT_PRODUCT) {
-          displayPrice = RichText(
-              text: TextSpan(
-                  style: TextStyle(color: Colors.black),
-                  text: orderItemPrice.toString() + " ",
-                  children: [
-                WidgetSpan(
-                    alignment: PlaceholderAlignment.bottom,
-                    child: Image(
-                      image: AssetImage("assets/images/icons/bean_coin.png"),
-                      width: 20,
-                      height: 20,
-                    ))
-              ]));
-        }
-
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  width: Get.width * 0.6,
-                  child: Wrap(
-                    //mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        "${orderMaster.quantity}x ",
-                        style: TextStyle(color: Colors.grey),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      Container(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+  Widget buildOrderSummaryList(OrderDTO orderDetail) {
+    Map<int, List<OrderItemDTO>> map =
+        groupBy(orderDetail.orderItems, (OrderItemDTO item) => item.supplierId);
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: ListView.separated(
+        physics: NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        itemBuilder: (context, index) {
+          List<OrderItemDTO> items = map.values.elementAt(index);
+          SupplierNoteDTO note = orderDetail.notes?.firstWhere(
+              (element) => element.supplierId == items[0].supplierId, orElse: () => null);
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                items[0].supplierName,
+                style: TextStyle(fontWeight: FontWeight.bold, color: kPrimary),
+              ),
+              (note != null)
+                  ? Container(
+                      width: Get.width,
+                      color: Colors.yellow[100],
+                      margin: EdgeInsets.only(top: 4),
+                      padding: const EdgeInsets.all(4),
+                      child: Text.rich(TextSpan(
+                          text: "Ghi chú:\n",
+                          style: TextStyle(color: Colors.red, fontSize: 12),
                           children: [
-                            Text(
-                              orderMaster.masterProductName.contains("Extra")
-                                  ? orderMaster.masterProductName
-                                      .replaceAll("Extra", "+")
-                                  : orderMaster.masterProductName,
-                              textAlign: TextAlign.start,
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            ...orderChilds
-                                .map(
-                                  (child) => Text(
-                                    child.masterProductName.contains("Extra")
-                                        ? child.masterProductName
-                                            .replaceAll("Extra", "+")
-                                        : child.masterProductName,
-                                    style: TextStyle(fontSize: 12),
-                                  ),
-                                )
-                                .toList(),
-                          ],
-                        ),
-                      ),
-                    ],
+                            TextSpan(
+                                text: "- " + note.content,
+                                style: TextStyle(color: Colors.grey))
+                          ])),
+                    )
+                  : SizedBox.shrink(),
+              SizedBox(
+                height: 8,
+              ),
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                    border: Border.all(color: kBackgroundGrey[4]),
+                    borderRadius: BorderRadius.all(Radius.circular(8))),
+                child: ListView.separated(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      return buildOrderItem(items[index]);
+                    },
+                    separatorBuilder: (context, index) => MySeparator(),
+                    itemCount: items.length),
+              ),
+              SizedBox(
+                height: 8,
+              ),
+            ],
+          );
+        },
+        separatorBuilder: (context, index) => Divider(),
+        itemCount: map.keys.length,
+      ),
+    );
+  }
+
+  Widget buildOrderItem(OrderItemDTO item) {
+    final orderChilds = item.productChilds;
+
+    double orderItemPrice = item.amount;
+    orderChilds?.forEach((element) {
+      orderItemPrice += element.amount;
+    });
+    // orderItemPrice *= orderMaster.quantity;
+    Widget displayPrice = Text("${formatPrice(orderItemPrice)}");
+    if (item.type == ProductType.GIFT_PRODUCT) {
+      displayPrice = RichText(
+          text: TextSpan(
+              style: TextStyle(color: Colors.black),
+              text: orderItemPrice.toString() + " ",
+              children: [
+            WidgetSpan(
+                alignment: PlaceholderAlignment.bottom,
+                child: Image(
+                  image: AssetImage("assets/images/icons/bean_coin.png"),
+                  width: 20,
+                  height: 20,
+                ))
+          ]));
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Container(
+              width: Get.width * 0.6,
+              child: Wrap(
+                //mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(
+                    "${item.quantity}x ",
+                    style: TextStyle(color: Colors.grey),
+                    overflow: TextOverflow.ellipsis,
                   ),
-                ),
-                Flexible(child: displayPrice)
-              ],
+                  Container(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          item.masterProductName.contains("Extra")
+                              ? item.masterProductName.replaceAll("Extra", "+")
+                              : item.masterProductName,
+                          textAlign: TextAlign.start,
+                          style: TextStyle(
+                            fontSize: 14,
+                          ),
+                        ),
+                        ...orderChilds
+                            .map(
+                              (child) => Text(
+                                child.masterProductName.contains("Extra")
+                                    ? child.masterProductName
+                                        .replaceAll("Extra", "+")
+                                    : child.masterProductName,
+                                style: TextStyle(fontSize: 12),
+                              ),
+                            )
+                            .toList(),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
+            Flexible(child: displayPrice)
           ],
-        );
-      },
-      separatorBuilder: (context, index) => Divider(),
-      itemCount: orderDetail.orderItems.length,
+        ),
+      ],
     );
   }
 
@@ -324,7 +367,6 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
     return Container(
       width: MediaQuery.of(context).size.width,
       padding: const EdgeInsets.all(8),
-      margin: const EdgeInsets.only(top: 8),
       decoration: BoxDecoration(
         color: kBackgroundGrey[0],
         borderRadius: BorderRadius.circular(4),
@@ -362,11 +404,11 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                 ]),
           ),
           Container(
-            margin: EdgeInsets.only(top: 15),
-            padding: const EdgeInsets.all(10),
+            margin: EdgeInsets.only(top: 8),
+            padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
                 border: Border.all(color: kBackgroundGrey[4]),
-                borderRadius: BorderRadius.all(Radius.circular(10))),
+                borderRadius: BorderRadius.all(Radius.circular(8))),
             child: Column(
               children: [
                 Padding(
