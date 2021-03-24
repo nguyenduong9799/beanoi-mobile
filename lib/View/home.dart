@@ -15,6 +15,67 @@ import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
 import 'package:unidelivery_mobile/route_constraint.dart';
 
+import 'package:flutter/material.dart';
+
+class SABT extends StatefulWidget {
+  final Widget child;
+  const SABT({
+    Key key,
+    @required this.child,
+  }) : super(key: key);
+  @override
+  _SABTState createState() {
+    return new _SABTState();
+  }
+}
+
+class _SABTState extends State<SABT> {
+  ScrollPosition _position;
+  bool _visible;
+  @override
+  void dispose() {
+    _removeListener();
+    super.dispose();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _removeListener();
+    _addListener();
+  }
+
+  void _addListener() {
+    _position = Scrollable.of(context)?.position;
+    _position?.addListener(_positionListener);
+    _positionListener();
+  }
+
+  void _removeListener() {
+    _position?.removeListener(_positionListener);
+  }
+
+  void _positionListener() {
+    final FlexibleSpaceBarSettings settings =
+        context.inheritFromWidgetOfExactType(FlexibleSpaceBarSettings);
+    bool visible =
+        settings == null || settings.currentExtent <= settings.minExtent;
+    if (_visible != visible) {
+      setState(() {
+        _visible = visible;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Visibility(
+      visible: _visible,
+      child: widget.child,
+    );
+  }
+}
+
 class HomeScreen extends StatefulWidget {
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -43,35 +104,30 @@ class _HomeScreenState extends State<HomeScreen> {
               slivers: [
                 SliverAppBar(
                   //backgroundColor: Colors.blueGrey,
-                  title: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        child: _location(),
-                      ),
-                      SizedBox(width: 20),
-                      Container(
-                        padding: EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16),
-                          color: Colors.grey[300],
+                  title: SABT(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Bean Oi!!!',
+                          style: TextStyle(fontSize: 14, color: Colors.white),
                         ),
-                        child: Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                            borderRadius: BorderRadius.circular(25),
-                            child: Container(
-                                child: Image.asset(
-                              'assets/images/history.png',
-                              width: 20,
-                            )),
-                            onTap: () {
-                              Get.toNamed(RouteHandler.ORDER_HISTORY);
-                            },
-                          ),
-                        ),
-                      ),
-                    ],
+                        Text.rich(TextSpan(
+                          style: TextStyle(fontSize: 14, color: Colors.white),
+                          children: <InlineSpan>[
+                            TextSpan(text: 'Giao đơn cho'),
+                            WidgetSpan(child: FieldTag(content: 'Hung Bui')),
+                            TextSpan(text: ' tại '),
+                            WidgetSpan(child: FieldTag(content: 'DH FPT')),
+                            TextSpan(text: ' vào lúc '),
+                            WidgetSpan(child: FieldTag(content: '12h30')),
+                            TextSpan(text: ' ở '),
+                            WidgetSpan(child: FieldTag(content: 'Khu cờ vua')),
+                            TextSpan(text: ' nhé..'),
+                          ],
+                        )),
+                      ],
+                    ),
                   ),
                   // Allows the user to reveal the app bar if they begin scrolling back
                   // up the list of items.
@@ -83,25 +139,57 @@ class _HomeScreenState extends State<HomeScreen> {
                   flexibleSpace: FlexibleSpaceBar(
                     background: Container(
                       margin: EdgeInsets.only(
-                        top: kToolbarHeight + 20,
+                        top: 25,
                       ),
                       color: Colors.white,
                       child: Stack(
                         overflow: Overflow.visible,
                         children: [
                           Container(
-                            height: Get.height * 0.15,
+                            height: Get.height * 0.2,
                             width: Get.width,
                             color: kPrimary,
                           ),
                           Container(
-                            height: 50,
-                            margin: EdgeInsets.only(bottom: 20),
-                            color: Colors.red,
-                            child: Text('Thời gian giao hàng'),
+                            width: Get.width - 20,
+                            height: 100,
+                            padding: EdgeInsets.all(8),
+                            // margin: EdgeInsets.only(bottom: 150),
+                            color: kPrimary,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Bean Oi!!!',
+                                  style: TextStyle(
+                                      fontSize: 14, color: Colors.white),
+                                ),
+                                Text.rich(TextSpan(
+                                  style: TextStyle(
+                                      fontSize: 14, color: Colors.white),
+                                  children: <InlineSpan>[
+                                    TextSpan(text: 'Giao đơn cho'),
+                                    WidgetSpan(
+                                        child: FieldTag(content: 'Hung Bui')),
+                                    TextSpan(text: ' tại '),
+                                    WidgetSpan(
+                                        child: FieldTag(content: 'DH FPT')),
+                                    TextSpan(text: ' vào lúc '),
+                                    WidgetSpan(
+                                        child:
+                                            FieldTag(content: '12h30 Hôm nay')),
+                                    TextSpan(text: ' ở '),
+                                    WidgetSpan(
+                                        child:
+                                            FieldTag(content: 'Khu cowf vua')),
+                                    TextSpan(text: ' nhé..'),
+                                  ],
+                                )),
+                              ],
+                            ),
                           ),
                           Positioned(
-                            top: 50,
+                            top: 100,
                             child: banner(),
                           ),
                         ],
@@ -586,4 +674,47 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   _launchURL(String url) async {}
+}
+
+class FieldTag extends StatelessWidget {
+  final String content;
+
+  const FieldTag({
+    Key key,
+    this.content,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () {},
+      child: Container(
+        margin: EdgeInsets.all(0),
+        width: 100.0,
+        height: 30,
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+                color: Colors.grey.withOpacity(0.7),
+                spreadRadius: 1,
+                blurRadius: 6,
+                offset: Offset(0, 5) // changes position of shadow
+                ),
+          ],
+        ),
+        child: Card(
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(4),
+              child: Text(
+                content,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(color: kPrimary),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
