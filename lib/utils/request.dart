@@ -40,7 +40,7 @@ class ExpiredException extends AppException {
 class CustomInterceptors extends InterceptorsWrapper {
   @override
   Future onRequest(RequestOptions options) {
-   return super.onRequest(options);
+    return super.onRequest(options);
   }
 
   @override
@@ -58,8 +58,8 @@ class CustomInterceptors extends InterceptorsWrapper {
 
 class MyRequest {
   static BaseOptions options = new BaseOptions(
-      //baseUrl: 'https://beanapi.unibean.net/api/',
-      baseUrl: "http://13.212.101.182:8090/api/",
+      baseUrl: 'https://beanapi.unibean.net/api/',
+      // baseUrl: "http://13.212.101.182:8090/api/",
       headers: {
         Headers.contentTypeHeader: "application/json",
       },
@@ -81,10 +81,10 @@ class MyRequest {
           await showStatusDialog("assets/images/global_error.png", "Lỗi",
               "Vui lòng đăng nhập lại");
           Get.Get.offAllNamed(RouteHandler.LOGIN);
-        } else{
+        } else {
           throw e;
         }
-         //continue
+        //continue
       },
     ));
   }
