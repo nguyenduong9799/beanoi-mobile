@@ -8,73 +8,12 @@ import 'package:shimmer/shimmer.dart';
 import 'package:unidelivery_mobile/Model/DTO/SupplierDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
+import 'package:unidelivery_mobile/acessories/appbar.dart';
 import 'package:unidelivery_mobile/acessories/dialog.dart';
-import 'package:unidelivery_mobile/acessories/home_appbar.dart';
 import 'package:unidelivery_mobile/acessories/loading.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
 import 'package:unidelivery_mobile/route_constraint.dart';
-
-import 'package:flutter/material.dart';
-
-class SABT extends StatefulWidget {
-  final Widget child;
-  const SABT({
-    Key key,
-    @required this.child,
-  }) : super(key: key);
-  @override
-  _SABTState createState() {
-    return new _SABTState();
-  }
-}
-
-class _SABTState extends State<SABT> {
-  ScrollPosition _position;
-  bool _visible;
-  @override
-  void dispose() {
-    _removeListener();
-    super.dispose();
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _removeListener();
-    _addListener();
-  }
-
-  void _addListener() {
-    _position = Scrollable.of(context)?.position;
-    _position?.addListener(_positionListener);
-    _positionListener();
-  }
-
-  void _removeListener() {
-    _position?.removeListener(_positionListener);
-  }
-
-  void _positionListener() {
-    final FlexibleSpaceBarSettings settings =
-        context.inheritFromWidgetOfExactType(FlexibleSpaceBarSettings);
-    bool visible =
-        settings == null || settings.currentExtent <= settings.minExtent;
-    if (_visible != visible) {
-      setState(() {
-        _visible = visible;
-      });
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Visibility(
-      visible: _visible,
-      child: widget.child,
-    );
-  }
-}
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -91,218 +30,40 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    double appBarExtraHeight = 70;
     return Scaffold(
       backgroundColor: Colors.white,
       //bottomNavigationBar: bottomBar(),
       body: ScopedModel(
         model: HomeViewModel.getInstance(),
-        child: Container(
-          child: SafeArea(
-            top: false,
-            child: CustomScrollView(
-              slivers: [
-                SliverAppBar(
-                  //backgroundColor: Colors.blueGrey,
-                  title: SABT(
+        child: SafeArea(
+          child: Stack(
+            children: [
+              Center(
+                child: Padding(
+                  padding: EdgeInsets.only(top: Get.height * 0.12),
+                  child: RefreshIndicator(
+                    key: _refreshIndicatorKey,
+                    onRefresh: _refresh,
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          'Bean Oi!!!',
-                          style: TextStyle(fontSize: 14, color: Colors.white),
+                        banner(),
+                        location(),
+                        timeRecieve(),
+                        SizedBox(
+                          height: 8,
                         ),
-                        Text.rich(TextSpan(
-                          style: TextStyle(fontSize: 14, color: Colors.white),
-                          children: <InlineSpan>[
-                            TextSpan(text: 'Giao đơn cho'),
-                            WidgetSpan(child: FieldTag(content: 'Hung Bui')),
-                            TextSpan(text: ' tại '),
-                            WidgetSpan(child: FieldTag(content: 'DH FPT')),
-                            TextSpan(text: ' vào lúc '),
-                            WidgetSpan(child: FieldTag(content: '12h30')),
-                            TextSpan(text: ' ở '),
-                            WidgetSpan(child: FieldTag(content: 'Khu cờ vua')),
-                            TextSpan(text: ' nhé..'),
-                          ],
-                        )),
+                        Expanded(child: storeList()),
+                        //loadMoreButton(),
+                        SizedBox(height: 16),
                       ],
                     ),
                   ),
-                  // Allows the user to reveal the app bar if they begin scrolling back
-                  // up the list of items.
-                  pinned: true,
-                  floating: false,
-
-                  // Display a placeholder widget to visualize the shrinking size.
-                  expandedHeight: Get.height * 0.4,
-                  flexibleSpace: FlexibleSpaceBar(
-                    background: Container(
-                      margin: EdgeInsets.only(
-                        top: 25,
-                      ),
-                      color: Colors.white,
-                      child: Stack(
-                        overflow: Overflow.visible,
-                        children: [
-                          Container(
-                            height: Get.height * 0.2,
-                            width: Get.width,
-                            color: kPrimary,
-                          ),
-                          Container(
-                            width: Get.width - 20,
-                            height: 100,
-                            padding: EdgeInsets.all(8),
-                            // margin: EdgeInsets.only(bottom: 150),
-                            color: kPrimary,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Bean Oi!!!',
-                                  style: TextStyle(
-                                      fontSize: 14, color: Colors.white),
-                                ),
-                                Text.rich(TextSpan(
-                                  style: TextStyle(
-                                      fontSize: 14, color: Colors.white),
-                                  children: <InlineSpan>[
-                                    TextSpan(text: 'Giao đơn cho'),
-                                    WidgetSpan(
-                                        child: FieldTag(content: 'Hung Bui')),
-                                    TextSpan(text: ' tại '),
-                                    WidgetSpan(
-                                        child: FieldTag(content: 'DH FPT')),
-                                    TextSpan(text: ' vào lúc '),
-                                    WidgetSpan(
-                                        child:
-                                            FieldTag(content: '12h30 Hôm nay')),
-                                    TextSpan(text: ' ở '),
-                                    WidgetSpan(
-                                        child:
-                                            FieldTag(content: 'Khu cowf vua')),
-                                    TextSpan(text: ' nhé..'),
-                                  ],
-                                )),
-                              ],
-                            ),
-                          ),
-                          Positioned(
-                            top: 100,
-                            child: banner(),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  // Make the initial height of the SliverAppBar larger than normal.
-                ),
-                SliverList(
-                    delegate: SliverChildListDelegate(
-                  <Widget>[
-                    Center(
-                      child: Padding(
-                        padding: EdgeInsets.only(top: Get.height * 0),
-                        child: RefreshIndicator(
-                          key: _refreshIndicatorKey,
-                          onRefresh: _refresh,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // Stack(
-                              //   overflow: Overflow.visible,
-                              //   children: [
-                              //     Container(height: 150, width: Get.width),
-                              //   ],
-                              // ),
-                              // (),
-                              // timeRecieve(),
-                              SizedBox(
-                                height: 8,
-                              ),
-                              Padding(
-                                padding: EdgeInsets.fromLTRB(8, 8, 16, 0),
-                                child: Text('Danh sánh nhà hàng',
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.grey[850])),
-                              ),
-                              storeList(),
-                              storeList(),
-                              storeList(),
-                              // stor
-
-                              //loadMoreButton(),
-                              SizedBox(height: 16),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ))
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  InkWell _location() {
-    return InkWell(
-      onTap: () async {
-        // await root.processChangeLocation();
-        print('Tap');
-      },
-      child: Row(
-        children: [
-          Icon(
-            Icons.location_on,
-            color: Colors.red[400],
-            size: 30,
-          ),
-          SizedBox(
-            width: 4,
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "KHU VỰC",
-                style: TextStyle(color: Colors.white, fontSize: 12),
-              ),
-              SizedBox(
-                height: 4,
-              ),
-              Container(
-                child: Row(
-                  children: [
-                    Text(
-                      'Unibean',
-                      textAlign: TextAlign.left,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                        color: Colors.white,
-                      ),
-                    ),
-                    SizedBox(
-                      width: 8,
-                    ),
-                    Icon(
-                      Icons.arrow_drop_down_outlined,
-                      color: Colors.orange,
-                      size: 24,
-                    ),
-                  ],
                 ),
               ),
+              HomeAppBar(),
             ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -495,8 +256,7 @@ class _HomeScreenState extends State<HomeScreen> {
               );
             }
             return ListView.separated(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
+              physics: AlwaysScrollableScrollPhysics(),
               itemBuilder: (context, index) {
                 return InkWell(
                     onTap: () async {
@@ -610,7 +370,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 height: (Get.width) * (747 / 1914),
                 width: (Get.width),
                 child: Swiper(
-                    onTap: (index) async {},
+                    onTap: (index) async {
+                      await _launchURL(
+                          "https://www.youtube.com/embed/wu32Wj_Uix4");
+                    },
                     autoplay: model.blogs.length > 1 ? true : false,
                     autoplayDelay: 5000,
                     pagination:
@@ -632,24 +395,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                 arguments: model.blogs[index]);
                           },
                           child: Container(
-                            margin: EdgeInsets.all(8),
+                            //margin: EdgeInsets.only(left: 8, right: 8),
                             decoration: BoxDecoration(
                               //borderRadius: BorderRadius.circular(8),
                               image: DecorationImage(
                                 image: imageProvider,
                                 fit: BoxFit.cover,
                               ),
-                              boxShadow: [
-                                BoxShadow(
-                                    color: Colors.grey.withOpacity(0.7),
-                                    spreadRadius: 1,
-                                    blurRadius: 6,
-                                    offset: Offset(
-                                      0,
-                                      3,
-                                    ) // changes position of shadow
-                                    ),
-                              ],
                             ),
                           ),
                         ),
@@ -677,47 +429,4 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   _launchURL(String url) async {}
-}
-
-class FieldTag extends StatelessWidget {
-  final String content;
-
-  const FieldTag({
-    Key key,
-    this.content,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {},
-      child: Container(
-        margin: EdgeInsets.all(0),
-        width: 100.0,
-        height: 30,
-        decoration: BoxDecoration(
-          boxShadow: [
-            BoxShadow(
-                color: Colors.grey.withOpacity(0.7),
-                spreadRadius: 1,
-                blurRadius: 6,
-                offset: Offset(0, 5) // changes position of shadow
-                ),
-          ],
-        ),
-        child: Card(
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.all(4),
-              child: Text(
-                content,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(color: kPrimary),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
 }
