@@ -17,7 +17,7 @@ class StartUpView extends StatelessWidget {
           backgroundColor: Colors.white,
           body: Center(
             child: LoadingScreen(
-              title: " ",
+              title: "Batch Delivery",
             ),
           ),
         );
@@ -35,14 +35,16 @@ class LoadingScreen extends StatelessWidget {
     return Scaffold(
       body: Container(
         // width: 250.0,
+        color: Colors.white,
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               LoadingBean(),
+              SizedBox(height: 16),
               Text(
                 this.title,
-                style: kTextSecondary,
+                style: kHeadingextStyle.copyWith(color: kPrimary, fontSize: 18),
               )
             ],
           ),
