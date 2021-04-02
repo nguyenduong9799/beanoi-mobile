@@ -41,7 +41,6 @@ class _LoginScreenState extends State<LoginScreen> {
               height: screenHeight,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
-
                 children: [
                   SizedBox(
                     height: screenHeight * 0.1,
@@ -122,7 +121,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Image(
                   image: AssetImage("assets/images/logo.png"),
                   width: Get.width * 0.3,
-
                 ),
               ),
             )
@@ -173,36 +171,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   Expanded(
                     child: Text(
                       "Đăng nhập bằng số điện thoại",
-                      style: TextStyle(color: kPrimary, fontSize: 16),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: 24),
-            RaisedButton(
-              color: Colors.white,
-              padding: EdgeInsets.fromLTRB(4, 0, 4, 0),
-              elevation: 8,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(24.0),
-                // side: BorderSide(color: Colors.red),
-              ),
-              onPressed: null,
-              child: Row(
-                children: [
-                  Container(
-                    padding: EdgeInsets.all(8),
-                    child: Icon(FontAwesome.google),
-                    decoration: BoxDecoration(
-                      color: Color(0xffffd24d),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                  ),
-                  Expanded(
-                    child: Text(
-                      "Đăng nhập bằng Gmail",
                       style: TextStyle(color: kPrimary, fontSize: 16),
                       textAlign: TextAlign.center,
                     ),

@@ -60,13 +60,14 @@ class _UpdateState extends State<Update> {
     return ScopedModel(
       model: SignUpViewModel(),
       child: SafeArea(
+        top: false,
         child: Scaffold(
           resizeToAvoidBottomPadding: false,
           body: ReactiveForm(
             formGroup: this.form,
             child: Container(
               color: Color(0xFFddf1ed),
-              child: Column(
+              child: ListView(
                 children: [
                   // SIGN-UP FORM
                   Container(

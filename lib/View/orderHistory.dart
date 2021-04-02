@@ -192,20 +192,30 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
   }
 
   Widget _buildOrderSummary(OrderListDTO orderSummary) {
+    final isToday = DateTime.parse(orderSummary.checkInDate)
+            .difference(DateTime.now())
+            .inDays ==
+        0;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: const EdgeInsets.only(left: 24, bottom: 16),
-          child: Text(
-            DateFormat('dd/MM/yyyy')
-                .format(DateTime.parse(orderSummary.checkInDate)),
-            style: TextStyle(
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-            ),
-          ),
+          child: isToday
+              ? Text(
+                  'Hôm nay 😋',
+                  style: kTitleTextStyle.copyWith(fontSize: 24),
+                )
+              : Text(
+                  DateFormat('dd/MM/yyyy')
+                      .format(DateTime.parse(orderSummary.checkInDate)),
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
         ),
         ...orderSummary.orders
             .toList()
@@ -240,13 +250,27 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    "${order.invoiceId} / ${order.itemQuantity} món",
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  Row(
+                    children: [
+                      Text(
+                        "${order.invoiceId} / ${order.itemQuantity} món",
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      // Text(
+                      //   DateFormat('HH:MM dd/MM/yyyy')
+                      //       .format(DateTime.parse(order.orderTime)),
+                      //   style: TextStyle(
+                      //     fontSize: 8,
+                      //     color: Colors.grey[600],
+                      //   ),
+                      //   maxLines: 1,
+                      //   overflow: TextOverflow.ellipsis,
+                      // ),
+                    ],
                   ),
                   SizedBox(
                     height: 8,
@@ -259,6 +283,9 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(
+                    height: 8,
                   ),
                 ],
               ),
