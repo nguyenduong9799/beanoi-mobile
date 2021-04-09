@@ -5,6 +5,7 @@ import 'package:reactive_forms/reactive_forms.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
+import 'package:unidelivery_mobile/acessories/appbar.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
 import 'package:unidelivery_mobile/utils/regex.dart';
@@ -67,35 +68,21 @@ class _UpdateState extends State<Update> {
             formGroup: this.form,
             child: Container(
               color: Color(0xFFddf1ed),
-              child: ListView(
+              child: Column(
                 children: [
                   // SIGN-UP FORM
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadiusDirectional.circular(16),
-                      color: Colors.white,
-                    ),
-                    margin: EdgeInsets.fromLTRB(8, 8, 8, 0),
-                    padding: EdgeInsets.fromLTRB(8, 16, 8, 0),
-                    width: screenWidth,
-                    height: screenHeight * 0.75,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // HELLO SECTION
-                        Text(
-                          "Cập nhật thông tin dưới đây nhé ☺",
-                          style: TextStyle(
-                            color: Color(0xFF00d286),
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        SizedBox(height: 16),
-                        // FORM ITEM
-                        Expanded(
-                          child: ListView(
-                            shrinkWrap: true,
+                  Expanded(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadiusDirectional.circular(16),
+                        color: Colors.white,
+                      ),
+                      margin: EdgeInsets.fromLTRB(8, 8, 8, 0),
+                      padding: EdgeInsets.fromLTRB(8, 16, 8, 0),
+                      child: Column(
+                        children: [
+                          // HELLO SECTION
+                          Expanded(child: ListView(
                             children: [
                               FormItem("Họ Tên", "vd: Nguyễn Văn A", "name"),
                               FormItem(
@@ -128,36 +115,34 @@ class _UpdateState extends State<Update> {
                                 ],
                               ),
                             ],
-                          ),
-                        ),
-                        //SIGN UP BUTTON
-                        ReactiveFormConsumer(builder: (context, form, child) {
-                          return AnimatedContainer(
-                            duration: Duration(milliseconds: 2000),
-                            curve: Curves.easeInOut,
-                            child: Center(
-                              child: ScopedModelDescendant<SignUpViewModel>(
-                                builder: (context, child, model) =>
-                                    RaisedButton(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(16.0),
-                                    // side: BorderSide(color: Colors.red),
-                                  ),
-                                  color: form.valid
-                                      ? Color(0xFF00d286)
-                                      : Colors.grey,
-                                  onPressed: () async {
-                                    if (model.status ==
-                                        ViewStatus.Completed) if (form.valid) {
-                                      await model.updateUser(form.value);
-                                    }
-                                  },
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: model.status == ViewStatus.Loading
-                                        ? CircularProgressIndicator(
-                                            backgroundColor: Color(0xFFFFFFFF))
-                                        : Text(
+                          )),
+                          ReactiveFormConsumer(builder: (context, form, child) {
+                            return AnimatedContainer(
+                              duration: Duration(milliseconds: 2000),
+                              curve: Curves.easeInOut,
+                              child: Center(
+                                child: ScopedModelDescendant<SignUpViewModel>(
+                                  builder: (context, child, model) =>
+                                      RaisedButton(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(16.0),
+                                          // side: BorderSide(color: Colors.red),
+                                        ),
+                                        color: form.valid
+                                            ? Color(0xFF00d286)
+                                            : Colors.grey,
+                                        onPressed: () async {
+                                          if (model.status ==
+                                              ViewStatus.Completed) if (form.valid) {
+                                            await model.updateUser(form.value);
+                                          }
+                                        },
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: model.status == ViewStatus.Loading
+                                              ? CircularProgressIndicator(
+                                              backgroundColor: Color(0xFFFFFFFF))
+                                              : Text(
                                             form.valid
                                                 ? "Hoàn thành"
                                                 : "Bạn chưa điền xong",
@@ -167,30 +152,16 @@ class _UpdateState extends State<Update> {
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),
-                                  ),
+                                        ),
+                                      ),
                                 ),
                               ),
-                            ),
-                          );
-                        }),
-                        Center(
-                          child: InkWell(
-                            onTap: () {
-                              Get.back();
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                "Quay lại",
-                                style: TextStyle(
-                                  color: Colors.grey[400],
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
+                            );
+                          }),
+                          // FORM ITEM
+                          //SIGN UP BUTTON
+                        ],
+                      ),
                     ),
                   ),
                   Row(
@@ -213,11 +184,12 @@ class _UpdateState extends State<Update> {
                         ),
                       ),
                     ],
-                  )
+                  ),
                 ],
               ),
             ),
           ),
+          appBar: DefaultAppBar(title: "Cập nhật thông tin",),
         ),
       ),
     );

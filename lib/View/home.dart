@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:unidelivery_mobile/Model/DTO/SupplierDTO.dart';
@@ -137,57 +138,59 @@ class _HomeScreenState extends State<HomeScreen> {
       child: ScopedModelDescendant<RootViewModel>(
         builder: (context, child, model) {
           if (model.currentStore != null) {
-            return Container(
-              padding: const EdgeInsets.all(12.0),
-              decoration: BoxDecoration(
-                  color: Colors.red,
-                  borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(8),
-                      bottomRight: Radius.circular(8))),
-              child: InkWell(
-                onTap: () async {
-                  if (model.currentStore.selectedTimeSlot != null) {
-                    await showTimeDialog(model);
-                  }
-                },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    RichText(
-                      text: TextSpan(
-                          text: "Khung giờ: ",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15,
-                              color: Colors.yellow),
-                          children: [
-                            TextSpan(
-                                text: model.currentStore.selectedTimeSlot !=
-                                        null
-                                    ? "${model.currentStore.selectedTimeSlot.from.substring(0, 5)} - ${model.currentStore.selectedTimeSlot.to.substring(0, 5)}"
-                                    : "Hôm nay Bean tạm nghỉ 😓",
-                                style: TextStyle(
-                                    fontSize: 14, color: Colors.white))
-                          ]),
-                    ),
-                    model.currentStore.selectedTimeSlot != null
-                        ? model.currentStore.selectedTimeSlot.available
-                            ? Icon(
-                                Icons.more_horiz,
-                                color: Colors.white,
-                                size: 24,
-                              )
-                            : Text(
-                                "Hết giờ",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14,
-                                    color: Colors.white),
-                              )
-                        : SizedBox.shrink()
-                    //Text("Thay đổi", style: TextStyle(color: Colors.grey[200]),)
-                  ],
-                ),
+            return InkWell(
+              onTap: () async {
+                if (model.currentStore.selectedTimeSlot != null) {
+                  await showTimeDialog(model);
+                }
+              },
+              child: Column(
+                children: [
+                  Container(
+                      height: 30,
+                      width: Get.width,
+                      padding: EdgeInsets.only(left: 8, right: 8),
+                      child: Row(
+                        children: [
+                          Text("Nhận đơn lúc", style: TextStyle(color: Colors.orange, fontSize: 12),),
+                          SizedBox(width: 8,),
+                          Flexible(
+                            child: ListView.separated(
+                              separatorBuilder: (context, index) => SizedBox(width: 4,),
+                              itemBuilder: (context, index) {
+                                DateTime arrive = DateFormat("HH:mm:ss").parse(
+                                    model.currentStore.timeSlots[0].arrive);
+                                return Container(
+                                  padding: EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(8),
+                                      border: Border.all(color: kPrimary)),
+                                  child: Text(
+                                    "${DateFormat("HH:mm").format(arrive)} - ${DateFormat("HH:mm").format(arrive.add(Duration(minutes: 30)))}", style: TextStyle(color: kPrimary, fontSize: 12),),
+                                );
+                              },
+                              shrinkWrap: true,
+                              scrollDirection: Axis.horizontal,
+                              itemCount: 8,
+                            ),
+                          ),
+                        ],
+                      )
+                  ),
+                  SizedBox(height: 8,),
+                  Container(
+                      width: Get.width,
+                      padding: EdgeInsets.only(left: 8, right: 8),
+                      child: Row(
+                        children: [
+                          Text("Khung giờ", style: TextStyle(color: Colors.orange, fontSize: 12),),
+                          SizedBox(width: 8,),
+                          Text(
+                            "${model.currentStore.selectedTimeSlot.from.substring(0,5)} - ${model.currentStore.selectedTimeSlot.to.substring(0,5)}", style: TextStyle(color: kPrimary, fontSize: 12),),
+                        ],
+                      )
+                  ),
+                ],
               ),
             );
           }
