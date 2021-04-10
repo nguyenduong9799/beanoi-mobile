@@ -5,6 +5,7 @@ final kSecondary = Color(0xFF438029);
 final kBean = Color(0xffffe844);
 final kSuccess = Colors.green;
 final kFail = Colors.red;
+// final kBackgroundGrey = Color(0xfff2f6f8);
 final kBackgroundGrey = [
   Color(0xFFFFFFFF),
   Color(0xfffafafa),
@@ -13,6 +14,7 @@ final kBackgroundGrey = [
   Color(0xffbdbdbd),
   Color(0xff9e9e9e),
   Color(0xff757575),
+  Color(0xfff2f6f8),
 ];
 final kGreyTitle = Color(0xFF575757);
 

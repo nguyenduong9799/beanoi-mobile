@@ -1,5 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:get/get.dart';
@@ -11,6 +13,7 @@ import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
 import 'package:unidelivery_mobile/acessories/appbar.dart';
 import 'package:unidelivery_mobile/acessories/dialog.dart';
+import 'package:unidelivery_mobile/acessories/fixed_app_bar.dart';
 import 'package:unidelivery_mobile/acessories/loading.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
@@ -29,40 +32,63 @@ class _HomeScreenState extends State<HomeScreen> {
     await HomeViewModel.getInstance().getSuppliers();
   }
 
+  bool isDarkModeOn =
+      SchedulerBinding.instance.window.platformBrightness == Brightness.dark;
+
   @override
   Widget build(BuildContext context) {
+    // SystemChrome.setSystemUIOverlayStyle(
+    //     SystemUiOverlayStyle(statusBarColor: Colors.white));
+    //
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
+        statusBarColor: Colors.white, // Color for Android
+        statusBarBrightness:
+            Brightness.dark // Dark == white status bar -- for IOS.
+        ));
     return Scaffold(
       backgroundColor: Colors.white,
-      //bottomNavigationBar: bottomBar(),
-      body: ScopedModel(
-        model: HomeViewModel.getInstance(),
-        child: SafeArea(
-          child: Stack(
-            children: [
-              Center(
-                child: Padding(
-                  padding: EdgeInsets.only(top: Get.height * 0.12),
-                  child: RefreshIndicator(
-                    key: _refreshIndicatorKey,
-                    onRefresh: _refresh,
-                    child: Column(
-                      children: [
-                        banner(),
-                        location(),
-                        timeRecieve(),
-                        SizedBox(
-                          height: 8,
+      body: Container(
+        height: Get.height,
+        child: ScopedModel(
+          model: HomeViewModel.getInstance(),
+          child: SafeArea(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                FixedAppBar(),
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 0),
+                    child: RefreshIndicator(
+                      key: _refreshIndicatorKey,
+                      onRefresh: _refresh,
+                      child: Container(
+                        // height: Get.height * 0.8 - 16,
+                        color: kBackgroundGrey[2],
+                        child: ListView(
+                          shrinkWrap: true,
+                          children: [
+                            SizedBox(height: 8),
+                            banner(),
+                            // location(),
+                            // timeRecieve(),
+                            SizedBox(height: 8),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text('Danh sách nhà hàng',
+                                  style: kTitleTextStyle),
+                            ),
+                            Container(child: storeList()),
+                            // Container(child: storeList()),
+                            // SizedBox(height: 16),
+                          ],
                         ),
-                        Expanded(child: storeList()),
-                        //loadMoreButton(),
-                        SizedBox(height: 16),
-                      ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              HomeAppBar(),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -152,11 +178,19 @@ class _HomeScreenState extends State<HomeScreen> {
                       padding: EdgeInsets.only(left: 8, right: 8),
                       child: Row(
                         children: [
-                          Text("Nhận đơn lúc", style: TextStyle(color: Colors.orange, fontSize: 12),),
-                          SizedBox(width: 8,),
+                          Text(
+                            "Nhận đơn lúc",
+                            style:
+                                TextStyle(color: Colors.orange, fontSize: 12),
+                          ),
+                          SizedBox(
+                            width: 8,
+                          ),
                           Flexible(
                             child: ListView.separated(
-                              separatorBuilder: (context, index) => SizedBox(width: 4,),
+                              separatorBuilder: (context, index) => SizedBox(
+                                width: 4,
+                              ),
                               itemBuilder: (context, index) {
                                 DateTime arrive = DateFormat("HH:mm:ss").parse(
                                     model.currentStore.timeSlots[0].arrive);
@@ -166,7 +200,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                       borderRadius: BorderRadius.circular(8),
                                       border: Border.all(color: kPrimary)),
                                   child: Text(
-                                    "${DateFormat("HH:mm").format(arrive)} - ${DateFormat("HH:mm").format(arrive.add(Duration(minutes: 30)))}", style: TextStyle(color: kPrimary, fontSize: 12),),
+                                    "${DateFormat("HH:mm").format(arrive)} - ${DateFormat("HH:mm").format(arrive.add(Duration(minutes: 30)))}",
+                                    style: TextStyle(
+                                        color: kPrimary, fontSize: 12),
+                                  ),
                                 );
                               },
                               shrinkWrap: true,
@@ -175,21 +212,29 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                         ],
-                      )
+                      )),
+                  SizedBox(
+                    height: 8,
                   ),
-                  SizedBox(height: 8,),
                   Container(
                       width: Get.width,
                       padding: EdgeInsets.only(left: 8, right: 8),
                       child: Row(
                         children: [
-                          Text("Khung giờ", style: TextStyle(color: Colors.orange, fontSize: 12),),
-                          SizedBox(width: 8,),
                           Text(
-                            "${model.currentStore.selectedTimeSlot.from.substring(0,5)} - ${model.currentStore.selectedTimeSlot.to.substring(0,5)}", style: TextStyle(color: kPrimary, fontSize: 12),),
+                            "Khung giờ",
+                            style:
+                                TextStyle(color: Colors.orange, fontSize: 12),
+                          ),
+                          SizedBox(
+                            width: 8,
+                          ),
+                          Text(
+                            "${model.currentStore.selectedTimeSlot.from.substring(0, 5)} - ${model.currentStore.selectedTimeSlot.to.substring(0, 5)}",
+                            style: TextStyle(color: kPrimary, fontSize: 12),
+                          ),
                         ],
-                      )
-                  ),
+                      )),
                 ],
               ),
             );
@@ -204,6 +249,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return ScopedModelDescendant<HomeViewModel>(
       builder: (context, child, model) {
         ViewStatus status = model.status;
+        print(model.suppliers);
         switch (status) {
           case ViewStatus.Error:
             return ListView(
@@ -231,10 +277,9 @@ class _HomeScreenState extends State<HomeScreen> {
             if (model.suppliers == null || model.suppliers.isEmpty) {
               return Container(
                 padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
-                color: Colors.black45,
+                color: Colors.white,
                 child: Center(
-                  child: ListView(
-                    shrinkWrap: true,
+                  child: Column(
                     children: [
                       Container(
                         child: AspectRatio(
@@ -248,27 +293,23 @@ class _HomeScreenState extends State<HomeScreen> {
                       Text(
                         "Aaa, hiện tại chưa có nhà hàng nào, bạn vui lòng quay lại sau nhé",
                         textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: Colors.white,
-                        ),
+                        style:
+                            kSubtitleTextSyule.copyWith(color: Colors.orange),
                       ),
                     ],
                   ),
                 ),
               );
             }
-            return ListView.separated(
-              physics: AlwaysScrollableScrollPhysics(),
-              itemBuilder: (context, index) {
-                return InkWell(
-                    onTap: () async {
-                      await model.selectSupplier(model.suppliers[index]);
-                    },
-                    child: buildSupplier(model.suppliers[index]));
-              },
-              separatorBuilder: (context, index) => Divider(),
-              itemCount: model.suppliers.length,
+            return Column(
+              children: model.suppliers
+                  .where((supplier) => supplier.available)
+                  .map((supplier) => InkWell(
+                      onTap: () {
+                        model.selectSupplier(supplier);
+                      },
+                      child: buildSupplier(supplier)))
+                  .toList(),
             );
         }
       },
@@ -289,63 +330,73 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget buildSupplier(SupplierDTO dto) {
-    return Row(
-      children: [
-        SizedBox(
-          width: 8,
-        ),
-        ClipRRect(
-          borderRadius: BorderRadius.circular(16),
-          child: Opacity(
-            opacity: 1,
-            child: (dto.imageUrl == null || dto.imageUrl == "")
-                ? Icon(
-                    MaterialIcons.broken_image,
-                    color: kPrimary.withOpacity(0.5),
-                  )
-                : CachedNetworkImage(
-                    imageUrl: dto.imageUrl,
-                    imageBuilder: (context, imageProvider) => Container(
-                      width: 50,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: imageProvider,
-                          fit: BoxFit.cover,
+    return Container(
+      color: Colors.white,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          children: [
+            SizedBox(
+              width: 8,
+            ),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: Opacity(
+                opacity: 1,
+                child: (dto.imageUrl == null || dto.imageUrl == "")
+                    ? Icon(
+                        MaterialIcons.broken_image,
+                        color: kPrimary.withOpacity(0.5),
+                      )
+                    : CachedNetworkImage(
+                        imageUrl: dto.imageUrl,
+                        imageBuilder: (context, imageProvider) => Container(
+                          width: 50,
+                          height: 50,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(16),
+                            image: DecorationImage(
+                              image: imageProvider,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                        progressIndicatorBuilder:
+                            (context, url, downloadProgress) =>
+                                Shimmer.fromColors(
+                          baseColor: Colors.grey[300],
+                          highlightColor: Colors.grey[100],
+                          enabled: true,
+                          child: Container(
+                            width: 50,
+                            height: 50,
+                            color: Colors.grey,
+                          ),
+                        ),
+                        errorWidget: (context, url, error) => Icon(
+                          MaterialIcons.broken_image,
+                          color: kPrimary.withOpacity(0.5),
                         ),
                       ),
-                    ),
-                    progressIndicatorBuilder:
-                        (context, url, downloadProgress) => Shimmer.fromColors(
-                      baseColor: Colors.grey[300],
-                      highlightColor: Colors.grey[100],
-                      enabled: true,
-                      child: Container(
-                        width: 50,
-                        height: 50,
-                        color: Colors.grey,
-                      ),
-                    ),
-                    errorWidget: (context, url, error) => Icon(
-                      MaterialIcons.broken_image,
-                      color: kPrimary.withOpacity(0.5),
-                    ),
-                  ),
-          ),
+              ),
+            ),
+            SizedBox(
+              width: 16,
+            ),
+            Text(
+              dto.name,
+              style:
+                  TextStyle(color: dto.available ? Colors.black : Colors.grey),
+            )
+          ],
         ),
-        SizedBox(
-          width: 16,
-        ),
-        Text(
-          dto.name,
-          style: TextStyle(color: dto.available ? Colors.black : Colors.grey),
-        )
-      ],
+      ),
     );
   }
 
   Widget banner() {
     return Container(
+      margin: EdgeInsets.only(top: 8, bottom: 8),
       child: ScopedModelDescendant<HomeViewModel>(
         builder: (context, child, model) {
           ViewStatus status = model.status;
@@ -369,7 +420,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 return SizedBox.shrink();
               }
               return Container(
-                //padding: EdgeInsets.only(top: 8, bottom: 8),
+                // padding: EdgeInsets.only(top: 8, bottom: 8),
+                // padding: EdgeInsets.only(top: 8, bottom: 16),
                 height: (Get.width) * (747 / 1914),
                 width: (Get.width),
                 child: Swiper(
@@ -398,13 +450,22 @@ class _HomeScreenState extends State<HomeScreen> {
                                 arguments: model.blogs[index]);
                           },
                           child: Container(
-                            //margin: EdgeInsets.only(left: 8, right: 8),
+                            margin: EdgeInsets.only(left: 8, right: 8),
                             decoration: BoxDecoration(
                               //borderRadius: BorderRadius.circular(8),
                               image: DecorationImage(
                                 image: imageProvider,
                                 fit: BoxFit.cover,
                               ),
+                              boxShadow: [
+                                BoxShadow(
+                                    color: Colors.grey.withOpacity(0.7),
+                                    spreadRadius: 3,
+                                    blurRadius: 6,
+                                    offset: Offset(
+                                        0, 3) // changes position of shadow
+                                    ),
+                              ],
                             ),
                           ),
                         ),

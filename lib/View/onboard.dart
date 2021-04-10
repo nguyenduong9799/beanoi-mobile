@@ -36,7 +36,7 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
       PageViewModel(
         title: "Ăn đúng bữa",
         body:
-            "Đặt hàng theo khung giờ và Bin sẽ nhắc bạn ăn cơm đúng bữa để tránh chiếc bụng đói.",
+            "Đặt hàng theo khung giờ và Bean sẽ nhắc bạn ăn cơm đúng bữa để tránh chiếc bụng đói.",
         image: _buildImage('onboard_2.png'),
         decoration: pageDecoration,
       ),

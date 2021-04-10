@@ -99,20 +99,24 @@ class RootViewModel extends BaseModel {
     notifyListeners();
   }
 
-  void selectTimeSlot(int value) {
+  bool selectTimeSlot(int value) {
+    bool result = false;
     currentStore.timeSlots.forEach((element) {
       if (element.menuId == value) {
         if (element.available) {
           tmpTimeSlot = element;
+          result = true;
         } else {
           showStatusDialog(
               "assets/images/global_error.png",
               "Khung giờ đã qua rồi",
               "Đừng nối tiếc quá khứ, hãy hướng về tương lai");
+          result = false;
         }
-        notifyListeners();
       }
     });
+    notifyListeners();
+    return result;
   }
 
   Future<void> confirmTimeSlot() async {
@@ -154,7 +158,7 @@ class RootViewModel extends BaseModel {
         currentStore.timeSlots = listStore[0].timeSlots;
         bool found = false;
         currentStore.timeSlots.forEach((element) {
-          if(currentStore.selectedTimeSlot == null){
+          if (currentStore.selectedTimeSlot == null) {
             return;
           }
           if (element.menuId == currentStore.selectedTimeSlot.menuId &&
