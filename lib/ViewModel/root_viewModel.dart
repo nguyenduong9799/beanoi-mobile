@@ -99,20 +99,20 @@ class RootViewModel extends BaseModel {
     notifyListeners();
   }
 
-  void selectTimeSlot(int value) {
+  bool selectTimeSlot(int value) {
+    bool result = false;
     currentStore.timeSlots.forEach((element) {
       if (element.menuId == value) {
         if (element.available) {
           tmpTimeSlot = element;
+          result = true;
         } else {
-          showStatusDialog(
-              "assets/images/global_error.png",
-              "Khung giờ đã qua rồi",
-              "Đừng nối tiếc quá khứ, hãy hướng về tương lai");
+          result = false;
         }
-        notifyListeners();
       }
     });
+    notifyListeners();
+    return result;
   }
 
   Future<void> confirmTimeSlot() async {
@@ -154,7 +154,7 @@ class RootViewModel extends BaseModel {
         currentStore.timeSlots = listStore[0].timeSlots;
         bool found = false;
         currentStore.timeSlots.forEach((element) {
-          if(currentStore.selectedTimeSlot == null){
+          if (currentStore.selectedTimeSlot == null) {
             return;
           }
           if (element.menuId == currentStore.selectedTimeSlot.menuId &&
@@ -176,6 +176,7 @@ class RootViewModel extends BaseModel {
                 "Các sản phẩm trong giỏ hàng đã bị xóa, còn nhiều món ngon đang chờ bạn nhé");
           }
         }
+        print(listStore);
       }
 
       await setStore(currentStore);
@@ -228,12 +229,26 @@ class RootViewModel extends BaseModel {
     if (result != null) {
       if (result) {
         Get.rawSnackbar(
-            message: "Thêm món thành công",
-            duration: Duration(seconds: 2),
-            snackPosition: SnackPosition.BOTTOM,
-            margin: EdgeInsets.only(left: 8, right: 8, bottom: 32),
-            backgroundColor: kPrimary,
-            borderRadius: 8);
+          duration: Duration(seconds: 3),
+          snackPosition: SnackPosition.BOTTOM,
+          // margin: EdgeInsets.only(left: 8, right: 8, bottom: 32, top: 32),
+          backgroundColor: kPrimary,
+          messageText: Text("Thêm món thành công 🛒",
+              style: kSubtitleTextSyule.copyWith(
+                  fontSize: 16, color: Colors.white)),
+          // borderRadius: 8,
+          icon: Icon(Icons.check),
+        );
+        // Get.snackbar(
+        //        "Hey i'm a Get SnackBar!", // title
+        //        "It's unbelievable! I'm using SnackBar without context, without boilerplate, without Scaffold, it is something truly amazing!", // message
+        //       icon: Icon(Icons.alarm),
+        //       shouldIconPulse: true,
+        //       onTap:(){},
+        //       barBlur: 20,
+        //       isDismissible: true,
+        //       duration: Duration(seconds: 3),
+        //     );
       }
     }
     notifyListeners();

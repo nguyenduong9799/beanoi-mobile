@@ -5,6 +5,7 @@ final kSecondary = Color(0xFF438029);
 final kBean = Color(0xffffe844);
 final kSuccess = Colors.green;
 final kFail = Colors.red;
+// final kBackgroundGrey = Color(0xfff2f6f8);
 final kBackgroundGrey = [
   Color(0xFFFFFFFF),
   Color(0xfffafafa),
@@ -13,6 +14,7 @@ final kBackgroundGrey = [
   Color(0xffbdbdbd),
   Color(0xff9e9e9e),
   Color(0xff757575),
+  Color(0xfff2f6f8),
 ];
 final kGreyTitle = Color(0xFF575757);
 
@@ -24,6 +26,7 @@ const kTextColor = Color(0xFF0D1333);
 const kBlueColor = Color(0xFF6E8AFA);
 const kBestSellerColor = Color(0xFFFFD073);
 const kGreenColor = Color(0xFF49CC96);
+const kDescriptionTextColor = Color(0xffa7b4ce);
 
 // My Text Styles
 const kHeadingextStyle = TextStyle(
@@ -51,7 +54,7 @@ const kSubtitleTextSyule = TextStyle(
 
 const kDescriptionTextSyle = TextStyle(
   fontSize: 14,
-  color: Color(0xffa7b4ce),
+  color: kDescriptionTextColor,
   fontWeight: FontWeight.bold,
 );
 

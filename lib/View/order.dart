@@ -19,6 +19,7 @@ import 'package:unidelivery_mobile/enums/view_status.dart';
 import 'package:unidelivery_mobile/utils/index.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import "package:collection/collection.dart";
+import 'package:animated_text_kit/animated_text_kit.dart';
 
 class OrderScreen extends StatefulWidget {
   @override
@@ -29,7 +30,7 @@ class _OrderScreenState extends State<OrderScreen> {
   OrderViewModel orderViewModel;
   AutoScrollController controller;
   final scrollDirection = Axis.vertical;
-
+  bool onInit = true;
   @override
   void initState() {
     super.initState();
@@ -38,7 +39,14 @@ class _OrderScreenState extends State<OrderScreen> {
             Rect.fromLTRB(0, 0, 0, MediaQuery.of(context).padding.bottom),
         axis: scrollDirection);
     orderViewModel = OrderViewModel();
-    orderViewModel.prepareOrder();
+    prepareCart();
+  }
+
+  void prepareCart() async {
+    await orderViewModel.prepareOrder();
+    setState(() {
+      onInit = false;
+    });
   }
 
   @override
@@ -49,82 +57,84 @@ class _OrderScreenState extends State<OrderScreen> {
         backgroundColor: kBackgroundGrey[0],
         appBar: DefaultAppBar(title: "Đơn hàng của bạn"),
         bottomNavigationBar: bottomBar(),
-        body: ScopedModelDescendant<OrderViewModel>(
-          builder: (BuildContext context, Widget child, OrderViewModel model) {
-            ViewStatus status = model.status;
-            switch (status) {
-              case ViewStatus.Error:
-                return ListView(
-                  children: [
-                    Center(
-                      child: Text(
-                        "Có gì đó sai sai..\n Vui lòng thử lại.",
-                        style: kTextPrimary.copyWith(
-                            fontSize: 20, color: Colors.black),
-                      ),
-                    ),
-                    SizedBox(height: 8),
-                    Image.asset(
-                      'assets/images/global_error.png',
-                      fit: BoxFit.contain,
-                    ),
-                  ],
-                );
-              case ViewStatus.Loading:
-                return Center(child: LoadingBean());
-              case ViewStatus.Completed:
-                return ListView(
-                  shrinkWrap: true,
-                  children: [
-                    Hero(
-                      tag: CART_TAG,
-                      child: Container(
-                          margin: const EdgeInsets.only(top: 8),
-                          child: layoutAddress(model.campusDTO)),
-                    ),
+        body: onInit
+            ? Center(child: LoadingBean())
+            : ScopedModelDescendant<OrderViewModel>(
+                builder:
+                    (BuildContext context, Widget child, OrderViewModel model) {
+                  ViewStatus status = model.status;
+                  switch (status) {
+                    case ViewStatus.Error:
+                      return ListView(
+                        children: [
+                          Center(
+                            child: Text(
+                              "Có gì đó sai sai..\n Vui lòng thử lại.",
+                              style: kTextPrimary.copyWith(
+                                  fontSize: 20, color: Colors.black),
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                          Image.asset(
+                            'assets/images/global_error.png',
+                            fit: BoxFit.contain,
+                          ),
+                        ],
+                      );
+                    case ViewStatus.Loading:
+                    case ViewStatus.Completed:
+                      return ListView(
+                        shrinkWrap: true,
+                        children: [
+                          Hero(
+                            tag: CART_TAG,
+                            child: Container(
+                                margin: const EdgeInsets.only(top: 8),
+                                child: layoutAddress(model.campusDTO)),
+                          ),
 
-                    AutoScrollTag(
-                      index: 1,
-                      key: ValueKey(1),
-                      controller: controller,
-                      highlightColor: Colors.black.withOpacity(0.1),
-                      child: timeRecieve(model.campusDTO),
-                    ),
-                    SizedBox(
-                        height: 8,
-                        child: Container(
-                          color: kBackgroundGrey[2],
-                        )),
-                    Container(child: buildBeanReward()),
-                    SizedBox(
-                        height: 8,
-                        child: Container(
-                          color: kBackgroundGrey[2],
-                        )),
-                    Container(
-                        child: layoutOrder(
-                            model.currentCart, model.campusDTO.name)),
-                    SizedBox(
-                        height: 8,
-                        child: Container(
-                          color: kBackgroundGrey[2],
-                        )),
-                    layoutSubtotal(),
-                    SizedBox(
-                        height: 8,
-                        child: Container(
-                          color: kBackgroundGrey[2],
-                        )),
-                    selectPaymentMethods()
-                    //SizedBox(height: 16),
-                  ],
-                );
+                          AutoScrollTag(
+                            index: 1,
+                            key: ValueKey(1),
+                            controller: controller,
+                            highlightColor: Colors.black.withOpacity(0.1),
+                            child: timeRecieve(model.campusDTO),
+                          ),
+                          SizedBox(
+                              height: 8,
+                              child: Container(
+                                color: kBackgroundGrey[2],
+                              )),
+                          Container(child: buildBeanReward()),
+                          SizedBox(
+                              height: 8,
+                              child: Container(
+                                color: kBackgroundGrey[2],
+                              )),
+                          Container(
+                              child: layoutOrder(
+                                  model.currentCart, model.campusDTO.name)),
+                          SizedBox(
+                              height: 8,
+                              child: Container(
+                                color: kBackgroundGrey[2],
+                              )),
+                          layoutSubtotal(),
+                          SizedBox(
+                              height: 8,
+                              child: Container(
+                                color: kBackgroundGrey[2],
+                              )),
+                          selectPaymentMethods()
+                          //SizedBox(height: 16),
+                        ],
+                      );
 
-              default:
-                return LoadingScreen();
-            }
-          },
-        ),
+                    default:
+                      return LoadingScreen();
+                  }
+                },
+              ),
       ),
     );
   }
@@ -243,7 +253,10 @@ class _OrderScreenState extends State<OrderScreen> {
   }
 
   Widget layoutStore(List<CartItem> list) {
-    SupplierNoteDTO supplierNote = orderViewModel.currentCart.notes?.firstWhere((element) => element.supplierId == list[0].master.supplierId, orElse: () => null,);
+    SupplierNoteDTO supplierNote = orderViewModel.currentCart.notes?.firstWhere(
+      (element) => element.supplierId == list[0].master.supplierId,
+      orElse: () => null,
+    );
     List<Widget> card = new List();
 
     for (CartItem item in list) {
@@ -268,46 +281,46 @@ class _OrderScreenState extends State<OrderScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 8, right: 8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        list[0].master.supplierName,
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(
-                        list
-                            .fold(
-                            0,
-                                (previousValue, element) =>
-                            previousValue + element.quantity)
-                            .toString() +
-                            " món",
-                        style: TextStyle(color: Colors.orange),
-                      )
-                    ],
+          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 8, right: 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    list[0].master.supplierName,
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
+                  Text(
+                    list
+                            .fold(
+                                0,
+                                (previousValue, element) =>
+                                    previousValue + element.quantity)
+                            .toString() +
+                        " món",
+                    style: TextStyle(color: Colors.orange),
+                  )
+                ],
+              ),
+            ),
             Material(
               color: Colors.transparent,
               child: InkWell(
-                  onTap: (){
-                orderViewModel.addSupplierNote(list[0].master.supplierId);
-              }, child: Padding(
-                padding: EdgeInsets.all(8),
-                child: (supplierNote == null) ? Text("Thêm ghi chú", style: TextStyle(color: Colors.blue, fontSize: 12)) : Text("Sửa ghi chú", style: TextStyle(color: Colors.blue, fontSize: 12)),
-              )
-
-
-              ),
+                  onTap: () {
+                    orderViewModel.addSupplierNote(list[0].master.supplierId);
+                  },
+                  child: Padding(
+                    padding: EdgeInsets.all(8),
+                    child: (supplierNote == null)
+                        ? Text("Thêm ghi chú",
+                            style: TextStyle(color: Colors.blue, fontSize: 12))
+                        : Text("Sửa ghi chú",
+                            style: TextStyle(color: Colors.blue, fontSize: 12)),
+                  )),
             ),
           ]),
           ...card
@@ -373,9 +386,8 @@ class _OrderScreenState extends State<OrderScreen> {
                       ),
                     ),
                   ),
-                  progressIndicatorBuilder:
-                      (context, url, downloadProgress) =>
-                          Shimmer.fromColors(
+                  progressIndicatorBuilder: (context, url, downloadProgress) =>
+                      Shimmer.fromColors(
                     baseColor: Colors.grey[300],
                     highlightColor: Colors.grey[100],
                     enabled: true,
@@ -385,8 +397,7 @@ class _OrderScreenState extends State<OrderScreen> {
                       color: Colors.grey,
                     ),
                   ),
-                  errorWidget: (context, url, error) =>
-                      Icon(Icons.error),
+                  errorWidget: (context, url, error) => Icon(Icons.error),
                 ),
               ),
               SizedBox(
@@ -397,7 +408,8 @@ class _OrderScreenState extends State<OrderScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(item.master.name,
-                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                        style: TextStyle(
+                            fontSize: 14, fontWeight: FontWeight.bold)),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -411,18 +423,18 @@ class _OrderScreenState extends State<OrderScreen> {
                             RichText(
                               text: TextSpan(
                                   text:
-                                  isGift ? "${price} " : formatPrice(price),
+                                      isGift ? "${price} " : formatPrice(price),
                                   style: TextStyle(color: Colors.black),
                                   children: [
                                     WidgetSpan(
                                       alignment: PlaceholderAlignment.bottom,
                                       child: isGift
                                           ? Image(
-                                        image: AssetImage(
-                                            "assets/images/icons/bean_coin.png"),
-                                        width: 20,
-                                        height: 20,
-                                      )
+                                              image: AssetImage(
+                                                  "assets/images/icons/bean_coin.png"),
+                                              width: 20,
+                                              height: 20,
+                                            )
                                           : Container(),
                                     )
                                   ]),
@@ -693,6 +705,109 @@ class _OrderScreenState extends State<OrderScreen> {
         }
 
         switch (status) {
+          case ViewStatus.Loading:
+            return Container(
+              padding: const EdgeInsets.only(left: 8, right: 8),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey,
+                    offset: Offset(0.0, 1.0), //(x,y)
+                    blurRadius: 6.0,
+                  ),
+                ],
+              ),
+              child: ListView(
+                shrinkWrap: true,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Tổng tiền",
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.black87,
+                            fontWeight: FontWeight.w100,
+                          ),
+                        ),
+                        Text(
+                          '...',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 18),
+                        )
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 32),
+                  FlatButton(
+                    onPressed: () {},
+                    padding: EdgeInsets.only(
+                      left: 8.0,
+                      right: 8.0,
+                    ),
+                    textColor: Colors.white,
+                    color: kBackgroundGrey[4],
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(8))),
+                    child: Container(
+                      width: 250,
+                      height: 48,
+                      padding: EdgeInsets.only(top: 8, bottom: 8),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          AnimatedTextKit(
+                            animatedTexts: [
+                              FadeAnimatedText(
+                                'Đợi tý nha',
+                                textStyle:
+                                    kSubtitleTextSyule.copyWith(fontSize: 12),
+                                textAlign: TextAlign.center,
+                                // speed: Duration(milliseconds: 300),
+                              ),
+                              FadeAnimatedText(
+                                '🚀',
+                                textStyle: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 24),
+                                textAlign: TextAlign.center,
+                                // speed: Duration(milliseconds: 300),
+                              ),
+                              FadeAnimatedText(
+                                '🛵',
+                                textStyle: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 24),
+                                textAlign: TextAlign.center,
+                                // speed: Duration(milliseconds: 300),
+                              ),
+                              FadeAnimatedText(
+                                '💻',
+                                textStyle: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 24),
+                                textAlign: TextAlign.center,
+                                // speed: Duration(milliseconds: 300),
+                              ),
+                            ],
+                            isRepeatingAnimation: true,
+                            repeatForever: true,
+                            onTap: () {
+                              print("Tap Event");
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 8,
+                  ),
+                ],
+              ),
+            );
           case ViewStatus.Completed:
             Map message = model.orderAmount.message;
             return Container(
