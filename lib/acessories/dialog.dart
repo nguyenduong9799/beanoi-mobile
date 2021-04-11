@@ -42,8 +42,8 @@ Future<void> showStatusDialog(
               padding: const EdgeInsets.all(8.0),
               child: Text(
                 content,
-                style: TextStyle(fontSize: 16, color: kPrimary),
-                textAlign: TextAlign.left,
+                style: kTitleTextStyle.copyWith(fontSize: 14),
+                textAlign: TextAlign.center,
               ),
             ),
             SizedBox(

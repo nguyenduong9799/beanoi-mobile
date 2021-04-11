@@ -243,7 +243,10 @@ class _OrderScreenState extends State<OrderScreen> {
   }
 
   Widget layoutStore(List<CartItem> list) {
-    SupplierNoteDTO supplierNote = orderViewModel.currentCart.notes?.firstWhere((element) => element.supplierId == list[0].master.supplierId, orElse: () => null,);
+    SupplierNoteDTO supplierNote = orderViewModel.currentCart.notes?.firstWhere(
+      (element) => element.supplierId == list[0].master.supplierId,
+      orElse: () => null,
+    );
     List<Widget> card = new List();
 
     for (CartItem item in list) {
@@ -268,46 +271,46 @@ class _OrderScreenState extends State<OrderScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 8, right: 8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        list[0].master.supplierName,
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(
-                        list
-                            .fold(
-                            0,
-                                (previousValue, element) =>
-                            previousValue + element.quantity)
-                            .toString() +
-                            " món",
-                        style: TextStyle(color: Colors.orange),
-                      )
-                    ],
+          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 8, right: 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    list[0].master.supplierName,
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
+                  Text(
+                    list
+                            .fold(
+                                0,
+                                (previousValue, element) =>
+                                    previousValue + element.quantity)
+                            .toString() +
+                        " món",
+                    style: TextStyle(color: Colors.orange),
+                  )
+                ],
+              ),
+            ),
             Material(
               color: Colors.transparent,
               child: InkWell(
-                  onTap: (){
-                orderViewModel.addSupplierNote(list[0].master.supplierId);
-              }, child: Padding(
-                padding: EdgeInsets.all(8),
-                child: (supplierNote == null) ? Text("Thêm ghi chú", style: TextStyle(color: Colors.blue, fontSize: 12)) : Text("Sửa ghi chú", style: TextStyle(color: Colors.blue, fontSize: 12)),
-              )
-
-
-              ),
+                  onTap: () {
+                    orderViewModel.addSupplierNote(list[0].master.supplierId);
+                  },
+                  child: Padding(
+                    padding: EdgeInsets.all(8),
+                    child: (supplierNote == null)
+                        ? Text("Thêm ghi chú",
+                            style: TextStyle(color: Colors.blue, fontSize: 12))
+                        : Text("Sửa ghi chú",
+                            style: TextStyle(color: Colors.blue, fontSize: 12)),
+                  )),
             ),
           ]),
           ...card
@@ -373,9 +376,8 @@ class _OrderScreenState extends State<OrderScreen> {
                       ),
                     ),
                   ),
-                  progressIndicatorBuilder:
-                      (context, url, downloadProgress) =>
-                          Shimmer.fromColors(
+                  progressIndicatorBuilder: (context, url, downloadProgress) =>
+                      Shimmer.fromColors(
                     baseColor: Colors.grey[300],
                     highlightColor: Colors.grey[100],
                     enabled: true,
@@ -385,8 +387,7 @@ class _OrderScreenState extends State<OrderScreen> {
                       color: Colors.grey,
                     ),
                   ),
-                  errorWidget: (context, url, error) =>
-                      Icon(Icons.error),
+                  errorWidget: (context, url, error) => Icon(Icons.error),
                 ),
               ),
               SizedBox(
@@ -397,7 +398,8 @@ class _OrderScreenState extends State<OrderScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(item.master.name,
-                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                        style: TextStyle(
+                            fontSize: 14, fontWeight: FontWeight.bold)),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -411,18 +413,18 @@ class _OrderScreenState extends State<OrderScreen> {
                             RichText(
                               text: TextSpan(
                                   text:
-                                  isGift ? "${price} " : formatPrice(price),
+                                      isGift ? "${price} " : formatPrice(price),
                                   style: TextStyle(color: Colors.black),
                                   children: [
                                     WidgetSpan(
                                       alignment: PlaceholderAlignment.bottom,
                                       child: isGift
                                           ? Image(
-                                        image: AssetImage(
-                                            "assets/images/icons/bean_coin.png"),
-                                        width: 20,
-                                        height: 20,
-                                      )
+                                              image: AssetImage(
+                                                  "assets/images/icons/bean_coin.png"),
+                                              width: 20,
+                                              height: 20,
+                                            )
                                           : Container(),
                                     )
                                   ]),
@@ -693,6 +695,8 @@ class _OrderScreenState extends State<OrderScreen> {
         }
 
         switch (status) {
+          case ViewStatus.Loading:
+            return Text('...');
           case ViewStatus.Completed:
             Map message = model.orderAmount.message;
             return Container(

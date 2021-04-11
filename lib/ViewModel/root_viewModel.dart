@@ -107,10 +107,6 @@ class RootViewModel extends BaseModel {
           tmpTimeSlot = element;
           result = true;
         } else {
-          showStatusDialog(
-              "assets/images/global_error.png",
-              "Khung giờ đã qua rồi",
-              "Đừng nối tiếc quá khứ, hãy hướng về tương lai");
           result = false;
         }
       }

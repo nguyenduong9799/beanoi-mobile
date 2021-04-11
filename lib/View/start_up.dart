@@ -15,10 +15,39 @@ class StartUpView extends StatelessWidget {
           builder: (context, child, model) {
         return Scaffold(
           backgroundColor: Colors.white,
-          body: Center(
-            child: LoadingScreen(
-              title: "Batch Delivery",
-            ),
+          body: Stack(
+            children: [
+              Center(
+                child: Container(
+                  width: 250.0,
+                  color: Colors.white,
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        LoadingBean(),
+                        SizedBox(height: 16),
+                        Text(
+                          "Bean Oi",
+                          style: kHeadingextStyle.copyWith(
+                              color: kPrimary, fontSize: 18),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    'Đặt ngay chờ chi 😎',
+                    style: kHeadingextStyle.copyWith(fontSize: 16),
+                  ),
+                ),
+              ),
+            ],
           ),
         );
       }),

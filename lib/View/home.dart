@@ -15,6 +15,7 @@ import 'package:unidelivery_mobile/acessories/appbar.dart';
 import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/acessories/fixed_app_bar.dart';
 import 'package:unidelivery_mobile/acessories/loading.dart';
+import 'package:unidelivery_mobile/acessories/shimmer_block.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
 import 'package:unidelivery_mobile/route_constraint.dart';
@@ -40,11 +41,11 @@ class _HomeScreenState extends State<HomeScreen> {
     // SystemChrome.setSystemUIOverlayStyle(
     //     SystemUiOverlayStyle(statusBarColor: Colors.white));
     //
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
-        statusBarColor: Colors.white, // Color for Android
-        statusBarBrightness:
-            Brightness.dark // Dark == white status bar -- for IOS.
-        ));
+    // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
+    //     statusBarColor: Colors.white, // Color for Android
+    //     statusBarBrightness:
+    //         Brightness.dark // Dark == white status bar -- for IOS.
+    //     ));
     return Scaffold(
       backgroundColor: Colors.white,
       body: Container(
@@ -57,7 +58,8 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 FixedAppBar(),
                 Expanded(
-                  child: Padding(
+                  child: Container(
+                    color: kBackgroundGrey[2],
                     padding: EdgeInsets.only(top: 0),
                     child: RefreshIndicator(
                       key: _refreshIndicatorKey,
@@ -70,17 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           children: [
                             SizedBox(height: 8),
                             banner(),
-                            // location(),
-                            // timeRecieve(),
-                            SizedBox(height: 8),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text('Danh sách nhà hàng',
-                                  style: kTitleTextStyle),
-                            ),
                             Container(child: storeList()),
-                            // Container(child: storeList()),
-                            // SizedBox(height: 16),
                           ],
                         ),
                       ),
@@ -91,156 +83,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget location() {
-    return ScopedModel(
-      model: RootViewModel.getInstance(),
-      child: ScopedModelDescendant<RootViewModel>(
-        builder: (context, child, root) {
-          String text = "Đợi tý đang load...";
-          if (root.changeAddress) {
-            text = "Đang thay đổi...";
-          } else {
-            if (root.currentStore != null) {
-              text = "${root.currentStore.name}";
-            }
-          }
-
-          if (root.status == ViewStatus.Error) {
-            text = "Có lỗi xảy ra...";
-          }
-
-          return InkWell(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.location_on,
-                        color: Colors.red,
-                        size: 24,
-                      ),
-                      SizedBox(
-                        width: 8,
-                      ),
-                      Container(
-                        width: Get.width * 0.75,
-                        child: Text(
-                          text,
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15,
-                              color: kPrimary),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Icon(
-                    Icons.navigate_next,
-                    color: Colors.orange,
-                    size: 24,
-                  ),
-                ],
-              ),
-            ),
-            onTap: () async {
-              await root.processChangeLocation();
-            },
-          );
-        },
-      ),
-    );
-  }
-
-  Widget timeRecieve() {
-    return ScopedModel(
-      model: RootViewModel.getInstance(),
-      child: ScopedModelDescendant<RootViewModel>(
-        builder: (context, child, model) {
-          if (model.currentStore != null) {
-            return InkWell(
-              onTap: () async {
-                if (model.currentStore.selectedTimeSlot != null) {
-                  await showTimeDialog(model);
-                }
-              },
-              child: Column(
-                children: [
-                  Container(
-                      height: 30,
-                      width: Get.width,
-                      padding: EdgeInsets.only(left: 8, right: 8),
-                      child: Row(
-                        children: [
-                          Text(
-                            "Nhận đơn lúc",
-                            style:
-                                TextStyle(color: Colors.orange, fontSize: 12),
-                          ),
-                          SizedBox(
-                            width: 8,
-                          ),
-                          Flexible(
-                            child: ListView.separated(
-                              separatorBuilder: (context, index) => SizedBox(
-                                width: 4,
-                              ),
-                              itemBuilder: (context, index) {
-                                DateTime arrive = DateFormat("HH:mm:ss").parse(
-                                    model.currentStore.timeSlots[0].arrive);
-                                return Container(
-                                  padding: EdgeInsets.all(8),
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(8),
-                                      border: Border.all(color: kPrimary)),
-                                  child: Text(
-                                    "${DateFormat("HH:mm").format(arrive)} - ${DateFormat("HH:mm").format(arrive.add(Duration(minutes: 30)))}",
-                                    style: TextStyle(
-                                        color: kPrimary, fontSize: 12),
-                                  ),
-                                );
-                              },
-                              shrinkWrap: true,
-                              scrollDirection: Axis.horizontal,
-                              itemCount: 8,
-                            ),
-                          ),
-                        ],
-                      )),
-                  SizedBox(
-                    height: 8,
-                  ),
-                  Container(
-                      width: Get.width,
-                      padding: EdgeInsets.only(left: 8, right: 8),
-                      child: Row(
-                        children: [
-                          Text(
-                            "Khung giờ",
-                            style:
-                                TextStyle(color: Colors.orange, fontSize: 12),
-                          ),
-                          SizedBox(
-                            width: 8,
-                          ),
-                          Text(
-                            "${model.currentStore.selectedTimeSlot.from.substring(0, 5)} - ${model.currentStore.selectedTimeSlot.to.substring(0, 5)}",
-                            style: TextStyle(color: kPrimary, fontSize: 12),
-                          ),
-                        ],
-                      )),
-                ],
-              ),
-            );
-          }
-          return Container();
-        },
       ),
     );
   }
@@ -268,11 +110,24 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             );
           case ViewStatus.Loading:
-            return AspectRatio(
-                aspectRatio: 1,
-                child: Center(
-                  child: LoadingBean(),
-                ));
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  ShimmerBlock(width: Get.width * 0.4, height: 40),
+                  SizedBox(height: 8),
+                  buildSupplier(null, true),
+                  SizedBox(height: 8),
+                  buildSupplier(null, true),
+                  SizedBox(height: 8),
+                  buildSupplier(null, true),
+                  SizedBox(height: 8),
+                  buildSupplier(null, true),
+                  SizedBox(height: 8),
+                  buildSupplier(null, true),
+                ],
+              ),
+            );
           default:
             if (model.suppliers == null || model.suppliers.isEmpty) {
               return Container(
@@ -302,14 +157,20 @@ class _HomeScreenState extends State<HomeScreen> {
               );
             }
             return Column(
-              children: model.suppliers
-                  .where((supplier) => supplier.available)
-                  .map((supplier) => InkWell(
-                      onTap: () {
-                        model.selectSupplier(supplier);
-                      },
-                      child: buildSupplier(supplier)))
-                  .toList(),
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text('Danh sách nhà hàng', style: kTitleTextStyle),
+                ),
+                ...model.suppliers
+                    .where((supplier) => supplier.available)
+                    .map((supplier) => InkWell(
+                        onTap: () {
+                          model.selectSupplier(supplier);
+                        },
+                        child: buildSupplier(supplier)))
+                    .toList()
+              ],
             );
         }
       },
@@ -329,7 +190,21 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget buildSupplier(SupplierDTO dto) {
+  Widget buildSupplier(SupplierDTO dto, [bool loading = false]) {
+    if (loading) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          ShimmerBlock(
+            height: 50,
+            width: 50,
+            borderRadius: 16,
+          ),
+          SizedBox(width: 8),
+          ShimmerBlock(height: 50, width: Get.width - 80),
+        ],
+      );
+    }
     return Container(
       color: Colors.white,
       child: Padding(
@@ -396,20 +271,17 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget banner() {
     return Container(
-      margin: EdgeInsets.only(top: 8, bottom: 8),
+      margin: EdgeInsets.only(top: 8),
       child: ScopedModelDescendant<HomeViewModel>(
         builder: (context, child, model) {
           ViewStatus status = model.status;
           switch (status) {
             case ViewStatus.Loading:
-              return Shimmer.fromColors(
-                baseColor: kBackgroundGrey[0],
-                highlightColor: Colors.grey[100],
-                enabled: true,
-                child: Container(
-                  height: Get.width * (747 / 1914),
-                  width: Get.width,
-                  color: Colors.grey,
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ShimmerBlock(
+                  height: (Get.width) * (747 / 1914),
+                  width: (Get.width),
                 ),
               );
             case ViewStatus.Empty:
@@ -420,8 +292,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 return SizedBox.shrink();
               }
               return Container(
-                // padding: EdgeInsets.only(top: 8, bottom: 8),
-                // padding: EdgeInsets.only(top: 8, bottom: 16),
                 height: (Get.width) * (747 / 1914),
                 width: (Get.width),
                 child: Swiper(

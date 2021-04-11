@@ -4,8 +4,10 @@ import 'package:shimmer/shimmer.dart';
 class ShimmerBlock extends StatelessWidget {
   final double width;
   final double height;
+  final double borderRadius;
 
-  const ShimmerBlock({Key key, this.width = 20, this.height = 10})
+  const ShimmerBlock(
+      {Key key, this.width = 20, this.height = 10, this.borderRadius = 0})
       : super(key: key);
 
   @override
@@ -16,7 +18,11 @@ class ShimmerBlock extends StatelessWidget {
       child: Container(
         width: width,
         height: height,
-        color: Colors.grey[300],
+        // color: Colors.grey[300],
+        decoration: BoxDecoration(
+          color: Colors.grey[300],
+          borderRadius: BorderRadius.circular(borderRadius),
+        ),
       ),
     );
   }

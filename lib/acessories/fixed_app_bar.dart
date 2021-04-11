@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_countdown_timer/index.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:unidelivery_mobile/Model/DTO/CampusDTO.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
 import 'package:unidelivery_mobile/acessories/dialog.dart';
+import 'package:unidelivery_mobile/acessories/shimmer_block.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
 
@@ -18,89 +21,76 @@ class FixedAppBar extends StatefulWidget {
 }
 
 class _FixedAppBarState extends State<FixedAppBar> {
+  int timeSection = 1;
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.white,
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
+        statusBarColor: timeSection == 1
+            ? Colors.yellow[100]
+            : timeSection == 2
+                ? Colors.yellow
+                : Colors.yellow[900], // Color for Android
+        statusBarBrightness:
+            Brightness.dark // Dark == white status bar -- for IOS.
+        ));
+    return AnimatedContainer(
+      color: timeSection == 1
+          ? Colors.yellow[100]
+          : timeSection == 2
+              ? Colors.yellow
+              : Colors.yellow[900],
       padding: EdgeInsets.fromLTRB(8, 8, 8, 0),
       width: Get.width,
       // height: Get.height * 0.15,
+      duration: Duration(milliseconds: 300),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Row(
+          _buildTopHeader(),
+          timeRecieve(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTopHeader() {
+    return ScopedModel(
+      model: RootViewModel.getInstance(),
+      child: ScopedModelDescendant<RootViewModel>(
+        builder: (context, child, root) {
+          final status = root.status;
+          if (status == ViewStatus.Loading) {
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: Column(
+                    children: [
+                      location(true),
+                      // _buildTimeSection(true),
+                    ],
+                  ),
+                ),
+                SizedBox(width: 8),
+                ShimmerBlock(
+                  width: 32,
+                  height: 32,
+                  borderRadius: 16,
+                ),
+              ],
+            );
+          }
+          return Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(
                 child: Column(
                   children: [
                     location(),
-                    Container(
-                      width: Get.width,
-                      height: 48,
-                      padding: const EdgeInsets.only(top: 8, bottom: 16),
-                      child: ListView(
-                        scrollDirection: Axis.horizontal,
-                        children: [
-                          InkWell(
-                            onTap: () {},
-                            child: Material(
-                              color: Colors.transparent,
-                              child: Container(
-                                padding: EdgeInsets.fromLTRB(16, 4, 16, 4),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(16),
-                                  color: kPrimary,
-                                ),
-                                child: Text(
-                                  'Sáng 🌄',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w800,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          InkWell(
-                            onTap: () {},
-                            child: Ink(
-                              color: kPrimary,
-                              child: Container(
-                                padding: EdgeInsets.fromLTRB(16, 4, 16, 4),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(16),
-                                  // color: kPrimary,
-                                ),
-                                child: Text(
-                                  'Trưa 🌤',
-                                  style: kDescriptionTextSyle.copyWith(
-                                    fontWeight: FontWeight.w100,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          InkWell(
-                            onTap: () {},
-                            child: Container(
-                              padding: EdgeInsets.fromLTRB(16, 4, 16, 4),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(16),
-                                // color: kPrimary,
-                              ),
-                              child: Text(
-                                'Chiều 🌇',
-                                style: kDescriptionTextSyle.copyWith(
-                                  fontWeight: FontWeight.w100,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                    // _buildTimeSection(),
                   ],
                 ),
               ),
@@ -115,22 +105,121 @@ class _FixedAppBarState extends State<FixedAppBar> {
                         child: Image.asset(
                           'assets/images/history.png',
                           width: 24,
-                        )
-                        // Icon(
-                        //   Foundation.clipboard_notes,
-                        //   size: 30,
-                        //   color: Colors.white,
-                        // ),
-                        ),
+                        )),
                     onTap: () {
                       Get.toNamed(RouteHandler.ORDER_HISTORY);
                     },
                   ),
                 ),
-              )
+              ),
             ],
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildTimeSection([bool loading = false]) {
+    if (loading) {
+      return Container(
+        width: Get.width,
+        height: 48,
+        padding: const EdgeInsets.only(top: 8, bottom: 16),
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemBuilder: (BuildContext context, int index) {
+            return Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: ShimmerBlock(width: 96, height: 48, borderRadius: 16),
+            );
+          },
+          itemCount: 3,
+        ),
+      );
+    }
+
+    return Container(
+      width: Get.width,
+      height: 48,
+      padding: const EdgeInsets.only(top: 8, bottom: 16),
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        children: [
+          InkWell(
+            onTap: () {
+              setState(() {
+                timeSection = 1;
+              });
+            },
+            child: Material(
+              color: Colors.transparent,
+              child: Container(
+                padding: EdgeInsets.fromLTRB(16, 4, 16, 4),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  color: timeSection == 1 ? kPrimary : Colors.transparent,
+                ),
+                child: Text(
+                  'Sáng 🌄',
+                  style: TextStyle(
+                    color:
+                        timeSection == 1 ? Colors.white : kDescriptionTextColor,
+                    fontWeight:
+                        timeSection == 1 ? FontWeight.w800 : FontWeight.w100,
+                  ),
+                ),
+              ),
+            ),
           ),
-          timeRecieve(),
+          InkWell(
+            onTap: () {
+              setState(() {
+                timeSection = 2;
+              });
+            },
+            child: Ink(
+              color: kPrimary,
+              child: Container(
+                padding: EdgeInsets.fromLTRB(16, 4, 16, 4),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  color: timeSection == 2 ? kPrimary : Colors.transparent,
+                ),
+                child: Text(
+                  'Trưa 🌤',
+                  style: kDescriptionTextSyle.copyWith(
+                    fontWeight:
+                        timeSection == 1 ? FontWeight.w800 : FontWeight.w100,
+                    color:
+                        timeSection == 2 ? Colors.white : kDescriptionTextColor,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          InkWell(
+            onTap: () {
+              setState(() {
+                timeSection = 3;
+              });
+            },
+            child: Container(
+              padding: EdgeInsets.fromLTRB(16, 4, 16, 4),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                color: timeSection == 3 ? kPrimary : Colors.transparent,
+              ),
+              child: Text(
+                'Chiều 🌇',
+                style: kDescriptionTextSyle.copyWith(
+                  fontWeight:
+                      timeSection == 1 ? FontWeight.w800 : FontWeight.w100,
+                  color:
+                      timeSection == 3 ? Colors.white : kDescriptionTextColor,
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -143,9 +232,9 @@ class _FixedAppBarState extends State<FixedAppBar> {
         builder: (context, child, model) {
           if (model.currentStore != null) {
             final currentDate = DateTime.now();
-            String currentTimeSlot = model.currentStore.selectedTimeSlot.to;
-            // var beanTime = DateFormat("HH:mm:ss").parse(
-            //     "${currentDate.year}-${currentDate.month}-${currentDate.day} ${model.currentStore.selectedTimeSlot.to}");
+            final status = model.status;
+            TimeSlot seleectedTimeSlot = model.currentStore.selectedTimeSlot;
+            String currentTimeSlot = seleectedTimeSlot.to;
             var beanTime = new DateTime(
               currentDate.year,
               currentDate.month,
@@ -153,9 +242,45 @@ class _FixedAppBarState extends State<FixedAppBar> {
               int.parse(currentTimeSlot.split(':')[0]),
               int.parse(currentTimeSlot.split(':')[1]),
             );
-            print(beanTime.toString());
-            final differenceHour = beanTime.difference(currentDate).inHours;
-            final differenceMinute = beanTime.difference(currentDate).inMinutes;
+            int diffentTime = beanTime.difference(currentDate).inMilliseconds;
+
+            if (status == ViewStatus.Loading) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      ShimmerBlock(width: 150, height: 32),
+                      ShimmerBlock(width: 75, height: 32),
+                    ],
+                  ),
+                  SizedBox(height: 8),
+                  Container(
+                    height: 24,
+                    width: Get.width,
+                    child: ListView.builder(
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: ShimmerBlock(
+                            width: 80,
+                            height: 24,
+                            borderRadius: 16,
+                          ),
+                        );
+                      },
+                      shrinkWrap: true,
+                      scrollDirection: Axis.horizontal,
+                      itemCount: 5,
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                ],
+              );
+            }
+
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -163,34 +288,21 @@ class _FixedAppBarState extends State<FixedAppBar> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text("⌚ Giờ nhận đơn: "),
-                    CountdownTimer(
-                      endTime:
-                          DateTime.now().millisecondsSinceEpoch + 3800 * 1000,
-                      onEnd: () {
-                        showStatusDialog(
-                          "assets/images/global_error.png",
-                          "Hết giờ",
-                          "Đã hết giờ chốt đơn cho khung giờ ${model.currentStore.selectedTimeSlot.arrive}",
-                        );
-                      },
-                      widgetBuilder: (_, CurrentRemainingTime time) {
-                        if (time == null) {
-                          return Text('Hết giờ',
-                              style:
-                                  TextStyle(color: Colors.red, fontSize: 12));
-                        }
-                        return Text(
-                          "Còn lại ${time.hours ?? '0'}h : ${time.min ?? '0'}ph ",
-                          style: TextStyle(color: kPrimary, fontSize: 12),
-                        );
-                      },
-                    ),
+                    Text(
+                        "${_getTimeFrame(int.parse(seleectedTimeSlot.from.split(':')[0]))} Giờ nhận đơn: "),
+                    diffentTime != 0
+                        ? BeanTimeCountdown(
+                            differentTime: 5000,
+                            arriveTime:
+                                model.currentStore.selectedTimeSlot.arrive,
+                          )
+                        : Text('Hết giờ',
+                            style: TextStyle(color: Colors.red, fontSize: 12)),
                   ],
                 ),
                 SizedBox(height: 8),
                 Container(
-                    height: 32,
+                    height: 24,
                     width: Get.width,
                     child: ListView.builder(
                       // separatorBuilder: (context, index) => SizedBox(
@@ -202,35 +314,41 @@ class _FixedAppBarState extends State<FixedAppBar> {
                         bool isSelect =
                             model.currentStore.selectedTimeSlot.arrive ==
                                 model.currentStore.timeSlots[index].arrive;
-                        return InkWell(
-                          onTap: () async {
-                            if (model.currentStore.selectedTimeSlot != null) {
-                              if (model.selectTimeSlot(
-                                  model.currentStore.timeSlots[index].menuId)) {
-                                model.confirmTimeSlot();
+                        return AnimatedContainer(
+                          padding: EdgeInsets.only(left: 8, right: 8),
+                          decoration: BoxDecoration(
+                            borderRadius:
+                                BorderRadius.circular(isSelect ? 16 : 0),
+                            color: isSelect ? kPrimary : Colors.transparent,
+                          ),
+                          duration: Duration(milliseconds: 300),
+                          child: InkWell(
+                            onTap: () async {
+                              if (model.currentStore.selectedTimeSlot != null) {
+                                if (model.selectTimeSlot(model
+                                    .currentStore.timeSlots[index].menuId)) {
+                                  model.confirmTimeSlot();
+                                } else {
+                                  showStatusDialog(
+                                      "assets/images/global_error.png",
+                                      "Khung giờ đã qua rồi",
+                                      "Đừng nối tiếc quá khứ, hãy hướng về tương lai");
+                                }
                               }
-                            }
-                          },
-                          child: Container(
-                            padding: EdgeInsets.only(left: 8, right: 8),
-                            decoration: BoxDecoration(
-                              // borderRadius: BorderRadius.circular(8),
-                              border: Border(
-                                bottom: BorderSide(
-                                    color: kPrimary, width: isSelect ? 2 : 0),
+                            },
+                            child: Center(
+                              child: Text(
+                                "${DateFormat("HH:mm").format(arrive)} - ${DateFormat("HH:mm").format(arrive.add(Duration(minutes: 30)))}",
+                                style: isSelect
+                                    ? kTitleTextStyle.copyWith(
+                                        color: Colors.white,
+                                        fontSize: 12,
+                                      )
+                                    : kDescriptionTextSyle.copyWith(
+                                        fontWeight: FontWeight.w300,
+                                        fontSize: 12,
+                                      ),
                               ),
-                            ),
-                            child: Text(
-                              "${DateFormat("HH:mm").format(arrive)} - ${DateFormat("HH:mm").format(arrive.add(Duration(minutes: 30)))}",
-                              style: isSelect
-                                  ? kTitleTextStyle.copyWith(
-                                      color: kPrimary,
-                                      fontSize: 14,
-                                    )
-                                  : kDescriptionTextSyle.copyWith(
-                                      fontWeight: FontWeight.w300,
-                                      fontSize: 12,
-                                    ),
                             ),
                           ),
                         );
@@ -239,6 +357,7 @@ class _FixedAppBarState extends State<FixedAppBar> {
                       scrollDirection: Axis.horizontal,
                       itemCount: model.currentStore.timeSlots.length,
                     )),
+                SizedBox(height: 8),
               ],
             );
           }
@@ -248,12 +367,27 @@ class _FixedAppBarState extends State<FixedAppBar> {
     );
   }
 
-  Widget location() {
+  String _getTimeFrame([int time = 0]) {
+    if (time > 4 && time <= 11) {
+      return '🌄';
+    } else if (time > 11 && time <= 15) {
+      return '🌤';
+    } else if (time > 15 && time <= 18) {
+      return '🌇';
+    } else if (time > 18 && time <= 24 || time >= 0 && time <= 4) {
+      return '🌙';
+    } else {
+      return '⌚';
+    }
+  }
+
+  Widget location([bool loading = false]) {
     return ScopedModel(
       model: RootViewModel.getInstance(),
       child: ScopedModelDescendant<RootViewModel>(
         builder: (context, child, root) {
           String text = "Đợi tý đang load...";
+          final status = root.status;
           if (root.changeAddress) {
             text = "Đang thay đổi...";
           } else {
@@ -262,8 +396,22 @@ class _FixedAppBarState extends State<FixedAppBar> {
             }
           }
 
-          if (root.status == ViewStatus.Error) {
+          if (status == ViewStatus.Error) {
             text = "Có lỗi xảy ra...";
+          }
+
+          if (loading) {
+            return Column(
+              children: [
+                Row(
+                  children: [
+                    ShimmerBlock(width: 64, height: 24),
+                    SizedBox(width: 8),
+                    ShimmerBlock(width: 150, height: 24),
+                  ],
+                ),
+              ],
+            );
           }
 
           return InkWell(
@@ -295,6 +443,46 @@ class _FixedAppBarState extends State<FixedAppBar> {
           );
         },
       ),
+    );
+  }
+}
+
+class BeanTimeCountdown extends StatefulWidget {
+  const BeanTimeCountdown({
+    Key key,
+    @required this.differentTime,
+    @required this.arriveTime,
+  }) : super(key: key);
+
+  final int differentTime;
+  final String arriveTime;
+
+  @override
+  _BeanTimeCountdownState createState() => _BeanTimeCountdownState();
+}
+
+class _BeanTimeCountdownState extends State<BeanTimeCountdown> {
+  @override
+  Widget build(BuildContext context) {
+    return CountdownTimer(
+      endTime: DateTime.now().millisecondsSinceEpoch + widget.differentTime,
+      onEnd: () {
+        showStatusDialog(
+          "assets/images/global_error.png",
+          "Hết giờ",
+          "Đã hết giờ chốt đơn cho khung giờ ${widget.arriveTime}. \n Bạn quay lại sau nhé 😢",
+        );
+      },
+      widgetBuilder: (_, CurrentRemainingTime time) {
+        if (time == null) {
+          return Text('Hết giờ',
+              style: TextStyle(color: Colors.red, fontSize: 12));
+        }
+        return Text(
+          "Còn lại ${time.hours ?? '0'}h : ${time.min ?? '0'}ph ",
+          style: TextStyle(color: kPrimary, fontSize: 12),
+        );
+      },
     );
   }
 }
