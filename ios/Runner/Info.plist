@@ -61,5 +61,9 @@
 	<false/>
 	<key>FirebaseAppDelegateProxyEnabled</key>
     <false/>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>We need access to your location to show restaurant around you</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>We need access to your location to show restaurant around you</string>
 </dict>
 </plist>
