@@ -227,8 +227,7 @@ class _UpdateAccountState extends State<ProfileScreen> {
             Divider(),
             section(
                 icon: Icon(Icons.feedback_outlined, color: Colors.black54),
-                title:
-                    Text("Feedback", style: TextStyle(color: Colors.black54)),
+                title: Text("Góp ý", style: TextStyle(color: Colors.black54)),
                 function: () async {
                   await model.sendFeedback();
                 }),

@@ -5,6 +5,7 @@ import 'package:unidelivery_mobile/ViewModel/index.dart';
 import 'package:unidelivery_mobile/acessories/appbar.dart';
 import 'package:unidelivery_mobile/acessories/loading.dart';
 import 'package:unidelivery_mobile/acessories/product_promotion.dart';
+import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
 
 class GiftScreen extends StatefulWidget {
@@ -90,28 +91,30 @@ class _GiftScreenState extends State<GiftScreen> {
                                 if (model.gifts == null ||
                                     model.gifts.isEmpty) {
                                   return Container(
-                                    padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
-                                    color: Colors.black45,
-                                    child: ListView(
-                                      children: [
-                                        Container(
-                                          child: AspectRatio(
-                                            aspectRatio: 1.5,
-                                            child: Image.asset(
-                                              'assets/images/empty-product.png',
-                                              fit: BoxFit.contain,
+                                    padding: EdgeInsets.fromLTRB(16, 24, 16, 8),
+                                    color: Colors.white,
+                                    child: Center(
+                                      child: Column(
+                                        children: [
+                                          Container(
+                                            child: AspectRatio(
+                                              aspectRatio: 1.5,
+                                              child: Image.asset(
+                                                'assets/images/empty-product.png',
+                                                fit: BoxFit.contain,
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        Text(
-                                          "Hmm, hiện tại chưa có quà nào hết á",
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            fontSize: 18,
-                                            color: Colors.white,
+                                          Text(
+                                            "Hiện các món quà đã Sold out hết rồi. Nhanh tay đổi quà vào hôm sau nhé 😁",
+                                            textAlign: TextAlign.center,
+                                            style: kSubtitleTextSyule.copyWith(
+                                              color: Colors.orange,
+                                              fontSize: 16,
+                                            ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   );
                                 }

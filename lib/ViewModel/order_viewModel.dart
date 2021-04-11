@@ -66,7 +66,7 @@ class OrderViewModel extends BaseModel {
   }
 
   Future<void> updateQuantity(CartItem item) async {
-    showLoadingDialog();
+    // showLoadingDialog();
     if (item.master.type == ProductType.GIFT_PRODUCT) {
       int originalQuantity = 0;
       if (AccountViewModel.getInstance().currentUser == null) {
@@ -134,14 +134,14 @@ class OrderViewModel extends BaseModel {
   }
 
   Future<void> changeOption(int option) async {
-    showLoadingDialog();
+    // showLoadingDialog();
     currentCart.payment = option;
     await setCart(currentCart);
     await prepareOrder();
   }
 
   Future<void> deleteItem(CartItem item) async {
-    showLoadingDialog();
+    // showLoadingDialog();
     bool result = await removeItemFromCart(item);
     if (result) {
       await AnalyticsService.getInstance()
@@ -194,29 +194,32 @@ class OrderViewModel extends BaseModel {
   }
 
   Future<void> addSupplierNote(int id) async {
-    SupplierNoteDTO supplierNote = currentCart.notes?.firstWhere((element) => element.supplierId == id, orElse: () => null,);
-    String note = await inputDialog("Ghi chú cho cửa hàng 🏪", "Xác nhận", value: supplierNote?.content);
+    SupplierNoteDTO supplierNote = currentCart.notes?.firstWhere(
+      (element) => element.supplierId == id,
+      orElse: () => null,
+    );
+    String note = await inputDialog("Ghi chú cho cửa hàng 🏪", "Xác nhận",
+        value: supplierNote?.content);
     bool update = true;
-    if(supplierNote != null){
-      if(note != null && note.isNotEmpty){
+    if (supplierNote != null) {
+      if (note != null && note.isNotEmpty) {
         supplierNote.content = note;
-      }else{
+      } else {
         currentCart.notes.remove(supplierNote);
       }
-    }else{
-      if(note != null && note.isNotEmpty){
-        if(currentCart.notes == null){
+    } else {
+      if (note != null && note.isNotEmpty) {
+        if (currentCart.notes == null) {
           currentCart.notes = List();
         }
         currentCart.notes.add(SupplierNoteDTO(content: note, supplierId: id));
-      }else{
+      } else {
         update = false;
       }
     }
-    if(update){
+    if (update) {
       setCart(currentCart);
     }
     notifyListeners();
-
   }
 }

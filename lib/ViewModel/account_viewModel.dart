@@ -76,10 +76,10 @@ class AccountViewModel extends BaseModel {
     }
   }
 
-  Future<void> sendFeedback() async {
+  Future<void> sendFeedback(
+      [String title = "Bạn cho mình xin feedback nha 🤗"]) async {
     try {
-      String feedback =
-          await inputDialog("Bạn cho mình xin feedback nha 🤗", "Gửi thôi 💛");
+      String feedback = await inputDialog(title, "Gửi thôi 💛");
       if (feedback != null && feedback.isNotEmpty) {
         showLoadingDialog();
         await _dao.sendFeedback(feedback);

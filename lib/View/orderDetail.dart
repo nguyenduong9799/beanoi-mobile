@@ -97,9 +97,7 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                                             color: kPrimary,
                                           ),
                                           textAlign: TextAlign.start,
-                                          alignment: AlignmentDirectional
-                                              .topStart // or Alignment.topLeft
-                                          )
+                                        )
                                       : Text(
                                           'Đã nhận hàng',
                                           style: TextStyle(
@@ -181,7 +179,7 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
               model.cancelOrder(this.widget.order.id);
             },
             child: Text(
-              "Hủy đơn",
+              "Hủy đơn 😢",
               style: TextStyle(
                 color: Colors.grey,
               ),
@@ -225,7 +223,8 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
         itemBuilder: (context, index) {
           List<OrderItemDTO> items = map.values.elementAt(index);
           SupplierNoteDTO note = orderDetail.notes?.firstWhere(
-              (element) => element.supplierId == items[0].supplierId, orElse: () => null);
+              (element) => element.supplierId == items[0].supplierId,
+              orElse: () => null);
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

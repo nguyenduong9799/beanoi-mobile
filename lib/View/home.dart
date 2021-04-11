@@ -47,14 +47,14 @@ class _HomeScreenState extends State<HomeScreen> {
     //         Brightness.dark // Dark == white status bar -- for IOS.
     //     ));
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: Container(
-        height: Get.height,
-        child: ScopedModel(
-          model: HomeViewModel.getInstance(),
-          child: SafeArea(
+      backgroundColor: kBackgroundGrey[2],
+      resizeToAvoidBottomInset: false,
+      body: SafeArea(
+        child: Container(
+          height: Get.height,
+          child: ScopedModel(
+            model: HomeViewModel.getInstance(),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 FixedAppBar(),
                 Expanded(
@@ -82,6 +82,48 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _suggestRestaurant() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16.0, 8, 16, 8),
+      child: Center(
+        child: Text.rich(
+          TextSpan(
+            text: "Gợi ý nhà hàng bạn thích cho chúng mình ",
+            style: kDescriptionTextSyle.copyWith(
+              fontSize: 12,
+            ),
+            children: [
+              WidgetSpan(
+                child: ScopedModel<AccountViewModel>(
+                  model: AccountViewModel.getInstance(),
+                  child: ScopedModelDescendant<AccountViewModel>(
+                      builder: (context, child, model) {
+                    return InkWell(
+                      onTap: () async {
+                        await model.sendFeedback(
+                            "Nhập nhà hàng mà bạn muốn chúng mình phục vụ nhé");
+                      },
+                      child: Text(
+                        "tại đây",
+                        style: TextStyle(
+                          color: Colors.blue,
+                          decoration: TextDecoration.underline,
+                          fontSize: 12,
+                        ),
+                      ),
+                    );
+                  }),
+                ),
+              ),
+              TextSpan(text: " 📝 nha."),
+            ],
+          ),
+          textAlign: TextAlign.center,
         ),
       ),
     );
@@ -129,7 +171,12 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             );
           default:
-            if (model.suppliers == null || model.suppliers.isEmpty) {
+            if (model.suppliers == null ||
+                model.suppliers.isEmpty ||
+                model.suppliers
+                        .where((supplier) => supplier.available)
+                        .length ==
+                    0) {
               return Container(
                 padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
                 color: Colors.white,
@@ -146,7 +193,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       Text(
-                        "Aaa, hiện tại chưa có nhà hàng nào, bạn vui lòng quay lại sau nhé",
+                        "Aaa, hiện tại các nhà hàng đang bận, bạn vui lòng quay lại sau nhé",
                         textAlign: TextAlign.center,
                         style:
                             kSubtitleTextSyule.copyWith(color: Colors.orange),
@@ -159,8 +206,9 @@ class _HomeScreenState extends State<HomeScreen> {
             return Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text('Danh sách nhà hàng', style: kTitleTextStyle),
+                  padding: const EdgeInsets.fromLTRB(8, 16.0, 8, 16),
+                  child:
+                      Text('🌟 Danh sách nhà hàng 🌟', style: kTitleTextStyle),
                 ),
                 ...model.suppliers
                     .where((supplier) => supplier.available)
@@ -169,7 +217,10 @@ class _HomeScreenState extends State<HomeScreen> {
                           model.selectSupplier(supplier);
                         },
                         child: buildSupplier(supplier)))
-                    .toList()
+                    .toList(),
+                SizedBox(height: 8),
+                _suggestRestaurant(),
+                SizedBox(height: 8),
               ],
             );
         }
@@ -272,6 +323,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget banner() {
     return Container(
       margin: EdgeInsets.only(top: 8),
+      // padding: EdgeInsets.only(bottom: 8),
       child: ScopedModelDescendant<HomeViewModel>(
         builder: (context, child, model) {
           ViewStatus status = model.status;
@@ -294,6 +346,7 @@ class _HomeScreenState extends State<HomeScreen> {
               return Container(
                 height: (Get.width) * (747 / 1914),
                 width: (Get.width),
+                margin: EdgeInsets.only(bottom: 8),
                 child: Swiper(
                     onTap: (index) async {
                       await _launchURL(
@@ -323,6 +376,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             margin: EdgeInsets.only(left: 8, right: 8),
                             decoration: BoxDecoration(
                               //borderRadius: BorderRadius.circular(8),
+                              color: Colors.blue,
                               image: DecorationImage(
                                 image: imageProvider,
                                 fit: BoxFit.cover,

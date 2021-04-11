@@ -648,103 +648,104 @@ Future<String> inputDialog(String title, String buttonTitle,
   hideDialog();
   TextEditingController controller = TextEditingController(text: value);
   await Get.dialog(
-      Dialog(
-        backgroundColor: Colors.white,
-        elevation: 8.0,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(16.0))),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Flexible(
-                      child: Text(
-                        title,
-                        style: TextStyle(fontSize: 16, color: kPrimary),
-                      ),
-                    ),
-                    IconButton(
-                      icon: Icon(
-                        AntDesign.closecircleo,
-                        color: Colors.red,
-                      ),
-                      onPressed: () {
-                        if (value == null || value.isEmpty) {
-                          controller.clear();
-                        } else {
-                          controller.text = value;
-                        }
-                        hideDialog();
-                      },
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(8)),
-                      border: Border.all(color: kPrimary)),
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
-                    child: TextFormField(
-                      controller: controller,
-                      decoration: InputDecoration(
-                          border: InputBorder.none,
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              Icons.clear,
-                              size: 16,
-                              color: Colors.grey,
-                            ),
-                            onPressed: () {
-                              controller.clear();
-                            },
-                          )),
-                      style: TextStyle(color: Colors.grey),
-                      keyboardType: TextInputType.multiline,
-                      maxLines: null,
-                      autofocus: true,
-                      onFieldSubmitted: (value) {
-                        controller.text = value;
-                      },
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: 8,
-              ),
-              Container(
-                width: double.infinity,
-                child: FlatButton(
-                  color: kPrimary,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.only(
-                          bottomRight: Radius.circular(16),
-                          bottomLeft: Radius.circular(16))),
-                  onPressed: () {
-                    hideDialog();
-                  },
-                  child: Padding(
-                    padding: EdgeInsets.only(top: 16, bottom: 16),
+    Dialog(
+      backgroundColor: Colors.white,
+      elevation: 8.0,
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(16.0))),
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Flexible(
                     child: Text(
-                      buttonTitle,
-                      style: kTextPrimary,
+                      title,
+                      style: TextStyle(fontSize: 16, color: kPrimary),
+                      textAlign: TextAlign.center,
                     ),
+                  ),
+                  IconButton(
+                    icon: Icon(
+                      AntDesign.closecircleo,
+                      color: Colors.red,
+                    ),
+                    onPressed: () {
+                      if (value == null || value.isEmpty) {
+                        controller.clear();
+                      } else {
+                        controller.text = value;
+                      }
+                      hideDialog();
+                    },
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(8)),
+                    border: Border.all(color: kPrimary)),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
+                  child: TextFormField(
+                    controller: controller,
+                    decoration: InputDecoration(
+                        border: InputBorder.none,
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            Icons.clear,
+                            size: 16,
+                            color: Colors.grey,
+                          ),
+                          onPressed: () {
+                            controller.clear();
+                          },
+                        )),
+                    style: TextStyle(color: Colors.grey),
+                    keyboardType: TextInputType.multiline,
+                    maxLines: 6,
+                    autofocus: true,
+                    onFieldSubmitted: (value) {
+                      controller.text = value;
+                    },
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+            SizedBox(
+              height: 8,
+            ),
+            Container(
+              width: double.infinity,
+              child: FlatButton(
+                color: kPrimary,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(
+                        bottomRight: Radius.circular(16),
+                        bottomLeft: Radius.circular(16))),
+                onPressed: () {
+                  hideDialog();
+                },
+                child: Padding(
+                  padding: EdgeInsets.only(top: 16, bottom: 16),
+                  child: Text(
+                    buttonTitle,
+                    style: kTextPrimary,
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
-      barrierDismissible: false);
+    ),
+    barrierDismissible: false,
+  );
   return controller.text;
 }

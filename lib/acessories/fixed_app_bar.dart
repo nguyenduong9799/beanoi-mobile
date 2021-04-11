@@ -26,24 +26,26 @@ class _FixedAppBarState extends State<FixedAppBar> {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
-        statusBarColor: timeSection == 1
-            ? Colors.yellow[100]
-            : timeSection == 2
-                ? Colors.yellow
-                : Colors.yellow[900], // Color for Android
+        statusBarColor: Colors.white, // Color for Android
         statusBarBrightness:
             Brightness.dark // Dark == white status bar -- for IOS.
         ));
     return AnimatedContainer(
-      color: timeSection == 1
-          ? Colors.yellow[100]
-          : timeSection == 2
-              ? Colors.yellow
-              : Colors.yellow[900],
-      padding: EdgeInsets.fromLTRB(8, 8, 8, 0),
+      padding: EdgeInsets.fromLTRB(8, 0, 8, 0),
       width: Get.width,
       // height: Get.height * 0.15,
       duration: Duration(milliseconds: 300),
+      decoration: BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+              color: Colors.grey,
+              spreadRadius: 3,
+              // blurRadius: 6,
+              offset: Offset(0, 25) // changes position of shadow
+              ),
+        ],
+        color: Colors.white,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -288,16 +290,30 @@ class _FixedAppBarState extends State<FixedAppBar> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text(
-                        "${_getTimeFrame(int.parse(seleectedTimeSlot.from.split(':')[0]))} Giờ nhận đơn: "),
-                    diffentTime != 0
-                        ? BeanTimeCountdown(
-                            differentTime: 5000,
-                            arriveTime:
-                                model.currentStore.selectedTimeSlot.arrive,
-                          )
-                        : Text('Hết giờ',
-                            style: TextStyle(color: Colors.red, fontSize: 12)),
+                    Text.rich(
+                      TextSpan(
+                        text:
+                            "${_getTimeFrame(int.parse(seleectedTimeSlot.from.split(':')[0]))} Giờ nhận đơn ",
+                        style: kDescriptionTextSyle.copyWith(
+                          fontSize: 12,
+                        ),
+                        children: [
+                          WidgetSpan(
+                            child: Tooltip(
+                              message:
+                                  "Thời gian bạn muốn nhận đơn của mình. Lưu ý thời gian chốt đơn thường sớm hơn 1 tiếng",
+                              child: Icon(Icons.info_outline, size: 16),
+                              height: 48,
+                            ),
+                          ),
+                        ],
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    BeanTimeCountdown(
+                      differentTime: diffentTime,
+                      arriveTime: model.currentStore.selectedTimeSlot.arrive,
+                    ),
                   ],
                 ),
                 SizedBox(height: 8),
@@ -464,6 +480,13 @@ class BeanTimeCountdown extends StatefulWidget {
 class _BeanTimeCountdownState extends State<BeanTimeCountdown> {
   @override
   Widget build(BuildContext context) {
+    print("differentTime " + widget.differentTime.toString());
+    if (widget.differentTime <= 0) {
+      return Text(
+        'Hết giờ',
+        style: TextStyle(color: Colors.red, fontSize: 12),
+      );
+    }
     return CountdownTimer(
       endTime: DateTime.now().millisecondsSinceEpoch + widget.differentTime,
       onEnd: () {
