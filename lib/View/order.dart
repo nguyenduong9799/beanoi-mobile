@@ -697,7 +697,8 @@ class _OrderScreenState extends State<OrderScreen> {
       builder: (context, child, model) {
         ViewStatus status = model.status;
         String errorMsg = null;
-
+        var isMenuAvailable =
+            RootViewModel.getInstance().currentStore.selectedTimeSlot.available;
         if (model.location == null) {
           errorMsg = "Vui lòng chọn địa điểm giao";
         } else if (model.currentCart?.payment == null) {
@@ -809,7 +810,6 @@ class _OrderScreenState extends State<OrderScreen> {
               ),
             );
           case ViewStatus.Completed:
-            Map message = model.orderAmount.message;
             return Container(
               padding: const EdgeInsets.only(left: 8, right: 8),
               decoration: BoxDecoration(
@@ -851,50 +851,13 @@ class _OrderScreenState extends State<OrderScreen> {
                             ],
                           ),
                         ),
-                        message != null
-                            ? Material(
-                                color: Colors.transparent,
-                                child: InkWell(
-                                  onTap: () {
-                                    if (message['action'] != null) {
-                                      Get.offAndToNamed(
-                                        message['action'],
-                                        arguments: message['arguments'],
-                                      );
-                                    }
-                                  },
-                                  child: Padding(
-                                    padding:
-                                        const EdgeInsets.fromLTRB(0, 8, 0, 8),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Flexible(
-                                          child: Text(
-                                            message['content'],
-                                            style: TextStyle(
-                                              color: Colors.orange,
-                                              fontSize: 14,
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(width: 40),
-                                        Text('Quất ngay 🤘',
-                                            style: TextStyle(color: kPrimary)),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              )
-                            : SizedBox(
-                                height: 8,
-                              ),
+                        SizedBox(height: 8),
                         FlatButton(
                           onPressed: () async {
                             if (model.currentCart.payment != null &&
                                 model.location != null &&
-                                model.status != ViewStatus.Loading) {
+                                model.status != ViewStatus.Loading &&
+                                isMenuAvailable) {
                               await model.orderCart();
                             }
                             // pr.hide();
@@ -905,7 +868,8 @@ class _OrderScreenState extends State<OrderScreen> {
                             right: 8.0,
                           ),
                           textColor: Colors.white,
-                          color: kPrimary,
+                          color:
+                              isMenuAvailable ? kPrimary : kBackgroundGrey[3],
                           shape: RoundedRectangleBorder(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(8))),
@@ -914,10 +878,17 @@ class _OrderScreenState extends State<OrderScreen> {
                               SizedBox(
                                 height: 16,
                               ),
-                              Text("Chốt đơn 👌",
+                              Text(
+                                  isMenuAvailable
+                                      ? "Chốt đơn 👌"
+                                      : "Khung giờ đã kết thúc",
                                   style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 15)),
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15,
+                                    color: isMenuAvailable
+                                        ? Colors.white
+                                        : kGreyTitle,
+                                  )),
                               SizedBox(
                                 height: 16,
                               )

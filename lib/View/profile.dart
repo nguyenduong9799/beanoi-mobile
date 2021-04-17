@@ -187,7 +187,7 @@ class _UpdateAccountState extends State<ProfileScreen> {
             Divider(),
             section(
                 icon: Icon(Icons.history, color: Colors.black54),
-                title: Text("Lịch sử giao dịch",
+                title: Text("Lịch sử cộng điểm",
                     style: TextStyle(color: Colors.black54)),
                 function: () async {
                   await showStatusDialog("assets/images/coming_soon.gif",

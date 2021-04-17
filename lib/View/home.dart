@@ -133,7 +133,8 @@ class _HomeScreenState extends State<HomeScreen> {
     return ScopedModelDescendant<HomeViewModel>(
       builder: (context, child, model) {
         ViewStatus status = model.status;
-        print(model.suppliers);
+        bool isMenuAvailable =
+            RootViewModel.getInstance().isCurrentMenuAvailable;
         switch (status) {
           case ViewStatus.Error:
             return ListView(
@@ -210,14 +211,24 @@ class _HomeScreenState extends State<HomeScreen> {
                   child:
                       Text('🌟 Danh sách nhà hàng 🌟', style: kTitleTextStyle),
                 ),
-                ...model.suppliers
-                    .where((supplier) => supplier.available)
-                    .map((supplier) => InkWell(
-                        onTap: () {
-                          model.selectSupplier(supplier);
-                        },
-                        child: buildSupplier(supplier)))
-                    .toList(),
+                ColorFiltered(
+                  colorFilter: ColorFilter.mode(
+                    isMenuAvailable ? Colors.transparent : Colors.grey,
+                    BlendMode.saturation,
+                  ),
+                  child: Column(
+                    children: [
+                      ...model.suppliers
+                          .where((supplier) => supplier.available)
+                          .map((supplier) => InkWell(
+                              onTap: () {
+                                model.selectSupplier(supplier);
+                              },
+                              child: buildSupplier(supplier)))
+                          .toList(),
+                    ],
+                  ),
+                ),
                 SizedBox(height: 8),
                 _suggestRestaurant(),
                 SizedBox(height: 8),
@@ -373,9 +384,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                 arguments: model.blogs[index]);
                           },
                           child: Container(
-                            margin: EdgeInsets.only(left: 8, right: 8),
+                            margin:
+                                EdgeInsets.only(left: 8, right: 8, bottom: 8),
                             decoration: BoxDecoration(
-                              //borderRadius: BorderRadius.circular(8),
+                              borderRadius: BorderRadius.circular(8),
                               color: Colors.blue,
                               image: DecorationImage(
                                 image: imageProvider,

@@ -48,7 +48,7 @@ class _GiftScreenState extends State<GiftScreen> {
                         elevation: 2,
                         child: Container(
                           width: Get.width,
-                          padding: const EdgeInsets.fromLTRB(0, 4, 0, 4),
+                          padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
                           child: Center(
                             child: Text(
                               "🎁 Danh sách quà tặng 🎁",

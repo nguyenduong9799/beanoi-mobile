@@ -103,7 +103,7 @@ class RootViewModel extends BaseModel {
     bool result = false;
     currentStore.timeSlots.forEach((element) {
       if (element.menuId == value) {
-        if (element.available) {
+        if (true) {
           tmpTimeSlot = element;
           result = true;
         } else {
@@ -252,5 +252,15 @@ class RootViewModel extends BaseModel {
       }
     }
     notifyListeners();
+  }
+
+  Future<void> clearCart() async {
+    await deleteCart();
+    HomeViewModel.getInstance().notifyListeners();
+    notifyListeners();
+  }
+
+  bool get isCurrentMenuAvailable {
+    return currentStore?.selectedTimeSlot?.available;
   }
 }

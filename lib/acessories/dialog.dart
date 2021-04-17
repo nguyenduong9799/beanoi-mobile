@@ -63,7 +63,7 @@ Future<void> showStatusDialog(
                 child: Padding(
                   padding: EdgeInsets.only(top: 16, bottom: 16),
                   child: Text(
-                    "OK",
+                    "Đồng ý",
                     style: kTextPrimary,
                   ),
                 ),
@@ -79,7 +79,7 @@ Future<void> showStatusDialog(
 void showLoadingDialog() {
   hideDialog();
   Get.defaultDialog(
-      barrierDismissible: false,
+      barrierDismissible: true,
       title: "Chờ mình xý nha...",
       content: WillPopScope(
         onWillPop: () {},
@@ -163,7 +163,7 @@ Future<bool> showErrorDialog() async {
           ],
         ),
       ),
-      barrierDismissible: false);
+      barrierDismissible: true);
   return result;
 }
 
@@ -285,7 +285,7 @@ Future<int> showOptionDialog(String text,
         ),
       ),
     ),
-    barrierDismissible: false,
+    barrierDismissible: true,
   );
   return option;
 }
@@ -398,7 +398,7 @@ Future<void> changeCampusDialog(RootViewModel model, Function function) async {
           }),
         ),
       ),
-      barrierDismissible: false);
+      barrierDismissible: true);
 }
 
 Future<void> changeLocationDialog(
@@ -495,7 +495,7 @@ Future<void> changeLocationDialog(
               },
             ),
           )),
-      barrierDismissible: false);
+      barrierDismissible: true);
 }
 
 Future<void> showTimeDialog(RootViewModel model) async {
@@ -631,7 +631,7 @@ Future<void> showTimeDialog(RootViewModel model) async {
                           onPressed: () {
                             model.confirmTimeSlot();
                           },
-                          child: Text("OK")),
+                          child: Text("Đồng ý")),
                     )
                   ],
                 ),
@@ -640,11 +640,11 @@ Future<void> showTimeDialog(RootViewModel model) async {
           );
         }),
       ),
-      barrierDismissible: false);
+      barrierDismissible: true);
 }
 
 Future<String> inputDialog(String title, String buttonTitle,
-    {String value}) async {
+    {String value, int maxLines = 6}) async {
   hideDialog();
   TextEditingController controller = TextEditingController(text: value);
   await Get.dialog(
@@ -660,6 +660,7 @@ Future<String> inputDialog(String title, String buttonTitle,
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Flexible(
                     child: Text(
@@ -709,7 +710,7 @@ Future<String> inputDialog(String title, String buttonTitle,
                         )),
                     style: TextStyle(color: Colors.grey),
                     keyboardType: TextInputType.multiline,
-                    maxLines: 6,
+                    maxLines: maxLines,
                     autofocus: true,
                     onFieldSubmitted: (value) {
                       controller.text = value;
@@ -745,7 +746,7 @@ Future<String> inputDialog(String title, String buttonTitle,
         ),
       ),
     ),
-    barrierDismissible: false,
+    barrierDismissible: true,
   );
   return controller.text;
 }

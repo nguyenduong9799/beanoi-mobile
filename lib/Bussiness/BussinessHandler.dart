@@ -1,11 +1,11 @@
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 
 class BussinessHandler {
-  static const double BEAN_RATE = 1000; // 1k VND = 1 bean
+  static const double BEAN_RATE = 0.5; // 1k VND = 1 bean
   static const int PRICE_QUANTITY = 10;
 
   static int beanReward(double total) {
-    return (total / BEAN_RATE).round();
+    return (total * BEAN_RATE).round();
   }
 
   static double countPrice(List<double> prices, int quantity,
