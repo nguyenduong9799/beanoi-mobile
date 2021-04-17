@@ -124,7 +124,6 @@ class RootViewModel extends BaseModel {
         GiftViewModel.getInstance().getGifts();
       }
     }
-
   }
 
   Future<void> fetchStore() async {
@@ -164,7 +163,7 @@ class RootViewModel extends BaseModel {
                 "Các sản phẩm trong giỏ hàng đã bị xóa, còn nhiều món ngon đang chờ bạn nhé");
             await deleteCart();
           }
-        }else{
+        } else {
           final currentDate = DateTime.now();
           String currentTimeSlot = currentStore.selectedTimeSlot.to;
           var beanTime = new DateTime(
@@ -175,8 +174,9 @@ class RootViewModel extends BaseModel {
             double.parse(currentTimeSlot.split(':')[1]).round(),
           );
           int differentTime = beanTime.difference(currentDate).inMilliseconds;
-          if(differentTime <= 0){
-            DateTime arrive = DateFormat("HH:mm:ss").parse(currentStore.selectedTimeSlot.arrive);
+          if (differentTime <= 0) {
+            DateTime arrive = DateFormat("HH:mm:ss")
+                .parse(currentStore.selectedTimeSlot.arrive);
             await showStatusDialog(
               "assets/images/global_error.png",
               "Khung giờ đã kết thúc",

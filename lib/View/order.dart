@@ -111,9 +111,7 @@ class _OrderScreenState extends State<OrderScreen> {
                               child: Container(
                                 color: kBackgroundGrey[2],
                               )),
-                          Container(
-                              child: layoutOrder(
-                                  model.currentCart)),
+                          Container(child: layoutOrder(model.currentCart)),
                           SizedBox(
                               height: 8,
                               child: Container(
@@ -336,7 +334,7 @@ class _OrderScreenState extends State<OrderScreen> {
     if (item.master.type == ProductType.MASTER_PRODUCT) {
       price = item.products[0].price * item.quantity;
       startProduct = 1;
-    }else{
+    } else {
       price = item.master.price * item.quantity;
       startProduct = 0;
     }
@@ -412,11 +410,13 @@ class _OrderScreenState extends State<OrderScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    item.master.type !=  ProductType.MASTER_PRODUCT ? Text(item.master.name,
-                        style: TextStyle(
-                            fontSize: 14, fontWeight: FontWeight.bold)) : Text(item.products[0].name,
-                        style: TextStyle(
-                            fontSize: 14, fontWeight: FontWeight.bold)),
+                    item.master.type != ProductType.MASTER_PRODUCT
+                        ? Text(item.master.name,
+                            style: TextStyle(
+                                fontSize: 14, fontWeight: FontWeight.bold))
+                        : Text(item.products[0].name,
+                            style: TextStyle(
+                                fontSize: 14, fontWeight: FontWeight.bold)),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -430,8 +430,9 @@ class _OrderScreenState extends State<OrderScreen> {
                               ),
                               RichText(
                                 text: TextSpan(
-                                    text:
-                                        isGift ? "${price} " : formatPrice(price),
+                                    text: isGift
+                                        ? "${price} "
+                                        : formatPrice(price),
                                     style: TextStyle(color: Colors.black),
                                     children: [
                                       WidgetSpan(
@@ -543,7 +544,8 @@ class _OrderScreenState extends State<OrderScreen> {
                 fontWeight: FontWeight.bold, fontSize: 15, color: kPrimary),
             children: [
               TextSpan(
-                  text: "${DateFormat("HH:mm").format(arrive)} - ${DateFormat("HH:mm").format(arrive.add(Duration(minutes: 30)))}",
+                  text:
+                      "${DateFormat("HH:mm").format(arrive)} - ${DateFormat("HH:mm").format(arrive.add(Duration(minutes: 30)))}",
                   style: TextStyle(fontSize: 14, color: Colors.black))
             ]),
       ),
@@ -784,10 +786,15 @@ class _OrderScreenState extends State<OrderScreen> {
               ),
             );
           case ViewStatus.Completed:
-            LocationDTO location = model.campusDTO.locations.firstWhere((element) => element.isSelected, orElse: () => null,);
+            LocationDTO location = model.campusDTO.locations.firstWhere(
+              (element) => element.isSelected,
+              orElse: () => null,
+            );
             String errorMsg = null;
-            var isMenuAvailable =
-                RootViewModel.getInstance().currentStore.selectedTimeSlot.available;
+            var isMenuAvailable = RootViewModel.getInstance()
+                .currentStore
+                .selectedTimeSlot
+                .available;
             if (location == null) {
               errorMsg = "Vui lòng chọn địa điểm giao";
             } else if (model.currentCart?.payment == null) {
@@ -836,7 +843,8 @@ class _OrderScreenState extends State<OrderScreen> {
                         SizedBox(height: 8),
                         FlatButton(
                           onPressed: () async {
-                            if (model.currentCart.payment != null && location != null &&
+                            if (model.currentCart.payment != null &&
+                                location != null &&
                                 model.status != ViewStatus.Loading &&
                                 isMenuAvailable) {
                               await model.orderCart();

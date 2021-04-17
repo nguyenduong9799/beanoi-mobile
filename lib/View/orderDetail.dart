@@ -262,7 +262,9 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                     itemBuilder: (context, index) {
                       return buildOrderItem(items[index]);
                     },
-                    separatorBuilder: (context, index) => Container(margin: EdgeInsets.only(top: 8, bottom: 8),child: MySeparator()),
+                    separatorBuilder: (context, index) => Container(
+                        margin: EdgeInsets.only(top: 8, bottom: 8),
+                        child: MySeparator()),
                     itemCount: items.length),
               ),
               SizedBox(
@@ -322,13 +324,15 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        item.type != ProductType.MASTER_PRODUCT ? Text(
-                          item.masterProductName,
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                            fontSize: 14,
-                          ),
-                        ) : SizedBox.shrink(),
+                        item.type != ProductType.MASTER_PRODUCT
+                            ? Text(
+                                item.masterProductName,
+                                textAlign: TextAlign.start,
+                                style: TextStyle(
+                                  fontSize: 14,
+                                ),
+                              )
+                            : SizedBox.shrink(),
                         ...orderChilds
                             .map(
                               (child) => Text(

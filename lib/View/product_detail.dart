@@ -212,7 +212,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                   child: Text.rich(
                       TextSpan(text: affectPriceTabs[index], children: [
                     TextSpan(
-                        text: affectPriceTabs[index] != extraTab ? " *" : "", style: TextStyle(color: Colors.red))
+                        text: affectPriceTabs[index] != extraTab ? " *" : "",
+                        style: TextStyle(color: Colors.red))
                   ])),
                 ),
                 onPositionChange: (index) {

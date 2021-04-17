@@ -190,8 +190,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     Text(
                       "Aaa, hiện tại các nhà hàng đang bận, bạn vui lòng quay lại sau nhé",
                       textAlign: TextAlign.center,
-                      style:
-                          kSubtitleTextSyule.copyWith(color: Colors.orange),
+                      style: kSubtitleTextSyule.copyWith(color: Colors.orange),
                     ),
                   ],
                 ),
