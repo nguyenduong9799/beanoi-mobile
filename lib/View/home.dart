@@ -5,16 +5,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:unidelivery_mobile/Model/DTO/SupplierDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
-import 'package:unidelivery_mobile/acessories/appbar.dart';
-import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/acessories/fixed_app_bar.dart';
-import 'package:unidelivery_mobile/acessories/loading.dart';
 import 'package:unidelivery_mobile/acessories/shimmer_block.dart';
 import 'package:unidelivery_mobile/constraints.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
@@ -68,7 +64,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         // height: Get.height * 0.8 - 16,
                         color: kBackgroundGrey[2],
                         child: ListView(
-                          shrinkWrap: true,
                           children: [
                             SizedBox(height: 8),
                             banner(),
@@ -137,7 +132,7 @@ class _HomeScreenState extends State<HomeScreen> {
             RootViewModel.getInstance().isCurrentMenuAvailable;
         switch (status) {
           case ViewStatus.Error:
-            return ListView(
+            return Column(
               children: [
                 Center(
                   child: Text(
@@ -179,28 +174,26 @@ class _HomeScreenState extends State<HomeScreen> {
                         .length ==
                     0) {
               return Container(
-                padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
                 color: Colors.white,
-                child: Center(
-                  child: Column(
-                    children: [
-                      Container(
-                        child: AspectRatio(
-                          aspectRatio: 1.5,
-                          child: Image.asset(
-                            'assets/images/empty-product.png',
-                            fit: BoxFit.contain,
-                          ),
+                padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
+                child: Column(
+                  children: [
+                    Container(
+                      child: AspectRatio(
+                        aspectRatio: 1.5,
+                        child: Image.asset(
+                          'assets/images/empty-product.png',
+                          fit: BoxFit.contain,
                         ),
                       ),
-                      Text(
-                        "Aaa, hiện tại các nhà hàng đang bận, bạn vui lòng quay lại sau nhé",
-                        textAlign: TextAlign.center,
-                        style:
-                            kSubtitleTextSyule.copyWith(color: Colors.orange),
-                      ),
-                    ],
-                  ),
+                    ),
+                    Text(
+                      "Aaa, hiện tại các nhà hàng đang bận, bạn vui lòng quay lại sau nhé",
+                      textAlign: TextAlign.center,
+                      style:
+                          kSubtitleTextSyule.copyWith(color: Colors.orange),
+                    ),
+                  ],
                 ),
               );
             }

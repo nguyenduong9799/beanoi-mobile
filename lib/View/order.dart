@@ -113,7 +113,7 @@ class _OrderScreenState extends State<OrderScreen> {
                               )),
                           Container(
                               child: layoutOrder(
-                                  model.currentCart, model.campusDTO.name)),
+                                  model.currentCart)),
                           SizedBox(
                               height: 8,
                               child: Container(
@@ -198,7 +198,7 @@ class _OrderScreenState extends State<OrderScreen> {
     );
   }
 
-  Widget layoutOrder(Cart cart, String store) {
+  Widget layoutOrder(Cart cart) {
     Map<int, List<CartItem>> map =
         groupBy(cart.items, (CartItem item) => item.master.supplierId);
     return Column(
@@ -332,16 +332,21 @@ class _OrderScreenState extends State<OrderScreen> {
   Widget productCard(CartItem item) {
     List<Widget> list = new List();
     double price = 0;
-    if (item.master.type != ProductType.MASTER_PRODUCT) {
+    int startProduct = 0;
+    if (item.master.type == ProductType.MASTER_PRODUCT) {
+      price = item.products[0].price * item.quantity;
+      startProduct = 1;
+    }else{
       price = item.master.price * item.quantity;
+      startProduct = 0;
     }
-    for (int i = 0; i < item.products.length; i++) {
+    for (int i = startProduct; i < item.products.length; i++) {
       list.add(SizedBox(
         height: 4,
       ));
       list.add(Text(
-          item.products[i].name.contains("Extra")
-              ? item.products[i].name.replaceAll("Extra", "+")
+          item.products[i].type == ProductType.EXTRA_PRODUCT
+              ? "+ " + item.products[i].name
               : item.products[i].name,
           style: TextStyle(fontSize: 13, color: kBackgroundGrey[5])));
       price += item.products[i].price * item.quantity;
@@ -407,39 +412,43 @@ class _OrderScreenState extends State<OrderScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(item.master.name,
+                    item.master.type !=  ProductType.MASTER_PRODUCT ? Text(item.master.name,
+                        style: TextStyle(
+                            fontSize: 14, fontWeight: FontWeight.bold)) : Text(item.products[0].name,
                         style: TextStyle(
                             fontSize: 14, fontWeight: FontWeight.bold)),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            ...list,
-                            SizedBox(
-                              height: 4,
-                            ),
-                            RichText(
-                              text: TextSpan(
-                                  text:
-                                      isGift ? "${price} " : formatPrice(price),
-                                  style: TextStyle(color: Colors.black),
-                                  children: [
-                                    WidgetSpan(
-                                      alignment: PlaceholderAlignment.bottom,
-                                      child: isGift
-                                          ? Image(
-                                              image: AssetImage(
-                                                  "assets/images/icons/bean_coin.png"),
-                                              width: 20,
-                                              height: 20,
-                                            )
-                                          : Container(),
-                                    )
-                                  ]),
-                            )
-                          ],
+                        Flexible(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ...list,
+                              SizedBox(
+                                height: 8,
+                              ),
+                              RichText(
+                                text: TextSpan(
+                                    text:
+                                        isGift ? "${price} " : formatPrice(price),
+                                    style: TextStyle(color: Colors.black),
+                                    children: [
+                                      WidgetSpan(
+                                        alignment: PlaceholderAlignment.bottom,
+                                        child: isGift
+                                            ? Image(
+                                                image: AssetImage(
+                                                    "assets/images/icons/bean_coin.png"),
+                                                width: 20,
+                                                height: 20,
+                                              )
+                                            : Container(),
+                                      )
+                                    ]),
+                              ),
+                            ],
+                          ),
                         ),
                         selectQuantity(item)
                       ],
@@ -464,79 +473,77 @@ class _OrderScreenState extends State<OrderScreen> {
   }
 
   Widget layoutAddress(CampusDTO store) {
-    return ScopedModel(
-      model: RootViewModel.getInstance(),
-      child: ScopedModelDescendant<RootViewModel>(
-        builder: (context, child, model) {
-          return Column(
-            children: [
-              Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    child: RichText(
-                      text: TextSpan(
-                          text: "Nhận đơn tại:",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15,
-                              color: kPrimary),
-                          children: []),
-                    ),
-                  ),
-                  SizedBox(width: 8),
-                  Flexible(
-                    child: InkWell(
-                      onTap: () async {
-                        await model.changeLocationOfStore();
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(8, 8, 4, 8),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Flexible(
-                              child: Text(
-                                model.selectedLocation != null
-                                    ? model.selectedLocation.address
-                                    : "Chọn địa điểm giao hàng",
-                                style: kTextSecondary.copyWith(
-                                  color: Colors.grey,
-                                ),
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 1,
-                              ),
-                            ),
-                            Icon(
-                              Icons.navigate_next,
-                              color: Colors.orange,
-                              size: 24,
-                            )
-                          ],
+    LocationDTO location = store.locations.firstWhere(
+      (element) => element.isSelected,
+      orElse: () => null,
+    );
+    return Column(
+      children: [
+        Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              child: RichText(
+                text: TextSpan(
+                    text: "Nhận đơn tại:",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                        color: kPrimary),
+                    children: []),
+              ),
+            ),
+            SizedBox(width: 8),
+            Flexible(
+              child: InkWell(
+                onTap: () async {
+                  await orderViewModel.changeLocationOfStore();
+                },
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 8, 4, 8),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          location != null
+                              ? location.address
+                              : "Chọn địa điểm giao hàng",
+                          style: kTextSecondary.copyWith(
+                            color: Colors.grey,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
                         ),
                       ),
-                    ),
-                  )
-                ],
+                      Icon(
+                        Icons.navigate_next,
+                        color: Colors.orange,
+                        size: 24,
+                      )
+                    ],
+                  ),
+                ),
               ),
-            ],
-          );
-        },
-      ),
+            )
+          ],
+        ),
+      ],
     );
   }
 
   Widget timeRecieve(CampusDTO dto) {
+    DateTime arrive = DateFormat("HH:mm:ss").parse(dto.selectedTimeSlot.arrive);
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: RichText(
         text: TextSpan(
-            text: "🔔 Nhận hàng lúc: ",
+            text: "Nhận hàng lúc: ",
             style: TextStyle(
                 fontWeight: FontWeight.bold, fontSize: 15, color: kPrimary),
             children: [
               TextSpan(
-                  text: "${dto.selectedTimeSlot.arrive.substring(0, 5)}",
+                  text: "${DateFormat("HH:mm").format(arrive)} - ${DateFormat("HH:mm").format(arrive.add(Duration(minutes: 30)))}",
                   style: TextStyle(fontSize: 14, color: Colors.black))
             ]),
       ),
@@ -672,15 +679,6 @@ class _OrderScreenState extends State<OrderScreen> {
     return ScopedModelDescendant<OrderViewModel>(
       builder: (context, child, model) {
         ViewStatus status = model.status;
-        String errorMsg = null;
-        var isMenuAvailable =
-            RootViewModel.getInstance().currentStore.selectedTimeSlot.available;
-        if (model.location == null) {
-          errorMsg = "Vui lòng chọn địa điểm giao";
-        } else if (model.currentCart?.payment == null) {
-          errorMsg = "Vui lòng chọn phương thức thanh toán 💰";
-        }
-
         switch (status) {
           case ViewStatus.Loading:
             return Container(
@@ -786,6 +784,15 @@ class _OrderScreenState extends State<OrderScreen> {
               ),
             );
           case ViewStatus.Completed:
+            LocationDTO location = model.campusDTO.locations.firstWhere((element) => element.isSelected, orElse: () => null,);
+            String errorMsg = null;
+            var isMenuAvailable =
+                RootViewModel.getInstance().currentStore.selectedTimeSlot.available;
+            if (location == null) {
+              errorMsg = "Vui lòng chọn địa điểm giao";
+            } else if (model.currentCart?.payment == null) {
+              errorMsg = "Vui lòng chọn phương thức thanh toán 💰";
+            }
             return Container(
               padding: const EdgeInsets.only(left: 8, right: 8),
               decoration: BoxDecoration(
@@ -798,8 +805,7 @@ class _OrderScreenState extends State<OrderScreen> {
                   ),
                 ],
               ),
-              child: model.currentCart?.payment != null &&
-                      model.location != null
+              child: model.currentCart?.payment != null && location != null
                   ? ListView(
                       shrinkWrap: true,
                       children: [
@@ -830,8 +836,7 @@ class _OrderScreenState extends State<OrderScreen> {
                         SizedBox(height: 8),
                         FlatButton(
                           onPressed: () async {
-                            if (model.currentCart.payment != null &&
-                                model.location != null &&
+                            if (model.currentCart.payment != null && location != null &&
                                 model.status != ViewStatus.Loading &&
                                 isMenuAvailable) {
                               await model.orderCart();

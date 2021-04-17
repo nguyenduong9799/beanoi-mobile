@@ -262,7 +262,7 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                     itemBuilder: (context, index) {
                       return buildOrderItem(items[index]);
                     },
-                    separatorBuilder: (context, index) => MySeparator(),
+                    separatorBuilder: (context, index) => Container(margin: EdgeInsets.only(top: 8, bottom: 8),child: MySeparator()),
                     itemCount: items.length),
               ),
               SizedBox(
@@ -322,23 +322,20 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          item.masterProductName.contains("Extra")
-                              ? item.masterProductName.replaceAll("Extra", "+")
-                              : item.masterProductName,
+                        item.type != ProductType.MASTER_PRODUCT ? Text(
+                          item.masterProductName,
                           textAlign: TextAlign.start,
                           style: TextStyle(
                             fontSize: 14,
                           ),
-                        ),
+                        ) : SizedBox.shrink(),
                         ...orderChilds
                             .map(
                               (child) => Text(
-                                child.masterProductName.contains("Extra")
-                                    ? child.masterProductName
-                                        .replaceAll("Extra", "+")
+                                child.type == ProductType.EXTRA_PRODUCT
+                                    ? "+ " + child.masterProductName
                                     : child.masterProductName,
-                                style: TextStyle(fontSize: 12),
+                                style: TextStyle(fontSize: 14),
                               ),
                             )
                             .toList(),

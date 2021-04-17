@@ -90,32 +90,36 @@ class _GiftScreenState extends State<GiftScreen> {
                               default:
                                 if (model.gifts == null ||
                                     model.gifts.isEmpty) {
-                                  return Container(
-                                    padding: EdgeInsets.fromLTRB(16, 24, 16, 8),
-                                    color: Colors.white,
-                                    child: Center(
-                                      child: Column(
-                                        children: [
-                                          Container(
-                                            child: AspectRatio(
-                                              aspectRatio: 1.5,
-                                              child: Image.asset(
-                                                'assets/images/empty-product.png',
-                                                fit: BoxFit.contain,
+                                  return ListView(
+                                    children: [
+                                      Container(
+                                        padding: EdgeInsets.fromLTRB(16, 24, 16, 8),
+                                        color: Colors.white,
+                                        child: Center(
+                                          child: Column(
+                                            children: [
+                                              Container(
+                                                child: AspectRatio(
+                                                  aspectRatio: 1.5,
+                                                  child: Image.asset(
+                                                    'assets/images/empty-product.png',
+                                                    fit: BoxFit.contain,
+                                                  ),
+                                                ),
                                               ),
-                                            ),
+                                              Text(
+                                                "Hiện các món quà đã Sold out hết rồi. Nhanh tay đổi quà vào hôm sau nhé 😁",
+                                                textAlign: TextAlign.center,
+                                                style: kSubtitleTextSyule.copyWith(
+                                                  color: Colors.orange,
+                                                  fontSize: 16,
+                                                ),
+                                              ),
+                                            ],
                                           ),
-                                          Text(
-                                            "Hiện các món quà đã Sold out hết rồi. Nhanh tay đổi quà vào hôm sau nhé 😁",
-                                            textAlign: TextAlign.center,
-                                            style: kSubtitleTextSyule.copyWith(
-                                              color: Colors.orange,
-                                              fontSize: 16,
-                                            ),
-                                          ),
-                                        ],
+                                        ),
                                       ),
-                                    ),
+                                    ],
                                   );
                                 }
                                 return ListView.builder(

@@ -241,18 +241,7 @@ class _FixedAppBarState extends State<FixedAppBar> {
       child: ScopedModelDescendant<RootViewModel>(
         builder: (context, child, model) {
           if (model.currentStore != null) {
-            final currentDate = DateTime.now();
             final status = model.status;
-            TimeSlot seleectedTimeSlot = model.currentStore.selectedTimeSlot;
-            String currentTimeSlot = seleectedTimeSlot.to;
-            var beanTime = new DateTime(
-              currentDate.year,
-              currentDate.month,
-              currentDate.day,
-              int.parse(currentTimeSlot.split(':')[0]),
-              int.parse(currentTimeSlot.split(':')[1]),
-            );
-            int diffentTime = beanTime.difference(currentDate).inMilliseconds;
 
             if (status == ViewStatus.Loading) {
               return Column(
@@ -344,15 +333,8 @@ class _FixedAppBarState extends State<FixedAppBar> {
                           child: InkWell(
                             onTap: () async {
                               if (model.currentStore.selectedTimeSlot != null) {
-                                if (model.selectTimeSlot(model
-                                    .currentStore.timeSlots[index].menuId)) {
-                                  model.confirmTimeSlot();
-                                } else {
-                                  showStatusDialog(
-                                      "assets/images/global_error.png",
-                                      "Khung giờ đã qua rồi",
-                                      "Hiện tại khung giờ này đã đóng vào lúc ${seleectedTimeSlot.to}, bạn hãy xem khung giờ khác nhé 😃.");
-                                }
+                                model.confirmTimeSlot(
+                                    model.currentStore.timeSlots[index]);
                               }
                             },
                             child: Center(
@@ -405,12 +387,16 @@ class _FixedAppBarState extends State<FixedAppBar> {
       model: RootViewModel.getInstance(),
       child: ScopedModelDescendant<RootViewModel>(
         builder: (context, child, root) {
+          LocationDTO location = root.currentStore?.locations?.firstWhere(
+            (element) => element.isSelected,
+            orElse: () => null,
+          );
           String text = "Đợi tý đang load...";
           final status = root.status;
           if (root.changeAddress) {
             text = "Đang thay đổi...";
-          } else if (root.selectedLocation != null) {
-            text = root.selectedLocation.address;
+          } else if (location != null) {
+            text = location.address;
           } else {
             text = "Chưa chọn";
           }
@@ -492,24 +478,25 @@ class _FixedAppBarState extends State<FixedAppBar> {
               ),
             );
           }
-          TimeSlot seleectedTimeSlot = model.currentStore?.selectedTimeSlot;
-          if (seleectedTimeSlot == null) {
+          TimeSlot selectedTimeSlot = model.currentStore?.selectedTimeSlot;
+          if (selectedTimeSlot == null) {
             return SizedBox();
           }
-          String currentTimeSlot = seleectedTimeSlot?.to;
+          String currentTimeSlot = selectedTimeSlot?.to;
           var beanTime = new DateTime(
             currentDate.year,
             currentDate.month,
             currentDate.day,
-            int.parse(currentTimeSlot.split(':')[0]),
-            int.parse(currentTimeSlot.split(':')[1]),
+            double.parse(currentTimeSlot.split(':')[0]).round(),
+            double.parse(currentTimeSlot.split(':')[1]).round(),
           );
-          int diffentTime = beanTime.difference(currentDate).inMilliseconds;
-
-          bool isAvailableMenu = seleectedTimeSlot.available;
-
+          int differentTime = beanTime.difference(currentDate).inMilliseconds;
+          bool isAvailableMenu = selectedTimeSlot.available;
           TimeSlot nextTimeSlot = model.currentStore.timeSlots
-              .firstWhere((time) => time.available, orElse: () => null);
+              ?.firstWhere((time) => time.available, orElse: () => null);
+
+          DateTime arrive =
+              DateFormat("HH:mm:ss").parse(selectedTimeSlot.arrive);
 
           return AnimatedContainer(
             duration: Duration(milliseconds: 300),
@@ -544,9 +531,8 @@ class _FixedAppBarState extends State<FixedAppBar> {
                             textAlign: TextAlign.center,
                           ),
                           BeanTimeCountdown(
-                            differentTime: diffentTime,
-                            arriveTime:
-                                model.currentStore.selectedTimeSlot.arrive,
+                            differentTime: differentTime,
+                            arriveTime: arrive,
                           ),
                         ])
                   : Row(
@@ -574,15 +560,7 @@ class _FixedAppBarState extends State<FixedAppBar> {
                                 onTap: () {
                                   if (model.currentStore.selectedTimeSlot !=
                                       null) {
-                                    if (model
-                                        .selectTimeSlot(nextTimeSlot.menuId)) {
-                                      model.confirmTimeSlot();
-                                    } else {
-                                      showStatusDialog(
-                                          "assets/images/global_error.png",
-                                          "Khung giờ đã qua rồi",
-                                          "Hiện tại khung giờ này đã đóng, bạn hãy xem khung giờ khác nhé 😃.");
-                                    }
+                                    model.confirmTimeSlot(nextTimeSlot);
                                   }
                                 },
                                 child: Text(
@@ -616,7 +594,7 @@ class BeanTimeCountdown extends StatefulWidget {
   }) : super(key: key);
 
   final int differentTime;
-  final String arriveTime;
+  final DateTime arriveTime;
 
   @override
   _BeanTimeCountdownState createState() => _BeanTimeCountdownState();
@@ -626,25 +604,26 @@ class _BeanTimeCountdownState extends State<BeanTimeCountdown> {
   @override
   Widget build(BuildContext context) {
     print("differentTime " + widget.differentTime.toString());
-    if (widget.differentTime <= 0) {
-      return Text(
-        'Hết giờ',
-        style: TextStyle(color: Colors.red, fontSize: 12),
-      );
-    }
+
     return ScopedModel<RootViewModel>(
       model: RootViewModel.getInstance(),
       child: ScopedModelDescendant<RootViewModel>(
           rebuildOnChange: false,
           builder: (context, child, model) {
+            if (widget.differentTime <= 0) {
+              return Text(
+                "Hết giờ",
+                style: TextStyle(color: Colors.red, fontSize: 12),
+              );
+            }
             return CountdownTimer(
               endTime:
                   DateTime.now().millisecondsSinceEpoch + widget.differentTime,
               onEnd: () async {
-                showStatusDialog(
+                await showStatusDialog(
                   "assets/images/global_error.png",
                   "Khung giờ đã kết thúc",
-                  "Đã hết giờ chốt đơn cho khung giờ ${widget.arriveTime}. \n Hẹn gặp bạn ở khung giờ khác nhé 😢.",
+                  "Đã hết giờ chốt đơn cho khung giờ ${DateFormat("HH:mm").format(widget.arriveTime)} - ${DateFormat("HH:mm").format(widget.arriveTime.add(Duration(minutes: 30)))}. \n Hẹn gặp bạn ở khung giờ khác nhé 😢.",
                 );
                 // remove cart
                 await model.clearCart();

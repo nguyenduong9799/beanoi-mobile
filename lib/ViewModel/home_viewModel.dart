@@ -48,16 +48,12 @@ class HomeViewModel extends BaseModel {
       if (blogs == null) {
         blogs = await _storeDAO.getBlogs(currentStore.id);
       }
-
-      // int total_page = (_storeDAO.metaDataDTO.total / DEFAULT_SIZE).ceil();
-      // if (total_page > _storeDAO.metaDataDTO.page){
-      //   isLoadmore = true;
-      // }else isLoadmore = false;
       await Future.delayed(Duration(microseconds: 500));
       // check truong hop product tra ve rong (do khong co menu nao trong TG do)
       setState(ViewStatus.Completed);
     } catch (e, stacktrace) {
-      setState(ViewStatus.Error);
+      suppliers = null;
+      setState(ViewStatus.Completed);
     }
   }
 

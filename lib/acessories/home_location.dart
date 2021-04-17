@@ -6,11 +6,11 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Model/DTO/CampusDTO.dart';
 import 'package:unidelivery_mobile/ViewModel/root_viewModel.dart';
 import 'package:unidelivery_mobile/constraints.dart';
+import 'package:unidelivery_mobile/enums/view_status.dart';
 
 class HomeLocationSelect extends StatefulWidget {
-  final Function cb;
   final CampusDTO selectedCampus;
-  HomeLocationSelect({Key key, this.cb, this.selectedCampus}) : super(key: key);
+  HomeLocationSelect({Key key, this.selectedCampus}) : super(key: key);
 
   @override
   _HomeLocationSelectState createState() => _HomeLocationSelectState();
@@ -20,6 +20,7 @@ class _HomeLocationSelectState extends State<HomeLocationSelect> {
   @override
   void initState() {
     super.initState();
+    RootViewModel.getInstance().getStores();
   }
 
   @override
@@ -28,46 +29,82 @@ class _HomeLocationSelectState extends State<HomeLocationSelect> {
       model: RootViewModel.getInstance(),
       child: ScopedModelDescendant<RootViewModel>(
         builder: (context, child, model) {
-          return Container(
-            height: Get.height * 0.55,
-            decoration: BoxDecoration(
-              color: kBackgroundGrey[3],
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(8),
-                topRight: Radius.circular(8),
-              ),
-            ),
-            padding: EdgeInsets.only(top: 8),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    "Chọn nơi nhận",
-                    style: kHeadingextStyle.copyWith(fontSize: 24),
+          switch (model.status) {
+            case ViewStatus.Loading:
+              return Container(
+                height: Get.height * 0.55,
+                decoration: BoxDecoration(
+                  color: kBackgroundGrey[3],
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(8),
+                    topRight: Radius.circular(8),
                   ),
                 ),
-                Expanded(
-                  child: Container(
-                    color: Colors.white,
-                    child: ExpandableNotifier(
-                      child: ListView(
-                        children: widget.selectedCampus != null
-                            ? [_buildPanel(widget.selectedCampus)]
-                            : model.campuses
-                                .asMap()
-                                .map((index, campus) => MapEntry(
-                                    campus, _buildPanel(campus, index)))
-                                .values
-                                .toList(),
+                padding: EdgeInsets.only(top: 8),
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            case ViewStatus.Error:
+              return Container(
+                height: Get.height * 0.55,
+                decoration: BoxDecoration(
+                  color: kBackgroundGrey[3],
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(8),
+                    topRight: Radius.circular(8),
+                  ),
+                ),
+                padding: EdgeInsets.only(top: 8),
+                child: Center(
+                  child: Image.asset(
+                    'assets/images/global_error.png',
+                    fit: BoxFit.contain,
+                  ),
+                ),
+              );
+            default:
+              return Container(
+                height: Get.height * 0.55,
+                decoration: BoxDecoration(
+                  color: kBackgroundGrey[3],
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(8),
+                    topRight: Radius.circular(8),
+                  ),
+                ),
+                padding: EdgeInsets.only(top: 8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        "Chọn nơi nhận",
+                        style: kHeadingextStyle.copyWith(fontSize: 24),
                       ),
                     ),
-                  ),
-                )
-              ],
-            ),
-          );
+                    Expanded(
+                      child: Container(
+                        color: Colors.white,
+                        child: ExpandableNotifier(
+                          child: ListView(
+                            children: widget.selectedCampus != null
+                                ? [_buildPanel(widget.selectedCampus)]
+                                : model.campuses
+                                    .asMap()
+                                    .map((index, campus) => MapEntry(
+                                        campus, _buildPanel(campus, index)))
+                                    .values
+                                    .toList(),
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              );
+          }
         },
       ),
     );
@@ -131,9 +168,6 @@ class _HomeLocationSelectState extends State<HomeLocationSelect> {
         child: InkWell(
           onTap: () {
             model.setLocation(location, campus);
-            if (widget.cb != null) {
-              widget.cb(location);
-            }
             Get.back();
           },
           child: Container(
