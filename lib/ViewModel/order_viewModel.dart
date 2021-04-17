@@ -16,13 +16,17 @@ import '../constraints.dart';
 class OrderViewModel extends BaseModel {
   OrderAmountDTO orderAmount;
   Map<String, dynamic> listPayments;
-  LocationDTO location, tmpLocation;
+  LocationDTO tmpLocation;
   CampusDTO campusDTO;
   OrderDAO dao;
   Cart currentCart;
 
   OrderViewModel() {
     dao = new OrderDAO();
+  }
+
+  LocationDTO get location {
+    return RootViewModel.getInstance().selectedLocation;
   }
 
   Future<void> prepareOrder() async {
@@ -35,13 +39,13 @@ class OrderViewModel extends BaseModel {
         campusDTO = await getStore();
       }
 
-      if (location == null) {
-        campusDTO.locations.forEach((element) {
-          if (element.isSelected) {
-            location = element;
-          }
-        });
-      }
+      // if (location == null) {
+      //   campusDTO.locations.forEach((element) {
+      //     if (element.isSelected) {
+      //       location = element;
+      //     }
+      //   });
+      // }
 
       if (currentCart == null) {
         currentCart = await getCart();
@@ -155,11 +159,11 @@ class OrderViewModel extends BaseModel {
     }
   }
 
-  Future<void> processChangeLocation() async {
-    tmpLocation = location;
-    notifyListeners();
-    await changeLocationDialog(this);
-  }
+  // Future<void> processChangeLocation() async {
+  //   tmpLocation = location;
+  //   notifyListeners();
+  //   await changeLocationDialog(this);
+  // }
 
   // void selectReceiveTime(String value){
   //   isChangeTime = true;
@@ -181,18 +185,18 @@ class OrderViewModel extends BaseModel {
     notifyListeners();
   }
 
-  Future<void> confirmLocation() async {
-    campusDTO.locations.forEach((element) {
-      if (element.id == tmpLocation.id) {
-        element.isSelected = true;
-      } else {
-        element.isSelected = false;
-      }
-    });
-    await setStore(campusDTO);
-    location = tmpLocation;
-    notifyListeners();
-  }
+  // Future<void> confirmLocation() async {
+  //   campusDTO.locations.forEach((element) {
+  //     if (element.id == tmpLocation.id) {
+  //       element.isSelected = true;
+  //     } else {
+  //       element.isSelected = false;
+  //     }
+  //   });
+  //   await setStore(campusDTO);
+  //   location = tmpLocation;
+  //   notifyListeners();
+  // }
 
   Future<void> addSupplierNote(int id) async {
     SupplierNoteDTO supplierNote = currentCart.notes?.firstWhere(

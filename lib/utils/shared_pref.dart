@@ -91,6 +91,7 @@ Future<void> updateItemFromCart(CartItem item) async {
 Future<void> setStore(CampusDTO dto) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   if (dto != null) {
+    print(dto.toJson().toString());
     prefs.setString('STORE', jsonEncode(dto?.toJson()));
   }
 }

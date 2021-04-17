@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
+import 'package:unidelivery_mobile/acessories/home_location.dart';
 import '../constraints.dart';
 
 Future<void> showStatusDialog(
@@ -302,200 +303,18 @@ void hideSnackbar() {
   }
 }
 
-Future<void> changeCampusDialog(RootViewModel model, Function function) async {
+Future<void> changeCampusDialog(RootViewModel model,
+    [Function function]) async {
   hideDialog();
-  await Get.dialog(
-      WillPopScope(
-        onWillPop: () {},
-        child: ScopedModel(
-          model: model,
-          child: ScopedModelDescendant<RootViewModel>(
-              builder: (context, child, model) {
-            return Dialog(
-              backgroundColor: Colors.white,
-              elevation: 8.0,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(16.0))),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Padding(
-                          padding: const EdgeInsets.fromLTRB(16, 8, 0, 8),
-                          child: Icon(
-                            Icons.location_on,
-                            color: Colors.red,
-                            size: 30,
-                          )),
-                      Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            "Chọn khu vực",
-                            style: TextStyle(color: kPrimary, fontSize: 16),
-                          )),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: IconButton(
-                          icon: Icon(
-                            AntDesign.closecircleo,
-                            color: Colors.red,
-                          ),
-                          onPressed: () {
-                            hideDialog();
-                            model.changeAddress = false;
-                            model.notifyListeners();
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 8,
-                  ),
-                  for (int i = 0; i < model.campuses.length; i++)
-                    RadioListTile(
-                      activeColor: kFail,
-                      groupValue: model.tmpStore.id,
-                      value: model.campuses[i].id,
-                      title: Text(
-                        "${model.campuses[i].name}",
-                        style: kTextSecondary.copyWith(
-                            fontSize: 14,
-                            color: model.campuses[i].available
-                                ? Colors.black
-                                : Colors.grey),
-                      ),
-                      onChanged: (value) {
-                        model.changeLocation(value);
-                      },
-                    ),
-                  SizedBox(
-                    height: 8,
-                  ),
-                  Container(
-                    width: double.infinity,
-                    child: FlatButton(
-                      color: kPrimary,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.only(
-                              bottomRight: Radius.circular(16),
-                              bottomLeft: Radius.circular(16))),
-                      onPressed: function,
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 16, bottom: 16),
-                        child: Text(
-                          "Xác nhận",
-                          style: kTextPrimary,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            );
-          }),
-        ),
-      ),
-      barrierDismissible: true);
-}
-
-Future<void> changeLocationDialog(
-  OrderViewModel model,
-) async {
-  await Get.dialog(
-      WillPopScope(
-          onWillPop: () {},
-          child: ScopedModel(
-            model: model,
-            child: ScopedModelDescendant<OrderViewModel>(
-              builder: (context, child, model) {
-                return Dialog(
-                  backgroundColor: Colors.white,
-                  elevation: 8.0,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(16.0))),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                "Chọn địa chỉ nhận hàng",
-                                style: TextStyle(color: kPrimary, fontSize: 16),
-                              )),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: IconButton(
-                              icon: Icon(
-                                AntDesign.closecircleo,
-                                color: Colors.red,
-                              ),
-                              onPressed: () {
-                                hideDialog();
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      for (int i = 0; i < model.campusDTO.locations.length; i++)
-                        RadioListTile(
-                          activeColor: kFail,
-                          groupValue: model.tmpLocation != null
-                              ? model.tmpLocation.id
-                              : null,
-                          value: model.campusDTO.locations[i].id,
-                          title: Text(
-                            "${model.campusDTO.locations[i].address}",
-                            style: kTextSecondary.copyWith(
-                              fontSize: 14,
-                            ),
-                          ),
-                          onChanged: (value) {
-                            model.selectLocation(value);
-                          },
-                        ),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      Container(
-                        width: double.infinity,
-                        child: model.tmpLocation != null
-                            ? FlatButton(
-                                color: kPrimary,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.only(
-                                        bottomRight: Radius.circular(16),
-                                        bottomLeft: Radius.circular(16))),
-                                onPressed: () async {
-                                  await model.confirmLocation();
-                                  hideDialog();
-                                },
-                                child: Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 16, bottom: 16),
-                                  child: Text(
-                                    "Xác nhận",
-                                    style: kTextPrimary,
-                                  ),
-                                ),
-                              )
-                            : SizedBox.shrink(),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
-          )),
-      barrierDismissible: true);
+  await Get.bottomSheet(
+    HomeLocationSelect(
+      cb: function,
+    ),
+    elevation: 8,
+  );
+  hideDialog();
+  model.changeAddress = false;
+  model.notifyListeners();
 }
 
 Future<void> showTimeDialog(RootViewModel model) async {

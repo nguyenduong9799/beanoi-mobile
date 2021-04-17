@@ -4,6 +4,7 @@ import 'package:unidelivery_mobile/Bussiness/BussinessHandler.dart';
 import 'package:unidelivery_mobile/Model/DAO/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/acessories/dialog.dart';
+import 'package:unidelivery_mobile/acessories/home_location.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
 import 'package:unidelivery_mobile/utils/shared_pref.dart';
 import '../constraints.dart';
@@ -18,6 +19,7 @@ class RootViewModel extends BaseModel {
   bool changeAddress = false;
 
   CampusDTO currentStore, tmpStore;
+  LocationDTO selectedLocation;
   TimeSlot tmpTimeSlot;
   List<CampusDTO> campuses;
 
@@ -32,7 +34,27 @@ class RootViewModel extends BaseModel {
     _instance = null;
   }
 
-  RootViewModel() {}
+  RootViewModel() {
+    getStores();
+  }
+
+  Future getStores() async {
+    setState(ViewStatus.Loading);
+    StoreDAO dao = new StoreDAO();
+    campuses = await dao.getStores();
+    setState(ViewStatus.Completed);
+  }
+
+  void setLocation(LocationDTO location, CampusDTO campus) {
+    if (campus.available) {
+      currentStore = campus;
+    } else {
+      showStatusDialog("assets/images/global_error.png", "Opps",
+          "Cửa hàng đang tạm đóng 😓");
+    }
+    selectedLocation = location;
+    notifyListeners();
+  }
 
   Future<void> processChangeLocation() async {
     try {
@@ -44,35 +66,34 @@ class RootViewModel extends BaseModel {
       notifyListeners();
       showLoadingDialog();
 
-      StoreDAO dao = new StoreDAO();
-      campuses = await dao.getStores();
       Cart cart = await getCart();
 
       hideDialog();
-      await changeCampusDialog(this, () async {
-        hideDialog();
-        if (tmpStore.id != this.currentStore.id) {
-          int option = 1;
+      await changeCampusDialog(this);
+      hideDialog();
+      if (tmpStore.id != this.currentStore.id) {
+        int option = 1;
 
-          if (cart != null) {
-            option = await showOptionDialog(
-                "Bạn có chắc không? Đổi địa chỉ rồi là giỏ hàng bị xóa đó!!");
-          }
-
-          if (option == 1) {
-            showLoadingDialog();
-            currentStore = BussinessHandler.setSelectedTime(tmpStore);
-            await deleteCart();
-            await setStore(currentStore);
-            HomeViewModel.getInstance().notifyListeners();
-            hideDialog();
-            HomeViewModel.getInstance().getSuppliers();
-            GiftViewModel.getInstance().getGifts();
-          }
+        if (cart != null) {
+          option = await showOptionDialog(
+              "Bạn có chắc không? Đổi địa chỉ rồi là giỏ hàng bị xóa đó!!");
         }
-        changeAddress = false;
-        notifyListeners();
-      });
+
+        if (option == 1) {
+          showLoadingDialog();
+          currentStore = BussinessHandler.setSelectedTime(tmpStore);
+          await deleteCart();
+
+          HomeViewModel.getInstance().notifyListeners();
+          hideDialog();
+          HomeViewModel.getInstance().getSuppliers();
+          GiftViewModel.getInstance().getGifts();
+        }
+        print(currentStore.toJson().toString());
+        await setStore(currentStore);
+      }
+      changeAddress = false;
+      notifyListeners();
     } catch (e) {
       hideDialog();
       bool result = await showErrorDialog();
@@ -85,7 +106,23 @@ class RootViewModel extends BaseModel {
     }
   }
 
-  void changeLocation(int id) {
+  Future<void> changeLocationOfStore() async {
+    setState(ViewStatus.Loading);
+    Get.bottomSheet(
+      HomeLocationSelect(
+        selectedCampus: currentStore,
+        cb: (LocationDTO location) {
+          if (location != null) {
+            selectedLocation = location;
+            notifyListeners();
+          }
+        },
+      ),
+    );
+    setState(ViewStatus.Completed);
+  }
+
+  void changeCampus(int id) {
     for (CampusDTO dto in campuses) {
       if (dto.id == id) {
         if (dto.available) {

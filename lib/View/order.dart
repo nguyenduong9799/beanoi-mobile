@@ -464,89 +464,65 @@ class _OrderScreenState extends State<OrderScreen> {
   }
 
   Widget layoutAddress(CampusDTO store) {
-    return ScopedModelDescendant<OrderViewModel>(
-      builder: (context, child, model) {
-        return Column(
-          children: [
-            Row(
-              children: [
-                Icon(Icons.location_on, color: Colors.orange),
-                SizedBox(
-                  width: 8,
-                ),
-                Flexible(
-                  child: Text(
-                    store.name,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 4,
-            ),
-            Container(
-              width: Get.width,
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color:
-                    model.location != null ? Colors.white : Colors.yellow[100],
-              ),
-              child: RichText(
-                text: TextSpan(
-                    text: "Nhận đơn tại ",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15,
-                        color: kPrimary),
-                    children: [
-                      TextSpan(
-                          text: "(*)",
+    return ScopedModel(
+      model: RootViewModel.getInstance(),
+      child: ScopedModelDescendant<RootViewModel>(
+        builder: (context, child, model) {
+          return Column(
+            children: [
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    child: RichText(
+                      text: TextSpan(
+                          text: "Nhận đơn tại:",
                           style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 15,
-                              color: Colors.red))
-                    ]),
-              ),
-            ),
-            SizedBox(
-              height: 0,
-            ),
-            InkWell(
-              onTap: () async {
-                await model.processChangeLocation();
-              },
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(8, 8, 4, 8),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Flexible(
-                      child: Text(
-                          model.location != null
-                              ? model.location.address
-                              : "Bạn vui lòng chọn địa điểm giao hàng",
-                          style: kTextSecondary.copyWith(
-                            color: Colors.grey,
-                          )),
+                              color: kPrimary),
+                          children: []),
                     ),
-                    Icon(
-                      Icons.navigate_next,
-                      color: Colors.orange,
-                      size: 24,
-                    )
-                  ],
-                ),
+                  ),
+                  SizedBox(width: 8),
+                  Flexible(
+                    child: InkWell(
+                      onTap: () async {
+                        await model.changeLocationOfStore();
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(8, 8, 4, 8),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Flexible(
+                              child: Text(
+                                model.selectedLocation != null
+                                    ? model.selectedLocation.address
+                                    : "Chọn địa điểm giao hàng",
+                                style: kTextSecondary.copyWith(
+                                  color: Colors.grey,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                              ),
+                            ),
+                            Icon(
+                              Icons.navigate_next,
+                              color: Colors.orange,
+                              size: 24,
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  )
+                ],
               ),
-            )
-          ],
-        );
-      },
+            ],
+          );
+        },
+      ),
     );
   }
 

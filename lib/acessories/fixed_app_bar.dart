@@ -104,7 +104,7 @@ class _FixedAppBarState extends State<FixedAppBar> {
                   ],
                 ),
               ),
-              SizedBox(width: 8),
+              SizedBox(width: 16),
               Container(
                 child: Material(
                   color: Colors.transparent,
@@ -299,8 +299,7 @@ class _FixedAppBarState extends State<FixedAppBar> {
                   children: [
                     Text.rich(
                       TextSpan(
-                        text:
-                            "${_getTimeFrame(int.parse(seleectedTimeSlot.from.split(':')[0]))} Giờ giao hàng ",
+                        text: "Giờ giao hàng ",
                         style: kDescriptionTextSyle.copyWith(
                           fontSize: 12,
                         ),
@@ -410,10 +409,10 @@ class _FixedAppBarState extends State<FixedAppBar> {
           final status = root.status;
           if (root.changeAddress) {
             text = "Đang thay đổi...";
+          } else if (root.selectedLocation != null) {
+            text = root.selectedLocation.address;
           } else {
-            if (root.currentStore != null) {
-              text = "${root.currentStore.name}";
-            }
+            text = "Chưa chọn";
           }
 
           if (status == ViewStatus.Error) {
@@ -438,17 +437,22 @@ class _FixedAppBarState extends State<FixedAppBar> {
             child: Row(
               children: [
                 Text(
-                  "🗺 Khu vực: ",
+                  "📌 Nơi nhận: ",
                   style: kDescriptionTextSyle.copyWith(
                     fontWeight: FontWeight.w200,
                     color: Colors.black87,
+                    fontSize: 12,
                   ),
                 ),
-                Text(
-                  text,
-                  style: kTitleTextStyle.copyWith(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
+                Flexible(
+                  child: Text(
+                    text,
+                    style: kTitleTextStyle.copyWith(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
                   ),
                 ),
                 Icon(
