@@ -281,9 +281,11 @@ class _SupplierScreenState extends State<SupplierScreen> {
                       Flexible(
                           child: Text(
                         product.name,
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            decorationThickness: 0.5),
+                        style: kTitleTextStyle.copyWith(
+                          fontWeight: FontWeight.bold,
+                          decorationThickness: 0.5,
+                          fontSize: 14,
+                        ),
                       )),
                       Flexible(
                           child: Text(
@@ -304,14 +306,19 @@ class _SupplierScreenState extends State<SupplierScreen> {
                           child: Text(
                             product.description ?? "",
                             maxLines: 1,
-                            style: TextStyle(decorationThickness: 0.5),
+                            style: kDescriptionTextSyle.copyWith(
+                              decorationThickness: 0.5,
+                              fontStyle: FontStyle.italic,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w200,
+                            ),
                             overflow: TextOverflow.ellipsis,
                           )),
                       Flexible(
                         child: RichText(
                             text: TextSpan(
                                 style: TextStyle(
-                                    fontSize: 13, color: Colors.orange),
+                                    fontSize: 12, color: Colors.orange),
                                 text: "+ " + product.bean.toString() + " ",
                                 children: [
                               WidgetSpan(
@@ -319,8 +326,8 @@ class _SupplierScreenState extends State<SupplierScreen> {
                                   child: Image(
                                     image: AssetImage(
                                         "assets/images/icons/bean_coin.png"),
-                                    width: 20,
-                                    height: 20,
+                                    width: 16,
+                                    height: 16,
                                   ))
                             ])),
                       )

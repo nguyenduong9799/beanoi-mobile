@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
+import 'package:unidelivery_mobile/acessories/home_location.dart';
 import '../constraints.dart';
 
 Future<void> showStatusDialog(
@@ -63,7 +64,7 @@ Future<void> showStatusDialog(
                 child: Padding(
                   padding: EdgeInsets.only(top: 16, bottom: 16),
                   child: Text(
-                    "OK",
+                    "Đồng ý",
                     style: kTextPrimary,
                   ),
                 ),
@@ -79,7 +80,7 @@ Future<void> showStatusDialog(
 void showLoadingDialog() {
   hideDialog();
   Get.defaultDialog(
-      barrierDismissible: false,
+      barrierDismissible: true,
       title: "Chờ mình xý nha...",
       content: WillPopScope(
         onWillPop: () {},
@@ -163,7 +164,7 @@ Future<bool> showErrorDialog() async {
           ],
         ),
       ),
-      barrierDismissible: false);
+      barrierDismissible: true);
   return result;
 }
 
@@ -285,7 +286,7 @@ Future<int> showOptionDialog(String text,
         ),
       ),
     ),
-    barrierDismissible: false,
+    barrierDismissible: true,
   );
   return option;
 }
@@ -302,349 +303,165 @@ void hideSnackbar() {
   }
 }
 
-Future<void> changeCampusDialog(RootViewModel model, Function function) async {
+Future<void> changeCampusDialog(RootViewModel model) async {
   hideDialog();
-  await Get.dialog(
-      WillPopScope(
-        onWillPop: () {},
-        child: ScopedModel(
-          model: model,
-          child: ScopedModelDescendant<RootViewModel>(
-              builder: (context, child, model) {
-            return Dialog(
-              backgroundColor: Colors.white,
-              elevation: 8.0,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(16.0))),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Padding(
-                          padding: const EdgeInsets.fromLTRB(16, 8, 0, 8),
-                          child: Icon(
-                            Icons.location_on,
-                            color: Colors.red,
-                            size: 30,
-                          )),
-                      Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            "Chọn khu vực",
-                            style: TextStyle(color: kPrimary, fontSize: 16),
-                          )),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: IconButton(
-                          icon: Icon(
-                            AntDesign.closecircleo,
-                            color: Colors.red,
-                          ),
-                          onPressed: () {
-                            hideDialog();
-                            model.changeAddress = false;
-                            model.notifyListeners();
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 8,
-                  ),
-                  for (int i = 0; i < model.campuses.length; i++)
-                    RadioListTile(
-                      activeColor: kFail,
-                      groupValue: model.tmpStore.id,
-                      value: model.campuses[i].id,
-                      title: Text(
-                        "${model.campuses[i].name}",
-                        style: kTextSecondary.copyWith(
-                            fontSize: 14,
-                            color: model.campuses[i].available
-                                ? Colors.black
-                                : Colors.grey),
-                      ),
-                      onChanged: (value) {
-                        model.changeLocation(value);
-                      },
-                    ),
-                  SizedBox(
-                    height: 8,
-                  ),
-                  Container(
-                    width: double.infinity,
-                    child: FlatButton(
-                      color: kPrimary,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.only(
-                              bottomRight: Radius.circular(16),
-                              bottomLeft: Radius.circular(16))),
-                      onPressed: function,
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 16, bottom: 16),
-                        child: Text(
-                          "Xác nhận",
-                          style: kTextPrimary,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            );
-          }),
-        ),
-      ),
-      barrierDismissible: false);
+  await Get.bottomSheet(
+    HomeLocationSelect(
+    ),
+    elevation: 8,
+  );
+  hideDialog();
+  model.changeAddress = false;
+  model.notifyListeners();
 }
 
-Future<void> changeLocationDialog(
-  OrderViewModel model,
-) async {
-  await Get.dialog(
-      WillPopScope(
-          onWillPop: () {},
-          child: ScopedModel(
-            model: model,
-            child: ScopedModelDescendant<OrderViewModel>(
-              builder: (context, child, model) {
-                return Dialog(
-                  backgroundColor: Colors.white,
-                  elevation: 8.0,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(16.0))),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                "Chọn địa chỉ nhận hàng",
-                                style: TextStyle(color: kPrimary, fontSize: 16),
-                              )),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: IconButton(
-                              icon: Icon(
-                                AntDesign.closecircleo,
-                                color: Colors.red,
-                              ),
-                              onPressed: () {
-                                hideDialog();
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      for (int i = 0; i < model.campusDTO.locations.length; i++)
-                        RadioListTile(
-                          activeColor: kFail,
-                          groupValue: model.tmpLocation != null
-                              ? model.tmpLocation.id
-                              : null,
-                          value: model.campusDTO.locations[i].id,
-                          title: Text(
-                            "${model.campusDTO.locations[i].address}",
-                            style: kTextSecondary.copyWith(
-                              fontSize: 14,
-                            ),
-                          ),
-                          onChanged: (value) {
-                            model.selectLocation(value);
-                          },
-                        ),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      Container(
-                        width: double.infinity,
-                        child: model.tmpLocation != null
-                            ? FlatButton(
-                                color: kPrimary,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.only(
-                                        bottomRight: Radius.circular(16),
-                                        bottomLeft: Radius.circular(16))),
-                                onPressed: () async {
-                                  await model.confirmLocation();
-                                  hideDialog();
-                                },
-                                child: Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 16, bottom: 16),
-                                  child: Text(
-                                    "Xác nhận",
-                                    style: kTextPrimary,
-                                  ),
-                                ),
-                              )
-                            : SizedBox.shrink(),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
-          )),
-      barrierDismissible: false);
-}
-
-Future<void> showTimeDialog(RootViewModel model) async {
-  await Get.dialog(
-      ScopedModel(
-        model: model,
-        child: ScopedModelDescendant<RootViewModel>(
-            builder: (context, child, model) {
-          List<Widget> timeSlots = new List();
-          model.currentStore.timeSlots.forEach((element) {
-            // int fromHour = double.parse(element.from.split(":")[0]).toInt();
-            // int fromMinute = double.parse(element.from.split(":")[1]).toInt();
-            //
-            // int toHour = double.parse(element.from.split(":")[0]).toInt();
-            // int toMinute = double.parse(element.from.split(":")[1]).toInt();
-
-            timeSlots.add(
-              RadioListTile(
-                activeColor: Colors.red,
-                value: element.menuId,
-                title: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text.rich(
-                      TextSpan(
-                        text: "Bắt đầu: ",
-                        children: [
-                          TextSpan(
-                            text: "${element.from.substring(0, 5)}",
-                            style: TextStyle(
-                                fontSize: 13,
-                                color:
-                                    element.available ? kPrimary : Colors.grey),
-                          )
-                        ],
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 13,
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 4,
-                    ),
-                    Text.rich(
-                      TextSpan(
-                        text: "Chốt đơn: ",
-                        children: [
-                          TextSpan(
-                            text: "${element.to.substring(0, 5)}",
-                            style: TextStyle(
-                                fontSize: 13,
-                                color:
-                                    element.available ? kPrimary : Colors.grey),
-                          )
-                        ],
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 13,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                groupValue: model.tmpTimeSlot.menuId,
-                onChanged: (value) {
-                  model.selectTimeSlot(value);
-                },
-              ),
-            );
-          });
-          String recieveDate = "Hôm nay";
-          DateTime currentDate = DateTime.now();
-          int hour =
-              double.parse(model.tmpTimeSlot.arrive.split(":")[0]).toInt();
-          int minute =
-              double.parse(model.tmpTimeSlot.arrive.split(":")[1]).toInt();
-          DateTime recieveTime = DateFormat("yyyy-MM-dd HH:mm:ss").parse(
-              "${currentDate.year}-${currentDate.month}-${currentDate.day} $hour:$minute:00");
-          print(recieveTime.toString());
-          if (recieveTime.compareTo(currentDate) < 0) {
-            recieveDate = "Ngày mai";
-          }
-
-          return WillPopScope(
-            onWillPop: () {},
-            child: Dialog(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(8.0))),
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Center(
-                      child: Text(
-                        "Đặt lúc",
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    Text.rich(
-                        TextSpan(
-                            text: "🔔 Dự kiến giao: $recieveDate vào ",
-                            children: [
-                              TextSpan(
-                                  text:
-                                      "${model.tmpTimeSlot.arrive.substring(0, 5)}",
-                                  style: TextStyle(
-                                      color: Colors.orange,
-                                      fontWeight: FontWeight.bold))
-                            ]),
-                        style: TextStyle(fontSize: 14)),
-                    SizedBox(
-                      height: 4,
-                    ),
-                    ...timeSlots,
-                    Container(
-                      width: double.infinity,
-                      child: FlatButton(
-                          padding: EdgeInsets.all(8),
-                          textColor: Colors.white,
-                          color: kPrimary,
-                          shape: RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(8))),
-                          onPressed: () {
-                            model.confirmTimeSlot();
-                          },
-                          child: Text("OK")),
-                    )
-                  ],
-                ),
-              ),
-            ),
-          );
-        }),
-      ),
-      barrierDismissible: false);
-}
+// Future<void> showTimeDialog(RootViewModel model) async {
+//   await Get.dialog(
+//       ScopedModel(
+//         model: model,
+//         child: ScopedModelDescendant<RootViewModel>(
+//             builder: (context, child, model) {
+//           List<Widget> timeSlots = new List();
+//           model.currentStore.timeSlots.forEach((element) {
+//             // int fromHour = double.parse(element.from.split(":")[0]).toInt();
+//             // int fromMinute = double.parse(element.from.split(":")[1]).toInt();
+//             //
+//             // int toHour = double.parse(element.from.split(":")[0]).toInt();
+//             // int toMinute = double.parse(element.from.split(":")[1]).toInt();
+//
+//             timeSlots.add(
+//               RadioListTile(
+//                 activeColor: Colors.red,
+//                 value: element.menuId,
+//                 title: Column(
+//                   crossAxisAlignment: CrossAxisAlignment.start,
+//                   children: [
+//                     Text.rich(
+//                       TextSpan(
+//                         text: "Bắt đầu: ",
+//                         children: [
+//                           TextSpan(
+//                             text: "${element.from.substring(0, 5)}",
+//                             style: TextStyle(
+//                                 fontSize: 13,
+//                                 color:
+//                                     element.available ? kPrimary : Colors.grey),
+//                           )
+//                         ],
+//                         style: TextStyle(
+//                           color: Colors.black,
+//                           fontSize: 13,
+//                         ),
+//                       ),
+//                     ),
+//                     SizedBox(
+//                       height: 4,
+//                     ),
+//                     Text.rich(
+//                       TextSpan(
+//                         text: "Chốt đơn: ",
+//                         children: [
+//                           TextSpan(
+//                             text: "${element.to.substring(0, 5)}",
+//                             style: TextStyle(
+//                                 fontSize: 13,
+//                                 color:
+//                                     element.available ? kPrimary : Colors.grey),
+//                           )
+//                         ],
+//                         style: TextStyle(
+//                           color: Colors.black,
+//                           fontSize: 13,
+//                         ),
+//                       ),
+//                     ),
+//                   ],
+//                 ),
+//                 groupValue: model.tmpTimeSlot.menuId,
+//                 onChanged: (value) {
+//                   model.selectTimeSlot(value);
+//                 },
+//               ),
+//             );
+//           });
+//           String recieveDate = "Hôm nay";
+//           DateTime currentDate = DateTime.now();
+//           int hour =
+//               double.parse(model.tmpTimeSlot.arrive.split(":")[0]).toInt();
+//           int minute =
+//               double.parse(model.tmpTimeSlot.arrive.split(":")[1]).toInt();
+//           DateTime recieveTime = DateFormat("yyyy-MM-dd HH:mm:ss").parse(
+//               "${currentDate.year}-${currentDate.month}-${currentDate.day} $hour:$minute:00");
+//           print(recieveTime.toString());
+//           if (recieveTime.compareTo(currentDate) < 0) {
+//             recieveDate = "Ngày mai";
+//           }
+//
+//           return WillPopScope(
+//             onWillPop: () {},
+//             child: Dialog(
+//               shape: RoundedRectangleBorder(
+//                   borderRadius: BorderRadius.all(Radius.circular(8.0))),
+//               child: Padding(
+//                 padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+//                 child: Column(
+//                   mainAxisSize: MainAxisSize.min,
+//                   crossAxisAlignment: CrossAxisAlignment.start,
+//                   children: [
+//                     Center(
+//                       child: Text(
+//                         "Đặt lúc",
+//                         style: TextStyle(
+//                             color: Colors.black,
+//                             fontSize: 15,
+//                             fontWeight: FontWeight.bold),
+//                       ),
+//                     ),
+//                     SizedBox(
+//                       height: 8,
+//                     ),
+//                     Text.rich(
+//                         TextSpan(
+//                             text: "🔔 Dự kiến giao: $recieveDate vào ",
+//                             children: [
+//                               TextSpan(
+//                                   text:
+//                                       "${model.tmpTimeSlot.arrive.substring(0, 5)}",
+//                                   style: TextStyle(
+//                                       color: Colors.orange,
+//                                       fontWeight: FontWeight.bold))
+//                             ]),
+//                         style: TextStyle(fontSize: 14)),
+//                     SizedBox(
+//                       height: 4,
+//                     ),
+//                     ...timeSlots,
+//                     Container(
+//                       width: double.infinity,
+//                       child: FlatButton(
+//                           padding: EdgeInsets.all(8),
+//                           textColor: Colors.white,
+//                           color: kPrimary,
+//                           shape: RoundedRectangleBorder(
+//                               borderRadius:
+//                                   BorderRadius.all(Radius.circular(8))),
+//                           onPressed: () {
+//                             model.confirmTimeSlot();
+//                           },
+//                           child: Text("Đồng ý")),
+//                     )
+//                   ],
+//                 ),
+//               ),
+//             ),
+//           );
+//         }),
+//       ),
+//       barrierDismissible: true);
+// }
 
 Future<String> inputDialog(String title, String buttonTitle,
-    {String value}) async {
+    {String value, int maxLines = 6}) async {
   hideDialog();
   TextEditingController controller = TextEditingController(text: value);
   await Get.dialog(
@@ -660,6 +477,7 @@ Future<String> inputDialog(String title, String buttonTitle,
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Flexible(
                     child: Text(
@@ -709,7 +527,7 @@ Future<String> inputDialog(String title, String buttonTitle,
                         )),
                     style: TextStyle(color: Colors.grey),
                     keyboardType: TextInputType.multiline,
-                    maxLines: 6,
+                    maxLines: maxLines,
                     autofocus: true,
                     onFieldSubmitted: (value) {
                       controller.text = value;
@@ -745,7 +563,7 @@ Future<String> inputDialog(String title, String buttonTitle,
         ),
       ),
     ),
-    barrierDismissible: false,
+    barrierDismissible: true,
   );
   return controller.text;
 }

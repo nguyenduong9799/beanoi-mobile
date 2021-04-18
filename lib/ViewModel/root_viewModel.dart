@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:unidelivery_mobile/Bussiness/BussinessHandler.dart';
 import 'package:unidelivery_mobile/Model/DAO/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/acessories/dialog.dart';
+import 'package:unidelivery_mobile/acessories/home_location.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
 import 'package:unidelivery_mobile/utils/shared_pref.dart';
 import '../constraints.dart';
@@ -17,8 +19,7 @@ class RootViewModel extends BaseModel {
   String version;
   bool changeAddress = false;
 
-  CampusDTO currentStore, tmpStore;
-  TimeSlot tmpTimeSlot;
+  CampusDTO currentStore;
   List<CampusDTO> campuses;
 
   static RootViewModel getInstance() {
@@ -32,7 +33,46 @@ class RootViewModel extends BaseModel {
     _instance = null;
   }
 
-  RootViewModel() {}
+  RootViewModel();
+
+  Future getStores() async {
+    setState(ViewStatus.Loading);
+    StoreDAO dao = new StoreDAO();
+    campuses = await dao.getStores();
+    setState(ViewStatus.Completed);
+  }
+
+  Future<void> setLocation(LocationDTO location, CampusDTO campus) async {
+    if (campus.available) {
+      if (campus.id != currentStore.id) {
+        Cart cart = await getCart();
+        int option = 1;
+
+        if (cart != null) {
+          option = await showOptionDialog(
+              "Bạn có chắc không? Đổi khu vực rồi là giỏ hàng bị xóa đó!!");
+        }
+
+        if (option == 1) {
+          showLoadingDialog();
+          currentStore = campus;
+          setSelectedLocation(currentStore, location);
+          await clearCart();
+          notifyListeners();
+          hideDialog();
+          HomeViewModel.getInstance().getSuppliers();
+          GiftViewModel.getInstance().getGifts();
+        }
+      } else {
+        setSelectedLocation(currentStore, location);
+        notifyListeners();
+        await setStore(currentStore);
+      }
+    } else {
+      showStatusDialog("assets/images/global_error.png", "Opps",
+          "Cửa hàng đang tạm đóng 😓");
+    }
+  }
 
   Future<void> processChangeLocation() async {
     try {
@@ -40,39 +80,11 @@ class RootViewModel extends BaseModel {
         return;
       }
       changeAddress = true;
-      tmpStore = currentStore;
       notifyListeners();
-      showLoadingDialog();
-
-      StoreDAO dao = new StoreDAO();
-      campuses = await dao.getStores();
-      Cart cart = await getCart();
-
+      await changeCampusDialog(this);
       hideDialog();
-      await changeCampusDialog(this, () async {
-        hideDialog();
-        if (tmpStore.id != this.currentStore.id) {
-          int option = 1;
-
-          if (cart != null) {
-            option = await showOptionDialog(
-                "Bạn có chắc không? Đổi địa chỉ rồi là giỏ hàng bị xóa đó!!");
-          }
-
-          if (option == 1) {
-            showLoadingDialog();
-            currentStore = BussinessHandler.setSelectedTime(tmpStore);
-            await deleteCart();
-            await setStore(currentStore);
-            HomeViewModel.getInstance().notifyListeners();
-            hideDialog();
-            HomeViewModel.getInstance().getSuppliers();
-            GiftViewModel.getInstance().getGifts();
-          }
-        }
-        changeAddress = false;
-        notifyListeners();
-      });
+      changeAddress = false;
+      notifyListeners();
     } catch (e) {
       hideDialog();
       bool result = await showErrorDialog();
@@ -85,40 +97,17 @@ class RootViewModel extends BaseModel {
     }
   }
 
-  void changeLocation(int id) {
-    for (CampusDTO dto in campuses) {
-      if (dto.id == id) {
-        if (dto.available) {
-          tmpStore = dto;
-        } else {
-          showStatusDialog("assets/images/global_error.png", "Opps",
-              "Cửa hàng đang tạm đóng 😓");
-        }
+  Future<void> confirmTimeSlot(TimeSlot timeSlot) async {
+    if (timeSlot.menuId != currentStore.selectedTimeSlot.menuId) {
+      if (!timeSlot.available) {
+        showStatusDialog(
+            "assets/images/global_error.png",
+            "Khung giờ đã qua rồi",
+            "Hiện tại khung giờ này đã đóng vào lúc ${timeSlot.to}, bạn hãy xem khung giờ khác nhé 😃.");
+        return;
       }
-    }
-    notifyListeners();
-  }
-
-  bool selectTimeSlot(int value) {
-    bool result = false;
-    currentStore.timeSlots.forEach((element) {
-      if (element.menuId == value) {
-        if (element.available) {
-          tmpTimeSlot = element;
-          result = true;
-        } else {
-          result = false;
-        }
-      }
-    });
-    notifyListeners();
-    return result;
-  }
-
-  Future<void> confirmTimeSlot() async {
-    hideDialog();
-    if (tmpTimeSlot.menuId != currentStore.selectedTimeSlot.menuId) {
       int option = 1;
+      showLoadingDialog();
       Cart cart = await getCart();
       if (cart != null) {
         option = await showOptionDialog(
@@ -127,10 +116,9 @@ class RootViewModel extends BaseModel {
 
       if (option == 1) {
         showLoadingDialog();
-        currentStore.selectedTimeSlot = tmpTimeSlot;
+        currentStore.selectedTimeSlot = timeSlot;
         await deleteCart();
         await setStore(currentStore);
-        HomeViewModel.getInstance().notifyListeners();
         hideDialog();
         HomeViewModel.getInstance().getSuppliers();
         GiftViewModel.getInstance().getGifts();
@@ -169,14 +157,35 @@ class RootViewModel extends BaseModel {
           currentStore = BussinessHandler.setSelectedTime(currentStore);
           Cart cart = await getCart();
           if (cart != null) {
-            await deleteCart();
             await showStatusDialog(
                 "assets/images/global_error.png",
                 "Khung giờ đã thay đổi",
                 "Các sản phẩm trong giỏ hàng đã bị xóa, còn nhiều món ngon đang chờ bạn nhé");
+            await deleteCart();
+          }
+        } else {
+          final currentDate = DateTime.now();
+          String currentTimeSlot = currentStore.selectedTimeSlot.to;
+          var beanTime = new DateTime(
+            currentDate.year,
+            currentDate.month,
+            currentDate.day,
+            double.parse(currentTimeSlot.split(':')[0]).round(),
+            double.parse(currentTimeSlot.split(':')[1]).round(),
+          );
+          int differentTime = beanTime.difference(currentDate).inMilliseconds;
+          if (differentTime <= 0) {
+            DateTime arrive = DateFormat("HH:mm:ss")
+                .parse(currentStore.selectedTimeSlot.arrive);
+            await showStatusDialog(
+              "assets/images/global_error.png",
+              "Khung giờ đã kết thúc",
+              "Đã hết giờ chốt đơn cho khung giờ ${DateFormat("HH:mm").format(arrive)} - ${DateFormat("HH:mm").format(arrive.add(Duration(minutes: 30)))}. \n Hẹn gặp bạn ở khung giờ khác nhé 😢.",
+            );
+            // remove cart
+            await deleteCart();
           }
         }
-        print(listStore);
       }
 
       await setStore(currentStore);
@@ -196,7 +205,6 @@ class RootViewModel extends BaseModel {
 
         currentStore.locations = locations;
         await setStore(currentStore);
-        tmpTimeSlot = currentStore.selectedTimeSlot;
         setState(ViewStatus.Completed);
       }
     } catch (e, stacktrace) {
@@ -252,5 +260,24 @@ class RootViewModel extends BaseModel {
       }
     }
     notifyListeners();
+  }
+
+  Future<void> clearCart() async {
+    await deleteCart();
+    notifyListeners();
+  }
+
+  void setSelectedLocation(CampusDTO campus, LocationDTO location) {
+    campus.locations.forEach((element) {
+      if (element.id == location.id) {
+        element.isSelected = true;
+      } else {
+        element.isSelected = false;
+      }
+    });
+  }
+
+  bool get isCurrentMenuAvailable {
+    return currentStore?.selectedTimeSlot?.available;
   }
 }

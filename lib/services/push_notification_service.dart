@@ -49,7 +49,7 @@ class PushNotificationService {
               mainButton: FlatButton(
                 color: kPrimary,
                 child: Text(
-                  "OK",
+                  "Đồng ý",
                   style: kTextPrimary,
                 ),
                 onPressed: () {
@@ -58,11 +58,9 @@ class PushNotificationService {
               ));
         },
         //Called when the app has been closed completely and its opened
-        onLaunch: (Map<String, dynamic> message) async {
-        },
+        onLaunch: (Map<String, dynamic> message) async {},
         //Called when the app is in the background
-        onResume: (Map<String, dynamic> message) async {
-        },
+        onResume: (Map<String, dynamic> message) async {},
       );
       _initialized = true;
     }

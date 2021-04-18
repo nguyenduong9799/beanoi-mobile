@@ -48,7 +48,7 @@ class _GiftScreenState extends State<GiftScreen> {
                         elevation: 2,
                         child: Container(
                           width: Get.width,
-                          padding: const EdgeInsets.fromLTRB(0, 4, 0, 4),
+                          padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
                           child: Center(
                             child: Text(
                               "🎁 Danh sách quà tặng 🎁",
@@ -90,32 +90,36 @@ class _GiftScreenState extends State<GiftScreen> {
                               default:
                                 if (model.gifts == null ||
                                     model.gifts.isEmpty) {
-                                  return Container(
-                                    padding: EdgeInsets.fromLTRB(16, 24, 16, 8),
-                                    color: Colors.white,
-                                    child: Center(
-                                      child: Column(
-                                        children: [
-                                          Container(
-                                            child: AspectRatio(
-                                              aspectRatio: 1.5,
-                                              child: Image.asset(
-                                                'assets/images/empty-product.png',
-                                                fit: BoxFit.contain,
+                                  return ListView(
+                                    children: [
+                                      Container(
+                                        padding: EdgeInsets.fromLTRB(16, 24, 16, 8),
+                                        color: Colors.white,
+                                        child: Center(
+                                          child: Column(
+                                            children: [
+                                              Container(
+                                                child: AspectRatio(
+                                                  aspectRatio: 1.5,
+                                                  child: Image.asset(
+                                                    'assets/images/empty-product.png',
+                                                    fit: BoxFit.contain,
+                                                  ),
+                                                ),
                                               ),
-                                            ),
+                                              Text(
+                                                "Hiện các món quà đã Sold out hết rồi. Nhanh tay đổi quà vào hôm sau nhé 😁",
+                                                textAlign: TextAlign.center,
+                                                style: kSubtitleTextSyule.copyWith(
+                                                  color: Colors.orange,
+                                                  fontSize: 16,
+                                                ),
+                                              ),
+                                            ],
                                           ),
-                                          Text(
-                                            "Hiện các món quà đã Sold out hết rồi. Nhanh tay đổi quà vào hôm sau nhé 😁",
-                                            textAlign: TextAlign.center,
-                                            style: kSubtitleTextSyule.copyWith(
-                                              color: Colors.orange,
-                                              fontSize: 16,
-                                            ),
-                                          ),
-                                        ],
+                                        ),
                                       ),
-                                    ),
+                                    ],
                                   );
                                 }
                                 return ListView.builder(

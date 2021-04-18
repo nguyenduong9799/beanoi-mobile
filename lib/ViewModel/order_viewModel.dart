@@ -7,6 +7,7 @@ import 'package:unidelivery_mobile/Services/analytic_service.dart';
 import 'package:unidelivery_mobile/ViewModel/base_model.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
 import 'package:unidelivery_mobile/acessories/dialog.dart';
+import 'package:unidelivery_mobile/acessories/home_location.dart';
 import 'package:unidelivery_mobile/enums/order_status.dart';
 import 'package:unidelivery_mobile/enums/view_status.dart';
 import 'package:unidelivery_mobile/route_constraint.dart';
@@ -16,7 +17,6 @@ import '../constraints.dart';
 class OrderViewModel extends BaseModel {
   OrderAmountDTO orderAmount;
   Map<String, dynamic> listPayments;
-  LocationDTO location, tmpLocation;
   CampusDTO campusDTO;
   OrderDAO dao;
   Cart currentCart;
@@ -32,15 +32,8 @@ class OrderViewModel extends BaseModel {
       }
 
       if (campusDTO == null) {
-        campusDTO = await getStore();
-      }
-
-      if (location == null) {
-        campusDTO.locations.forEach((element) {
-          if (element.isSelected) {
-            location = element;
-          }
-        });
+        campusDTO = RootViewModel.getInstance().currentStore;
+        ;
       }
 
       if (currentCart == null) {
@@ -99,13 +92,15 @@ class OrderViewModel extends BaseModel {
 
   Future<void> orderCart() async {
     try {
-      int option = await showOptionDialog("Xác nhận giỏ hàng nha bạn 😊");
+      int option =
+          await showOptionDialog("Bạn vui lòng xác nhận lại giỏ hàng nha 😊.");
 
       if (option != 1) {
         return;
       }
-
       showLoadingDialog();
+      LocationDTO location =
+          campusDTO.locations.firstWhere((element) => element.isSelected);
 
       OrderStatus result = await dao.createOrders(location.id, currentCart);
       await AccountViewModel.getInstance().fetchUser();
@@ -154,11 +149,22 @@ class OrderViewModel extends BaseModel {
     }
   }
 
-  Future<void> processChangeLocation() async {
-    tmpLocation = location;
-    notifyListeners();
-    await changeLocationDialog(this);
+  Future<void> changeLocationOfStore() async {
+    setState(ViewStatus.Loading);
+    await Get.bottomSheet(
+      HomeLocationSelect(
+        selectedCampus: campusDTO,
+      ),
+    );
+    campusDTO = RootViewModel.getInstance().currentStore;
+    setState(ViewStatus.Completed);
   }
+
+  // Future<void> processChangeLocation() async {
+  //   tmpLocation = location;
+  //   notifyListeners();
+  //   await changeLocationDialog(this);
+  // }
 
   // void selectReceiveTime(String value){
   //   isChangeTime = true;
@@ -171,27 +177,27 @@ class OrderViewModel extends BaseModel {
   //   notifyListeners();
   // }
 
-  void selectLocation(int id) {
-    campusDTO.locations.forEach((element) {
-      if (element.id == id) {
-        tmpLocation = element;
-      }
-    });
-    notifyListeners();
-  }
+  // void selectLocation(int id) {
+  //   campusDTO.locations.forEach((element) {
+  //     if (element.id == id) {
+  //       tmpLocation = element;
+  //     }
+  //   });
+  //   notifyListeners();
+  // }
 
-  Future<void> confirmLocation() async {
-    campusDTO.locations.forEach((element) {
-      if (element.id == tmpLocation.id) {
-        element.isSelected = true;
-      } else {
-        element.isSelected = false;
-      }
-    });
-    await setStore(campusDTO);
-    location = tmpLocation;
-    notifyListeners();
-  }
+  // Future<void> confirmLocation() async {
+  //   campusDTO.locations.forEach((element) {
+  //     if (element.id == tmpLocation.id) {
+  //       element.isSelected = true;
+  //     } else {
+  //       element.isSelected = false;
+  //     }
+  //   });
+  //   await setStore(campusDTO);
+  //   location = tmpLocation;
+  //   notifyListeners();
+  // }
 
   Future<void> addSupplierNote(int id) async {
     SupplierNoteDTO supplierNote = currentCart.notes?.firstWhere(

@@ -61,7 +61,8 @@ class GiftViewModel extends BaseModel {
       // check truong hop product tra ve rong (do khong co menu nao trong TG do)
       setState(ViewStatus.Completed);
     } catch (e, stacktrace) {
-      setState(ViewStatus.Error);
+      gifts = null;
+      setState(ViewStatus.Completed);
     }
   }
 

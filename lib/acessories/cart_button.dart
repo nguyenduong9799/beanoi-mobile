@@ -3,6 +3,7 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
+import 'package:unidelivery_mobile/enums/view_status.dart';
 
 import '../constraints.dart';
 
@@ -11,6 +12,9 @@ Widget buildCartButton() {
     model: RootViewModel.getInstance(),
     child:
         ScopedModelDescendant<RootViewModel>(builder: (context, child, model) {
+      if (model.status == ViewStatus.Loading) {
+        return SizedBox.shrink();
+      }
       return FutureBuilder(
           future: model.cart,
           builder: (context, snapshot) {

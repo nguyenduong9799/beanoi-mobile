@@ -33,7 +33,7 @@ class HomeViewModel extends BaseModel {
       setState(ViewStatus.Loading);
       await RootViewModel.getInstance().fetchStore();
       CampusDTO currentStore = RootViewModel.getInstance().currentStore;
-      if(RootViewModel.getInstance().status == ViewStatus.Error){
+      if (RootViewModel.getInstance().status == ViewStatus.Error) {
         setState(ViewStatus.Error);
         return;
       }
@@ -48,21 +48,20 @@ class HomeViewModel extends BaseModel {
       if (blogs == null) {
         blogs = await _storeDAO.getBlogs(currentStore.id);
       }
-
-      // int total_page = (_storeDAO.metaDataDTO.total / DEFAULT_SIZE).ceil();
-      // if (total_page > _storeDAO.metaDataDTO.page){
-      //   isLoadmore = true;
-      // }else isLoadmore = false;
       await Future.delayed(Duration(microseconds: 500));
       // check truong hop product tra ve rong (do khong co menu nao trong TG do)
       setState(ViewStatus.Completed);
     } catch (e, stacktrace) {
-      setState(ViewStatus.Error);
+      suppliers = null;
+      setState(ViewStatus.Completed);
     }
   }
 
   Future<void> selectSupplier(SupplierDTO dto) async {
-    if (dto.available) {
+    if (!RootViewModel.getInstance().isCurrentMenuAvailable) {
+      showStatusDialog("assets/images/global_error.png", "Opps",
+          "Hiện tại khung giờ bạn chọn đã chốt đơn. Bạn vui lòng xem khung giờ khác nhé 😓.");
+    } else if (dto.available) {
       await Get.toNamed(RouteHandler.HOME_DETAIL, arguments: dto);
     } else {
       showStatusDialog("assets/images/global_error.png", "Opps",

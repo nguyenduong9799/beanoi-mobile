@@ -37,8 +37,8 @@ class OrderHistoryViewModel extends BaseModel {
   }
 
   Future<void> cancelOrder(int orderId) async {
-    try{
-      int option = await showOptionDialog("Thanh xuân như một tách trà");
+    try {
+      int option = await showOptionDialog("Hãy thử những món khác bạn nhé 😥.");
       if (option == 1) {
         showLoadingDialog();
         CampusDTO storeDTO = await getStore();
@@ -48,8 +48,8 @@ class OrderHistoryViewModel extends BaseModel {
         );
 
         if (success) {
-          await showStatusDialog("assets/images/global_sucsess.png", "Thành công",
-              "Hãy xem thử các món khác bạn nhé 😓");
+          await showStatusDialog("assets/images/global_sucsess.png",
+              "Thành công", "Hãy xem thử các món khác bạn nhé 😓");
           Get.back();
           await getOrders();
         } else {
@@ -60,7 +60,7 @@ class OrderHistoryViewModel extends BaseModel {
           );
         }
       }
-    }catch(e){
+    } catch (e) {
       await showStatusDialog(
         "assets/images/global_error.png",
         "Thất bại",

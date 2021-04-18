@@ -77,6 +77,7 @@ const int VIRTUAL_STORE_TYPE = 8;
 const int DEFAULT_SIZE = 50;
 
 class ProductType {
+  static const int EXTRA_PRODUCT = 5;
   static const int MASTER_PRODUCT = 6;
   static const int DETAIL_PRODUCT = 7;
   static const int COMPLEX_PRODUCT = 10;

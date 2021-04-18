@@ -232,6 +232,7 @@ class ProductDetailViewModel extends BaseModel {
     if (this.extra != null) {
       for (int i = 0; i < extra.keys.length; i++) {
         if (extra[extra.keys.elementAt(i)]) {
+          print(extra.keys.elementAt(i).type);
           listChoices.add(extra.keys.elementAt(i));
         }
       }
