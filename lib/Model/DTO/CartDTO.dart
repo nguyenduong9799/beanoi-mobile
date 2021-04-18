@@ -31,10 +31,11 @@ class Cart {
       list = itemJson.map((e) => CartItem.fromJson(e)).toList();
     }
     return Cart.get(
-      items: list,
-      payment: json['payment'],
-      notes: (json['supplier_notes'] as List)?.map((e) => SupplierNoteDTO.fromJson(e))?.toList()
-    );
+        items: list,
+        payment: json['payment'],
+        notes: (json['supplier_notes'] as List)
+            ?.map((e) => SupplierNoteDTO.fromJson(e))
+            ?.toList());
   }
 
   Map<String, dynamic> toJson() {
@@ -42,7 +43,8 @@ class Cart {
     return {
       "items": listCartItem,
       "payment": payment,
-      "supplier_notes": notes != null ? notes.map((e) => e.toJson())?.toList() : []
+      "supplier_notes":
+          notes != null ? notes.map((e) => e.toJson())?.toList() : []
     };
   }
 
@@ -55,9 +57,9 @@ class Cart {
     Map<String, dynamic> map = {
       "payment": payment,
       "products_list": listCartItem,
-      "supplier_notes": notes != null ? notes.map((e) => e.toJson())?.toList() : []
+      "supplier_notes":
+          notes != null ? notes.map((e) => e.toJson())?.toList() : []
     };
-    print(map.toString());
     logger.i("Order: " + map.toString());
     return map;
   }
@@ -183,4 +185,3 @@ class CartItem {
     // return map;
   }
 }
-

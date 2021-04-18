@@ -603,8 +603,6 @@ class BeanTimeCountdown extends StatefulWidget {
 class _BeanTimeCountdownState extends State<BeanTimeCountdown> {
   @override
   Widget build(BuildContext context) {
-    print("differentTime " + widget.differentTime.toString());
-
     return ScopedModel<RootViewModel>(
       model: RootViewModel.getInstance(),
       child: ScopedModelDescendant<RootViewModel>(

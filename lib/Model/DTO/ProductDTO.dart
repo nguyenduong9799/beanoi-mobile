@@ -153,7 +153,6 @@ class ProductDTO {
   }
 
   ProductDTO getChildByAttributes(Map attributes) {
-    print(listChild[0].attributes.toString() + " - " + attributes.toString());
     return this
         .listChild
         .firstWhere((child) => mapEquals(child.attributes, attributes));
