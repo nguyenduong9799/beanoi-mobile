@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:unidelivery_mobile/constraints.dart';
 
 class OtherAmountWidget extends StatelessWidget {
   final otherAmount;
@@ -18,20 +19,19 @@ class OtherAmountWidget extends StatelessWidget {
           Text("${otherAmount.name}", style: TextStyle()),
           RichText(
             text: new TextSpan(
-              text: otherAmount.amount < 0 ? '🌟' : '',
+              text: '',
               children: <TextSpan>[
                 new TextSpan(
                   text:
                       "${formatter.format(otherAmount.amount)} ${otherAmount.unit}",
-                  style: new TextStyle(
-                    color: otherAmount.amount < 0 ? Colors.orange : Colors.grey,
-                    decoration: otherAmount.amount < 0
-                        ? TextDecoration.lineThrough
-                        : TextDecoration.none,
-                  ),
-                ),
-                new TextSpan(
-                  text: otherAmount.amount < 0 ? '🌟' : '',
+                  style: otherAmount.amount >= 0
+                      ? new TextStyle(
+                          color: Colors.grey,
+                          decoration: TextDecoration.none,
+                        )
+                      : kTitleTextStyle.copyWith(
+                          fontSize: 14,
+                        ),
                 ),
               ],
             ),

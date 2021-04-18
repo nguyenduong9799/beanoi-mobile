@@ -100,12 +100,7 @@ class _OrderScreenState extends State<OrderScreen> {
                             highlightColor: Colors.black.withOpacity(0.1),
                             child: timeRecieve(model.campusDTO),
                           ),
-                          SizedBox(
-                              height: 8,
-                              child: Container(
-                                color: kBackgroundGrey[2],
-                              )),
-                          Container(child: buildBeanReward()),
+                          // Container(child: buildBeanReward()),
                           SizedBox(
                               height: 8,
                               child: Container(
@@ -365,111 +360,108 @@ class _OrderScreenState extends State<OrderScreen> {
       isGift = true;
     }
 
-    return Slidable(
-      actionPane: SlidableDrawerActionPane(),
-      child: Container(
-        color: kBackgroundGrey[0],
-        padding: EdgeInsets.all(8),
-        child: InkWell(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: CachedNetworkImage(
-                  width: MediaQuery.of(context).size.width * 0.25,
-                  height: MediaQuery.of(context).size.width * 0.25,
-                  fit: BoxFit.fill,
-                  imageUrl: item.master.imageURL ?? defaultImage,
-                  imageBuilder: (context, imageProvider) => Container(
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: imageProvider,
-                        fit: BoxFit.cover,
+    return Container(
+      color: kBackgroundGrey[0],
+      padding: EdgeInsets.all(8),
+      child: InkWell(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: CachedNetworkImage(
+                width: MediaQuery.of(context).size.width * 0.25,
+                height: MediaQuery.of(context).size.width * 0.25,
+                fit: BoxFit.fill,
+                imageUrl: item.master.imageURL ?? defaultImage,
+                imageBuilder: (context, imageProvider) => Container(
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: imageProvider,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+                progressIndicatorBuilder: (context, url, downloadProgress) =>
+                    Shimmer.fromColors(
+                  baseColor: Colors.grey[300],
+                  highlightColor: Colors.grey[100],
+                  enabled: true,
+                  child: Container(
+                    width: MediaQuery.of(context).size.width * 0.25,
+                    // height: 100,
+                    color: Colors.grey,
+                  ),
+                ),
+                errorWidget: (context, url, error) => Icon(Icons.error),
+              ),
+            ),
+            SizedBox(
+              width: 8,
+            ),
+            Flexible(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Flexible(
+                        child: item.master.type != ProductType.MASTER_PRODUCT
+                            ? Text(item.master.name,
+                                style: TextStyle(
+                                    fontSize: 14, fontWeight: FontWeight.bold))
+                            : Text(item.products[0].name,
+                                style: TextStyle(
+                                    fontSize: 14, fontWeight: FontWeight.bold)),
                       ),
-                    ),
+                      SizedBox(width: 8),
+                    ],
                   ),
-                  progressIndicatorBuilder: (context, url, downloadProgress) =>
-                      Shimmer.fromColors(
-                    baseColor: Colors.grey[300],
-                    highlightColor: Colors.grey[100],
-                    enabled: true,
-                    child: Container(
-                      width: MediaQuery.of(context).size.width * 0.25,
-                      // height: 100,
-                      color: Colors.grey,
-                    ),
-                  ),
-                  errorWidget: (context, url, error) => Icon(Icons.error),
-                ),
-              ),
-              SizedBox(
-                width: 8,
-              ),
-              Flexible(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    item.master.type != ProductType.MASTER_PRODUCT
-                        ? Text(item.master.name,
-                            style: TextStyle(
-                                fontSize: 14, fontWeight: FontWeight.bold))
-                        : Text(item.products[0].name,
-                            style: TextStyle(
-                                fontSize: 14, fontWeight: FontWeight.bold)),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Flexible(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              ...list,
-                              SizedBox(
-                                height: 8,
-                              ),
-                              RichText(
-                                text: TextSpan(
-                                    text: isGift
-                                        ? "${price} "
-                                        : formatPrice(price),
-                                    style: TextStyle(color: Colors.black),
-                                    children: [
-                                      WidgetSpan(
-                                        alignment: PlaceholderAlignment.bottom,
-                                        child: isGift
-                                            ? Image(
-                                                image: AssetImage(
-                                                    "assets/images/icons/bean_coin.png"),
-                                                width: 20,
-                                                height: 20,
-                                              )
-                                            : Container(),
-                                      )
-                                    ]),
-                              ),
-                            ],
-                          ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Flexible(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ...list,
+                            SizedBox(
+                              height: 8,
+                            ),
+                            RichText(
+                              text: TextSpan(
+                                  text:
+                                      isGift ? "${price} " : formatPrice(price),
+                                  style: TextStyle(color: Colors.black),
+                                  children: [
+                                    WidgetSpan(
+                                      alignment: PlaceholderAlignment.bottom,
+                                      child: isGift
+                                          ? Image(
+                                              image: AssetImage(
+                                                  "assets/images/icons/bean_coin.png"),
+                                              width: 20,
+                                              height: 20,
+                                            )
+                                          : Container(),
+                                    )
+                                  ]),
+                            ),
+                          ],
                         ),
-                        selectQuantity(item)
-                      ],
-                    )
-                  ],
-                ),
+                      ),
+                      SizedBox(width: 8),
+                      selectQuantity(item),
+                    ],
+                  )
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
-      secondaryActions: [
-        IconSlideAction(
-            color: kBackgroundGrey[2],
-            foregroundColor: Colors.red,
-            icon: Icons.delete,
-            onTap: () async {
-              await orderViewModel.deleteItem(item);
-            }),
-      ],
     );
   }
 
@@ -539,13 +531,13 @@ class _OrderScreenState extends State<OrderScreen> {
       padding: const EdgeInsets.all(8.0),
       child: RichText(
         text: TextSpan(
-            text: "Nhận hàng lúc: ",
+            text: "Thời gian: ",
             style: TextStyle(
                 fontWeight: FontWeight.bold, fontSize: 15, color: kPrimary),
             children: [
               TextSpan(
                   text:
-                      "${DateFormat("HH:mm").format(arrive)} - ${DateFormat("HH:mm").format(arrive.add(Duration(minutes: 30)))}",
+                      "${DateFormat("HH:mm").format(arrive)} ~ ${DateFormat("HH:mm").format(arrive.add(Duration(minutes: 30)))}",
                   style: TextStyle(fontSize: 14, color: Colors.black))
             ]),
       ),
@@ -555,7 +547,7 @@ class _OrderScreenState extends State<OrderScreen> {
   Widget layoutSubtotal() {
     return Container(
       width: MediaQuery.of(context).size.width,
-      padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8, top: 8),
+
       // margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
         color: kBackgroundGrey[0],
@@ -563,15 +555,22 @@ class _OrderScreenState extends State<OrderScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Chi phí',
-            style: TextStyle(
-                fontWeight: FontWeight.bold, fontSize: 15, color: kPrimary),
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              border: Border(left: BorderSide(color: kPrimary, width: 4)),
+            ),
+            child: Text(
+              'Chi phí',
+              style: TextStyle(
+                  fontWeight: FontWeight.bold, fontSize: 15, color: kPrimary),
+            ),
           ),
           SizedBox(
             height: 8,
           ),
           Container(
+            margin: const EdgeInsets.fromLTRB(8, 8, 8, 0),
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
                 border: Border.all(color: kPrimary),
@@ -616,6 +615,33 @@ class _OrderScreenState extends State<OrderScreen> {
               ],
             ),
           ),
+          SizedBox(height: 8),
+          Container(
+            width: Get.width,
+            child: RichText(
+                textAlign: TextAlign.center,
+                text: TextSpan(
+                  text:
+                      "Bạn được tặng ${orderViewModel.orderAmount.beanAmount.round().toString()} ",
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.orange,
+                  ),
+                  children: [
+                    WidgetSpan(
+                        alignment: PlaceholderAlignment.bottom,
+                        child: Image(
+                          image:
+                              AssetImage("assets/images/icons/bean_coin.png"),
+                          width: 16,
+                          height: 16,
+                        )),
+                    TextSpan(text: " cho đơn hàng 🎉."),
+                  ],
+                )),
+          ),
+          SizedBox(height: 8),
         ],
       ),
     );
@@ -647,11 +673,14 @@ class _OrderScreenState extends State<OrderScreen> {
           children: [
             Container(
               width: Get.width,
-              color: model.currentCart.payment != null
-                  ? kBackgroundGrey[0]
-                  : Colors.yellow[100],
+              decoration: BoxDecoration(
+                color: model.currentCart.payment != null
+                    ? kBackgroundGrey[0]
+                    : Colors.yellow[100],
+                border: Border(left: BorderSide(color: kPrimary, width: 4)),
+              ),
               padding:
-                  const EdgeInsets.only(left: 8, right: 8, bottom: 8, top: 4),
+                  const EdgeInsets.only(left: 8, right: 8, bottom: 8, top: 8),
               child: RichText(
                 text: TextSpan(
                     text: "Phương thức thanh toán ",
@@ -816,30 +845,6 @@ class _OrderScreenState extends State<OrderScreen> {
                   ? ListView(
                       shrinkWrap: true,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.only(top: 8.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                status == ViewStatus.Loading
-                                    ? '...'
-                                    : "Tổng tiền",
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.black87,
-                                  fontWeight: FontWeight.w100,
-                                ),
-                              ),
-                              Text(
-                                NumberFormat.simpleCurrency(locale: 'vi')
-                                    .format(model.orderAmount.finalAmount),
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 18),
-                              )
-                            ],
-                          ),
-                        ),
                         SizedBox(height: 8),
                         FlatButton(
                           onPressed: () async {
@@ -938,46 +943,50 @@ class _OrderScreenState extends State<OrderScreen> {
     );
   }
 
-  Widget selectQuantity(CartItem item) {
+  Widget selectQuantity(
+    CartItem item,
+  ) {
     Color minusColor = kBackgroundGrey[4];
-    if (item.quantity > 1) {
+    if (item.quantity >= 1) {
       minusColor = kPrimary;
     }
     Color plusColor = kPrimary;
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        IconButton(
-          icon: Icon(
-            AntDesign.minuscircleo,
-            size: 16,
-            color: minusColor,
+    return Container(
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          IconButton(
+            icon: Icon(
+              AntDesign.minuscircleo,
+              size: 16,
+              color: minusColor,
+            ),
+            onPressed: () async {
+              if (item.quantity >= 1) {
+                if (item.quantity == 1) {
+                  await orderViewModel.deleteItem(item);
+                } else {
+                  item.quantity--;
+                  await orderViewModel.updateQuantity(item);
+                }
+              }
+            },
           ),
-          onPressed: () async {
-            if (item.quantity != 1) {
-              item.quantity--;
+          Text(item.quantity.toString()),
+          IconButton(
+            icon: Icon(
+              AntDesign.pluscircleo,
+              size: 16,
+              color: plusColor,
+            ),
+            onPressed: () async {
+              item.quantity++;
               await orderViewModel.updateQuantity(item);
-            }
-          },
-        ),
-        Text(item.quantity.toString()),
-        IconButton(
-          icon: Icon(
-            AntDesign.pluscircleo,
-            size: 16,
-            color: plusColor,
+            },
           ),
-          onPressed: () async {
-            item.quantity++;
-            await orderViewModel.updateQuantity(item);
-          },
-        ),
-        Icon(
-          Icons.arrow_back_ios_outlined,
-          color: Colors.orange,
-          size: 16,
-        )
-      ],
+        ],
+      ),
     );
   }
 
