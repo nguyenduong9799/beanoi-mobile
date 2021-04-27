@@ -113,7 +113,7 @@ class _HomeLocationSelectState extends State<HomeLocationSelect> {
   Widget _buildPanel(CampusDTO campus, [int index]) {
     return ScrollOnExpand(
       scrollOnExpand: true,
-      scrollOnCollapse: false,
+      scrollOnCollapse: true,
       child: ExpandablePanel(
         theme: const ExpandableThemeData(
           tapBodyToCollapse: true,
@@ -166,8 +166,11 @@ class _HomeLocationSelectState extends State<HomeLocationSelect> {
       return Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: () {
-            model.setLocation(location, campus);
+          onTap: () async {
+            print('SELECT');
+            print(location);
+            print(campus);
+            await model.setLocation(location, campus);
             Get.back();
           },
           child: Container(

@@ -12,6 +12,7 @@ import 'package:unidelivery_mobile/View/start_up.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
 import 'package:unidelivery_mobile/acessories/appbar.dart';
 import 'package:unidelivery_mobile/acessories/dash_border.dart';
+import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/acessories/loading.dart';
 import 'package:unidelivery_mobile/acessories/otherAmount.dart';
 import 'package:unidelivery_mobile/constraints.dart';
@@ -118,6 +119,12 @@ class _OrderScreenState extends State<OrderScreen> {
                               child: Container(
                                 color: kBackgroundGrey[2],
                               )),
+                          voucherList(),
+                          SizedBox(
+                              height: 8,
+                              child: Container(
+                                color: kBackgroundGrey[2],
+                              )),
                           selectPaymentMethods()
                           //SizedBox(height: 16),
                         ],
@@ -128,6 +135,54 @@ class _OrderScreenState extends State<OrderScreen> {
                   }
                 },
               ),
+      ),
+    );
+  }
+
+  Widget voucherList() {
+    return Container(
+      width: Get.width,
+      color: kBackgroundGrey[2],
+      padding: EdgeInsets.only(left: 8),
+      height: 72,
+      child: ListView.builder(
+        shrinkWrap: true,
+        itemCount: 4,
+        scrollDirection: Axis.horizontal,
+        itemBuilder: (context, index) {
+          return ClipPath(
+            clipper: ShapeBorderClipper(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+              ),
+            ),
+            child: Container(
+              padding: EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border(left: BorderSide(color: kPrimary, width: 4)),
+              ),
+              width: Get.width * 0.7,
+              margin: EdgeInsets.only(right: 8),
+              // height: 72,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Text('KM 50%',
+                        style: kTitleTextStyle.copyWith(fontSize: 14)),
+                  ),
+                  Container(
+                    child: Text(
+                      'Chọn',
+                      style: TextStyle(color: Colors.blue, fontSize: 12),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -218,8 +273,11 @@ class _OrderScreenState extends State<OrderScreen> {
                     },
                     borderSide: BorderSide(color: kPrimary),
                     child: Text(
-                      "Thêm",
-                      style: TextStyle(color: kPrimary),
+                      "Thêm món",
+                      style: TextStyle(
+                        color: kPrimary,
+                        fontSize: 12,
+                      ),
                     ),
                   )
                 ],
@@ -560,10 +618,26 @@ class _OrderScreenState extends State<OrderScreen> {
             decoration: BoxDecoration(
               border: Border(left: BorderSide(color: kPrimary, width: 4)),
             ),
-            child: Text(
-              'Chi phí',
-              style: TextStyle(
-                  fontWeight: FontWeight.bold, fontSize: 15, color: kPrimary),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  'Chi phí',
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15,
+                      color: kPrimary),
+                ),
+                InkWell(
+                  onTap: () {
+                    inputDialog("Nhập mã khuyến mãi của bạn", "Áp dụng",
+                        maxLines: 1);
+                  },
+                  child: Text("Nhập khuyến mãi 💸",
+                      style: TextStyle(color: Colors.blue, fontSize: 12)),
+                ),
+              ],
             ),
           ),
           SizedBox(

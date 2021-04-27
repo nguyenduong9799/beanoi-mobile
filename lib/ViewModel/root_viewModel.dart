@@ -53,7 +53,7 @@ class RootViewModel extends BaseModel {
               "Bạn có chắc không? Đổi khu vực rồi là giỏ hàng bị xóa đó!!");
         }
 
-        if (option == 1) {
+        if (option == 1 || cart == null) {
           showLoadingDialog();
           currentStore = campus;
           setSelectedLocation(currentStore, location);
@@ -275,6 +275,8 @@ class RootViewModel extends BaseModel {
         element.isSelected = false;
       }
     });
+    currentStore = campus;
+    notifyListeners();
   }
 
   bool get isCurrentMenuAvailable {

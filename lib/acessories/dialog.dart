@@ -170,7 +170,7 @@ Future<bool> showErrorDialog() async {
 
 Future<int> showOptionDialog(String text,
     {String firstOption, String secondOption}) async {
-  hideDialog();
+  // hideDialog();
   int option;
   await Get.dialog(
     WillPopScope(
@@ -306,8 +306,7 @@ void hideSnackbar() {
 Future<void> changeCampusDialog(RootViewModel model) async {
   hideDialog();
   await Get.bottomSheet(
-    HomeLocationSelect(
-    ),
+    HomeLocationSelect(),
     elevation: 8,
   );
   hideDialog();
