@@ -55,9 +55,10 @@ class RootViewModel extends BaseModel {
 
         if (option == 1 || cart == null) {
           showLoadingDialog();
+          await deleteCart();
           currentStore = campus;
           setSelectedLocation(currentStore, location);
-          await clearCart();
+          await setStore(currentStore);
           notifyListeners();
           hideDialog();
           HomeViewModel.getInstance().getSuppliers();
@@ -65,13 +66,14 @@ class RootViewModel extends BaseModel {
         }
       } else {
         setSelectedLocation(currentStore, location);
-        notifyListeners();
         await setStore(currentStore);
+        notifyListeners();
       }
     } else {
-      showStatusDialog("assets/images/global_error.png", "Opps",
+      await showStatusDialog("assets/images/global_error.png", "Opps",
           "Cửa hàng đang tạm đóng 😓");
     }
+    Get.back();
   }
 
   Future<void> processChangeLocation() async {
