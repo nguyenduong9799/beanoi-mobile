@@ -87,17 +87,15 @@ class _HomeLocationSelectState extends State<HomeLocationSelect> {
                     Expanded(
                       child: Container(
                         color: Colors.white,
-                        child: ExpandableNotifier(
-                          child: ListView(
-                            children: widget.selectedCampus != null
-                                ? [_buildPanel(widget.selectedCampus)]
-                                : model.campuses
-                                    .asMap()
-                                    .map((index, campus) => MapEntry(
-                                        campus, _buildPanel(campus, index)))
-                                    .values
-                                    .toList(),
-                          ),
+                        child: ListView(
+                          children: widget.selectedCampus != null
+                              ? [_buildPanel(widget.selectedCampus)]
+                              : model.campuses
+                                  .asMap()
+                                  .map((index, campus) => MapEntry(
+                                      campus, _buildPanel(campus, index)))
+                                  .values
+                                  .toList(),
                         ),
                       ),
                     )
@@ -111,50 +109,46 @@ class _HomeLocationSelectState extends State<HomeLocationSelect> {
   }
 
   Widget _buildPanel(CampusDTO campus, [int index]) {
-    return ScrollOnExpand(
-      scrollOnExpand: true,
-      scrollOnCollapse: false,
-      child: ExpandablePanel(
-        theme: const ExpandableThemeData(
-          tapBodyToCollapse: true,
-          iconColor: kPrimary,
-        ),
-        header: Container(
-          padding: EdgeInsets.only(top: 8, bottom: 8),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  Icon(Icons.location_on_outlined, color: kPrimary),
-                  SizedBox(width: 8),
-                  Text(
-                    campus.name,
-                    style: kTextSecondary.copyWith(
-                      fontSize: 14,
-                      color: campus.available ? Colors.black : Colors.grey,
-                    ),
+    return ExpandablePanel(
+      theme: const ExpandableThemeData(
+        tapBodyToCollapse: true,
+        iconColor: kPrimary,
+      ),
+      header: Container(
+        padding: EdgeInsets.only(top: 8, bottom: 8),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.location_on_outlined, color: kPrimary),
+                SizedBox(width: 8),
+                Text(
+                  campus.name,
+                  style: kTextSecondary.copyWith(
+                    fontSize: 14,
+                    color: campus.available ? Colors.black : Colors.grey,
                   ),
-                ],
-              ),
-            ],
-          ),
+                ),
+              ],
+            ),
+          ],
         ),
-        expanded: Container(
-          width: double.infinity,
-          padding: EdgeInsets.only(bottom: 8),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ...campus.locations
-                  .map(
-                    (location) => _buildLocationItem(location, campus),
-                  )
-                  .toList(),
-            ],
-          ),
+      ),
+      expanded: Container(
+        width: double.infinity,
+        padding: EdgeInsets.only(bottom: 8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ...campus.locations
+                .map(
+                  (location) => _buildLocationItem(location, campus),
+                )
+                .toList(),
+          ],
         ),
       ),
     );
@@ -168,7 +162,6 @@ class _HomeLocationSelectState extends State<HomeLocationSelect> {
         child: InkWell(
           onTap: () {
             model.setLocation(location, campus);
-            Get.back();
           },
           child: Container(
             width: Get.width,
