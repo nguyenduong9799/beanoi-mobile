@@ -22,6 +22,8 @@ class _UpdateState extends State<Update> {
   final form = FormGroup({
     'name': FormControl(validators: [
       Validators.required,
+      Validators.minLength(5),
+      Validators.maxLength(255),
     ], touched: false),
     'phone': FormControl(validators: [
       Validators.required,
@@ -82,7 +84,8 @@ class _UpdateState extends State<Update> {
                       child: Column(
                         children: [
                           // HELLO SECTION
-                          Expanded(child: ListView(
+                          Expanded(
+                              child: ListView(
                             children: [
                               FormItem("Họ Tên", "vd: Nguyễn Văn A", "name"),
                               FormItem(
@@ -124,36 +127,38 @@ class _UpdateState extends State<Update> {
                                 child: ScopedModelDescendant<SignUpViewModel>(
                                   builder: (context, child, model) =>
                                       RaisedButton(
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(16.0),
-                                          // side: BorderSide(color: Colors.red),
-                                        ),
-                                        color: form.valid
-                                            ? Color(0xFF00d286)
-                                            : Colors.grey,
-                                        onPressed: () async {
-                                          if (model.status ==
-                                              ViewStatus.Completed) if (form.valid) {
-                                            await model.updateUser(form.value);
-                                          }
-                                        },
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: model.status == ViewStatus.Loading
-                                              ? CircularProgressIndicator(
-                                              backgroundColor: Color(0xFFFFFFFF))
-                                              : Text(
-                                            form.valid
-                                                ? "Hoàn thành"
-                                                : "Bạn chưa điền xong",
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(16.0),
+                                      // side: BorderSide(color: Colors.red),
+                                    ),
+                                    color: form.valid
+                                        ? Color(0xFF00d286)
+                                        : Colors.grey,
+                                    onPressed: () async {
+                                      if (model.status ==
+                                          ViewStatus
+                                              .Completed) if (form.valid) {
+                                        await model.updateUser(form.value);
+                                      }
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: model.status == ViewStatus.Loading
+                                          ? CircularProgressIndicator(
+                                              backgroundColor:
+                                                  Color(0xFFFFFFFF))
+                                          : Text(
+                                              form.valid
+                                                  ? "Hoàn thành"
+                                                  : "Bạn chưa điền xong",
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold,
+                                              ),
                                             ),
-                                          ),
-                                        ),
-                                      ),
+                                    ),
+                                  ),
                                 ),
                               ),
                             );
@@ -189,7 +194,9 @@ class _UpdateState extends State<Update> {
               ),
             ),
           ),
-          appBar: DefaultAppBar(title: "Cập nhật thông tin",),
+          appBar: DefaultAppBar(
+            title: "Cập nhật thông tin",
+          ),
         ),
       ),
     );
@@ -278,7 +285,9 @@ class FormItem extends StatelessWidget {
             ValidationMessage.email: ':(',
             ValidationMessage.required: ':(',
             ValidationMessage.number: ':(',
-            ValidationMessage.pattern: ':('
+            ValidationMessage.pattern: ':(',
+            ValidationMessage.minLength: 'Tối thiểu 5 ký tự',
+            ValidationMessage.maxLength: 'Tối đa 255 ký tự',
           },
           // enableInteractiveSelection: false,
           style: TextStyle(color: isReadOnly ? kPrimary : Colors.black),

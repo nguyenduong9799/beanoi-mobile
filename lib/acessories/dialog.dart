@@ -215,6 +215,12 @@ Future<int> showOptionDialog(String text,
                 ),
                 Container(
                   width: double.infinity,
+                  decoration: BoxDecoration(
+                      border: Border(
+                    top: BorderSide(
+                      color: Colors.grey[300],
+                    ),
+                  )),
                   child: Row(
                     children: [
                       Expanded(

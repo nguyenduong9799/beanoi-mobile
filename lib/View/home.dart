@@ -24,9 +24,15 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       new GlobalKey<RefreshIndicatorState>();
-
+  OrderHistoryViewModel orderModel = OrderHistoryViewModel.getInstance();
   Future<void> _refresh() async {
     await HomeViewModel.getInstance().getSuppliers();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    orderModel.getNewOrder();
   }
 
   bool isDarkModeOn =
@@ -50,35 +56,137 @@ class _HomeScreenState extends State<HomeScreen> {
           height: Get.height,
           child: ScopedModel(
             model: HomeViewModel.getInstance(),
-            child: Column(
+            child: Stack(
               children: [
-                FixedAppBar(),
-                Expanded(
-                  child: Container(
-                    color: kBackgroundGrey[2],
-                    padding: EdgeInsets.only(top: 0),
-                    child: RefreshIndicator(
-                      key: _refreshIndicatorKey,
-                      onRefresh: _refresh,
+                Column(
+                  children: [
+                    FixedAppBar(),
+                    Expanded(
                       child: Container(
-                        // height: Get.height * 0.8 - 16,
                         color: kBackgroundGrey[2],
-                        child: ListView(
-                          children: [
-                            SizedBox(height: 8),
-                            banner(),
-                            Container(child: storeList()),
-                          ],
+                        padding: EdgeInsets.only(top: 0),
+                        child: RefreshIndicator(
+                          key: _refreshIndicatorKey,
+                          onRefresh: _refresh,
+                          child: Container(
+                            // height: Get.height * 0.8 - 16,
+                            color: kBackgroundGrey[2],
+                            child: ListView(
+                              children: [
+                                SizedBox(height: 8),
+                                banner(),
+                                Container(child: storeList()),
+                              ],
+                            ),
+                          ),
                         ),
                       ),
                     ),
-                  ),
+                    SizedBox(height: 46),
+                  ],
+                ),
+                Positioned(
+                  left: 0,
+                  bottom: 0,
+                  child: buildNewOrder(),
                 ),
               ],
             ),
           ),
         ),
       ),
+    );
+  }
+
+  void _onTapOrderHistory(order) async {
+    // get orderDetail
+    await Get.toNamed(RouteHandler.ORDER_HISTORY_DETAIL, arguments: order);
+  }
+
+  Widget buildNewOrder() {
+    return ScopedModel<OrderHistoryViewModel>(
+      model: orderModel,
+      child: ScopedModelDescendant<OrderHistoryViewModel>(
+          builder: (context, child, model) {
+        if (model.status == ViewStatus.Loading || model.newTodayOrder == null) {
+          return SizedBox();
+        }
+        final order = model.newTodayOrder;
+        return Card(
+          // width: Get.width,
+          // color: Color(0xff9dd1ad),
+          // padding: EdgeInsets.all(8),
+          // height: 40,
+          margin: EdgeInsets.fromLTRB(8, 0, 8, 8),
+          elevation: 3,
+          child: AnimatedContainer(
+            duration: Duration(seconds: 2),
+            width: Get.width * 0.95,
+            child: IntrinsicHeight(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Expanded(
+                    child: InkWell(
+                      onTap: () {
+                        _onTapOrderHistory(order);
+                      },
+                      child: Container(
+                        padding: EdgeInsets.fromLTRB(8, 8, 8, 8),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  order.invoiceId,
+                                  style: kTitleTextStyle.copyWith(fontSize: 14),
+                                ),
+                                SizedBox(height: 8),
+                                Text('Đơn hàng mới',
+                                    style: kDescriptionTextSyle.copyWith(
+                                        fontSize: 12))
+                              ],
+                            ),
+                            SizedBox(width: 24),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    order.address,
+                                    style:
+                                        kTitleTextStyle.copyWith(fontSize: 14),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  SizedBox(height: 8),
+                                  Text('Nhận đơn tại',
+                                      style: kDescriptionTextSyle.copyWith(
+                                          fontSize: 12))
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.close),
+                    onPressed: () {
+                      orderModel.closeNewOrder();
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      }),
     );
   }
 

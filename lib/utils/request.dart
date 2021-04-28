@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:dio_http_cache/dio_http_cache.dart';
 import 'package:get/get.dart' as Get;
 import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/route_constraint.dart';
@@ -68,6 +69,8 @@ class MyRequest {
   Dio _inner;
   MyRequest() {
     _inner = new Dio(options);
+    _inner.interceptors.add(
+        DioCacheManager(CacheConfig(baseUrl: options.baseUrl)).interceptor);
     _inner.interceptors.add(CustomInterceptors());
     _inner.interceptors.add(InterceptorsWrapper(
       onResponse: (Response response) async {

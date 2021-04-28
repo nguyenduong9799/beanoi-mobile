@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:unidelivery_mobile/Model/DTO/VoucherDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/View/start_up.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
@@ -45,6 +46,7 @@ class _OrderScreenState extends State<OrderScreen> {
 
   void prepareCart() async {
     await orderViewModel.prepareOrder();
+    await orderViewModel.getVouchers();
     setState(() {
       onInit = false;
     });
@@ -140,51 +142,99 @@ class _OrderScreenState extends State<OrderScreen> {
   }
 
   Widget voucherList() {
-    return Container(
-      width: Get.width,
-      color: kBackgroundGrey[2],
-      padding: EdgeInsets.only(left: 8),
-      height: 72,
-      child: ListView.builder(
-        shrinkWrap: true,
-        itemCount: 4,
-        scrollDirection: Axis.horizontal,
-        itemBuilder: (context, index) {
-          return ClipPath(
-            clipper: ShapeBorderClipper(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10)),
+    return ScopedModelDescendant<OrderViewModel>(
+        builder: (context, child, model) {
+      final vouchers = model.vouchers;
+      if (vouchers == null || vouchers.isEmpty) {
+        return SizedBox();
+      }
+      return Container(
+        width: Get.width,
+        color: kBackgroundGrey[2],
+        padding: EdgeInsets.only(left: 8),
+        height: 72,
+        child: ListView.builder(
+          shrinkWrap: true,
+          itemCount: vouchers.length,
+          scrollDirection: Axis.horizontal,
+          itemBuilder: (context, index) {
+            final voucher = vouchers[index];
+            final vouchersInCart = model.currentCart.vouchers;
+            bool isApplied =
+                vouchersInCart.any((e) => e.voucherCode == voucher.voucherCode);
+            return ClipPath(
+              clipper: ShapeBorderClipper(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                ),
               ),
-            ),
-            child: Container(
-              padding: EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border(left: BorderSide(color: kPrimary, width: 4)),
-              ),
-              width: Get.width * 0.7,
-              margin: EdgeInsets.only(right: 8),
-              // height: 72,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Text('KM 50%',
-                        style: kTitleTextStyle.copyWith(fontSize: 14)),
+              child: Container(
+                padding: EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: isApplied ? kPrimary.withOpacity(0.4) : Colors.white,
+                  border: Border(
+                    left: BorderSide(color: kPrimary, width: 6),
+                    top: BorderSide(
+                        color: Colors.transparent, width: isApplied ? 1 : 0),
+                    bottom: BorderSide(
+                        color: Colors.transparent, width: isApplied ? 1 : 0),
+                    right: BorderSide(
+                        color: Colors.transparent, width: isApplied ? 1 : 0),
                   ),
-                  Container(
-                    child: Text(
-                      'Chọn',
-                      style: TextStyle(color: Colors.blue, fontSize: 12),
+                ),
+                width: Get.width * 0.7,
+                margin: EdgeInsets.only(right: 8),
+                // height: 72,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            voucher.voucherName,
+                            style: kTitleTextStyle.copyWith(fontSize: 16),
+                          ),
+                          Text(
+                            voucher.promotionName,
+                            style: kDescriptionTextSyle.copyWith(fontSize: 12),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                    VerticalDivider(),
+                    Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: () {
+                          if (isApplied) {
+                            model.unselectVoucher(voucher);
+                          } else {
+                            model.selectVoucher(voucher);
+                          }
+                        },
+                        child: Container(
+                          height: 72,
+                          child: Center(
+                            child: Text(
+                              isApplied ? 'Hủy' : 'Chọn',
+                              style: TextStyle(color: kPrimary, fontSize: 12),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          );
-        },
-      ),
-    );
+            );
+          },
+        ),
+      );
+    });
   }
 
   Widget buildBeanReward() {
@@ -532,26 +582,29 @@ class _OrderScreenState extends State<OrderScreen> {
       children: [
         Row(
           children: [
-            Container(
-              padding: const EdgeInsets.all(8),
-              child: RichText(
-                text: TextSpan(
-                    text: "Nhận đơn tại:",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15,
-                        color: kPrimary),
-                    children: []),
+            Expanded(
+              flex: 4,
+              child: Container(
+                padding: const EdgeInsets.all(8),
+                child: RichText(
+                  text: TextSpan(
+                      text: "Nhận đơn tại:",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                          color: kPrimary),
+                      children: []),
+                ),
               ),
             ),
-            SizedBox(width: 8),
-            Flexible(
+            Expanded(
+              flex: 7,
               child: InkWell(
                 onTap: () async {
                   await orderViewModel.changeLocationOfStore();
                 },
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(8, 8, 4, 8),
+                  padding: const EdgeInsets.fromLTRB(0, 8, 4, 8),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -587,17 +640,23 @@ class _OrderScreenState extends State<OrderScreen> {
     DateTime arrive = DateFormat("HH:mm:ss").parse(dto.selectedTimeSlot.arrive);
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: RichText(
-        text: TextSpan(
-            text: "Thời gian: ",
-            style: TextStyle(
-                fontWeight: FontWeight.bold, fontSize: 15, color: kPrimary),
-            children: [
-              TextSpan(
-                  text:
-                      "${DateFormat("HH:mm").format(arrive)} ~ ${DateFormat("HH:mm").format(arrive.add(Duration(minutes: 30)))}",
-                  style: TextStyle(fontSize: 14, color: Colors.black))
-            ]),
+      child: Row(
+        children: [
+          Expanded(
+            flex: 4,
+            child: Text("Thời gian: ",
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15,
+                    color: kPrimary)),
+          ),
+          Expanded(
+            flex: 7,
+            child: Text(
+                "${DateFormat("HH:mm").format(arrive)} ~ ${DateFormat("HH:mm").format(arrive.add(Duration(minutes: 30)))}",
+                style: TextStyle(fontSize: 14, color: Colors.black)),
+          ),
+        ],
       ),
     );
   }

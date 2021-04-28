@@ -64,7 +64,8 @@ class OrderDAO extends BaseDAO {
       if (cart != null) {
         // print("Request Note: " + note);
         final res = await request.post('/orders',
-            queryParameters: {"location-id": locationId}, data: cart.toJsonAPi());
+            queryParameters: {"location-id": locationId},
+            data: cart.toJsonAPi());
         return OrderStatus(
           statusCode: res.statusCode,
           code: res.data['code'],

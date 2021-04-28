@@ -13,6 +13,7 @@ import 'package:unidelivery_mobile/utils/shared_pref.dart';
 enum OrderFilter { NEW, ORDERING, DONE }
 
 class OrderHistoryViewModel extends BaseModel {
+  static OrderHistoryViewModel _instance;
   List<OrderListDTO> orderThumbnail;
   OrderDAO _orderDAO;
   dynamic error;
@@ -20,6 +21,8 @@ class OrderHistoryViewModel extends BaseModel {
   Map<String, dynamic> listPayments;
   ScrollController scrollController;
   List<bool> selections = [true, false];
+
+  OrderDTO newTodayOrder;
 
   OrderHistoryViewModel() {
     setState(ViewStatus.Loading);
@@ -34,6 +37,17 @@ class OrderHistoryViewModel extends BaseModel {
         }
       }
     });
+  }
+
+  static OrderHistoryViewModel getInstance() {
+    if (_instance == null) {
+      _instance = OrderHistoryViewModel();
+    }
+    return _instance;
+  }
+
+  static void destroyInstance() {
+    _instance = null;
   }
 
   Future<void> cancelOrder(int orderId) async {
@@ -91,6 +105,35 @@ class OrderHistoryViewModel extends BaseModel {
       } else
         setState(ViewStatus.Error);
     } finally {}
+  }
+
+  Future<void> getNewOrder() async {
+    try {
+      setState(ViewStatus.Loading);
+      final data = await _orderDAO.getOrders(OrderFilter.NEW);
+      final currentDateData = data?.firstWhere(
+          (orderSummary) =>
+              DateTime.parse(orderSummary.checkInDate)
+                  .difference(DateTime.now())
+                  .inDays ==
+              0,
+          orElse: () => null);
+      if (currentDateData != null) {
+        newTodayOrder = currentDateData.orders.first;
+      }
+      setState(ViewStatus.Completed);
+    } catch (e) {
+      bool result = await showErrorDialog();
+      if (result) {
+        await getNewOrder();
+      } else
+        setState(ViewStatus.Error);
+    } finally {}
+  }
+
+  Future<void> closeNewOrder() async {
+    newTodayOrder = null;
+    notifyListeners();
   }
 
   Future<void> getMoreOrders() async {

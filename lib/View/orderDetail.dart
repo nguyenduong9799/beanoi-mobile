@@ -40,7 +40,7 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
       child: Scaffold(
         bottomNavigationBar: _buildCancelBtn(),
         appBar: DefaultAppBar(
-          title: widget.order.invoiceId.toString() ?? 'Đơn hàng',
+          title: "${widget.order.invoiceId.toString()}" ?? 'Đơn hàng',
           backButton: Container(
             child: IconButton(
               icon: Icon(
@@ -191,7 +191,7 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
       return Container(
         padding: EdgeInsets.only(top: 8, bottom: 8),
         child: Text(
-          'Bạn đã có buổi cơm ngon miệng phải hông 😋',
+          'Bạn đã có bữa cơm ngon miệng phải không 😋?',
           textAlign: TextAlign.center,
           style: TextStyle(
             color: Colors.grey,
