@@ -46,7 +46,6 @@ class _OrderScreenState extends State<OrderScreen> {
 
   void prepareCart() async {
     await orderViewModel.prepareOrder();
-    await orderViewModel.getVouchers();
     setState(() {
       onInit = false;
     });
@@ -116,12 +115,6 @@ class _OrderScreenState extends State<OrderScreen> {
                                 color: kBackgroundGrey[2],
                               )),
                           layoutSubtotal(),
-                          SizedBox(
-                              height: 8,
-                              child: Container(
-                                color: kBackgroundGrey[2],
-                              )),
-                          voucherList(),
                           SizedBox(
                               height: 8,
                               child: Container(
