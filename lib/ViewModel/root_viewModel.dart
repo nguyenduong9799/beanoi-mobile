@@ -53,11 +53,12 @@ class RootViewModel extends BaseModel {
               "Bạn có chắc không? Đổi khu vực rồi là giỏ hàng bị xóa đó!!");
         }
 
-        if (option == 1) {
+        if (option == 1 || cart == null) {
           showLoadingDialog();
+          await deleteCart();
           currentStore = campus;
           setSelectedLocation(currentStore, location);
-          await clearCart();
+          await setStore(currentStore);
           notifyListeners();
           hideDialog();
           HomeViewModel.getInstance().getSuppliers();
@@ -65,13 +66,14 @@ class RootViewModel extends BaseModel {
         }
       } else {
         setSelectedLocation(currentStore, location);
-        notifyListeners();
         await setStore(currentStore);
+        notifyListeners();
       }
     } else {
-      showStatusDialog("assets/images/global_error.png", "Opps",
+      await showStatusDialog("assets/images/global_error.png", "Opps",
           "Cửa hàng đang tạm đóng 😓");
     }
+    Get.back();
   }
 
   Future<void> processChangeLocation() async {
@@ -275,6 +277,8 @@ class RootViewModel extends BaseModel {
         element.isSelected = false;
       }
     });
+    currentStore = campus;
+    notifyListeners();
   }
 
   bool get isCurrentMenuAvailable {

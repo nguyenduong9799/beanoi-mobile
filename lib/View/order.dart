@@ -7,11 +7,13 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:unidelivery_mobile/Model/DTO/VoucherDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/View/start_up.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
 import 'package:unidelivery_mobile/acessories/appbar.dart';
 import 'package:unidelivery_mobile/acessories/dash_border.dart';
+import 'package:unidelivery_mobile/acessories/dialog.dart';
 import 'package:unidelivery_mobile/acessories/loading.dart';
 import 'package:unidelivery_mobile/acessories/otherAmount.dart';
 import 'package:unidelivery_mobile/constraints.dart';
@@ -132,6 +134,104 @@ class _OrderScreenState extends State<OrderScreen> {
     );
   }
 
+  Widget voucherList() {
+    return ScopedModelDescendant<OrderViewModel>(
+        builder: (context, child, model) {
+      final vouchers = model.vouchers;
+      if (vouchers == null || vouchers.isEmpty) {
+        return SizedBox();
+      }
+      return Container(
+        width: Get.width,
+        color: kBackgroundGrey[2],
+        padding: EdgeInsets.only(left: 8),
+        height: 72,
+        child: ListView.builder(
+          shrinkWrap: true,
+          itemCount: vouchers.length,
+          scrollDirection: Axis.horizontal,
+          itemBuilder: (context, index) {
+            final voucher = vouchers[index];
+            final vouchersInCart = model.currentCart.vouchers;
+            bool isApplied =
+                vouchersInCart.any((e) => e.voucherCode == voucher.voucherCode);
+            return ClipPath(
+              clipper: ShapeBorderClipper(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                ),
+              ),
+              child: AnimatedContainer(
+                duration: Duration(milliseconds: 300),
+                padding: EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: isApplied ? kPrimary.withOpacity(0.4) : Colors.white,
+                  border: Border(
+                    left: BorderSide(color: kPrimary, width: 6),
+                    top: BorderSide(
+                        color: Colors.transparent, width: isApplied ? 2 : 0),
+                    bottom: BorderSide(
+                        color: Colors.transparent, width: isApplied ? 2 : 0),
+                    right: BorderSide(
+                        color: Colors.transparent, width: isApplied ? 2 : 0),
+                  ),
+                ),
+                width: Get.width * 0.7,
+                margin: EdgeInsets.only(right: 8),
+                // height: 72,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            voucher.voucherName,
+                            style: kTitleTextStyle.copyWith(fontSize: 16),
+                          ),
+                          Text(
+                            voucher.promotionName,
+                            style: kDescriptionTextSyle.copyWith(
+                                fontSize: 12, fontWeight: FontWeight.normal),
+                          ),
+                        ],
+                      ),
+                    ),
+                    VerticalDivider(),
+                    Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: () {
+                          if (isApplied) {
+                            model.unselectVoucher(voucher);
+                          } else {
+                            model.selectVoucher(voucher);
+                          }
+                        },
+                        child: Container(
+                          height: 72,
+                          child: Center(
+                            child: Text(
+                              isApplied ? 'Hủy' : 'Chọn',
+                              style: TextStyle(color: kPrimary, fontSize: 12),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+      );
+    });
+  }
+
   Widget buildBeanReward() {
     return Center(
       child: Container(
@@ -218,8 +318,11 @@ class _OrderScreenState extends State<OrderScreen> {
                     },
                     borderSide: BorderSide(color: kPrimary),
                     child: Text(
-                      "Thêm",
-                      style: TextStyle(color: kPrimary),
+                      "Thêm món",
+                      style: TextStyle(
+                        color: kPrimary,
+                        fontSize: 12,
+                      ),
                     ),
                   )
                 ],
@@ -474,26 +577,29 @@ class _OrderScreenState extends State<OrderScreen> {
       children: [
         Row(
           children: [
-            Container(
-              padding: const EdgeInsets.all(8),
-              child: RichText(
-                text: TextSpan(
-                    text: "Nhận đơn tại:",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15,
-                        color: kPrimary),
-                    children: []),
+            Expanded(
+              flex: 4,
+              child: Container(
+                padding: const EdgeInsets.all(8),
+                child: RichText(
+                  text: TextSpan(
+                      text: "Nhận đơn tại:",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                          color: kPrimary),
+                      children: []),
+                ),
               ),
             ),
-            SizedBox(width: 8),
-            Flexible(
+            Expanded(
+              flex: 7,
               child: InkWell(
                 onTap: () async {
                   await orderViewModel.changeLocationOfStore();
                 },
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(8, 8, 4, 8),
+                  padding: const EdgeInsets.fromLTRB(0, 8, 4, 8),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -529,17 +635,23 @@ class _OrderScreenState extends State<OrderScreen> {
     DateTime arrive = DateFormat("HH:mm:ss").parse(dto.selectedTimeSlot.arrive);
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: RichText(
-        text: TextSpan(
-            text: "Thời gian: ",
-            style: TextStyle(
-                fontWeight: FontWeight.bold, fontSize: 15, color: kPrimary),
-            children: [
-              TextSpan(
-                  text:
-                      "${DateFormat("HH:mm").format(arrive)} ~ ${DateFormat("HH:mm").format(arrive.add(Duration(minutes: 30)))}",
-                  style: TextStyle(fontSize: 14, color: Colors.black))
-            ]),
+      child: Row(
+        children: [
+          Expanded(
+            flex: 4,
+            child: Text("Thời gian: ",
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15,
+                    color: kPrimary)),
+          ),
+          Expanded(
+            flex: 7,
+            child: Text(
+                "${DateFormat("HH:mm").format(arrive)} ~ ${DateFormat("HH:mm").format(arrive.add(Duration(minutes: 30)))}",
+                style: TextStyle(fontSize: 14, color: Colors.black)),
+          ),
+        ],
       ),
     );
   }
@@ -560,10 +672,18 @@ class _OrderScreenState extends State<OrderScreen> {
             decoration: BoxDecoration(
               border: Border(left: BorderSide(color: kPrimary, width: 4)),
             ),
-            child: Text(
-              'Chi phí',
-              style: TextStyle(
-                  fontWeight: FontWeight.bold, fontSize: 15, color: kPrimary),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  'Chi phí',
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15,
+                      color: kPrimary),
+                ),
+              ],
             ),
           ),
           SizedBox(
@@ -824,7 +944,9 @@ class _OrderScreenState extends State<OrderScreen> {
                 .currentStore
                 .selectedTimeSlot
                 .available;
-            if (location == null) {
+            if (model.errorMessage != null) {
+              errorMsg = model.errorMessage;
+            } else if (location == null) {
               errorMsg = "Vui lòng chọn địa điểm giao";
             } else if (model.currentCart?.payment == null) {
               errorMsg = "Vui lòng chọn phương thức thanh toán 💰";
@@ -841,7 +963,7 @@ class _OrderScreenState extends State<OrderScreen> {
                   ),
                 ],
               ),
-              child: model.currentCart?.payment != null && location != null
+              child: errorMsg == null
                   ? ListView(
                       shrinkWrap: true,
                       children: [
@@ -992,11 +1114,32 @@ class _OrderScreenState extends State<OrderScreen> {
 
   List<Widget> _buildOtherAmount(List<OtherAmount> otherAmounts) {
     if (otherAmounts == null) return [SizedBox.shrink()];
-
+    otherAmounts.sort((a, b) => b.amount.compareTo(a.amount));
     return otherAmounts
         .map((amountObj) => OtherAmountWidget(
               otherAmount: amountObj,
             ))
         .toList();
+  }
+}
+
+class BorderWithCorlor extends StatelessWidget {
+  final BorderRadius borderRadius;
+  final Widget child;
+  const BorderWithCorlor({Key key, this.borderRadius, this.child})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipPath(
+      clipper: ShapeBorderClipper(
+        shape: RoundedRectangleBorder(
+          borderRadius: borderRadius,
+        ),
+      ),
+      child: Container(
+        child: child,
+      ),
+    );
   }
 }
