@@ -89,7 +89,9 @@ class Cart {
       "products_list": listCartItem,
       "supplier_notes":
           notes != null ? notes.map((e) => e.toJson())?.toList() : [],
-      // "vouchers": _vouchers,
+      "vouchers": _vouchers != null
+          ? _vouchers?.map((voucher) => voucher.voucherCode)?.toList()
+          : null,
     };
     logger.i("Order: " + map.toString());
     return map;

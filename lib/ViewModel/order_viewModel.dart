@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 import 'package:unidelivery_mobile/Model/DAO/PromotionDAO.dart';
 import 'package:unidelivery_mobile/Model/DAO/index.dart';
@@ -26,6 +27,9 @@ class OrderViewModel extends BaseModel {
   PromotionDAO promoDao;
   Cart currentCart;
   OrderHistoryViewModel _orderModel = OrderHistoryViewModel.getInstance();
+
+  String errorMessage = null;
+
   OrderViewModel() {
     dao = new OrderDAO();
     promoDao = new PromotionDAO();
@@ -55,17 +59,28 @@ class OrderViewModel extends BaseModel {
       if (listPayments == null) {
         listPayments = await dao.getPayments();
       }
-
+      errorMessage = null;
       await Future.delayed(Duration(milliseconds: 500));
       hideDialog();
       setState(ViewStatus.Completed);
-    } catch (e, stacktra) {
+    } on DioError catch (e, stacktra) {
       print(stacktra.toString());
-      bool result = await showErrorDialog();
-      if (result) {
-        await prepareOrder();
-      } else
-        setState(ViewStatus.Error);
+      if (e.response.statusCode == 400) {
+        String errorMsg = e.response.data["message"];
+        errorMessage = errorMsg;
+        if (e.response.data['data'] != null) {
+          orderAmount = OrderAmountDTO.fromJson(e.response.data['data']);
+        }
+
+        setState(ViewStatus.Completed);
+      } else {
+        bool result = await showErrorDialog();
+        if (result) {
+          await prepareOrder();
+        } else {
+          setState(ViewStatus.Error);
+        }
+      }
     }
   }
 
@@ -133,7 +148,7 @@ class OrderViewModel extends BaseModel {
         await deleteCart();
         hideDialog();
         await showStatusDialog(
-            "assets/images/global_sucsess.png", result.code, result.message);
+            "assets/images/global_sucsess.png", result?.code, result?.message);
         await _orderModel.getNewOrder();
         Get.offAndToNamed(
           RouteHandler.ORDER_HISTORY_DETAIL,

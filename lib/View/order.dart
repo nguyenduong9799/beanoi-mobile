@@ -168,18 +168,19 @@ class _OrderScreenState extends State<OrderScreen> {
                   borderRadius: BorderRadius.all(Radius.circular(10)),
                 ),
               ),
-              child: Container(
+              child: AnimatedContainer(
+                duration: Duration(milliseconds: 300),
                 padding: EdgeInsets.all(8),
                 decoration: BoxDecoration(
                   color: isApplied ? kPrimary.withOpacity(0.4) : Colors.white,
                   border: Border(
                     left: BorderSide(color: kPrimary, width: 6),
                     top: BorderSide(
-                        color: Colors.transparent, width: isApplied ? 1 : 0),
+                        color: Colors.transparent, width: isApplied ? 2 : 0),
                     bottom: BorderSide(
-                        color: Colors.transparent, width: isApplied ? 1 : 0),
+                        color: Colors.transparent, width: isApplied ? 2 : 0),
                     right: BorderSide(
-                        color: Colors.transparent, width: isApplied ? 1 : 0),
+                        color: Colors.transparent, width: isApplied ? 2 : 0),
                   ),
                 ),
                 width: Get.width * 0.7,
@@ -200,7 +201,8 @@ class _OrderScreenState extends State<OrderScreen> {
                           ),
                           Text(
                             voucher.promotionName,
-                            style: kDescriptionTextSyle.copyWith(fontSize: 12),
+                            style: kDescriptionTextSyle.copyWith(
+                                fontSize: 12, fontWeight: FontWeight.normal),
                           ),
                         ],
                       ),
@@ -688,14 +690,6 @@ class _OrderScreenState extends State<OrderScreen> {
                       fontSize: 15,
                       color: kPrimary),
                 ),
-                InkWell(
-                  onTap: () {
-                    inputDialog("Nhập mã khuyến mãi của bạn", "Áp dụng",
-                        maxLines: 1);
-                  },
-                  child: Text("Nhập khuyến mãi 💸",
-                      style: TextStyle(color: Colors.blue, fontSize: 12)),
-                ),
               ],
             ),
           ),
@@ -957,7 +951,9 @@ class _OrderScreenState extends State<OrderScreen> {
                 .currentStore
                 .selectedTimeSlot
                 .available;
-            if (location == null) {
+            if (model.errorMessage != null) {
+              errorMsg = model.errorMessage;
+            } else if (location == null) {
               errorMsg = "Vui lòng chọn địa điểm giao";
             } else if (model.currentCart?.payment == null) {
               errorMsg = "Vui lòng chọn phương thức thanh toán 💰";
@@ -974,7 +970,7 @@ class _OrderScreenState extends State<OrderScreen> {
                   ),
                 ],
               ),
-              child: model.currentCart?.payment != null && location != null
+              child: errorMsg == null
                   ? ListView(
                       shrinkWrap: true,
                       children: [
@@ -1125,11 +1121,32 @@ class _OrderScreenState extends State<OrderScreen> {
 
   List<Widget> _buildOtherAmount(List<OtherAmount> otherAmounts) {
     if (otherAmounts == null) return [SizedBox.shrink()];
-
+    otherAmounts.sort((a, b) => b.amount.compareTo(a.amount));
     return otherAmounts
         .map((amountObj) => OtherAmountWidget(
               otherAmount: amountObj,
             ))
         .toList();
+  }
+}
+
+class BorderWithCorlor extends StatelessWidget {
+  final BorderRadius borderRadius;
+  final Widget child;
+  const BorderWithCorlor({Key key, this.borderRadius, this.child})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipPath(
+      clipper: ShapeBorderClipper(
+        shape: RoundedRectangleBorder(
+          borderRadius: borderRadius,
+        ),
+      ),
+      child: Container(
+        child: child,
+      ),
+    );
   }
 }

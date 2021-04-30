@@ -27,6 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
   OrderHistoryViewModel orderModel = OrderHistoryViewModel.getInstance();
   Future<void> _refresh() async {
     await HomeViewModel.getInstance().getSuppliers();
+    await orderModel.getNewOrder();
   }
 
   @override
@@ -76,13 +77,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                 SizedBox(height: 8),
                                 banner(),
                                 Container(child: storeList()),
+                                SizedBox(height: 46),
                               ],
                             ),
                           ),
                         ),
                       ),
                     ),
-                    SizedBox(height: 46),
                   ],
                 ),
                 Positioned(

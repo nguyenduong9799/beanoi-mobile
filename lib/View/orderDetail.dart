@@ -25,7 +25,7 @@ class OrderHistoryDetail extends StatefulWidget {
 }
 
 class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
-  final orderDetailModel = OrderHistoryViewModel();
+  final orderDetailModel = OrderHistoryViewModel.getInstance();
 
   @override
   void initState() {
@@ -36,7 +36,7 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
   @override
   Widget build(BuildContext context) {
     return ScopedModel<OrderHistoryViewModel>(
-      model: OrderHistoryViewModel(),
+      model: orderDetailModel,
       child: Scaffold(
         bottomNavigationBar: _buildCancelBtn(),
         appBar: DefaultAppBar(
@@ -55,110 +55,107 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
           ),
         ),
         body: SingleChildScrollView(
-          child: ScopedModel<OrderHistoryViewModel>(
-            model: orderDetailModel,
-            child: ScopedModelDescendant<OrderHistoryViewModel>(
-              builder: (context, child, model) {
-                final status = model.status;
-                if (status == ViewStatus.Loading)
-                  return AspectRatio(
-                    aspectRatio: 1,
-                    child: Center(child: CircularProgressIndicator()),
-                  );
-
-                final orderDetail = model.orderDetail;
-                return Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Column(
-                    children: <Widget>[
-                      Container(
-                        width: Get.width,
-                        padding: EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: kBackgroundGrey[0],
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Container(
-                                  width: 100,
-                                  child: orderDetail.status == OrderFilter.NEW
-                                      ? TyperAnimatedTextKit(
-                                          speed: Duration(milliseconds: 100),
-                                          onTap: () {},
-                                          text: ['Mới ☕'],
-                                          textStyle: TextStyle(
-                                            fontFamily: "Bobbers",
-                                            color: kPrimary,
-                                          ),
-                                          textAlign: TextAlign.start,
-                                        )
-                                      : Text(
-                                          'Đã nhận hàng',
-                                          style: TextStyle(
-                                            color: kPrimary,
-                                          ),
-                                        ),
-                                ),
-                                Expanded(
-                                  child: Padding(
-                                    padding: EdgeInsets.only(left: 8, right: 8),
-                                    child: Divider(),
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Padding(
-                                    padding: EdgeInsets.only(left: 8, right: 8),
-                                    child: Divider(),
-                                  ),
-                                ),
-                                Text(
-                                  DateFormat('HH:mm dd/MM').format(
-                                      DateTime.parse(orderDetail.orderTime)),
-                                  style: TextStyle(color: Colors.black45),
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 8),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text("🎯 Nhận đơn tại: "),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 8),
-                                  child: Text(
-                                    orderDetail.address,
-                                    style: TextStyle(
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                )
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: 8),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: kBackgroundGrey[0],
-                        ),
-                        child: buildOrderSummaryList(orderDetail),
-                      ),
-                      SizedBox(height: 8),
-                      layoutSubtotal(orderDetail),
-                    ],
-                  ),
+          child: ScopedModelDescendant<OrderHistoryViewModel>(
+            builder: (context, child, model) {
+              final status = model.status;
+              if (status == ViewStatus.Loading)
+                return AspectRatio(
+                  aspectRatio: 1,
+                  child: Center(child: CircularProgressIndicator()),
                 );
-              },
-            ),
+
+              final orderDetail = model.orderDetail;
+              return Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: Column(
+                  children: <Widget>[
+                    Container(
+                      width: Get.width,
+                      padding: EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: kBackgroundGrey[0],
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Container(
+                                width: 100,
+                                child: orderDetail.status == OrderFilter.NEW
+                                    ? TyperAnimatedTextKit(
+                                        speed: Duration(milliseconds: 100),
+                                        onTap: () {},
+                                        text: ['Mới ☕'],
+                                        textStyle: TextStyle(
+                                          fontFamily: "Bobbers",
+                                          color: kPrimary,
+                                        ),
+                                        textAlign: TextAlign.start,
+                                      )
+                                    : Text(
+                                        'Đã nhận hàng',
+                                        style: TextStyle(
+                                          color: kPrimary,
+                                        ),
+                                      ),
+                              ),
+                              Expanded(
+                                child: Padding(
+                                  padding: EdgeInsets.only(left: 8, right: 8),
+                                  child: Divider(),
+                                ),
+                              ),
+                              Expanded(
+                                child: Padding(
+                                  padding: EdgeInsets.only(left: 8, right: 8),
+                                  child: Divider(),
+                                ),
+                              ),
+                              Text(
+                                DateFormat('HH:mm dd/MM').format(
+                                    DateTime.parse(orderDetail.orderTime)),
+                                style: TextStyle(color: Colors.black45),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 8),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("🎯 Nhận đơn tại: "),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 8),
+                                child: Text(
+                                  orderDetail.address,
+                                  style: TextStyle(
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              )
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: kBackgroundGrey[0],
+                      ),
+                      child: buildOrderSummaryList(orderDetail),
+                    ),
+                    SizedBox(height: 8),
+                    layoutSubtotal(orderDetail),
+                  ],
+                ),
+              );
+            },
           ),
         ),
       ),

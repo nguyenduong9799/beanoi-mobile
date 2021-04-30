@@ -62,6 +62,7 @@ class OrderHistoryViewModel extends BaseModel {
         );
 
         if (success) {
+          clearNewOrder(orderId);
           await showStatusDialog("assets/images/global_sucsess.png",
               "Thành công", "Hãy xem thử các món khác bạn nhé 😓");
           Get.back();
@@ -105,6 +106,13 @@ class OrderHistoryViewModel extends BaseModel {
       } else
         setState(ViewStatus.Error);
     } finally {}
+  }
+
+  Future<void> clearNewOrder(int orderId) {
+    if (newTodayOrder?.id == orderId) {
+      newTodayOrder = null;
+      notifyListeners();
+    }
   }
 
   Future<void> getNewOrder() async {

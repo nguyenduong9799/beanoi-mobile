@@ -34,7 +34,7 @@ Future<void> showStatusDialog(
             Padding(
               padding: EdgeInsets.fromLTRB(8, 0, 8, 0),
               child: Text(
-                status,
+                status ?? "",
                 style: TextStyle(
                     fontWeight: FontWeight.bold, fontSize: 16, color: kPrimary),
               ),
@@ -101,7 +101,8 @@ void showLoadingDialog() {
       titleStyle: TextStyle(fontSize: 16));
 }
 
-Future<bool> showErrorDialog() async {
+Future<bool> showErrorDialog(
+    {String errorTitle = "Có một chút trục trặc nhỏ!!"}) async {
   hideDialog();
   bool result = false;
   await Get.dialog(
@@ -126,7 +127,7 @@ Future<bool> showErrorDialog() async {
               ),
             ),
             Text(
-              "Có một chút trục trặc nhỏ!!",
+              errorTitle,
               style: TextStyle(fontSize: 16, color: kPrimary),
             ),
             SizedBox(
