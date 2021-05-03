@@ -20,7 +20,7 @@ class OrderHistoryScreen extends StatefulWidget {
 }
 
 class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
-  OrderHistoryViewModel model = OrderHistoryViewModel();
+  OrderHistoryViewModel model = OrderHistoryViewModel.getInstance();
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       new GlobalKey<RefreshIndicatorState>();
 

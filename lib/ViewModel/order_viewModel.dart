@@ -1,7 +1,10 @@
+import 'package:dio/dio.dart';
 import 'package:get/get.dart';
+import 'package:unidelivery_mobile/Model/DAO/PromotionDAO.dart';
 import 'package:unidelivery_mobile/Model/DAO/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/CartDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/OrderAmountDTO.dart';
+import 'package:unidelivery_mobile/Model/DTO/VoucherDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/Services/analytic_service.dart';
 import 'package:unidelivery_mobile/ViewModel/base_model.dart';
@@ -15,14 +18,27 @@ import 'package:unidelivery_mobile/utils/shared_pref.dart';
 import '../constraints.dart';
 
 class OrderViewModel extends BaseModel {
+  List<VoucherDTO> vouchers;
+
   OrderAmountDTO orderAmount;
   Map<String, dynamic> listPayments;
   CampusDTO campusDTO;
   OrderDAO dao;
+  PromotionDAO promoDao;
   Cart currentCart;
+  OrderHistoryViewModel _orderModel = OrderHistoryViewModel.getInstance();
+
+  String errorMessage = null;
 
   OrderViewModel() {
     dao = new OrderDAO();
+    promoDao = new PromotionDAO();
+  }
+
+  Future<void> getVouchers() async {
+    final voucherList = await promoDao.getPromotions();
+    vouchers = voucherList;
+    notifyListeners();
   }
 
   Future<void> prepareOrder() async {
@@ -33,7 +49,6 @@ class OrderViewModel extends BaseModel {
 
       if (campusDTO == null) {
         campusDTO = RootViewModel.getInstance().currentStore;
-        ;
       }
 
       if (currentCart == null) {
@@ -44,18 +59,43 @@ class OrderViewModel extends BaseModel {
       if (listPayments == null) {
         listPayments = await dao.getPayments();
       }
-
+      errorMessage = null;
       await Future.delayed(Duration(milliseconds: 500));
       hideDialog();
       setState(ViewStatus.Completed);
-    } catch (e, stacktra) {
+    } on DioError catch (e, stacktra) {
       print(stacktra.toString());
-      bool result = await showErrorDialog();
-      if (result) {
-        await prepareOrder();
-      } else
-        setState(ViewStatus.Error);
+      if (e.response.statusCode == 400) {
+        String errorMsg = e.response.data["message"];
+        errorMessage = errorMsg;
+        if (e.response.data['data'] != null) {
+          orderAmount = OrderAmountDTO.fromJson(e.response.data['data']);
+        }
+
+        setState(ViewStatus.Completed);
+      } else {
+        bool result = await showErrorDialog();
+        if (result) {
+          await prepareOrder();
+        } else {
+          setState(ViewStatus.Error);
+        }
+      }
     }
+  }
+
+  Future<void> selectVoucher(VoucherDTO voucher) {
+    // add voucher to cart
+    currentCart.addVoucher(voucher);
+    // call prepare
+    prepareOrder();
+  }
+
+  Future<void> unselectVoucher(VoucherDTO voucher) {
+    // add voucher to cart
+    currentCart.removeVoucher(voucher);
+    // call prepare
+    prepareOrder();
   }
 
   Future<void> updateQuantity(CartItem item) async {
@@ -108,7 +148,8 @@ class OrderViewModel extends BaseModel {
         await deleteCart();
         hideDialog();
         await showStatusDialog(
-            "assets/images/global_sucsess.png", result.code, result.message);
+            "assets/images/global_sucsess.png", result?.code, result?.message);
+        await _orderModel.getNewOrder();
         Get.offAndToNamed(
           RouteHandler.ORDER_HISTORY_DETAIL,
           arguments: result.order,

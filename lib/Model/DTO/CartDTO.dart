@@ -1,5 +1,6 @@
 import 'package:logger/logger.dart';
 import 'package:unidelivery_mobile/Model/DTO/ProductDTO.dart';
+import 'package:unidelivery_mobile/Model/DTO/VoucherDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 
 final logger = Logger(
@@ -18,10 +19,21 @@ class Cart {
   List<SupplierNoteDTO> notes;
   // User info
 
+  // _vouchers
+  List<VoucherDTO> _vouchers;
+
   Cart.get({this.items, this.payment, this.notes});
 
   Cart() {
     items = List();
+    _vouchers = List();
+  }
+
+  List<VoucherDTO> get vouchers {
+    if (_vouchers == null) {
+      _vouchers = List();
+    }
+    return _vouchers;
   }
 
   factory Cart.fromJson(dynamic json) {
@@ -36,6 +48,24 @@ class Cart {
         notes: (json['supplier_notes'] as List)
             ?.map((e) => SupplierNoteDTO.fromJson(e))
             ?.toList());
+  }
+
+  void addVoucher(VoucherDTO voucher) {
+    final existedVoucher = _vouchers.firstWhere(
+        (e) => e.voucherCode == voucher.voucherCode,
+        orElse: () => null);
+    if (existedVoucher == null) {
+      _vouchers.add(voucher);
+    }
+  }
+
+  void removeVoucher(VoucherDTO voucher) {
+    final existedVoucher = _vouchers.firstWhere(
+        (e) => e.voucherCode == voucher.voucherCode,
+        orElse: () => null);
+    if (existedVoucher != null) {
+      _vouchers.remove(existedVoucher);
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -58,7 +88,10 @@ class Cart {
       "payment": payment,
       "products_list": listCartItem,
       "supplier_notes":
-          notes != null ? notes.map((e) => e.toJson())?.toList() : []
+          notes != null ? notes.map((e) => e.toJson())?.toList() : [],
+      "vouchers": _vouchers != null
+          ? _vouchers?.map((voucher) => voucher.voucherCode)?.toList()
+          : null,
     };
     logger.i("Order: " + map.toString());
     return map;

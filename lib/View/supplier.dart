@@ -268,71 +268,113 @@ class _SupplierScreenState extends State<SupplierScreen> {
               RootViewModel.getInstance().openProductDetail(product);
             },
             child: Container(
+              width: Get.width,
               padding: EdgeInsets.fromLTRB(8, 16, 8, 8),
               decoration: BoxDecoration(
                   border:
                       Border(bottom: BorderSide(color: kBackgroundGrey[3]))),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              child: Row(
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Flexible(
-                          child: Text(
-                        product.name,
-                        style: kTitleTextStyle.copyWith(
-                          fontWeight: FontWeight.bold,
-                          decorationThickness: 0.5,
-                          fontSize: 14,
+                  Container(
+                    width: 64,
+                    height: 64,
+                    child: CachedNetworkImage(
+                      imageUrl: product.imageURL ?? defaultImage,
+                      imageBuilder: (context, imageProvider) => Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          image: DecorationImage(
+                            image: imageProvider,
+                            fit: BoxFit.cover,
+                          ),
                         ),
-                      )),
-                      Flexible(
-                          child: Text(
-                              product.type != ProductType.MASTER_PRODUCT
-                                  ? formatPrice(price)
-                                  : "từ " + formatPrice(price ?? product.price),
-                              style: TextStyle(color: kPrimary)))
-                    ],
+                      ),
+                      progressIndicatorBuilder:
+                          (context, url, downloadProgress) =>
+                              Shimmer.fromColors(
+                        baseColor: Colors.grey[300],
+                        highlightColor: Colors.grey[100],
+                        enabled: true,
+                        child: Container(
+                          width: MediaQuery.of(context).size.width,
+                          // height: 100,
+                          color: Colors.grey,
+                        ),
+                      ),
+                      errorWidget: (context, url, error) => Icon(
+                        MaterialIcons.broken_image,
+                        color: kPrimary.withOpacity(0.5),
+                      ),
+                    ),
                   ),
-                  SizedBox(
-                    height: 8,
+                  SizedBox(width: 8),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Flexible(
+                                child: Text(
+                              product.name,
+                              style: kTitleTextStyle.copyWith(
+                                fontWeight: FontWeight.bold,
+                                decorationThickness: 0.5,
+                                fontSize: 14,
+                              ),
+                            )),
+                            Flexible(
+                                child: Text(
+                                    product.type != ProductType.MASTER_PRODUCT
+                                        ? formatPrice(price)
+                                        : "từ " +
+                                            formatPrice(price ?? product.price),
+                                    style: TextStyle(color: kPrimary)))
+                          ],
+                        ),
+                        SizedBox(
+                          height: 8,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                                width: Get.width * 0.6,
+                                child: Text(
+                                  product.description ?? "",
+                                  maxLines: 1,
+                                  style: kDescriptionTextSyle.copyWith(
+                                    decorationThickness: 0.5,
+                                    fontStyle: FontStyle.italic,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w200,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                )),
+                            Flexible(
+                              child: RichText(
+                                  text: TextSpan(
+                                      style: TextStyle(
+                                          fontSize: 12, color: Colors.orange),
+                                      text:
+                                          "+ " + product.bean.toString() + " ",
+                                      children: [
+                                    WidgetSpan(
+                                        alignment: PlaceholderAlignment.bottom,
+                                        child: Image(
+                                          image: AssetImage(
+                                              "assets/images/icons/bean_coin.png"),
+                                          width: 16,
+                                          height: 16,
+                                        ))
+                                  ])),
+                            )
+                          ],
+                        )
+                      ],
+                    ),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                          width: Get.width * 0.6,
-                          child: Text(
-                            product.description ?? "",
-                            maxLines: 1,
-                            style: kDescriptionTextSyle.copyWith(
-                              decorationThickness: 0.5,
-                              fontStyle: FontStyle.italic,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w200,
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                          )),
-                      Flexible(
-                        child: RichText(
-                            text: TextSpan(
-                                style: TextStyle(
-                                    fontSize: 12, color: Colors.orange),
-                                text: "+ " + product.bean.toString() + " ",
-                                children: [
-                              WidgetSpan(
-                                  alignment: PlaceholderAlignment.bottom,
-                                  child: Image(
-                                    image: AssetImage(
-                                        "assets/images/icons/bean_coin.png"),
-                                    width: 16,
-                                    height: 16,
-                                  ))
-                            ])),
-                      )
-                    ],
-                  )
                 ],
               ),
             ),
