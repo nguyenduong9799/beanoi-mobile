@@ -1,10 +1,9 @@
 import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:dio_http_cache/dio_http_cache.dart';
 import 'package:get/get.dart' as Get;
-import 'package:unidelivery_mobile/acessories/dialog.dart';
-import 'package:unidelivery_mobile/route_constraint.dart';
+import 'package:unidelivery_mobile/Accessories/index.dart';
+import 'package:unidelivery_mobile/Constraints/index.dart';
 
 class AppException implements Exception {
   final _message;

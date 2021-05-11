@@ -1,19 +1,13 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:unidelivery_mobile/Model/DTO/index.dart';
+import 'package:unidelivery_mobile/Accessories/index.dart';
+import 'package:unidelivery_mobile/Constraints/index.dart';
+import 'package:unidelivery_mobile/Enums/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
-import 'package:unidelivery_mobile/acessories/dialog.dart';
-import 'package:unidelivery_mobile/acessories/loading.dart';
-import 'package:unidelivery_mobile/enums/view_status.dart';
-import 'package:unidelivery_mobile/route_constraint.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../constraints.dart';
 
 class ProfileScreen extends StatefulWidget {
   ProfileScreen();
@@ -29,20 +23,21 @@ class _UpdateAccountState extends State<ProfileScreen> {
   @override
   void initState() {
     super.initState();
+    Get.find<AccountViewModel>().fetchUser();
   }
 
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       new GlobalKey<RefreshIndicatorState>();
 
   Future<void> _refresh() async {
-    await AccountViewModel.getInstance().fetchUser();
+    await Get.find<AccountViewModel>().fetchUser();
   }
 
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return ScopedModel(
-      model: AccountViewModel.getInstance(),
+      model: Get.find<AccountViewModel>(),
       child: Scaffold(
         backgroundColor: kBackgroundGrey[0],
         body: SafeArea(

@@ -1,11 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
-import 'package:unidelivery_mobile/constraints.dart';
-import 'package:unidelivery_mobile/route_constraint.dart';
+
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key key}) : super(key: key);

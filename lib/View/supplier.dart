@@ -7,16 +7,12 @@ import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:get/get.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:unidelivery_mobile/Model/DTO/CollectionDTO.dart';
+import 'package:unidelivery_mobile/Accessories/index.dart';
+import 'package:unidelivery_mobile/Constraints/index.dart';
+import 'package:unidelivery_mobile/Enums/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
+import 'package:unidelivery_mobile/Utils/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
-import 'package:unidelivery_mobile/ViewModel/supplier_viewModel.dart';
-import 'package:unidelivery_mobile/acessories/cart_button.dart';
-import 'package:unidelivery_mobile/acessories/loading.dart';
-import 'package:unidelivery_mobile/acessories/product_promotion.dart';
-import 'package:unidelivery_mobile/constraints.dart';
-import 'package:unidelivery_mobile/enums/view_status.dart';
-import 'package:unidelivery_mobile/utils/index.dart';
 
 class SupplierScreen extends StatefulWidget {
   final SupplierDTO supplier;
@@ -265,7 +261,8 @@ class _SupplierScreenState extends State<SupplierScreen> {
           }
           listProducts.add(InkWell(
             onTap: () {
-              RootViewModel.getInstance().openProductDetail(product);
+              RootViewModel root = Get.find<RootViewModel>();
+              root.openProductDetail(product);
             },
             child: Container(
               width: Get.width,

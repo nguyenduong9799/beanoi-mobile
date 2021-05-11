@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
-import 'package:scoped_model/scoped_model.dart';
+import 'package:get/get.dart';
+import 'package:unidelivery_mobile/Accessories/index.dart';
 import 'package:unidelivery_mobile/View/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
-import 'package:unidelivery_mobile/acessories/bottomnavigator.dart';
-import 'package:unidelivery_mobile/acessories/cart_button.dart';
 
 class RootScreen extends StatefulWidget {
   final int initScreenIndex;
@@ -31,8 +30,8 @@ class _RootScreenState extends State<RootScreen> {
   void initState() {
     super.initState();
     _selectedIndex = widget.initScreenIndex;
-    HomeViewModel.getInstance().getSuppliers();
-    GiftViewModel.getInstance().getGifts();
+    Get.find<HomeViewModel>().getSuppliers();
+    Get.find<GiftViewModel>().getGifts();
   }
 
   @override

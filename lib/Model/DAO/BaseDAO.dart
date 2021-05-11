@@ -1,4 +1,4 @@
-import 'package:unidelivery_mobile/Model/DTO/MetaDataDTO.dart';
+import 'package:unidelivery_mobile/Model/DTO/index.dart';
 
 class BaseDAO{
   MetaDataDTO _metaDataDTO;

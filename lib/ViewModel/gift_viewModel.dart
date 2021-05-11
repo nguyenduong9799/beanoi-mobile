@@ -1,30 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:unidelivery_mobile/Accessories/index.dart';
+import 'package:unidelivery_mobile/Constraints/index.dart';
+import 'package:unidelivery_mobile/Enums/index.dart';
 import 'package:unidelivery_mobile/Model/DAO/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
-import 'package:unidelivery_mobile/ViewModel/index.dart';
-import 'package:unidelivery_mobile/acessories/dialog.dart';
-import 'package:unidelivery_mobile/enums/view_status.dart';
-import '../constraints.dart';
+
+import 'index.dart';
 
 class GiftViewModel extends BaseModel {
-  static GiftViewModel _instance;
-
-  static GiftViewModel getInstance() {
-    if (_instance == null) {
-      _instance = GiftViewModel();
-    }
-    return _instance;
-  }
-
-  static void destroyInstance() {
-    _instance = null;
-  }
-
   ProductDAO _productDAO;
-  bool changeAddress = false;
-
   List<ProductDTO> gifts;
   ScrollController giftScrollController;
+  CampusDTO currentStore;
 
   GiftViewModel() {
     _productDAO = ProductDAO();
@@ -44,9 +32,10 @@ class GiftViewModel extends BaseModel {
   Future<void> getGifts() async {
     try {
       setState(ViewStatus.Loading);
-      await RootViewModel.getInstance().fetchStore();
-      CampusDTO currentStore = RootViewModel.getInstance().currentStore;
-      if(RootViewModel.getInstance().status == ViewStatus.Error){
+      RootViewModel root = Get.find<RootViewModel>();
+      await root.fetchStore();
+      currentStore = root.currentStore;
+      if (root.status == ViewStatus.Error) {
         setState(ViewStatus.Error);
         return;
       }
@@ -69,8 +58,6 @@ class GiftViewModel extends BaseModel {
   Future<void> getMoreGifts() async {
     try {
       setState(ViewStatus.LoadMore);
-
-      CampusDTO currentStore = RootViewModel.getInstance().currentStore;
       gifts += await _productDAO.getGifts(
           currentStore.id, currentStore.selectedTimeSlot,
           page: _productDAO.metaDataDTO.page + 1);

@@ -5,9 +5,9 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:unidelivery_mobile/Model/DTO/BlogDTO.dart';
-import 'package:unidelivery_mobile/acessories/appbar.dart';
-import 'package:unidelivery_mobile/constraints.dart';
+import 'package:unidelivery_mobile/Accessories/index.dart';
+import 'package:unidelivery_mobile/Constraints/index.dart';
+import 'package:unidelivery_mobile/Model/DTO/index.dart';
 
 class BannerDetailScreen extends StatefulWidget {
   final BlogDTO blog;

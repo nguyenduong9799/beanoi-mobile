@@ -1,6 +1,7 @@
+import 'package:unidelivery_mobile/Constraints/index.dart';
+import 'package:unidelivery_mobile/Enums/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
-import 'package:unidelivery_mobile/ViewModel/orderHistory_viewModel.dart';
-import 'package:unidelivery_mobile/constraints.dart';
+
 
 class OrderListDTO {
   final checkInDate;

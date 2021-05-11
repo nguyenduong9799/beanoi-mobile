@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:unidelivery_mobile/Model/DTO/CampusDTO.dart';
-import 'package:unidelivery_mobile/ViewModel/root_viewModel.dart';
-import 'package:unidelivery_mobile/constraints.dart';
-import 'package:unidelivery_mobile/enums/view_status.dart';
+import 'package:unidelivery_mobile/Constraints/index.dart';
+import 'package:unidelivery_mobile/Enums/index.dart';
+import 'package:unidelivery_mobile/Model/DTO/index.dart';
+import 'package:unidelivery_mobile/ViewModel/index.dart';
 
 class HomeLocationSelect extends StatefulWidget {
   final CampusDTO selectedCampus;
@@ -20,13 +20,13 @@ class _HomeLocationSelectState extends State<HomeLocationSelect> {
   @override
   void initState() {
     super.initState();
-    RootViewModel.getInstance().getStores();
+    Get.find<RootViewModel>().getStores();
   }
 
   @override
   Widget build(BuildContext context) {
     return ScopedModel(
-      model: RootViewModel.getInstance(),
+      model: Get.find<RootViewModel>(),
       child: ScopedModelDescendant<RootViewModel>(
         builder: (context, child, model) {
           switch (model.status) {

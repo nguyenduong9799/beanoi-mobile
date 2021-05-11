@@ -13,3 +13,5 @@ class OrderStatus {
     this.order,
   });
 }
+
+enum OrderFilter { NEW, ORDERING, DONE }

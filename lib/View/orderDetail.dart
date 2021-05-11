@@ -5,15 +5,13 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:unidelivery_mobile/Model/DTO/index.dart';
-import 'package:unidelivery_mobile/ViewModel/index.dart';
-import 'package:unidelivery_mobile/acessories/appbar.dart';
-import 'package:unidelivery_mobile/acessories/dash_border.dart';
-import 'package:unidelivery_mobile/acessories/otherAmount.dart';
-import 'package:unidelivery_mobile/constraints.dart';
-import 'package:unidelivery_mobile/enums/view_status.dart';
-import 'package:unidelivery_mobile/utils/index.dart';
 import "package:collection/collection.dart";
+import 'package:unidelivery_mobile/Accessories/index.dart';
+import 'package:unidelivery_mobile/Constraints/index.dart';
+import 'package:unidelivery_mobile/Enums/index.dart';
+import 'package:unidelivery_mobile/Model/DTO/index.dart';
+import 'package:unidelivery_mobile/Utils/index.dart';
+import 'package:unidelivery_mobile/ViewModel/index.dart';
 
 class OrderHistoryDetail extends StatefulWidget {
   final OrderDTO order;
@@ -25,7 +23,7 @@ class OrderHistoryDetail extends StatefulWidget {
 }
 
 class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
-  final orderDetailModel = OrderHistoryViewModel.getInstance();
+  final orderDetailModel = Get.find<OrderHistoryViewModel>();
 
   @override
   void initState() {

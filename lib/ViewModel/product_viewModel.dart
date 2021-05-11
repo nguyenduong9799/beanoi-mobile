@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:unidelivery_mobile/Accessories/index.dart';
+import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
-import 'package:unidelivery_mobile/ViewModel/index.dart';
-import 'package:unidelivery_mobile/acessories/dialog.dart';
-import 'package:unidelivery_mobile/constraints.dart';
-import 'package:unidelivery_mobile/services/analytic_service.dart';
-import 'package:unidelivery_mobile/utils/shared_pref.dart';
+import 'package:unidelivery_mobile/Services/analytic_service.dart';
+import 'package:unidelivery_mobile/Utils/index.dart';
+
 
 import 'base_model.dart';
+import 'index.dart';
 
 class ProductDetailViewModel extends BaseModel {
   Color minusColor = kBackgroundGrey[5];
@@ -242,11 +243,12 @@ class ProductDetailViewModel extends BaseModel {
     CartItem item = new CartItem(master, listChoices, description, count);
 
     if (master.type == ProductType.GIFT_PRODUCT) {
-      if (AccountViewModel.getInstance().currentUser == null) {
-        await AccountViewModel.getInstance().fetchUser();
+      AccountViewModel account = Get.find<AccountViewModel>();
+      if (account.currentUser == null) {
+        await account.fetchUser();
       }
 
-      double totalBean = AccountViewModel.getInstance().currentUser.point;
+      double totalBean = account.currentUser.point;
 
       Cart cart = await getCart();
       if (cart != null) {

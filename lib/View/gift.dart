@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:unidelivery_mobile/Accessories/index.dart';
+import 'package:unidelivery_mobile/Constraints/index.dart';
+import 'package:unidelivery_mobile/Enums/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
-import 'package:unidelivery_mobile/acessories/appbar.dart';
-import 'package:unidelivery_mobile/acessories/loading.dart';
-import 'package:unidelivery_mobile/acessories/product_promotion.dart';
-import 'package:unidelivery_mobile/constraints.dart';
-import 'package:unidelivery_mobile/enums/view_status.dart';
 
 class GiftScreen extends StatefulWidget {
   const GiftScreen({Key key}) : super(key: key);
@@ -23,14 +21,14 @@ class _GiftScreenState extends State<GiftScreen> {
       new GlobalKey<RefreshIndicatorState>();
 
   Future<void> _refresh() async {
-    await GiftViewModel.getInstance().getGifts();
+    await Get.find<GiftViewModel>().getGifts();
   }
 
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return ScopedModel(
-      model: GiftViewModel.getInstance(),
+      model: Get.find<GiftViewModel>(),
       child: Scaffold(
         backgroundColor: Colors.white,
         body: SafeArea(
@@ -93,7 +91,8 @@ class _GiftScreenState extends State<GiftScreen> {
                                   return ListView(
                                     children: [
                                       Container(
-                                        padding: EdgeInsets.fromLTRB(16, 24, 16, 8),
+                                        padding:
+                                            EdgeInsets.fromLTRB(16, 24, 16, 8),
                                         color: Colors.white,
                                         child: Center(
                                           child: Column(
@@ -110,7 +109,8 @@ class _GiftScreenState extends State<GiftScreen> {
                                               Text(
                                                 "Hiện các món quà đã Sold out hết rồi. Nhanh tay đổi quà vào hôm sau nhé 😁",
                                                 textAlign: TextAlign.center,
-                                                style: kSubtitleTextSyule.copyWith(
+                                                style:
+                                                    kSubtitleTextSyule.copyWith(
                                                   color: Colors.orange,
                                                   fontSize: 16,
                                                 ),

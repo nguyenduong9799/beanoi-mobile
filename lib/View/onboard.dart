@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:introduction_screen/introduction_screen.dart';
-import 'package:unidelivery_mobile/Model/DAO/AccountDAO.dart';
-import 'package:unidelivery_mobile/constraints.dart';
-import 'package:unidelivery_mobile/route_constraint.dart';
-import 'package:unidelivery_mobile/utils/shared_pref.dart';
+import 'package:unidelivery_mobile/Constraints/index.dart';
+import 'package:unidelivery_mobile/Model/DAO/index.dart';
+import 'package:unidelivery_mobile/Utils/index.dart';
+
 
 class OnBoardScreen extends StatefulWidget {
   OnBoardScreen({Key key}) : super(key: key);

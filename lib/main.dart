@@ -1,62 +1,19 @@
 import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:unidelivery_mobile/View/banner_detail_screen.dart';
-import 'package:unidelivery_mobile/View/onboard.dart';
-import 'package:unidelivery_mobile/View/orderDetail.dart';
-import 'package:unidelivery_mobile/View/start_up.dart';
-import 'package:unidelivery_mobile/View/supplier.dart';
-import 'package:unidelivery_mobile/View/update.dart';
-import 'package:unidelivery_mobile/ViewModel/startup_viewModel.dart';
-import 'package:unidelivery_mobile/route_constraint.dart';
-import 'package:unidelivery_mobile/setup.dart';
-import 'package:unidelivery_mobile/utils/pageNavigation.dart';
-import 'package:unidelivery_mobile/constraints.dart';
+import 'package:unidelivery_mobile/Constraints/index.dart';
+import 'package:unidelivery_mobile/Utils/index.dart';
 import 'package:unidelivery_mobile/View/index.dart';
-import 'package:unidelivery_mobile/utils/request.dart';
-import 'package:splashscreen/splashscreen.dart';
+import 'package:unidelivery_mobile/setup.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   HttpOverrides.global = new MyHttpOverrides();
-
   await setUp();
-
+  createRouteBindings();
   runApp(MyApp());
-}
-
-class MyAppSpashScreen extends StatefulWidget {
-  @override
-  _MyAppSpashScreenState createState() => new _MyAppSpashScreenState();
-}
-
-class _MyAppSpashScreenState extends State<MyAppSpashScreen> {
-  // Future<Widget> loadFromFuture() async {
-  //   // <fetch data from server. ex. login>
-  //   StartUpViewModel.getInstance();
-  //   return Future.value(new MyApp());
-  // }
-
-  @override
-  Widget build(BuildContext context) {
-    return SplashScreen(
-      seconds: 10,
-      navigateAfterSeconds: new MyApp(),
-      title: new Text(
-        'Welcome In SplashScreen',
-        style: new TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
-      ),
-      image: new Image.network('https://i.imgur.com/TyCSG9A.png'),
-      backgroundColor: Colors.white,
-      styleTextUnderTheLoader: new TextStyle(),
-      photoSize: 100.0,
-      onClick: () => print("Flutter Egypt"),
-      loaderColor: Colors.red,
-    );
-  }
 }
 
 class MyApp extends StatelessWidget {

@@ -1,24 +1,13 @@
 import 'package:get/get.dart';
+import 'package:unidelivery_mobile/Accessories/index.dart';
+import 'package:unidelivery_mobile/Constraints/index.dart';
+import 'package:unidelivery_mobile/Enums/index.dart';
 import 'package:unidelivery_mobile/Model/DAO/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
-import 'package:unidelivery_mobile/ViewModel/index.dart';
-import 'package:unidelivery_mobile/acessories/dialog.dart';
-import 'package:unidelivery_mobile/enums/view_status.dart';
-import 'package:unidelivery_mobile/route_constraint.dart';
+
+import 'index.dart';
 
 class HomeViewModel extends BaseModel {
-  static HomeViewModel _instance;
-
-  static HomeViewModel getInstance() {
-    if (_instance == null) {
-      _instance = HomeViewModel();
-    }
-    return _instance;
-  }
-
-  static void destroyInstance() {
-    _instance = null;
-  }
 
   StoreDAO _storeDAO;
   List<SupplierDTO> suppliers;
@@ -31,9 +20,10 @@ class HomeViewModel extends BaseModel {
   Future<void> getSuppliers() async {
     try {
       setState(ViewStatus.Loading);
-      await RootViewModel.getInstance().fetchStore();
-      CampusDTO currentStore = RootViewModel.getInstance().currentStore;
-      if (RootViewModel.getInstance().status == ViewStatus.Error) {
+      RootViewModel root = Get.find<RootViewModel>();
+      await root.fetchStore();
+      CampusDTO currentStore = root.currentStore;
+      if (root.status == ViewStatus.Error) {
         setState(ViewStatus.Error);
         return;
       }
@@ -58,7 +48,8 @@ class HomeViewModel extends BaseModel {
   }
 
   Future<void> selectSupplier(SupplierDTO dto) async {
-    if (!RootViewModel.getInstance().isCurrentMenuAvailable) {
+    RootViewModel root = Get.find<RootViewModel>();
+    if (!root.isCurrentMenuAvailable) {
       showStatusDialog("assets/images/global_error.png", "Opps",
           "Hiện tại khung giờ bạn chọn đã chốt đơn. Bạn vui lòng xem khung giờ khác nhé 😓.");
     } else if (dto.available) {

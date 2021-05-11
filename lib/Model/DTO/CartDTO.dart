@@ -1,7 +1,6 @@
 import 'package:logger/logger.dart';
-import 'package:unidelivery_mobile/Model/DTO/ProductDTO.dart';
-import 'package:unidelivery_mobile/Model/DTO/VoucherDTO.dart';
-import 'package:unidelivery_mobile/Model/DTO/index.dart';
+
+import 'index.dart';
 
 final logger = Logger(
     printer: PrettyPrinter(

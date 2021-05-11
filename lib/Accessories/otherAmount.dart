@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:unidelivery_mobile/constraints.dart';
+import 'package:unidelivery_mobile/Constraints/index.dart';
 
 class OtherAmountWidget extends StatelessWidget {
   final otherAmount;

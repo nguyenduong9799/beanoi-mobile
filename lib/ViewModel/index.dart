@@ -8,3 +8,6 @@ export 'root_viewModel.dart';
 export 'signup_viewModel.dart';
 export 'account_viewModel.dart';
 export 'gift_viewModel.dart';
+export 'account_viewModel.dart';
+export 'startup_viewModel.dart';
+export 'supplier_viewModel.dart';

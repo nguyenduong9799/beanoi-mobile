@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:unidelivery_mobile/constraints.dart';
 
 class LoadingBean extends StatelessWidget {
   const LoadingBean({Key key}) : super(key: key);

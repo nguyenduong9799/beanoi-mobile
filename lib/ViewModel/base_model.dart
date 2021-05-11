@@ -1,5 +1,5 @@
 import 'package:scoped_model/scoped_model.dart';
-import 'package:unidelivery_mobile/enums/view_status.dart';
+import 'package:unidelivery_mobile/Enums/index.dart';
 
 class BaseModel extends Model {
   ViewStatus _status = ViewStatus.Completed;

@@ -1,13 +1,12 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:get/get.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:unidelivery_mobile/Constraints/index.dart';
+import 'package:unidelivery_mobile/Enums/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
-import 'package:unidelivery_mobile/constraints.dart';
-import 'package:unidelivery_mobile/enums/view_status.dart';
-import 'package:get/get.dart';
-import 'package:unidelivery_mobile/route_constraint.dart';
+
 
 class DefaultAppBar extends StatefulWidget implements PreferredSizeWidget {
   final String title;
@@ -57,14 +56,14 @@ class _AppBarSate extends State<DefaultAppBar> {
   }
 }
 
-class HomeAppBar extends StatefulWidget {
+class GiftAppBar extends StatefulWidget {
   @override
-  _HomeAppBarSate createState() {
-    return new _HomeAppBarSate();
+  _GiftAppBarSate createState() {
+    return new _GiftAppBarSate();
   }
 }
 
-class _HomeAppBarSate extends State<HomeAppBar> {
+class _GiftAppBarSate extends State<GiftAppBar> {
   @override
   void initState() {
     super.initState();
@@ -76,7 +75,7 @@ class _HomeAppBarSate extends State<HomeAppBar> {
   Widget build(BuildContext context) {
     // TODO: implement build
     return ScopedModel(
-      model: AccountViewModel.getInstance(),
+      model: Get.find<AccountViewModel>(),
       child: Container(
         height: MediaQuery.of(context).size.height * 0.11,
         padding: EdgeInsets.fromLTRB(10, 0, 10, 0),

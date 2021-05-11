@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:unidelivery_mobile/ViewModel/startup_viewModel.dart';
-import 'package:unidelivery_mobile/acessories/loading.dart';
-import 'package:unidelivery_mobile/constraints.dart';
+import 'package:unidelivery_mobile/Accessories/index.dart';
+import 'package:unidelivery_mobile/Constraints/index.dart';
+import 'package:unidelivery_mobile/ViewModel/index.dart';
 
 class StartUpView extends StatelessWidget {
   const StartUpView({Key key}) : super(key: key);
@@ -10,7 +10,7 @@ class StartUpView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScopedModel<StartUpViewModel>(
-      model: StartUpViewModel.getInstance(),
+      model: StartUpViewModel(),
       child: ScopedModelDescendant<StartUpViewModel>(
           builder: (context, child, model) {
         return Scaffold(

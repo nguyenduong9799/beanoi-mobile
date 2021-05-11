@@ -4,9 +4,9 @@ import 'package:get/get.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:unidelivery_mobile/ViewModel/login_viewModel.dart';
-import 'package:unidelivery_mobile/constraints.dart';
-import 'package:unidelivery_mobile/enums/view_status.dart';
+import 'package:unidelivery_mobile/Constraints/index.dart';
+import 'package:unidelivery_mobile/Enums/index.dart';
+import 'package:unidelivery_mobile/ViewModel/index.dart';
 
 class LoginWithPhoneOTP extends StatefulWidget {
   final String verificationId;

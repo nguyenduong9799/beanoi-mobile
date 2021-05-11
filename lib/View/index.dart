@@ -7,8 +7,13 @@ export 'orderHistory.dart';
 export 'product_detail.dart';
 export 'profile.dart';
 export 'signup.dart';
-export 'NotFoundScreen.dart';
-
-
+export 'notFoundScreen.dart';
+export 'start_up.dart';
+export 'banner_detail_screen.dart';
+export 'onboard.dart';
+export 'supplier.dart';
+export 'update.dart';
+export 'orderDetail.dart';
 export 'LoginScreen/LoginByPhone.dart';
 export 'LoginScreen/LoginPhoneOTP.dart';
+
