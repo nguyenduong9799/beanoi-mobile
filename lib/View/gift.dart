@@ -143,7 +143,7 @@ class _GiftScreenState extends State<GiftScreen> {
                   ),
                 ),
               ),
-              HomeAppBar(),
+              GiftAppBar(),
             ],
           ),
         ),

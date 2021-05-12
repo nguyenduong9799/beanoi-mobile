@@ -54,7 +54,7 @@ class _SupplierScreenState extends State<SupplierScreen> {
     return ScopedModel(
       model: model,
       child: Scaffold(
-        floatingActionButton: buildCartButton(),
+        floatingActionButton: CartButton(),
         body: SafeArea(
           child: Center(
             child: RefreshIndicator(

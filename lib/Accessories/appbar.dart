@@ -7,7 +7,6 @@ import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Enums/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
 
-
 class DefaultAppBar extends StatefulWidget implements PreferredSizeWidget {
   final String title;
   Widget backButton;
@@ -224,7 +223,7 @@ class _GiftAppBarSate extends State<GiftAppBar> {
               ),
               children: <TextSpan>[
                 TextSpan(
-                  text: "${user.name.toUpperCase()}",
+                  text: "${user?.name?.toUpperCase() ?? "-"}",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontStyle: FontStyle.italic,
@@ -266,7 +265,7 @@ class _GiftAppBarSate extends State<GiftAppBar> {
               ),
               children: [
                 TextSpan(
-                  text: "${user.balance.floor()} xu",
+                  text: "${user?.balance?.floor() ?? "-"} xu",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 14,
@@ -275,7 +274,7 @@ class _GiftAppBarSate extends State<GiftAppBar> {
                 ),
                 TextSpan(text: " và "),
                 TextSpan(
-                  text: "${user.point.floor()} ",
+                  text: "${user?.point?.floor() ?? "-"} ",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 14,

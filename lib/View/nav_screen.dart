@@ -47,7 +47,7 @@ class _RootScreenState extends State<RootScreen> {
           // FEATURE: HIEN GOI Y KHI USER KHONG TAP VAO SCREEN MOT KHOANG THOI GIAN
         },
         child: Scaffold(
-            floatingActionButton: buildCartButton(),
+            floatingActionButton: CartButton(),
             body: IndexedStack(
               index: _selectedIndex,
               children: _screens,
