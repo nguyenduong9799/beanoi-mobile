@@ -1,21 +1,14 @@
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
-import 'package:unidelivery_mobile/Model/DAO/PromotionDAO.dart';
+import 'package:unidelivery_mobile/Accessories/index.dart';
+import 'package:unidelivery_mobile/Constraints/index.dart';
+import 'package:unidelivery_mobile/Enums/index.dart';
 import 'package:unidelivery_mobile/Model/DAO/index.dart';
-import 'package:unidelivery_mobile/Model/DTO/CartDTO.dart';
-import 'package:unidelivery_mobile/Model/DTO/OrderAmountDTO.dart';
-import 'package:unidelivery_mobile/Model/DTO/VoucherDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/Services/analytic_service.dart';
-import 'package:unidelivery_mobile/ViewModel/base_model.dart';
-import 'package:unidelivery_mobile/ViewModel/index.dart';
-import 'package:unidelivery_mobile/acessories/dialog.dart';
-import 'package:unidelivery_mobile/acessories/home_location.dart';
-import 'package:unidelivery_mobile/enums/order_status.dart';
-import 'package:unidelivery_mobile/enums/view_status.dart';
-import 'package:unidelivery_mobile/route_constraint.dart';
-import 'package:unidelivery_mobile/utils/shared_pref.dart';
-import '../constraints.dart';
+import 'package:unidelivery_mobile/Utils/index.dart';
+
+import 'index.dart';
 
 class OrderViewModel extends BaseModel {
   List<VoucherDTO> vouchers;
@@ -26,7 +19,6 @@ class OrderViewModel extends BaseModel {
   OrderDAO dao;
   PromotionDAO promoDao;
   Cart currentCart;
-  OrderHistoryViewModel _orderModel = OrderHistoryViewModel.getInstance();
 
   String errorMessage = null;
 
@@ -48,7 +40,8 @@ class OrderViewModel extends BaseModel {
       }
 
       if (campusDTO == null) {
-        campusDTO = RootViewModel.getInstance().currentStore;
+        RootViewModel root = Get.find<RootViewModel>();
+        campusDTO = root.currentStore;
       }
 
       if (currentCart == null) {
@@ -102,10 +95,11 @@ class OrderViewModel extends BaseModel {
     // showLoadingDialog();
     if (item.master.type == ProductType.GIFT_PRODUCT) {
       int originalQuantity = 0;
-      if (AccountViewModel.getInstance().currentUser == null) {
-        await AccountViewModel.getInstance().fetchUser();
+      AccountViewModel account = Get.find<AccountViewModel>();
+      if (account.currentUser == null) {
+        await account.fetchUser();
       }
-      double totalBean = AccountViewModel.getInstance().currentUser.point;
+      double totalBean = account.currentUser.point;
 
       currentCart.items.forEach((element) {
         if (element.master.type == ProductType.GIFT_PRODUCT) {
@@ -143,13 +137,13 @@ class OrderViewModel extends BaseModel {
           campusDTO.locations.firstWhere((element) => element.isSelected);
 
       OrderStatus result = await dao.createOrders(location.id, currentCart);
-      await AccountViewModel.getInstance().fetchUser();
+      await Get.find<AccountViewModel>().fetchUser();
       if (result.statusCode == 200) {
         await deleteCart();
         hideDialog();
         await showStatusDialog(
             "assets/images/global_sucsess.png", result?.code, result?.message);
-        await _orderModel.getNewOrder();
+        await Get.find<OrderHistoryViewModel>().getNewOrder();
         Get.offAndToNamed(
           RouteHandler.ORDER_HISTORY_DETAIL,
           arguments: result.order,
@@ -197,7 +191,8 @@ class OrderViewModel extends BaseModel {
         selectedCampus: campusDTO,
       ),
     );
-    campusDTO = RootViewModel.getInstance().currentStore;
+    RootViewModel root = Get.find<RootViewModel>();
+    campusDTO = root.currentStore;
     setState(ViewStatus.Completed);
   }
 

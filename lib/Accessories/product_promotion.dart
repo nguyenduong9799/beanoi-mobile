@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
-import 'package:unidelivery_mobile/constraints.dart';
 
 class StorePromotion extends StatefulWidget {
   final ProductDTO dto;
@@ -38,7 +38,7 @@ class _StorePromotionState extends State<StorePromotion> {
       color: kPrimary,
       borderRadius: BorderRadius.all(Radius.circular(16.0)),
       child: ScopedModel(
-        model: RootViewModel.getInstance(),
+        model: Get.find<RootViewModel>(),
         child: ScopedModelDescendant<RootViewModel>(
           builder: (context, child, model) {
             return InkWell(

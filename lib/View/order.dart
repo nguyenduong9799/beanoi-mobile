@@ -1,27 +1,21 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:unidelivery_mobile/Model/DTO/VoucherDTO.dart';
-import 'package:unidelivery_mobile/Model/DTO/index.dart';
-import 'package:unidelivery_mobile/View/start_up.dart';
-import 'package:unidelivery_mobile/ViewModel/index.dart';
-import 'package:unidelivery_mobile/acessories/appbar.dart';
-import 'package:unidelivery_mobile/acessories/dash_border.dart';
-import 'package:unidelivery_mobile/acessories/dialog.dart';
-import 'package:unidelivery_mobile/acessories/loading.dart';
-import 'package:unidelivery_mobile/acessories/otherAmount.dart';
-import 'package:unidelivery_mobile/constraints.dart';
-import 'package:unidelivery_mobile/enums/view_status.dart';
-import 'package:unidelivery_mobile/utils/index.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import "package:collection/collection.dart";
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:unidelivery_mobile/Accessories/index.dart';
+import 'package:unidelivery_mobile/Constraints/index.dart';
+import 'package:unidelivery_mobile/Enums/index.dart';
+import 'package:unidelivery_mobile/Model/DTO/index.dart';
+import 'package:unidelivery_mobile/Utils/index.dart';
+import 'package:unidelivery_mobile/ViewModel/index.dart';
+
+import 'index.dart';
 
 class OrderScreen extends StatefulWidget {
   @override
@@ -940,7 +934,7 @@ class _OrderScreenState extends State<OrderScreen> {
               orElse: () => null,
             );
             String errorMsg = null;
-            var isMenuAvailable = RootViewModel.getInstance()
+            var isMenuAvailable = Get.find<RootViewModel>()
                 .currentStore
                 .selectedTimeSlot
                 .available;

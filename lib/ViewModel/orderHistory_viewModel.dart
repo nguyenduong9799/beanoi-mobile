@@ -1,19 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:unidelivery_mobile/Model/DAO/OrderDAO.dart';
+import 'package:unidelivery_mobile/Accessories/index.dart';
+import 'package:unidelivery_mobile/Constraints/index.dart';
+import 'package:unidelivery_mobile/Enums/index.dart';
 import 'package:unidelivery_mobile/Model/DAO/index.dart';
-import 'package:unidelivery_mobile/Model/DTO/OrderDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
-import 'package:unidelivery_mobile/ViewModel/base_model.dart';
-import 'package:unidelivery_mobile/acessories/dialog.dart';
-import 'package:unidelivery_mobile/constraints.dart';
-import 'package:unidelivery_mobile/enums/view_status.dart';
-import 'package:unidelivery_mobile/utils/shared_pref.dart';
+import 'package:unidelivery_mobile/Utils/index.dart';
 
-enum OrderFilter { NEW, ORDERING, DONE }
+import 'index.dart';
+
+
 
 class OrderHistoryViewModel extends BaseModel {
-  static OrderHistoryViewModel _instance;
   List<OrderListDTO> orderThumbnail;
   OrderDAO _orderDAO;
   dynamic error;
@@ -25,7 +23,6 @@ class OrderHistoryViewModel extends BaseModel {
   OrderDTO newTodayOrder;
 
   OrderHistoryViewModel() {
-    setState(ViewStatus.Loading);
     _orderDAO = OrderDAO();
     scrollController = ScrollController();
     scrollController.addListener(() async {
@@ -37,17 +34,6 @@ class OrderHistoryViewModel extends BaseModel {
         }
       }
     });
-  }
-
-  static OrderHistoryViewModel getInstance() {
-    if (_instance == null) {
-      _instance = OrderHistoryViewModel();
-    }
-    return _instance;
-  }
-
-  static void destroyInstance() {
-    _instance = null;
   }
 
   Future<void> cancelOrder(int orderId) async {

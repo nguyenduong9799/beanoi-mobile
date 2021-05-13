@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:unidelivery_mobile/ViewModel/login_viewModel.dart';
-import 'package:unidelivery_mobile/constraints.dart';
-import 'package:unidelivery_mobile/countries.dart';
+import 'package:unidelivery_mobile/Constraints/index.dart';
+import 'package:unidelivery_mobile/ViewModel/index.dart';
 
 class LoginWithPhone extends StatefulWidget {
   LoginWithPhone({Key key}) : super(key: key);

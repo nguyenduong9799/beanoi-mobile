@@ -1,8 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:dio_http_cache/dio_http_cache.dart';
-import 'package:unidelivery_mobile/Model/DAO/BaseDAO.dart';
-import 'package:unidelivery_mobile/Model/DTO/VoucherDTO.dart';
-import 'package:unidelivery_mobile/utils/request.dart';
+import 'package:unidelivery_mobile/Model/DTO/index.dart';
+import 'package:unidelivery_mobile/Utils/index.dart';
+import 'index.dart';
+
 
 class PromotionDAO extends BaseDAO {
   Future<List<VoucherDTO>> getPromotions() async {

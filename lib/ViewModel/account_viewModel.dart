@@ -1,12 +1,11 @@
 import 'package:get/get.dart';
 import 'package:package_info/package_info.dart';
+import 'package:unidelivery_mobile/Accessories/index.dart';
+import 'package:unidelivery_mobile/Constraints/index.dart';
+import 'package:unidelivery_mobile/Enums/index.dart';
 import 'package:unidelivery_mobile/Model/DAO/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
-import 'package:unidelivery_mobile/ViewModel/base_model.dart';
-import 'package:unidelivery_mobile/acessories/dialog.dart';
-import 'package:unidelivery_mobile/enums/view_status.dart';
-import 'package:unidelivery_mobile/utils/shared_pref.dart';
-import '../route_constraint.dart';
+import 'package:unidelivery_mobile/Utils/index.dart';
 import 'index.dart';
 
 class AccountViewModel extends BaseModel {
@@ -15,20 +14,8 @@ class AccountViewModel extends BaseModel {
   static AccountViewModel _instance;
   String version;
 
-  static AccountViewModel getInstance() {
-    if (_instance == null) {
-      _instance = AccountViewModel();
-    }
-    return _instance;
-  }
-
-  static void destroyInstance() {
-    _instance = null;
-  }
-
   AccountViewModel() {
     _dao = AccountDAO();
-    fetchUser();
   }
 
   Future<void> fetchUser() async {
@@ -101,10 +88,6 @@ class AccountViewModel extends BaseModel {
     if (option == 1) {
       await _dao.logOut();
       await removeALL();
-      destroyInstance();
-      HomeViewModel.destroyInstance();
-      GiftViewModel.getInstance();
-      RootViewModel.destroyInstance();
       Get.offAllNamed(RouteHandler.LOGIN);
     }
   }

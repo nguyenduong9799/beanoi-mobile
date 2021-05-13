@@ -1,13 +1,9 @@
 import 'package:dio/dio.dart';
-import 'package:unidelivery_mobile/Model/DAO/BaseDAO.dart';
-import 'package:unidelivery_mobile/Model/DTO/OrderAmountDTO.dart';
+import 'package:unidelivery_mobile/Constraints/index.dart';
+import 'package:unidelivery_mobile/Enums/index.dart';
+import 'package:unidelivery_mobile/Model/DAO/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
-import 'package:unidelivery_mobile/ViewModel/index.dart';
-import 'package:unidelivery_mobile/ViewModel/orderHistory_viewModel.dart';
-import 'package:unidelivery_mobile/acessories/dialog.dart';
-import 'package:unidelivery_mobile/constraints.dart';
-import 'package:unidelivery_mobile/enums/order_status.dart';
-import 'package:unidelivery_mobile/utils/request.dart';
+import 'package:unidelivery_mobile/Utils/index.dart';
 
 class OrderDAO extends BaseDAO {
   Future<List<OrderListDTO>> getOrders(OrderFilter filter,

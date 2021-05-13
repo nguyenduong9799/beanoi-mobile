@@ -1,7 +1,8 @@
 import 'dart:convert';
-
+import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
+import 'package:unidelivery_mobile/setup.dart';
 
 Future<bool> setIsFirstOnboard(bool isFirstOnboard) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -108,6 +109,8 @@ Future<CampusDTO> getStore() async {
 Future<void> removeALL() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   await prefs.clear();
+  Get.reset(clearRouteBindings: true);
+  createRouteBindings();
   await setIsFirstOnboard(false);
 }
 

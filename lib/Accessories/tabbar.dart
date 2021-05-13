@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../constraints.dart';
+import 'package:unidelivery_mobile/Constraints/index.dart';
 
 class CustomTabView extends StatefulWidget {
   final int itemCount;

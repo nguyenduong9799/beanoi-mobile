@@ -1,11 +1,11 @@
 import 'package:get/get.dart';
+import 'package:unidelivery_mobile/Accessories/index.dart';
+import 'package:unidelivery_mobile/Constraints/index.dart';
+import 'package:unidelivery_mobile/Enums/index.dart';
 import 'package:unidelivery_mobile/Model/DAO/index.dart';
-import 'package:unidelivery_mobile/Model/DTO/AccountDTO.dart';
-import 'package:unidelivery_mobile/ViewModel/base_model.dart';
-import 'package:unidelivery_mobile/acessories/dialog.dart';
-import 'package:unidelivery_mobile/enums/view_status.dart';
+import 'package:unidelivery_mobile/Model/DTO/index.dart';
 
-import '../route_constraint.dart';
+import 'index.dart';
 
 class SignUpViewModel extends BaseModel {
   AccountDAO dao = AccountDAO();

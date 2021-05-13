@@ -75,6 +75,8 @@ const int ORDER_DONE_STATUS = 3;
 const int ORDER_CANCEL_STATUS = 4;
 const int VIRTUAL_STORE_TYPE = 8;
 const int DEFAULT_SIZE = 50;
+const phoneReg = r'^(0|\+)([0-9])+$';
+
 
 class ProductType {
   static const int EXTRA_PRODUCT = 5;
@@ -83,3 +85,4 @@ class ProductType {
   static const int COMPLEX_PRODUCT = 10;
   static const int GIFT_PRODUCT = 12;
 }
+

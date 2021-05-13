@@ -10,3 +10,4 @@ export 'OrderAmountDTO.dart';
 export 'CampusDTO.dart';
 export 'SupplierDTO.dart';
 export 'SupplierNoteDTO.dart';
+export 'VoucherDTO.dart';

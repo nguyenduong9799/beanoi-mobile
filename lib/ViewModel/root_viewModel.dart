@@ -1,37 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:unidelivery_mobile/Accessories/index.dart';
 import 'package:unidelivery_mobile/Bussiness/BussinessHandler.dart';
+import 'package:unidelivery_mobile/Constraints/index.dart';
+import 'package:unidelivery_mobile/Enums/index.dart';
 import 'package:unidelivery_mobile/Model/DAO/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
-import 'package:unidelivery_mobile/acessories/dialog.dart';
-import 'package:unidelivery_mobile/acessories/home_location.dart';
-import 'package:unidelivery_mobile/enums/view_status.dart';
-import 'package:unidelivery_mobile/utils/shared_pref.dart';
-import '../constraints.dart';
+import 'package:unidelivery_mobile/Utils/index.dart';
 import 'package:collection/collection.dart';
-
-import '../route_constraint.dart';
 import 'index.dart';
 
 class RootViewModel extends BaseModel {
-  static RootViewModel _instance;
   String version;
   bool changeAddress = false;
-
   CampusDTO currentStore;
   List<CampusDTO> campuses;
-
-  static RootViewModel getInstance() {
-    if (_instance == null) {
-      _instance = RootViewModel();
-    }
-    return _instance;
-  }
-
-  static void destroyInstance() {
-    _instance = null;
-  }
 
   RootViewModel();
 
@@ -61,8 +45,8 @@ class RootViewModel extends BaseModel {
           await setStore(currentStore);
           notifyListeners();
           hideDialog();
-          HomeViewModel.getInstance().getSuppliers();
-          GiftViewModel.getInstance().getGifts();
+          Get.find<HomeViewModel>().getSuppliers();
+          Get.find<GiftViewModel>().getGifts();
         }
       } else {
         setSelectedLocation(currentStore, location);
@@ -122,8 +106,8 @@ class RootViewModel extends BaseModel {
         await deleteCart();
         await setStore(currentStore);
         hideDialog();
-        HomeViewModel.getInstance().getSuppliers();
-        GiftViewModel.getInstance().getGifts();
+        Get.find<HomeViewModel>().getSuppliers();
+        Get.find<GiftViewModel>().getGifts();
       }
     }
   }

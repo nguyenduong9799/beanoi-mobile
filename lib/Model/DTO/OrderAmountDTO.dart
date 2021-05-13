@@ -1,4 +1,6 @@
-import 'package:unidelivery_mobile/Model/DTO/index.dart';
+
+
+import 'index.dart';
 
 class OrderAmountDTO {
   double totalAmount;

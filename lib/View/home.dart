@@ -7,14 +7,11 @@ import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:get/get.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:unidelivery_mobile/Model/DTO/SupplierDTO.dart';
+import 'package:unidelivery_mobile/Accessories/index.dart';
+import 'package:unidelivery_mobile/Constraints/index.dart';
+import 'package:unidelivery_mobile/Enums/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
-import 'package:unidelivery_mobile/acessories/fixed_app_bar.dart';
-import 'package:unidelivery_mobile/acessories/shimmer_block.dart';
-import 'package:unidelivery_mobile/constraints.dart';
-import 'package:unidelivery_mobile/enums/view_status.dart';
-import 'package:unidelivery_mobile/route_constraint.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -24,9 +21,9 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       new GlobalKey<RefreshIndicatorState>();
-  OrderHistoryViewModel orderModel = OrderHistoryViewModel.getInstance();
+  OrderHistoryViewModel orderModel = Get.find<OrderHistoryViewModel>();
   Future<void> _refresh() async {
-    await HomeViewModel.getInstance().getSuppliers();
+    await Get.find<HomeViewModel>().getSuppliers();
     await orderModel.getNewOrder();
   }
 
@@ -56,7 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Container(
           height: Get.height,
           child: ScopedModel(
-            model: HomeViewModel.getInstance(),
+            model: Get.find<HomeViewModel>(),
             child: Stack(
               children: [
                 Column(
@@ -204,7 +201,7 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               WidgetSpan(
                 child: ScopedModel<AccountViewModel>(
-                  model: AccountViewModel.getInstance(),
+                  model: Get.find<AccountViewModel>(),
                   child: ScopedModelDescendant<AccountViewModel>(
                       builder: (context, child, model) {
                     return InkWell(
@@ -237,8 +234,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return ScopedModelDescendant<HomeViewModel>(
       builder: (context, child, model) {
         ViewStatus status = model.status;
-        bool isMenuAvailable =
-            RootViewModel.getInstance().isCurrentMenuAvailable;
+        bool isMenuAvailable = Get.find<RootViewModel>().isCurrentMenuAvailable;
         switch (status) {
           case ViewStatus.Error:
             return Column(
