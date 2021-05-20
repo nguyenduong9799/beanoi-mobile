@@ -87,7 +87,8 @@ class _SupplierScreenState extends State<SupplierScreen> {
                         preferredSize: Size.fromHeight(50), child: tag()),
                     title: Text(
                       widget.supplier.name,
-                      style: TextStyle(color: kPrimary),
+                      style: Get.theme.textTheme.headline4
+                          .copyWith(color: kPrimary),
                     ),
                     flexibleSpace: ScopedModelDescendant<SupplierViewModel>(
                       builder: (context, child, model) {
@@ -219,10 +220,8 @@ class _SupplierScreenState extends State<SupplierScreen> {
                     Text(
                       "Aaa, các món ăn hiện tại đã hết rồi, bạn vui lòng quay lại sau nhé",
                       textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.white,
-                      ),
+                      style: Get.theme.textTheme.headline1
+                          .copyWith(color: Colors.white),
                     ),
                   ],
                 ),
@@ -315,11 +314,7 @@ class _SupplierScreenState extends State<SupplierScreen> {
                             Flexible(
                                 child: Text(
                               product.name,
-                              style: kTitleTextStyle.copyWith(
-                                fontWeight: FontWeight.bold,
-                                decorationThickness: 0.5,
-                                fontSize: 14,
-                              ),
+                              style: Get.theme.textTheme.headline4,
                             )),
                             Flexible(
                                 child: Text(
@@ -327,7 +322,8 @@ class _SupplierScreenState extends State<SupplierScreen> {
                                         ? formatPrice(price)
                                         : "từ " +
                                             formatPrice(price ?? product.price),
-                                    style: TextStyle(color: kPrimary)))
+                                    style: Get.theme.textTheme.headline4
+                                        .copyWith(color: kPrimary)))
                           ],
                         ),
                         SizedBox(
@@ -341,19 +337,14 @@ class _SupplierScreenState extends State<SupplierScreen> {
                                 child: Text(
                                   product.description ?? "",
                                   maxLines: 1,
-                                  style: kDescriptionTextSyle.copyWith(
-                                    decorationThickness: 0.5,
-                                    fontStyle: FontStyle.italic,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w200,
-                                  ),
+                                  style: Get.theme.textTheme.headline6,
                                   overflow: TextOverflow.ellipsis,
                                 )),
                             Flexible(
                               child: RichText(
                                   text: TextSpan(
-                                      style: TextStyle(
-                                          fontSize: 12, color: Colors.orange),
+                                      style: Get.theme.textTheme.headline6
+                                          .copyWith(color: Colors.orange),
                                       text:
                                           "+ " + product.bean.toString() + " ",
                                       children: [
@@ -388,10 +379,7 @@ class _SupplierScreenState extends State<SupplierScreen> {
                 child: Center(
                   child: Text(
                     collection.name,
-                    style: TextStyle(
-                        color: kPrimary,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold),
+                    style: Get.theme.textTheme.headline1,
                   ),
                 ),
               ),
@@ -509,14 +497,14 @@ class _SupplierScreenState extends State<SupplierScreen> {
     return ButtonTheme(
       minWidth: 62,
       height: 32,
-      focusColor: kPrimary,
-      hoverColor: kPrimary,
+      focusColor: kSecondary,
+      hoverColor: kSecondary,
       textTheme: ButtonTextTheme.normal,
       child: ScopedModelDescendant<SupplierViewModel>(
           builder: (context, child, model) {
         final onChangeFilter = model.updateFilter;
         return FlatButton(
-          color: isSelected ? Color(0xFF00d286) : kBackgroundGrey[0],
+          color: isSelected ? kPrimary : kBackgroundGrey[0],
           padding: EdgeInsets.all(4),
           onPressed: () async {
             await onChangeFilter(id);
@@ -535,9 +523,10 @@ class _SupplierScreenState extends State<SupplierScreen> {
               Text(
                 title,
                 style: isSelected
-                    ? kTextPrimary.copyWith(fontStyle: FontStyle.italic)
-                    : kTextPrimary.copyWith(
-                        color: Colors.black, fontStyle: FontStyle.italic),
+                    ? Get.theme.textTheme.headline4
+                        .copyWith(color: Colors.white)
+                    : Get.theme.textTheme.headline4
+                        .copyWith(color: Colors.black),
               ),
             ],
           ),

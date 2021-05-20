@@ -49,7 +49,7 @@ class PushNotificationService {
                 color: kPrimary,
                 child: Text(
                   "Đồng ý",
-                  style: kTextPrimary,
+                  style: Get.theme.textTheme.headline4.copyWith(color: Colors.white),
                 ),
                 onPressed: () {
                   hideSnackbar();

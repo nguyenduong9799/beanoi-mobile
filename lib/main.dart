@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:unidelivery_mobile/Accessories/index.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Utils/index.dart';
 import 'package:unidelivery_mobile/View/index.dart';
@@ -112,19 +113,8 @@ class MyApp extends StatelessWidget {
                 builder: (context) => NotFoundScreen(), settings: settings);
         }
       },
-      theme: ThemeData(
-        fontFamily: 'Gotham',
-        primarySwatch: Colors.green,
-        primaryColor: kPrimary,
-        scaffoldBackgroundColor: Color(0xFFF0F2F5),
-        toggleableActiveColor: kPrimary,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
+      theme: CustomTheme.LightTheme,
       // home: Scaffold(
-      //   body: Container(
-      //       margin: EdgeInsets.only(top: 16),
-      //       child: StorePromotion(new ProductDTO(1, name: "Test", description: "abc", prices: [1500, 2000000000]))),
-      // ),
       home: StartUpView(),
     );
   }

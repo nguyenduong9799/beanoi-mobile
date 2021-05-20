@@ -83,7 +83,7 @@ class HomeAppBar extends StatelessWidget {
             children: [
               Text(
                 "KHU VỰC",
-                style: TextStyle(color: Colors.white, fontSize: 12),
+                style: Get.theme.textTheme.headline6,
               ),
               SizedBox(
                 height: 4,
@@ -91,15 +91,10 @@ class HomeAppBar extends StatelessWidget {
               Container(
                 child: Row(
                   children: [
-                    Text(
-                      'Unibean',
-                      textAlign: TextAlign.left,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                        color: Colors.white,
-                      ),
-                    ),
+                    Text('Unibean',
+                        textAlign: TextAlign.left,
+                        style: Get.theme.textTheme.headline1
+                            .copyWith(color: Colors.white)),
                     SizedBox(
                       width: 8,
                     ),

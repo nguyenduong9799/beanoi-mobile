@@ -5,7 +5,6 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
 
-
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key key}) : super(key: key);
 
@@ -170,7 +169,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   Expanded(
                     child: Text(
                       "Đăng nhập bằng số điện thoại",
-                      style: TextStyle(color: kPrimary, fontSize: 16),
+                      style: Get.theme.textTheme.headline2,
                       textAlign: TextAlign.center,
                     ),
                   ),

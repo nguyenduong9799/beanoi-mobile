@@ -13,7 +13,6 @@ import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/Utils/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
 
-
 class ProductDetailScreen extends StatefulWidget {
   final ProductDTO dto;
 
@@ -135,7 +134,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
               Flexible(
                 child: Text(
                   widget.dto.name + " ",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                  style: Get.theme.textTheme.headline1
+                      .copyWith(color: Colors.black),
                 ),
               ),
               widget.dto.type != ProductType.GIFT_PRODUCT
@@ -143,10 +143,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                       child: RichText(
                           text: TextSpan(
                               text: "+ " + widget.dto.bean.toString() + " ",
-                              style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.orange),
+                              style: Get.theme.textTheme.headline1
+                                  .copyWith(color: Colors.orange),
                               children: [
                             WidgetSpan(
                                 alignment: PlaceholderAlignment.bottom,
@@ -166,7 +164,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
           ),
           Text(
             widget.dto.description != null ? " " + widget.dto.description : "",
-            style: TextStyle(color: Colors.grey, fontSize: 16),
+            style: Get.theme.textTheme.headline4.copyWith(color: Colors.grey),
             overflow: TextOverflow.ellipsis,
             maxLines: 3,
           ),
@@ -214,7 +212,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                       TextSpan(text: affectPriceTabs[index], children: [
                     TextSpan(
                         text: affectPriceTabs[index] != extraTab ? " *" : "",
-                        style: TextStyle(color: Colors.red))
+                        style: Get.theme.textTheme.headline4
+                            .copyWith(color: Colors.red))
                   ])),
                 ),
                 onPositionChange: (index) {
@@ -365,33 +364,28 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                           children: [
                             Flexible(
                               child: Text(model.count.toString() + " Món ",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 15)),
+                                  style: Get.theme.textTheme.headline3
+                                      .copyWith(color: Colors.white)),
                             ),
                             Flexible(
                               child: Text("Thêm ",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 15)),
+                                  style: Get.theme.textTheme.headline3
+                                      .copyWith(color: Colors.white)),
                             ),
                             widget.dto.type != ProductType.GIFT_PRODUCT
                                 ? Flexible(
                                     child: Text(
                                       formatPrice(model.total),
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 15),
+                                      style: Get.theme.textTheme.headline3
+                                          .copyWith(color: Colors.white),
                                     ),
                                   )
                                 : Flexible(
                                     child: RichText(
                                         text: TextSpan(
                                             text: model.total.toString() + " ",
-                                            style: TextStyle(
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.bold,
-                                            ),
+                                            style: Get.theme.textTheme.headline3
+                                                .copyWith(color: Colors.white),
                                             children: [
                                           WidgetSpan(
                                               alignment:
@@ -425,8 +419,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                           height: 8,
                         ),
                         Text("Vui lòng chọn những trường bắt buộc (*)",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 15)),
+                            style: Get.theme.textTheme.headline3
+                                .copyWith(color: Colors.white)),
                         SizedBox(
                           height: 8,
                         ),
@@ -453,11 +447,12 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
               },
             ),
             SizedBox(
-              width: 16,
+              width: 8,
             ),
             Text(
               model.count.toString(),
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style:
+                  Get.theme.textTheme.headline1.copyWith(color: Colors.black),
             ),
             SizedBox(
               width: 8,

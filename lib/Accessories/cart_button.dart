@@ -75,10 +75,8 @@ class _CartButtonState extends State<CartButton> {
                           child: Center(
                             child: Text(
                               quantity.toString(),
-                              style: kTextPrimary.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
+                              style: Get.theme.textTheme.headline3
+                                  .copyWith(color: Colors.white),
                             ),
                           ),
                         ),

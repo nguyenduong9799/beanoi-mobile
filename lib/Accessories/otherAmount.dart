@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 
@@ -16,7 +17,7 @@ class OtherAmountWidget extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text("${otherAmount.name}", style: TextStyle()),
+          Text("${otherAmount.name}"),
           RichText(
             text: new TextSpan(
               text: '',
@@ -25,13 +26,9 @@ class OtherAmountWidget extends StatelessWidget {
                   text:
                       "${formatter.format(otherAmount.amount)} ${otherAmount.unit}",
                   style: otherAmount.amount >= 0
-                      ? new TextStyle(
-                          color: Colors.grey,
-                          decoration: TextDecoration.none,
-                        )
-                      : kTitleTextStyle.copyWith(
-                          fontSize: 14,
-                        ),
+                      ? Get.theme.textTheme.headline4
+                          .copyWith(color: Colors.grey)
+                      : Get.theme.textTheme.headline4,
                 ),
               ],
             ),
