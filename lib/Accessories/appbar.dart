@@ -72,7 +72,6 @@ class _GiftAppBarSate extends State<GiftAppBar> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return ScopedModel(
       model: Get.find<AccountViewModel>(),
       child: Container(

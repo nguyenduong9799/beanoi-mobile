@@ -7,7 +7,11 @@ import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:get/get.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:unidelivery_mobile/Accessories/Home/HomeCategorySection.dart';
+import 'package:unidelivery_mobile/Accessories/Home/HomeCollection.dart';
+import 'package:unidelivery_mobile/Accessories/Home/HomeStoreSection.dart';
 import 'package:unidelivery_mobile/Accessories/index.dart';
+import 'package:unidelivery_mobile/Accessories/section.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Enums/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
@@ -67,13 +71,21 @@ class _HomeScreenState extends State<HomeScreen> {
                           key: _refreshIndicatorKey,
                           onRefresh: _refresh,
                           child: Container(
-                            // height: Get.height * 0.8 - 16,
                             color: kBackgroundGrey[2],
                             child: ListView(
                               children: [
                                 SizedBox(height: 8),
                                 banner(),
-                                Container(child: storeList()),
+                                // CATEGORY
+                                Section(child: HomeCategorySection()),
+                                // END CATEGORY
+                                SizedBox(height: 8),
+                                // GITF EXCHANGE
+                                Section(child: buildGiftCanExchangeSection()),
+                                SizedBox(height: 8),
+                                Section(child: HomeCollection()),
+                                // END GITF EXCHANGE
+                                Container(child: HomeStoreSection()),
                                 SizedBox(height: 46),
                               ],
                             ),
@@ -93,6 +105,140 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget buildGiftCanExchangeSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(height: 8),
+        Text(
+          "BEAN ĐÃ LỚN",
+          style: kTitleTextStyle,
+        ),
+        SizedBox(height: 4),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Flexible(
+              flex: 7,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Bạn sắp nhận được 1 Chai CoCa rồi đấy",
+                    style: kDescriptionTextSyle.copyWith(fontSize: 12),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(
+                      top: 8,
+                      bottom: 8,
+                    ),
+                    width: Get.width,
+                    height: 16,
+                    decoration: BoxDecoration(
+                      color: kBackgroundGrey[2],
+                      borderRadius: BorderRadius.circular((8)),
+                    ),
+                    child: Row(
+                      children: [
+                        Flexible(
+                          flex: 7,
+                          child: Container(
+                            width: Get.width * 0.5,
+                            // height: 20,
+                            decoration: BoxDecoration(
+                              color: kPrimary,
+                              borderRadius: BorderRadius.circular((8)),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
+            SizedBox(width: 16),
+            Flexible(
+              flex: 3,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(
+                      top: 8,
+                      bottom: 8,
+                    ),
+                    child: RichText(
+                      text: TextSpan(
+                          text: "",
+                          style: kDescriptionTextSyle.copyWith(
+                              fontSize: 14, fontWeight: FontWeight.bold),
+                          children: <TextSpan>[
+                            TextSpan(
+                              text: "20",
+                              style: TextStyle(
+                                color: kPrimary,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            TextSpan(
+                              text: "/30",
+                            ),
+                          ]),
+                    ),
+                  ),
+                  SizedBox(width: 4),
+                  Flexible(
+                    flex: 7,
+                    child: Container(
+                      // width: 50,
+                      // height: 75,
+                      child: CachedNetworkImage(
+                        width: double.infinity,
+                        fit: BoxFit.fitWidth,
+                        height: 65,
+                        imageUrl:
+                            'https://firebasestorage.googleapis.com/v0/b/unidelivery-fad6f.appspot.com/o/images%2Fproducts%2F7b5ad3410d4572cecc6d40e54dbe6142.jpg?alt=media&token=0103ca63-1be8-4ce4-a984-712cc50acd30',
+                        imageBuilder: (context, imageProvider) => Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            image: DecorationImage(
+                              image: imageProvider,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                        progressIndicatorBuilder:
+                            (context, url, downloadProgress) =>
+                                Shimmer.fromColors(
+                          baseColor: Colors.grey[300],
+                          highlightColor: Colors.grey[100],
+                          enabled: true,
+                          child: Container(
+                            width: MediaQuery.of(context).size.width,
+                            // height: 100,
+                            color: Colors.grey,
+                          ),
+                        ),
+                        errorWidget: (context, url, error) => Icon(
+                          MaterialIcons.broken_image,
+                          color: kPrimary.withOpacity(0.5),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
+      ],
     );
   }
 
@@ -188,249 +334,10 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _suggestRestaurant() {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16.0, 8, 16, 8),
-      child: Center(
-        child: Text.rich(
-          TextSpan(
-            text: "Gợi ý nhà hàng bạn thích cho chúng mình ",
-            style: kDescriptionTextSyle.copyWith(
-              fontSize: 12,
-            ),
-            children: [
-              WidgetSpan(
-                child: ScopedModel<AccountViewModel>(
-                  model: Get.find<AccountViewModel>(),
-                  child: ScopedModelDescendant<AccountViewModel>(
-                      builder: (context, child, model) {
-                    return InkWell(
-                      onTap: () async {
-                        await model.sendFeedback(
-                            "Nhập nhà hàng mà bạn muốn chúng mình phục vụ nhé");
-                      },
-                      child: Text(
-                        "tại đây",
-                        style: TextStyle(
-                          color: Colors.blue,
-                          decoration: TextDecoration.underline,
-                          fontSize: 12,
-                        ),
-                      ),
-                    );
-                  }),
-                ),
-              ),
-              TextSpan(text: " 📝 nha."),
-            ],
-          ),
-          textAlign: TextAlign.center,
-        ),
-      ),
-    );
-  }
-
-  Widget storeList() {
-    return ScopedModelDescendant<HomeViewModel>(
-      builder: (context, child, model) {
-        ViewStatus status = model.status;
-        bool isMenuAvailable = Get.find<RootViewModel>().isCurrentMenuAvailable;
-        switch (status) {
-          case ViewStatus.Error:
-            return Column(
-              children: [
-                Center(
-                  child: Text(
-                    "Có gì đó sai sai..\n Vui lòng thử lại.",
-                    // style: kTextPrimary,
-                  ),
-                ),
-                SizedBox(height: 8),
-                Image.asset(
-                  'assets/images/global_error.png',
-                  fit: BoxFit.contain,
-                ),
-              ],
-            );
-          case ViewStatus.Loading:
-            return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: [
-                  ShimmerBlock(width: Get.width * 0.4, height: 40),
-                  SizedBox(height: 8),
-                  buildSupplier(null, true),
-                  SizedBox(height: 8),
-                  buildSupplier(null, true),
-                  SizedBox(height: 8),
-                  buildSupplier(null, true),
-                  SizedBox(height: 8),
-                  buildSupplier(null, true),
-                  SizedBox(height: 8),
-                  buildSupplier(null, true),
-                ],
-              ),
-            );
-          default:
-            if (model.suppliers == null ||
-                model.suppliers.isEmpty ||
-                model.suppliers
-                        .where((supplier) => supplier.available)
-                        .length ==
-                    0) {
-              return Container(
-                color: Colors.white,
-                padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
-                child: Column(
-                  children: [
-                    Container(
-                      child: AspectRatio(
-                        aspectRatio: 1.5,
-                        child: Image.asset(
-                          'assets/images/empty-product.png',
-                          fit: BoxFit.contain,
-                        ),
-                      ),
-                    ),
-                    Text(
-                      "Aaa, hiện tại các nhà hàng đang bận, bạn vui lòng quay lại sau nhé",
-                      textAlign: TextAlign.center,
-                      style: kSubtitleTextSyule.copyWith(color: Colors.orange),
-                    ),
-                  ],
-                ),
-              );
-            }
-            return Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(8, 16.0, 8, 16),
-                  child:
-                      Text('🌟 Danh sách nhà hàng 🌟', style: kTitleTextStyle),
-                ),
-                ColorFiltered(
-                  colorFilter: ColorFilter.mode(
-                    isMenuAvailable ? Colors.transparent : Colors.grey,
-                    BlendMode.saturation,
-                  ),
-                  child: Column(
-                    children: [
-                      ...model.suppliers
-                          .where((supplier) => supplier.available)
-                          .map((supplier) => InkWell(
-                              onTap: () {
-                                model.selectSupplier(supplier);
-                              },
-                              child: buildSupplier(supplier)))
-                          .toList(),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 8),
-                _suggestRestaurant(),
-                SizedBox(height: 8),
-              ],
-            );
-        }
-      },
-    );
-  }
-
-  Widget loadMoreButton() {
-    return ScopedModelDescendant<RootViewModel>(
-      builder: (context, child, model) {
-        switch (model.status) {
-          case ViewStatus.LoadMore:
-            return CircularProgressIndicator();
-          default:
-            return SizedBox.shrink();
-        }
-      },
-    );
-  }
-
-  Widget buildSupplier(SupplierDTO dto, [bool loading = false]) {
-    if (loading) {
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          ShimmerBlock(
-            height: 50,
-            width: 50,
-            borderRadius: 16,
-          ),
-          SizedBox(width: 8),
-          ShimmerBlock(height: 50, width: Get.width - 80),
-        ],
-      );
-    }
-    return Container(
-      color: Colors.white,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
-          children: [
-            SizedBox(
-              width: 8,
-            ),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(16),
-              child: Opacity(
-                opacity: 1,
-                child: (dto.imageUrl == null || dto.imageUrl == "")
-                    ? Icon(
-                        MaterialIcons.broken_image,
-                        color: kPrimary.withOpacity(0.5),
-                      )
-                    : CachedNetworkImage(
-                        imageUrl: dto.imageUrl,
-                        imageBuilder: (context, imageProvider) => Container(
-                          width: 50,
-                          height: 50,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(16),
-                            image: DecorationImage(
-                              image: imageProvider,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                        progressIndicatorBuilder:
-                            (context, url, downloadProgress) =>
-                                Shimmer.fromColors(
-                          baseColor: Colors.grey[300],
-                          highlightColor: Colors.grey[100],
-                          enabled: true,
-                          child: Container(
-                            width: 50,
-                            height: 50,
-                            color: Colors.grey,
-                          ),
-                        ),
-                        errorWidget: (context, url, error) => Icon(
-                          MaterialIcons.broken_image,
-                          color: kPrimary.withOpacity(0.5),
-                        ),
-                      ),
-              ),
-            ),
-            SizedBox(
-              width: 16,
-            ),
-            Text(
-              dto.name,
-              style:
-                  TextStyle(color: dto.available ? Colors.black : Colors.grey),
-            )
-          ],
-        ),
-      ),
-    );
-  }
-
   Widget banner() {
     return Container(
-      margin: EdgeInsets.only(top: 8),
+      color: Colors.white,
+      padding: EdgeInsets.fromLTRB(8, 16, 8, 8),
       // padding: EdgeInsets.only(bottom: 8),
       child: ScopedModelDescendant<HomeViewModel>(
         builder: (context, child, model) {
@@ -462,6 +369,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     },
                     autoplay: model.blogs.length > 1 ? true : false,
                     autoplayDelay: 5000,
+                    viewportFraction: 0.9,
                     pagination:
                         new SwiperPagination(alignment: Alignment.bottomCenter),
                     itemCount: model.blogs.length,
@@ -480,25 +388,18 @@ class _HomeScreenState extends State<HomeScreen> {
                             Get.toNamed(RouteHandler.BANNER_DETAIL,
                                 arguments: model.blogs[index]);
                           },
-                          child: Container(
-                            margin:
-                                EdgeInsets.only(left: 8, right: 8, bottom: 8),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8),
-                              color: Colors.blue,
-                              image: DecorationImage(
-                                image: imageProvider,
-                                fit: BoxFit.cover,
+                          child: AspectRatio(
+                            aspectRatio: 16 / 9,
+                            child: Container(
+                              margin: EdgeInsets.only(left: 8, right: 8),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                color: Colors.blue,
+                                image: DecorationImage(
+                                  image: imageProvider,
+                                  fit: BoxFit.cover,
+                                ),
                               ),
-                              boxShadow: [
-                                BoxShadow(
-                                    color: Colors.grey.withOpacity(0.7),
-                                    spreadRadius: 3,
-                                    blurRadius: 6,
-                                    offset: Offset(
-                                        0, 3) // changes position of shadow
-                                    ),
-                              ],
                             ),
                           ),
                         ),
@@ -525,5 +426,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  // TODO: Implement category section
   _launchURL(String url) async {}
 }

@@ -41,13 +41,13 @@ const kSubheadingextStyle = TextStyle(
 );
 
 const kTitleTextStyle = TextStyle(
-  fontSize: 20,
+  fontSize: 16,
   color: kTextColor,
   fontWeight: FontWeight.bold,
 );
 
 const kSubtitleTextSyule = TextStyle(
-  fontSize: 18,
+  fontSize: 14,
   color: kTextColor,
   // fontWeight: FontWeight.bold,
 );
@@ -55,7 +55,7 @@ const kSubtitleTextSyule = TextStyle(
 const kDescriptionTextSyle = TextStyle(
   fontSize: 14,
   color: kDescriptionTextColor,
-  fontWeight: FontWeight.bold,
+  fontWeight: FontWeight.w100,
 );
 
 const String CART_TAG = "cartTag";
@@ -77,7 +77,6 @@ const int VIRTUAL_STORE_TYPE = 8;
 const int DEFAULT_SIZE = 50;
 const phoneReg = r'^(0|\+)([0-9])+$';
 
-
 class ProductType {
   static const int EXTRA_PRODUCT = 5;
   static const int MASTER_PRODUCT = 6;
@@ -85,4 +84,3 @@ class ProductType {
   static const int COMPLEX_PRODUCT = 10;
   static const int GIFT_PRODUCT = 12;
 }
-
