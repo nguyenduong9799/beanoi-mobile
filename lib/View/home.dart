@@ -26,6 +26,9 @@ class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       new GlobalKey<RefreshIndicatorState>();
   OrderHistoryViewModel orderModel = Get.find<OrderHistoryViewModel>();
+  final double HEIGHT = 48;
+  final ValueNotifier<double> notifier = ValueNotifier(0);
+
   Future<void> _refresh() async {
     await Get.find<HomeViewModel>().getSuppliers();
     await orderModel.getNewOrder();
@@ -62,7 +65,10 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 Column(
                   children: [
-                    FixedAppBar(),
+                    FixedAppBar(
+                      notifier: notifier,
+                      height: HEIGHT,
+                    ),
                     Expanded(
                       child: Container(
                         color: kBackgroundGrey[2],
@@ -72,22 +78,30 @@ class _HomeScreenState extends State<HomeScreen> {
                           onRefresh: _refresh,
                           child: Container(
                             color: kBackgroundGrey[2],
-                            child: ListView(
-                              children: [
-                                SizedBox(height: 8),
-                                banner(),
-                                // CATEGORY
-                                Section(child: HomeCategorySection()),
-                                // END CATEGORY
-                                SizedBox(height: 8),
-                                // GITF EXCHANGE
-                                Section(child: buildGiftCanExchangeSection()),
-                                SizedBox(height: 8),
-                                Section(child: HomeCollection()),
-                                // END GITF EXCHANGE
-                                Container(child: HomeStoreSection()),
-                                SizedBox(height: 46),
-                              ],
+                            child: NotificationListener<ScrollNotification>(
+                              onNotification: (n) {
+                                if (n.metrics.pixels <= HEIGHT) {
+                                  notifier.value = n.metrics.pixels;
+                                }
+                                return false;
+                              },
+                              child: ListView(
+                                children: [
+                                  SizedBox(height: 8),
+                                  banner(),
+                                  // CATEGORY
+                                  Section(child: HomeCategorySection()),
+                                  // END CATEGORY
+                                  SizedBox(height: 8),
+                                  // GITF EXCHANGE
+                                  Section(child: buildGiftCanExchangeSection()),
+                                  SizedBox(height: 8),
+                                  Section(child: HomeCollection()),
+                                  // END GITF EXCHANGE
+                                  Container(child: HomeStoreSection()),
+                                  SizedBox(height: 46),
+                                ],
+                              ),
                             ),
                           ),
                         ),

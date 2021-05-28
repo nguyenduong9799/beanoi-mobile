@@ -12,7 +12,7 @@ class HomeCollection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const double kWitdthItem = 140;
+    const double kWitdthItem = 125;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -31,7 +31,7 @@ class HomeCollection extends StatelessWidget {
         SizedBox(height: 8),
         Container(
           width: Get.width,
-          height: 190,
+          height: 210,
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             separatorBuilder: (context, index) => SizedBox(width: 16),
@@ -44,9 +44,9 @@ class HomeCollection extends StatelessWidget {
                   },
                   child: Container(
                     width: kWitdthItem,
-                    height: 180,
+                    height: 200,
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         CachedNetworkImage(
                           fit: BoxFit.fitWidth,
@@ -79,40 +79,44 @@ class HomeCollection extends StatelessWidget {
                             color: kPrimary.withOpacity(0.5),
                           ),
                         ),
-                        Text("Product"),
-                        SizedBox(height: 8),
-                        Row(
-                          children: [
-                            Flexible(
-                              flex: 5,
-                              child: Text("200.000 đ",
-                                  style: kDescriptionTextSyle.copyWith(
-                                      fontSize: 12)),
-                            ),
-                            SizedBox(width: 8),
-                            Flexible(
-                              flex: 5,
-                              child: Material(
-                                child: InkWell(
-                                  onTap: () {
-                                    print("ADD TO CART");
-                                  },
-                                  child: Container(
-                                    width: Get.width,
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(8),
-                                        border: Border.all(color: kPrimary)),
-                                    child: Text(
-                                      "Chọn",
-                                      style: TextStyle(fontSize: 14),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ),
-                                ),
+                        Text(
+                          "200.000 đ",
+                          style: kDescriptionTextSyle.copyWith(
+                            fontSize: 12,
+                            color: kBestSellerColor,
+                          ),
+                        ),
+                        SizedBox(height: 4),
+                        Text(
+                          "Trà sữa kem Baby icecream đường hổ",
+                          style: kTitleTextStyle.copyWith(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          textAlign: TextAlign.center,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        SizedBox(height: 4),
+                        Material(
+                          child: InkWell(
+                            onTap: () {
+                              print("ADD TO CART");
+                            },
+                            child: Container(
+                              width: kWitdthItem,
+                              padding: EdgeInsets.all(4),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(16),
+                                  border: Border.all(color: kPrimary)),
+                              child: Text(
+                                "Chọn",
+                                style: TextStyle(fontSize: 12),
+                                textAlign: TextAlign.center,
                               ),
                             ),
-                          ],
-                        )
+                          ),
+                        ),
                       ],
                     ),
                   ),

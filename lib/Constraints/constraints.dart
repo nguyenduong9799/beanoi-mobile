@@ -24,7 +24,7 @@ final kTextSecondary = TextStyle(color: Colors.grey);
 // Colors
 const kTextColor = Color(0xFF0D1333);
 const kBlueColor = Color(0xFF6E8AFA);
-const kBestSellerColor = Color(0xFFFFD073);
+const kBestSellerColor = Color(0xffF1A23A);
 const kGreenColor = Color(0xFF49CC96);
 const kDescriptionTextColor = Color(0xffa7b4ce);
 
