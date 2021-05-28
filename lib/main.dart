@@ -84,6 +84,12 @@ class MyApp extends StatelessWidget {
                       dto: settings.arguments,
                     ),
                 settings: settings);
+          case RouteHandler.PRODUCT_FILTER_LIST:
+            return CupertinoPageRoute<bool>(
+                builder: (context) => ProductsFilterPage(
+                      params: settings.arguments,
+                    ),
+                settings: settings);
           case RouteHandler.PROFILE:
             return CupertinoPageRoute(
                 builder: (context) => ProfileScreen(), settings: settings);

@@ -303,56 +303,59 @@ class _FixedAppBarState extends State<FixedAppBar> {
                 ],
               ),
               SizedBox(height: 8),
-              Container(
-                  height: 24,
-                  width: Get.width,
-                  child: ListView.builder(
-                    // separatorBuilder: (context, index) => SizedBox(
-                    //   width: 4,
-                    // ),
-                    itemBuilder: (context, index) {
-                      DateTime arrive = DateFormat("HH:mm:ss")
-                          .parse(model.currentStore.timeSlots[index].arrive);
-                      bool isSelect =
-                          model.currentStore.selectedTimeSlot.arrive ==
-                              model.currentStore.timeSlots[index].arrive;
-                      return AnimatedContainer(
-                        padding: EdgeInsets.only(left: 8, right: 8),
-                        margin: EdgeInsets.only(right: 8),
-                        decoration: BoxDecoration(
-                          borderRadius:
-                              BorderRadius.circular(isSelect ? 16 : 0),
-                          color: isSelect ? kPrimary : Colors.transparent,
-                        ),
-                        duration: Duration(milliseconds: 300),
-                        child: InkWell(
-                          onTap: () async {
-                            if (model.currentStore.selectedTimeSlot != null) {
-                              model.confirmTimeSlot(
-                                  model.currentStore.timeSlots[index]);
-                            }
-                          },
-                          child: Center(
-                            child: Text(
-                              "${DateFormat("HH:mm").format(arrive)} - ${DateFormat("HH:mm").format(arrive.add(Duration(minutes: 30)))}",
-                              style: isSelect
-                                  ? kTitleTextStyle.copyWith(
-                                      color: Colors.white,
-                                      fontSize: 12,
-                                    )
-                                  : kDescriptionTextSyle.copyWith(
-                                      fontWeight: FontWeight.w300,
-                                      fontSize: 12,
-                                    ),
+              model.currentStore.timeSlots.length != 0
+                  ? Container(
+                      height: 24,
+                      width: Get.width,
+                      child: ListView.builder(
+                        itemBuilder: (context, index) {
+                          DateTime arrive = DateFormat("HH:mm:ss").parse(
+                              model.currentStore.timeSlots[index].arrive);
+                          bool isSelect =
+                              model.currentStore.selectedTimeSlot.arrive ==
+                                  model.currentStore.timeSlots[index].arrive;
+                          return AnimatedContainer(
+                            padding: EdgeInsets.only(left: 8, right: 8),
+                            margin: EdgeInsets.only(right: 8),
+                            decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.circular(isSelect ? 16 : 0),
+                              color: isSelect ? kPrimary : Colors.transparent,
                             ),
-                          ),
-                        ),
-                      );
-                    },
-                    shrinkWrap: true,
-                    scrollDirection: Axis.horizontal,
-                    itemCount: model.currentStore.timeSlots.length,
-                  )),
+                            duration: Duration(milliseconds: 300),
+                            child: InkWell(
+                              onTap: () async {
+                                if (model.currentStore.selectedTimeSlot !=
+                                    null) {
+                                  model.confirmTimeSlot(
+                                      model.currentStore.timeSlots[index]);
+                                }
+                              },
+                              child: Center(
+                                child: Text(
+                                  "${DateFormat("HH:mm").format(arrive)} - ${DateFormat("HH:mm").format(arrive.add(Duration(minutes: 30)))}",
+                                  style: isSelect
+                                      ? kTitleTextStyle.copyWith(
+                                          color: Colors.white,
+                                          fontSize: 12,
+                                        )
+                                      : kDescriptionTextSyle.copyWith(
+                                          fontWeight: FontWeight.w300,
+                                          fontSize: 12,
+                                        ),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                        shrinkWrap: true,
+                        scrollDirection: Axis.horizontal,
+                        itemCount: model.currentStore.timeSlots.length,
+                      ))
+                  : Text(
+                      "Không có khung giờ nào",
+                      style: kSubtitleTextSyule.copyWith(fontSize: 12),
+                    ),
               SizedBox(height: 8),
             ],
           );

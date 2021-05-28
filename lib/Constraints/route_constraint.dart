@@ -18,4 +18,5 @@ class RouteHandler {
   static const String LOADING = "loading";
   static const String ONBOARD = "onboard";
   static const String BANNER_DETAIL = "banner_detail";
+  static const String PRODUCT_FILTER_LIST = "PRODUCT_FILTER_LIST";
 }
