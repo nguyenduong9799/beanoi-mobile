@@ -113,7 +113,7 @@ class MyApp extends StatelessWidget {
                 builder: (context) => NotFoundScreen(), settings: settings);
         }
       },
-      theme: CustomTheme.LightTheme,
+      theme: CustomTheme.lightTheme,
       // home: Scaffold(
       home: StartUpView(),
     );

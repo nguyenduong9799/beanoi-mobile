@@ -70,8 +70,6 @@ class _BannerDetailScreenState extends State<BannerDetailScreen> {
             ),
             Html(
               data: htmlData,
-              onLinkTap: (url) {},
-              onImageTap: (src) {},
               onImageError: (exception, stackTrace) {},
             ),
           ],

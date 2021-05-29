@@ -181,13 +181,12 @@ class _LoginWithPhoneOTPState extends State<LoginWithPhoneOTP> {
                                   // side: BorderSide(color: Colors.red),
                                 ),
                                 onPressed: () async {
-                                  form.touch();
                                   if (!form.valid) {
                                     errorController.add(ErrorAnimationType
                                         .shake); // Triggering error shake animation
                                     model.setState(ViewStatus.Loading);
                                   } else {
-                                    if (form.value["otp"].length != 6) {
+                                    if ((form.value["otp"] as String).length != 6) {
                                       errorController.add(ErrorAnimationType
                                           .shake); // Triggering error shake animation
                                       model.setState(ViewStatus.Error);

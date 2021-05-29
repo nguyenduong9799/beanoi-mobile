@@ -82,7 +82,7 @@ class FormItem extends StatelessWidget {
         );
       default:
         return ReactiveTextField(
-          validationMessages: {
+          validationMessages: (control) => {
             ValidationMessage.email: ':(',
             ValidationMessage.required: ':(',
             ValidationMessage.number: ':(',

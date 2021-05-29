@@ -63,7 +63,7 @@ class _UpdateState extends State<Update> {
       child: SafeArea(
         top: false,
         child: Scaffold(
-          resizeToAvoidBottomPadding: false,
+          resizeToAvoidBottomInset: false,
           body: ReactiveForm(
             formGroup: this.form,
             child: Container(

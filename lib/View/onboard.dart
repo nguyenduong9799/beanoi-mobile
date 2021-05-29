@@ -13,8 +13,8 @@ class OnBoardScreen extends StatefulWidget {
 }
 
 PageDecoration pageDecoration = PageDecoration(
-  titleTextStyle: Get.theme.textTheme.headline1,
-  bodyTextStyle: Get.theme.textTheme.headline2,
+  titleTextStyle: Get.theme.textTheme.subtitle1,
+  bodyTextStyle: Get.theme.textTheme.subtitle2,
   descriptionPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
   pageColor: Colors.white,
   imagePadding: EdgeInsets.zero,

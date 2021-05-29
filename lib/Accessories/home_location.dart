@@ -114,6 +114,7 @@ class _HomeLocationSelectState extends State<HomeLocationSelect> {
         tapBodyToCollapse: true,
         iconColor: kPrimary,
       ),
+      collapsed: SizedBox.shrink(),
       header: Container(
         padding: EdgeInsets.only(top: 8, bottom: 8),
         child: Row(

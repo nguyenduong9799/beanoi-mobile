@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
-import 'package:dio_http_cache/dio_http_cache.dart';
 import 'package:get/get.dart' as Get;
 import 'package:unidelivery_mobile/Accessories/index.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
@@ -37,23 +36,28 @@ class ExpiredException extends AppException {
   ExpiredException([String message]) : super(message, "Token Expired: ");
 }
 
-class CustomInterceptors extends InterceptorsWrapper {
+class CustomInterceptors extends Interceptor {
   @override
-  Future onRequest(RequestOptions options) {
-    return super.onRequest(options);
+  void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
+    print(
+        'REQUEST[${options.method}] => PATH: ${options.path} HEADER: ${options.headers.toString()}');
+    return super.onRequest(options, handler);
   }
 
   @override
-  Future onResponse(Response response) async {
-    return super.onResponse(response);
+  void onResponse(Response response, ResponseInterceptorHandler handler) {
+    print(
+        'RESPONSE[${response.statusCode}] => PATH: ${response.requestOptions?.path}');
+    return super.onResponse(response, handler);
   }
 
   @override
-  Future onError(DioError err) {
-    return super.onError(err);
+  void onError(DioError err, ErrorInterceptorHandler handler) {
+    print(
+        'ERROR[${err.response?.statusCode}] => PATH: ${err.requestOptions.path}');
+    return super.onError(err, handler);
   }
 }
-
 // or new Dio with a BaseOptions instance.
 
 class MyRequest {
@@ -68,16 +72,14 @@ class MyRequest {
   Dio _inner;
   MyRequest() {
     _inner = new Dio(options);
-    _inner.interceptors.add(
-        DioCacheManager(CacheConfig(baseUrl: options.baseUrl)).interceptor);
+    // _inner.interceptors.add(
+    //     DioCacheManager(CacheConfig(baseUrl: options.baseUrl)).interceptor);
     _inner.interceptors.add(CustomInterceptors());
     _inner.interceptors.add(InterceptorsWrapper(
-      onResponse: (Response response) async {
-        // Do something with response data
-        return response; // continue
+      onResponse: (e, handler) {
+        return handler.next(e); // continue
       },
-      onError: (DioError e) async {
-        // Do something with response
+      onError: (e, handler) async {
         print(e.response.toString());
         if (e.response.statusCode == 401) {
           await showStatusDialog("assets/images/global_error.png", "Lỗi",
@@ -86,7 +88,6 @@ class MyRequest {
         } else {
           throw e;
         }
-        //continue
       },
     ));
   }

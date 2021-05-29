@@ -62,6 +62,19 @@ const kSubdescriptionTextStyle = TextStyle(
   color: kDescriptionTextColor,
 );
 
+const kDashboardTextStyle = TextStyle(
+  fontSize: 22,
+  color: kPrimary,
+  fontWeight: FontWeight.bold,
+);
+
+const kSubdashboardTextStyle = TextStyle(
+  fontSize: 20,
+  color: kPrimary,
+);
+
+
+
 const String CART_TAG = "cartTag";
 
 const UNIBEAN_STORE = 150;

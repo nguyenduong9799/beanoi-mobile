@@ -8,9 +8,11 @@ import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'index.dart';
 
 class SignUpViewModel extends BaseModel {
-  AccountDAO dao = AccountDAO();
+  AccountDAO dao;
 
-  SignUpViewModel() {}
+  SignUpViewModel() {
+    dao = AccountDAO();
+  }
 
   Future<void> updateUser(Map<String, dynamic> user) async {
     try {

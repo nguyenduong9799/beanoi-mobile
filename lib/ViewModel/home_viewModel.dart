@@ -4,6 +4,7 @@ import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Enums/index.dart';
 import 'package:unidelivery_mobile/Model/DAO/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
+import 'package:unidelivery_mobile/Services/push_notification_service.dart';
 
 import 'index.dart';
 
@@ -20,6 +21,8 @@ class HomeViewModel extends BaseModel {
   Future<void> getSuppliers() async {
     try {
       setState(ViewStatus.Loading);
+      String token = await PushNotificationService.getInstance().getFcmToken();
+      print("FCM: $token");
       RootViewModel root = Get.find<RootViewModel>();
       await root.fetchStore();
       CampusDTO currentStore = root.currentStore;

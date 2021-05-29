@@ -95,7 +95,7 @@ class _GiftAppBarSate extends State<GiftAppBar> {
             Row(
               children: [
                 Stack(
-                  overflow: Overflow.visible,
+                  clipBehavior: Clip.none,
                   children: [
                     Container(
                       width: 45,

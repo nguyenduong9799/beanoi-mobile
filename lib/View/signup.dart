@@ -36,7 +36,7 @@ class _SignUpState extends State<SignUp> {
       model: SignUpViewModel(),
       child: SafeArea(
         child: Scaffold(
-          resizeToAvoidBottomPadding: false,
+          resizeToAvoidBottomInset: false,
           body: ReactiveForm(
             formGroup: this.form,
             child: Container(

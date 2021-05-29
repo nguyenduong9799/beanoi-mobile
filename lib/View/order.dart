@@ -337,7 +337,7 @@ class _OrderScreenState extends State<OrderScreen> {
       (element) => element.supplierId == list[0].master.supplierId,
       orElse: () => null,
     );
-    List<Widget> card = new List();
+    List<Widget> card = [];
 
     for (CartItem item in list) {
       card.add(productCard(item));
@@ -406,7 +406,7 @@ class _OrderScreenState extends State<OrderScreen> {
   }
 
   Widget productCard(CartItem item) {
-    List<Widget> list = new List();
+    List<Widget> list = [];
     double price = 0;
     int startProduct = 0;
     if (item.master.type == ProductType.MASTER_PRODUCT) {
@@ -734,7 +734,7 @@ class _OrderScreenState extends State<OrderScreen> {
   Widget selectPaymentMethods() {
     return ScopedModelDescendant<OrderViewModel>(
       builder: (context, child, model) {
-        List<Widget> listPayments = new List();
+        List<Widget> listPayments = [];
         Map<String, dynamic> paymentsType = model.listPayments;
         for (int i = 0; i < paymentsType.length; i++) {
           listPayments.add(
