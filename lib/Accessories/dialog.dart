@@ -32,15 +32,14 @@ Future<void> showStatusDialog(
               padding: EdgeInsets.fromLTRB(8, 0, 8, 0),
               child: Text(
                 status ?? "",
-                style: TextStyle(
-                    fontWeight: FontWeight.bold, fontSize: 16, color: kPrimary),
+                style: Get.theme.textTheme.headline2,
               ),
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
                 content,
-                style: kTitleTextStyle.copyWith(fontSize: 14),
+                style: Get.theme.textTheme.headline4,
                 textAlign: TextAlign.center,
               ),
             ),
@@ -62,7 +61,8 @@ Future<void> showStatusDialog(
                   padding: EdgeInsets.only(top: 16, bottom: 16),
                   child: Text(
                     "Đồng ý",
-                    style: kTextPrimary,
+                    style: Get.theme.textTheme.headline4
+                        .copyWith(color: Colors.white),
                   ),
                 ),
               ),
@@ -95,7 +95,7 @@ void showLoadingDialog() {
           ),
         ),
       ),
-      titleStyle: TextStyle(fontSize: 16));
+      titleStyle: Get.theme.textTheme.headline2);
 }
 
 Future<bool> showErrorDialog(
@@ -125,7 +125,7 @@ Future<bool> showErrorDialog(
             ),
             Text(
               errorTitle,
-              style: TextStyle(fontSize: 16, color: kPrimary),
+              style: Get.theme.textTheme.headline2,
             ),
             SizedBox(
               height: 8,
@@ -154,7 +154,7 @@ Future<bool> showErrorDialog(
                   padding: EdgeInsets.only(top: 16, bottom: 16),
                   child: Text(
                     "Thử lại",
-                    style: kTextPrimary,
+                    style: Get.theme.textTheme.headline4,
                   ),
                 ),
               ),
@@ -205,7 +205,7 @@ Future<int> showOptionDialog(String text,
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
                     text,
-                    style: kTextSecondary,
+                    style: Get.theme.textTheme.headline4,
                   ),
                 ),
                 SizedBox(
@@ -235,9 +235,8 @@ Future<int> showOptionDialog(String text,
                             child: Center(
                               child: Text(
                                 firstOption ?? "Hủy",
-                                style: TextStyle(
-                                  color: Colors.grey,
-                                ),
+                                style: Get.theme.textTheme.headline4
+                                    .copyWith(color: Colors.grey),
                               ),
                             ),
                           ),
@@ -262,7 +261,8 @@ Future<int> showOptionDialog(String text,
                             child: Center(
                               child: Text(
                                 secondOption ?? "Đồng ý",
-                                style: kTextPrimary,
+                                style: Get.theme.textTheme.headline4
+                                    .copyWith(color: Colors.white),
                               ),
                             ),
                           ),
@@ -485,7 +485,7 @@ Future<String> inputDialog(String title, String buttonTitle,
                   Flexible(
                     child: Text(
                       title,
-                      style: TextStyle(fontSize: 16, color: kPrimary),
+                      style: Get.theme.textTheme.headline2,
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -528,7 +528,8 @@ Future<String> inputDialog(String title, String buttonTitle,
                             controller.clear();
                           },
                         )),
-                    style: TextStyle(color: Colors.grey),
+                    style: Get.theme.textTheme.headline4
+                        .copyWith(color: Colors.grey),
                     keyboardType: TextInputType.multiline,
                     maxLines: maxLines,
                     autofocus: true,
@@ -557,7 +558,8 @@ Future<String> inputDialog(String title, String buttonTitle,
                   padding: EdgeInsets.only(top: 16, bottom: 16),
                   child: Text(
                     buttonTitle,
-                    style: kTextPrimary,
+                    style: Get.theme.textTheme.headline4
+                        .copyWith(color: Colors.white),
                   ),
                 ),
               ),

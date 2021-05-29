@@ -48,13 +48,9 @@ class _GiftScreenState extends State<GiftScreen> {
                           width: Get.width,
                           padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
                           child: Center(
-                            child: Text(
-                              "🎁 Danh sách quà tặng 🎁",
-                              style: TextStyle(
-                                fontSize: 22,
-                                color: Colors.orange,
-                              ),
-                            ),
+                            child: Text("🎁 Danh sách quà tặng 🎁",
+                                style: Get.theme.textTheme.headline1
+                                    .copyWith(color: Colors.orange)),
                           ),
                         ),
                       ),
@@ -107,14 +103,13 @@ class _GiftScreenState extends State<GiftScreen> {
                                                 ),
                                               ),
                                               Text(
-                                                "Hiện các món quà đã Sold out hết rồi. Nhanh tay đổi quà vào hôm sau nhé 😁",
-                                                textAlign: TextAlign.center,
-                                                style:
-                                                    kSubtitleTextSyule.copyWith(
-                                                  color: Colors.orange,
-                                                  fontSize: 16,
-                                                ),
-                                              ),
+                                                  "Hiện các món quà đã Sold out hết rồi. Nhanh tay đổi quà vào hôm sau nhé 😁",
+                                                  textAlign: TextAlign.center,
+                                                  style: Get
+                                                      .theme.textTheme.headline2
+                                                      .copyWith(
+                                                          color:
+                                                              Colors.orange)),
                                             ],
                                           ),
                                         ),

@@ -81,7 +81,7 @@ class _HomeLocationSelectState extends State<HomeLocationSelect> {
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
                         "Chọn nơi nhận",
-                        style: kHeadingextStyle.copyWith(fontSize: 24),
+                        style: Get.theme.textTheme.headline1,
                       ),
                     ),
                     Expanded(
@@ -124,13 +124,11 @@ class _HomeLocationSelectState extends State<HomeLocationSelect> {
               children: [
                 Icon(Icons.location_on_outlined, color: kPrimary),
                 SizedBox(width: 8),
-                Text(
-                  campus.name,
-                  style: kTextSecondary.copyWith(
-                    fontSize: 14,
-                    color: campus.available ? Colors.black : Colors.grey,
-                  ),
-                ),
+                Text(campus.name,
+                    style: campus.available
+                        ? Get.theme.textTheme.headline4
+                        : Get.theme.textTheme.headline4
+                            .copyWith(color: Colors.grey)),
               ],
             ),
           ],
@@ -181,7 +179,8 @@ class _HomeLocationSelectState extends State<HomeLocationSelect> {
                 ),
                 Text(
                   location.address,
-                  style: kSubtitleTextSyule.copyWith(fontSize: 12),
+                  style: Get.theme.textTheme.headline6
+                      .copyWith(color: Colors.black),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),

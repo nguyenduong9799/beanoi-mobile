@@ -88,18 +88,13 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                                         speed: Duration(milliseconds: 100),
                                         onTap: () {},
                                         text: ['Mới ☕'],
-                                        textStyle: TextStyle(
-                                          fontFamily: "Bobbers",
-                                          color: kPrimary,
-                                        ),
+                                        textStyle: Get.theme.textTheme.headline4
+                                            .copyWith(color: kPrimary),
                                         textAlign: TextAlign.start,
                                       )
-                                    : Text(
-                                        'Đã nhận hàng',
-                                        style: TextStyle(
-                                          color: kPrimary,
-                                        ),
-                                      ),
+                                    : Text('Đã nhận hàng',
+                                        style: Get.theme.textTheme.headline4
+                                            .copyWith(color: kPrimary)),
                               ),
                               Expanded(
                                 child: Padding(
@@ -116,7 +111,7 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                               Text(
                                 DateFormat('HH:mm dd/MM').format(
                                     DateTime.parse(orderDetail.orderTime)),
-                                style: TextStyle(color: Colors.black45),
+                                style: Get.theme.textTheme.headline4,
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 1,
                               ),
@@ -129,12 +124,8 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                               Text("🎯 Nhận đơn tại: "),
                               Padding(
                                 padding: const EdgeInsets.only(left: 8),
-                                child: Text(
-                                  orderDetail.address,
-                                  style: TextStyle(
-                                    color: Colors.grey,
-                                  ),
-                                ),
+                                child: Text(orderDetail.address,
+                                    style: Get.theme.textTheme.headline4),
                               )
                             ],
                           )
@@ -173,12 +164,9 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
             onPressed: () {
               model.cancelOrder(this.widget.order.id);
             },
-            child: Text(
-              "Hủy đơn 😢",
-              style: TextStyle(
-                color: Colors.grey,
-              ),
-            ),
+            child: Text("Hủy đơn 😢",
+                style:
+                    Get.theme.textTheme.headline4.copyWith(color: Colors.grey)),
           ),
         );
       });
@@ -188,21 +176,15 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
         child: Text(
           'Bạn đã có bữa cơm ngon miệng phải không 😋?',
           textAlign: TextAlign.center,
-          style: TextStyle(
-            color: Colors.grey,
-          ),
+          style: Get.theme.textTheme.headline4.copyWith(color: Colors.grey),
         ),
       );
     } else {
       return Container(
         padding: EdgeInsets.only(top: 8, bottom: 8),
-        child: Text(
-          'Các đầu bếp đang chuẩn bị cho bạn đó 🥡',
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            color: Colors.grey,
-          ),
-        ),
+        child: Text('Các đầu bếp đang chuẩn bị cho bạn đó 🥡',
+            textAlign: TextAlign.center,
+            style: Get.theme.textTheme.headline4.copyWith(color: Colors.grey)),
       );
     }
   }
@@ -225,7 +207,7 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
             children: [
               Text(
                 items[0].supplierName,
-                style: TextStyle(fontWeight: FontWeight.bold, color: kPrimary),
+                style: Get.theme.textTheme.headline3.copyWith(color: kPrimary),
               ),
               (note != null)
                   ? Container(
@@ -235,11 +217,13 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                       padding: const EdgeInsets.all(4),
                       child: Text.rich(TextSpan(
                           text: "Ghi chú:\n",
-                          style: TextStyle(color: Colors.red, fontSize: 12),
+                          style: Get.theme.textTheme.headline6
+                              .copyWith(color: Colors.red),
                           children: [
                             TextSpan(
                                 text: "- " + note.content,
-                                style: TextStyle(color: Colors.grey))
+                                style: Get.theme.textTheme.headline4
+                                    .copyWith(color: Colors.grey))
                           ])),
                     )
                   : SizedBox.shrink(),
@@ -286,7 +270,7 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
     if (item.type == ProductType.GIFT_PRODUCT) {
       displayPrice = RichText(
           text: TextSpan(
-              style: TextStyle(color: Colors.black),
+              style: Get.theme.textTheme.headline4,
               text: orderItemPrice.toString() + " ",
               children: [
             WidgetSpan(
@@ -312,7 +296,8 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                 children: [
                   Text(
                     "${item.quantity}x ",
-                    style: TextStyle(color: Colors.grey),
+                    style: Get.theme.textTheme.headline4
+                        .copyWith(color: Colors.grey),
                     overflow: TextOverflow.ellipsis,
                   ),
                   Container(
@@ -323,9 +308,6 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                             ? Text(
                                 item.masterProductName,
                                 textAlign: TextAlign.start,
-                                style: TextStyle(
-                                  fontSize: 14,
-                                ),
                               )
                             : SizedBox.shrink(),
                         ...orderChilds
@@ -334,7 +316,6 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                                 child.type == ProductType.EXTRA_PRODUCT
                                     ? "+ " + child.masterProductName
                                     : child.masterProductName,
-                                style: TextStyle(fontSize: 14),
                               ),
                             )
                             .toList(),
@@ -374,27 +355,24 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
             children: [
               Text(
                 "Tổng tiền",
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: Get.theme.textTheme.headline3,
               ),
               Text(
                 "${orderDetail.itemQuantity} món",
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: Get.theme.textTheme.headline3,
               ),
             ],
           ),
           RichText(
             text: TextSpan(
                 text: "P.Thức: ",
-                style: TextStyle(fontSize: 12, color: Colors.black),
+                style:
+                    Get.theme.textTheme.headline6.copyWith(color: Colors.black),
                 children: <TextSpan>[
                   TextSpan(
                     text: "${payment}",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontStyle: FontStyle.italic,
-                      fontSize: 12,
-                      color: kPrimary,
-                    ),
+                    style:
+                        Get.theme.textTheme.headline5.copyWith(color: kPrimary),
                   ),
                 ]),
           ),
@@ -413,7 +391,6 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                     children: [
                       Text(
                         "Tạm tính",
-                        style: TextStyle(),
                       ),
                       Text("${formatPrice(orderDetail.total)}"),
                     ],
@@ -430,11 +407,11 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                     children: [
                       Text(
                         "Tổng cộng",
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: Get.theme.textTheme.headline3,
                       ),
                       Text(
                         "${formatPrice(orderDetail.finalAmount)}",
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: Get.theme.textTheme.headline3,
                       ),
                     ],
                   ),

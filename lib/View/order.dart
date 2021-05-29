@@ -66,8 +66,6 @@ class _OrderScreenState extends State<OrderScreen> {
                           Center(
                             child: Text(
                               "Có gì đó sai sai..\n Vui lòng thử lại.",
-                              style: kTextPrimary.copyWith(
-                                  fontSize: 20, color: Colors.black),
                             ),
                           ),
                           SizedBox(height: 8),
@@ -184,12 +182,12 @@ class _OrderScreenState extends State<OrderScreen> {
                         children: [
                           Text(
                             voucher.voucherName,
-                            style: kTitleTextStyle.copyWith(fontSize: 16),
+                            style: Get.theme.textTheme.headline1
+                                .copyWith(color: kTextColor),
                           ),
                           Text(
                             voucher.promotionName,
-                            style: kDescriptionTextSyle.copyWith(
-                                fontSize: 12, fontWeight: FontWeight.normal),
+                            style: Get.theme.textTheme.headline6,
                           ),
                         ],
                       ),
@@ -210,7 +208,8 @@ class _OrderScreenState extends State<OrderScreen> {
                           child: Center(
                             child: Text(
                               isApplied ? 'Hủy' : 'Chọn',
-                              style: TextStyle(color: kPrimary, fontSize: 12),
+                              style: Get.theme.textTheme.headline6
+                                  .copyWith(color: kPrimary),
                             ),
                           ),
                         ),
@@ -251,20 +250,13 @@ class _OrderScreenState extends State<OrderScreen> {
                   maxLines: 2,
                   text: TextSpan(
                       text: "WoW\nBạn sẽ nhận được ",
-                      style: TextStyle(
-                        fontSize: 12,
-                        // fontWeight: FontWeight.w100,
-                        color: Colors.black45,
-                      ),
+                      style: Get.theme.textTheme.headline6,
                       children: [
                         TextSpan(
                           text:
                               "${orderViewModel.orderAmount.beanAmount.toString()} ",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                            color: Colors.orange,
-                          ),
+                          style: Get.theme.textTheme.headline3
+                              .copyWith(color: Colors.orange),
                         ),
                         WidgetSpan(
                             alignment: PlaceholderAlignment.bottom,
@@ -301,7 +293,7 @@ class _OrderScreenState extends State<OrderScreen> {
                 children: [
                   Text(
                     "Các món trong giỏ",
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: Get.theme.textTheme.headline3,
                   ),
                   OutlineButton(
                     shape: RoundedRectangleBorder(
@@ -313,10 +305,8 @@ class _OrderScreenState extends State<OrderScreen> {
                     borderSide: BorderSide(color: kPrimary),
                     child: Text(
                       "Thêm món",
-                      style: TextStyle(
-                        color: kPrimary,
-                        fontSize: 12,
-                      ),
+                      style: Get.theme.textTheme.headline6
+                          .copyWith(color: kPrimary),
                     ),
                   )
                 ],
@@ -379,10 +369,7 @@ class _OrderScreenState extends State<OrderScreen> {
                 children: [
                   Text(
                     list[0].master.supplierName,
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: Get.theme.textTheme.headline3,
                   ),
                   Text(
                     list
@@ -392,7 +379,8 @@ class _OrderScreenState extends State<OrderScreen> {
                                     previousValue + element.quantity)
                             .toString() +
                         " món",
-                    style: TextStyle(color: Colors.orange),
+                    style: Get.theme.textTheme.headline4
+                        .copyWith(color: Colors.orange),
                   )
                 ],
               ),
@@ -405,11 +393,9 @@ class _OrderScreenState extends State<OrderScreen> {
                   },
                   child: Padding(
                     padding: EdgeInsets.all(8),
-                    child: (supplierNote == null)
-                        ? Text("Thêm ghi chú",
-                            style: TextStyle(color: Colors.blue, fontSize: 12))
-                        : Text("Sửa ghi chú",
-                            style: TextStyle(color: Colors.blue, fontSize: 12)),
+                    child: Text(
+                        (supplierNote == null) ? "Thêm ghi chú" : "Sửa ghi chú",
+                        style: Get.theme.textTheme.headline6),
                   )),
             ),
           ]),
@@ -438,7 +424,7 @@ class _OrderScreenState extends State<OrderScreen> {
           item.products[i].type == ProductType.EXTRA_PRODUCT
               ? "+ " + item.products[i].name
               : item.products[i].name,
-          style: TextStyle(fontSize: 13, color: kBackgroundGrey[5])));
+          style: Get.theme.textTheme.headline4.copyWith(color: Colors.grey)));
       price += item.products[i].price * item.quantity;
     }
 
@@ -448,7 +434,6 @@ class _OrderScreenState extends State<OrderScreen> {
       ));
       list.add(Text(
         item.description,
-        style: TextStyle(fontSize: 14),
       ));
     }
 
@@ -505,13 +490,11 @@ class _OrderScreenState extends State<OrderScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Flexible(
-                        child: item.master.type != ProductType.MASTER_PRODUCT
-                            ? Text(item.master.name,
-                                style: TextStyle(
-                                    fontSize: 14, fontWeight: FontWeight.bold))
-                            : Text(item.products[0].name,
-                                style: TextStyle(
-                                    fontSize: 14, fontWeight: FontWeight.bold)),
+                        child: Text(
+                            item.master.type != ProductType.MASTER_PRODUCT
+                                ? item.master.name
+                                : item.products[0].name,
+                            style: Get.theme.textTheme.headline3),
                       ),
                       SizedBox(width: 8),
                     ],
@@ -531,7 +514,7 @@ class _OrderScreenState extends State<OrderScreen> {
                               text: TextSpan(
                                   text:
                                       isGift ? "${price} " : formatPrice(price),
-                                  style: TextStyle(color: Colors.black),
+                                  style: Get.theme.textTheme.headline4,
                                   children: [
                                     WidgetSpan(
                                       alignment: PlaceholderAlignment.bottom,
@@ -578,10 +561,8 @@ class _OrderScreenState extends State<OrderScreen> {
                 child: RichText(
                   text: TextSpan(
                       text: "Nhận đơn tại:",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 15,
-                          color: kPrimary),
+                      style: Get.theme.textTheme.headline3
+                          .copyWith(color: kPrimary),
                       children: []),
                 ),
               ),
@@ -602,9 +583,7 @@ class _OrderScreenState extends State<OrderScreen> {
                           location != null
                               ? location.address
                               : "Chọn địa điểm giao hàng",
-                          style: kTextSecondary.copyWith(
-                            color: Colors.grey,
-                          ),
+                          style: Get.theme.textTheme.headline4,
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,
                         ),
@@ -634,16 +613,13 @@ class _OrderScreenState extends State<OrderScreen> {
           Expanded(
             flex: 4,
             child: Text("Thời gian: ",
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 15,
-                    color: kPrimary)),
+                style: Get.theme.textTheme.headline3.copyWith(color: kPrimary)),
           ),
           Expanded(
             flex: 7,
             child: Text(
                 "${DateFormat("HH:mm").format(arrive)} ~ ${DateFormat("HH:mm").format(arrive.add(Duration(minutes: 30)))}",
-                style: TextStyle(fontSize: 14, color: Colors.black)),
+                style: Get.theme.textTheme.headline4),
           ),
         ],
       ),
@@ -672,10 +648,8 @@ class _OrderScreenState extends State<OrderScreen> {
               children: [
                 Text(
                   'Chi phí',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
-                      color: kPrimary),
+                  style:
+                      Get.theme.textTheme.headline3.copyWith(color: kPrimary),
                 ),
               ],
             ),
@@ -698,12 +672,12 @@ class _OrderScreenState extends State<OrderScreen> {
                     children: [
                       Text(
                         "Tạm tính",
-                        style: kTextSecondary,
+                        style: Get.theme.textTheme.headline4,
                       ),
                       Text(
                           NumberFormat.simpleCurrency(locale: 'vi')
                               .format(orderViewModel.orderAmount.totalAmount),
-                          style: kTextSecondary),
+                          style: Get.theme.textTheme.headline4),
                     ],
                   ),
                 ),
@@ -717,12 +691,11 @@ class _OrderScreenState extends State<OrderScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text("Tổng cộng",
-                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      Text("Tổng cộng", style: Get.theme.textTheme.headline3),
                       Text(
                           NumberFormat.simpleCurrency(locale: 'vi')
                               .format(orderViewModel.orderAmount.finalAmount),
-                          style: TextStyle(fontWeight: FontWeight.bold)),
+                          style: Get.theme.textTheme.headline3),
                     ],
                   ),
                 )
@@ -737,11 +710,8 @@ class _OrderScreenState extends State<OrderScreen> {
                 text: TextSpan(
                   text:
                       "Bạn được tặng ${orderViewModel.orderAmount.beanAmount.round().toString()} ",
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.orange,
-                  ),
+                  style: Get.theme.textTheme.headline5
+                      .copyWith(color: Colors.orange),
                   children: [
                     WidgetSpan(
                         alignment: PlaceholderAlignment.bottom,
@@ -798,17 +768,13 @@ class _OrderScreenState extends State<OrderScreen> {
               child: RichText(
                 text: TextSpan(
                     text: "Phương thức thanh toán ",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15,
-                        color: kPrimary),
+                    style:
+                        Get.theme.textTheme.headline3.copyWith(color: kPrimary),
                     children: [
                       TextSpan(
                           text: "(*)",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15,
-                              color: Colors.red))
+                          style: Get.theme.textTheme.headline3
+                              .copyWith(color: Colors.red))
                     ]),
               ),
             ),
@@ -848,16 +814,12 @@ class _OrderScreenState extends State<OrderScreen> {
                       children: [
                         Text(
                           "Tổng tiền",
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.black87,
-                            fontWeight: FontWeight.w100,
-                          ),
+                          style: Get.theme.textTheme.headline4,
                         ),
                         Text(
                           '...',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 18),
+                          style: Get.theme.textTheme.headline1
+                              .copyWith(color: Colors.white),
                         )
                       ],
                     ),
@@ -885,29 +847,26 @@ class _OrderScreenState extends State<OrderScreen> {
                             animatedTexts: [
                               FadeAnimatedText(
                                 'Đợi tý nha',
-                                textStyle:
-                                    kSubtitleTextSyule.copyWith(fontSize: 12),
+                                textStyle: Get.theme.textTheme.headline4
+                                    .copyWith(color: Colors.white),
                                 textAlign: TextAlign.center,
                                 // speed: Duration(milliseconds: 300),
                               ),
                               FadeAnimatedText(
                                 '🚀',
-                                textStyle: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 24),
+                                textStyle: Get.theme.textTheme.headline1,
                                 textAlign: TextAlign.center,
                                 // speed: Duration(milliseconds: 300),
                               ),
                               FadeAnimatedText(
                                 '🛵',
-                                textStyle: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 24),
+                                textStyle: Get.theme.textTheme.headline1,
                                 textAlign: TextAlign.center,
                                 // speed: Duration(milliseconds: 300),
                               ),
                               FadeAnimatedText(
                                 '💻',
-                                textStyle: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 24),
+                                textStyle: Get.theme.textTheme.headline1,
                                 textAlign: TextAlign.center,
                                 // speed: Duration(milliseconds: 300),
                               ),
@@ -992,13 +951,10 @@ class _OrderScreenState extends State<OrderScreen> {
                                   isMenuAvailable
                                       ? "Chốt đơn 👌"
                                       : "Khung giờ đã kết thúc",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 15,
-                                    color: isMenuAvailable
-                                        ? Colors.white
-                                        : kGreyTitle,
-                                  )),
+                                  style: Get.theme.textTheme.headline3.copyWith(
+                                      color: isMenuAvailable
+                                          ? Colors.white
+                                          : kGreyTitle)),
                               SizedBox(
                                 height: 16,
                               )
@@ -1037,9 +993,8 @@ class _OrderScreenState extends State<OrderScreen> {
                                 RichText(
                                   text: TextSpan(
                                       text: errorMsg,
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 15),
+                                      style: Get.theme.textTheme.headline3
+                                          .copyWith(color: Colors.white),
                                       children: []),
                                 ),
                                 SizedBox(

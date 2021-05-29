@@ -45,12 +45,7 @@ class _AppBarSate extends State<DefaultAppBar> {
                 },
               ),
             ),
-      title: Text(
-        widget.title,
-        style: TextStyle(
-          color: kPrimary,
-        ),
-      ),
+      title: Text(widget.title, style: Get.theme.textTheme.headline2),
     );
   }
 }
@@ -216,20 +211,13 @@ class _GiftAppBarSate extends State<GiftAppBar> {
         return RichText(
           text: TextSpan(
               text: "Chào ",
-              style: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w500,
-                color: Colors.white,
-              ),
+              style:
+                  Get.theme.textTheme.headline4.copyWith(color: Colors.white),
               children: <TextSpan>[
                 TextSpan(
                   text: "${user?.name?.toUpperCase() ?? "-"}",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontStyle: FontStyle.italic,
-                    fontSize: 14,
-                    // color: Colors.white,
-                  ),
+                  style: Get.theme.textTheme.headline3
+                      .copyWith(color: Colors.white),
                 ),
                 TextSpan(text: ", Đừng để bụng đói nha!"),
               ]),
@@ -258,28 +246,18 @@ class _GiftAppBarSate extends State<GiftAppBar> {
         return RichText(
           text: TextSpan(
               text: "Bạn có ",
-              style: TextStyle(
-                fontSize: 12,
-                // fontWeight: FontWeight.w100,
-                color: Colors.black45,
-              ),
+              style:
+                  Get.theme.textTheme.headline6.copyWith(color: Colors.white),
               children: [
                 TextSpan(
                   text: "${user?.balance?.floor() ?? "-"} xu",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14,
-                    color: Colors.white,
-                  ),
+                  style: Get.theme.textTheme.headline5
+                      .copyWith(color: Colors.white),
                 ),
                 TextSpan(text: " và "),
                 TextSpan(
                   text: "${user?.point?.floor() ?? "-"} ",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14,
-                    color: kBean,
-                  ),
+                  style: Get.theme.textTheme.headline5.copyWith(color: kBean),
                 ),
                 WidgetSpan(
                     alignment: PlaceholderAlignment.bottom,

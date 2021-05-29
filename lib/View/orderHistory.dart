@@ -131,7 +131,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                   },
                   child: Text(
                     '🥡 Đặt ngay 🥡',
-                    style: kTextPrimary.copyWith(
+                    style: Get.theme.textTheme.headline4.copyWith(
                       color: kPrimary,
                     ),
                   ),
@@ -202,17 +202,13 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
           child: isToday
               ? Text(
                   'Hôm nay 😋',
-                  style: kTitleTextStyle.copyWith(fontSize: 24),
+                  style: Get.theme.textTheme.headline1,
                 )
               : Text(
                   DateFormat('dd/MM/yyyy')
                       .format(DateTime.parse(orderSummary.checkInDate)),
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                ),
+                  style: Get.theme.textTheme.headline1
+                      .copyWith(color: Colors.black)),
         ),
         ...orderSummary.orders
             .toList()
@@ -251,11 +247,8 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                     children: [
                       Text(
                         "${order.invoiceId} / ${order.itemQuantity} món",
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: Get.theme.textTheme.headline1
+                            .copyWith(color: Colors.black),
                       ),
                       // Text(
                       //   DateFormat('HH:MM dd/MM/yyyy')
@@ -274,10 +267,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                   ),
                   Text(
                     order.address,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey[600],
-                    ),
+                    style: Get.theme.textTheme.headline4,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -292,11 +282,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                   Text(
                     "${formatPrice(order.finalAmount)}",
                     textAlign: TextAlign.right,
-                    style: TextStyle(
-                      color: kPrimary,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
+                    style: Get.theme.textTheme.headline1,
                   ),
                 ],
               ),

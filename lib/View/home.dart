@@ -140,12 +140,11 @@ class _HomeScreenState extends State<HomeScreen> {
                               children: [
                                 Text(
                                   order.invoiceId,
-                                  style: kTitleTextStyle.copyWith(fontSize: 14),
+                                  style: Get.theme.textTheme.headline3,
                                 ),
                                 SizedBox(height: 8),
                                 Text('Đơn hàng mới',
-                                    style: kDescriptionTextSyle.copyWith(
-                                        fontSize: 12))
+                                    style: Get.theme.textTheme.headline6)
                               ],
                             ),
                             SizedBox(width: 24),
@@ -156,15 +155,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                 children: [
                                   Text(
                                     order.address,
-                                    style:
-                                        kTitleTextStyle.copyWith(fontSize: 14),
+                                    style: Get.theme.textTheme.headline3,
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                   SizedBox(height: 8),
                                   Text('Nhận đơn tại',
-                                      style: kDescriptionTextSyle.copyWith(
-                                          fontSize: 12))
+                                      style: Get.theme.textTheme.headline6)
                                 ],
                               ),
                             ),
@@ -195,9 +192,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Text.rich(
           TextSpan(
             text: "Gợi ý nhà hàng bạn thích cho chúng mình ",
-            style: kDescriptionTextSyle.copyWith(
-              fontSize: 12,
-            ),
+            style: Get.theme.textTheme.headline6,
             children: [
               WidgetSpan(
                 child: ScopedModel<AccountViewModel>(
@@ -211,11 +206,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       },
                       child: Text(
                         "tại đây",
-                        style: TextStyle(
-                          color: Colors.blue,
-                          decoration: TextDecoration.underline,
-                          fontSize: 12,
-                        ),
+                        style: Get.theme.textTheme.headline6
+                            .copyWith(color: Colors.blue),
                       ),
                     );
                   }),
@@ -295,7 +287,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     Text(
                       "Aaa, hiện tại các nhà hàng đang bận, bạn vui lòng quay lại sau nhé",
                       textAlign: TextAlign.center,
-                      style: kSubtitleTextSyule.copyWith(color: Colors.orange),
+                      style: Get.theme.textTheme.headline2
+                          .copyWith(color: Colors.orange),
                     ),
                   ],
                 ),
@@ -305,8 +298,8 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 Padding(
                   padding: const EdgeInsets.fromLTRB(8, 16.0, 8, 16),
-                  child:
-                      Text('🌟 Danh sách nhà hàng 🌟', style: kTitleTextStyle),
+                  child: Text('🌟 Danh sách nhà hàng 🌟',
+                      style: Get.theme.textTheme.headline1),
                 ),
                 ColorFiltered(
                   colorFilter: ColorFilter.mode(
@@ -419,8 +412,9 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             Text(
               dto.name,
-              style:
-                  TextStyle(color: dto.available ? Colors.black : Colors.grey),
+              style: dto.available
+                  ? Get.theme.textTheme.headline4
+                  : Get.theme.textTheme.headline4.copyWith(color: Colors.grey),
             )
           ],
         ),

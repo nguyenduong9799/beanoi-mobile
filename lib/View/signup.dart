@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Accessories/index.dart';
@@ -56,11 +57,7 @@ class _SignUpState extends State<SignUp> {
                         // HELLO SECTION
                         Text(
                           "Cho mình xin cái tên nhé ☺",
-                          style: TextStyle(
-                            color: Color(0xFF00d286),
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style: Get.theme.textTheme.headline1
                         ),
                         SizedBox(height: 16),
                         // FORM ITEM
@@ -98,11 +95,7 @@ class _SignUpState extends State<SignUp> {
                                             form.valid
                                                 ? "Hoàn thành"
                                                 : "Bạn chưa điền xong",
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold,
-                                            ),
+                                            style: Get.theme.textTheme.headline1.copyWith(color: Colors.white)
                                           ),
                                   ),
                                 ),

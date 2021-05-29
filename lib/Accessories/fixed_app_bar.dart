@@ -124,111 +124,111 @@ class _FixedAppBarState extends State<FixedAppBar> {
     );
   }
 
-  Widget _buildTimeSection([bool loading = false]) {
-    if (loading) {
-      return Container(
-        width: Get.width,
-        height: 48,
-        padding: const EdgeInsets.only(top: 8, bottom: 16),
-        child: ListView.builder(
-          scrollDirection: Axis.horizontal,
-          itemBuilder: (BuildContext context, int index) {
-            return Padding(
-              padding: const EdgeInsets.only(right: 8.0),
-              child: ShimmerBlock(width: 96, height: 48, borderRadius: 16),
-            );
-          },
-          itemCount: 3,
-        ),
-      );
-    }
-
-    return Container(
-      width: Get.width,
-      height: 48,
-      padding: const EdgeInsets.only(top: 8, bottom: 16),
-      child: ListView(
-        scrollDirection: Axis.horizontal,
-        children: [
-          InkWell(
-            onTap: () {
-              setState(() {
-                timeSection = 1;
-              });
-            },
-            child: Material(
-              color: Colors.transparent,
-              child: Container(
-                padding: EdgeInsets.fromLTRB(16, 4, 16, 4),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
-                  color: timeSection == 1 ? kPrimary : Colors.transparent,
-                ),
-                child: Text(
-                  'Sáng 🌄',
-                  style: TextStyle(
-                    color:
-                        timeSection == 1 ? Colors.white : kDescriptionTextColor,
-                    fontWeight:
-                        timeSection == 1 ? FontWeight.w800 : FontWeight.w100,
-                  ),
-                ),
-              ),
-            ),
-          ),
-          InkWell(
-            onTap: () {
-              setState(() {
-                timeSection = 2;
-              });
-            },
-            child: Ink(
-              color: kPrimary,
-              child: Container(
-                padding: EdgeInsets.fromLTRB(16, 4, 16, 4),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
-                  color: timeSection == 2 ? kPrimary : Colors.transparent,
-                ),
-                child: Text(
-                  'Trưa 🌤',
-                  style: kDescriptionTextSyle.copyWith(
-                    fontWeight:
-                        timeSection == 1 ? FontWeight.w800 : FontWeight.w100,
-                    color:
-                        timeSection == 2 ? Colors.white : kDescriptionTextColor,
-                  ),
-                ),
-              ),
-            ),
-          ),
-          InkWell(
-            onTap: () {
-              setState(() {
-                timeSection = 3;
-              });
-            },
-            child: Container(
-              padding: EdgeInsets.fromLTRB(16, 4, 16, 4),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                color: timeSection == 3 ? kPrimary : Colors.transparent,
-              ),
-              child: Text(
-                'Chiều 🌇',
-                style: kDescriptionTextSyle.copyWith(
-                  fontWeight:
-                      timeSection == 1 ? FontWeight.w800 : FontWeight.w100,
-                  color:
-                      timeSection == 3 ? Colors.white : kDescriptionTextColor,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  // Widget _buildTimeSection([bool loading = false]) {
+  //   if (loading) {
+  //     return Container(
+  //       width: Get.width,
+  //       height: 48,
+  //       padding: const EdgeInsets.only(top: 8, bottom: 16),
+  //       child: ListView.builder(
+  //         scrollDirection: Axis.horizontal,
+  //         itemBuilder: (BuildContext context, int index) {
+  //           return Padding(
+  //             padding: const EdgeInsets.only(right: 8.0),
+  //             child: ShimmerBlock(width: 96, height: 48, borderRadius: 16),
+  //           );
+  //         },
+  //         itemCount: 3,
+  //       ),
+  //     );
+  //   }
+  //
+  //   return Container(
+  //     width: Get.width,
+  //     height: 48,
+  //     padding: const EdgeInsets.only(top: 8, bottom: 16),
+  //     child: ListView(
+  //       scrollDirection: Axis.horizontal,
+  //       children: [
+  //         InkWell(
+  //           onTap: () {
+  //             setState(() {
+  //               timeSection = 1;
+  //             });
+  //           },
+  //           child: Material(
+  //             color: Colors.transparent,
+  //             child: Container(
+  //               padding: EdgeInsets.fromLTRB(16, 4, 16, 4),
+  //               decoration: BoxDecoration(
+  //                 borderRadius: BorderRadius.circular(16),
+  //                 color: timeSection == 1 ? kPrimary : Colors.transparent,
+  //               ),
+  //               child: Text(
+  //                 'Sáng 🌄',
+  //                 style: TextStyle(
+  //                   color:
+  //                       timeSection == 1 ? Colors.white : kDescriptionTextColor,
+  //                   fontWeight:
+  //                       timeSection == 1 ? FontWeight.w800 : FontWeight.w100,
+  //                 ),
+  //               ),
+  //             ),
+  //           ),
+  //         ),
+  //         InkWell(
+  //           onTap: () {
+  //             setState(() {
+  //               timeSection = 2;
+  //             });
+  //           },
+  //           child: Ink(
+  //             color: kPrimary,
+  //             child: Container(
+  //               padding: EdgeInsets.fromLTRB(16, 4, 16, 4),
+  //               decoration: BoxDecoration(
+  //                 borderRadius: BorderRadius.circular(16),
+  //                 color: timeSection == 2 ? kPrimary : Colors.transparent,
+  //               ),
+  //               child: Text(
+  //                 'Trưa 🌤',
+  //                 style: kDescriptionTextSyle.copyWith(
+  //                   fontWeight:
+  //                       timeSection == 1 ? FontWeight.w800 : FontWeight.w100,
+  //                   color:
+  //                       timeSection == 2 ? Colors.white : kDescriptionTextColor,
+  //                 ),
+  //               ),
+  //             ),
+  //           ),
+  //         ),
+  //         InkWell(
+  //           onTap: () {
+  //             setState(() {
+  //               timeSection = 3;
+  //             });
+  //           },
+  //           child: Container(
+  //             padding: EdgeInsets.fromLTRB(16, 4, 16, 4),
+  //             decoration: BoxDecoration(
+  //               borderRadius: BorderRadius.circular(16),
+  //               color: timeSection == 3 ? kPrimary : Colors.transparent,
+  //             ),
+  //             child: Text(
+  //               'Chiều 🌇',
+  //               style: kDescriptionTextSyle.copyWith(
+  //                 fontWeight:
+  //                     timeSection == 1 ? FontWeight.w800 : FontWeight.w100,
+  //                 color:
+  //                     timeSection == 3 ? Colors.white : kDescriptionTextColor,
+  //               ),
+  //             ),
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   Widget timeRecieve() {
     return ScopedModelDescendant<RootViewModel>(
@@ -282,9 +282,7 @@ class _FixedAppBarState extends State<FixedAppBar> {
                   Text.rich(
                     TextSpan(
                       text: "Giờ giao hàng ",
-                      style: kDescriptionTextSyle.copyWith(
-                        fontSize: 12,
-                      ),
+                      style: Get.theme.textTheme.headline5,
                       children: [
                         // WidgetSpan(
                         //   child: MyTooltip(
@@ -332,17 +330,11 @@ class _FixedAppBarState extends State<FixedAppBar> {
                           },
                           child: Center(
                             child: Text(
-                              "${DateFormat("HH:mm").format(arrive)} - ${DateFormat("HH:mm").format(arrive.add(Duration(minutes: 30)))}",
-                              style: isSelect
-                                  ? kTitleTextStyle.copyWith(
-                                      color: Colors.white,
-                                      fontSize: 12,
-                                    )
-                                  : kDescriptionTextSyle.copyWith(
-                                      fontWeight: FontWeight.w300,
-                                      fontSize: 12,
-                                    ),
-                            ),
+                                "${DateFormat("HH:mm").format(arrive)} - ${DateFormat("HH:mm").format(arrive.add(Duration(minutes: 30)))}",
+                                style: isSelect
+                                    ? Get.theme.textTheme.headline5
+                                        .copyWith(color: Colors.white)
+                                    : Get.theme.textTheme.headline6),
                           ),
                         ),
                       );
@@ -400,19 +392,13 @@ class _FixedAppBarState extends State<FixedAppBar> {
             children: [
               Text(
                 "📌 Nơi nhận: ",
-                style: kDescriptionTextSyle.copyWith(
-                  fontWeight: FontWeight.w200,
-                  color: Colors.black87,
-                  fontSize: 12,
-                ),
+                style:
+                    Get.theme.textTheme.headline6.copyWith(color: Colors.black),
               ),
               Flexible(
                 child: Text(
                   text,
-                  style: kTitleTextStyle.copyWith(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: Get.theme.textTheme.headline3,
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
                 ),
@@ -485,18 +471,12 @@ class _FixedAppBarState extends State<FixedAppBar> {
                       Text.rich(
                         TextSpan(
                           text: "Chốt đơn: ",
-                          style: kSubtitleTextSyule.copyWith(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w100,
-                          ),
+                          style: Get.theme.textTheme.headline6,
                           children: [
                             TextSpan(
                               text: "$currentTimeSlot",
-                              style: kTitleTextStyle.copyWith(
-                                color: Colors.black87,
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                              ),
+                              style: Get.theme.textTheme.headline5
+                                  .copyWith(color: Colors.black),
                             ),
                           ],
                         ),
@@ -516,11 +496,8 @@ class _FixedAppBarState extends State<FixedAppBar> {
                         nextTimeSlot != null
                             ? "Khung giờ đã đóng bạn vui lòng xem chuyến hàng kế tiếp nha 😉."
                             : "Hiện tại các khung giờ đều đã đóng. Hẹn gặp bạn hôm sau nhé 😥.",
-                        style: kTitleTextStyle.copyWith(
-                          color: Colors.black87,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w100,
-                        ),
+                        style: Get.theme.textTheme.headline6
+                            .copyWith(color: Colors.black),
                         textAlign: nextTimeSlot != null
                             ? TextAlign.left
                             : TextAlign.center,
@@ -536,7 +513,8 @@ class _FixedAppBarState extends State<FixedAppBar> {
                             },
                             child: Text(
                               "Xem ngay",
-                              style: TextStyle(color: kPrimary, fontSize: 12),
+                              style: Get.theme.textTheme.headline6
+                                  .copyWith(color: kPrimary),
                             ),
                           )
                         : SizedBox(),
@@ -579,7 +557,7 @@ class _BeanTimeCountdownState extends State<BeanTimeCountdown> {
           if (widget.differentTime <= 0) {
             return Text(
               "Hết giờ",
-              style: TextStyle(color: Colors.red, fontSize: 12),
+              style: Get.theme.textTheme.headline6.copyWith(color: Colors.red),
             );
           }
           return CountdownTimer(
@@ -596,12 +574,15 @@ class _BeanTimeCountdownState extends State<BeanTimeCountdown> {
             },
             widgetBuilder: (_, CurrentRemainingTime time) {
               if (time == null) {
-                return Text('Hết giờ',
-                    style: TextStyle(color: Colors.red, fontSize: 12));
+                return Text(
+                  'Hết giờ',
+                  style:
+                      Get.theme.textTheme.headline6.copyWith(color: Colors.red),
+                );
               }
               return Text(
                 "Còn lại ${time.hours ?? '0'}h : ${time.min ?? '0'}ph ",
-                style: TextStyle(color: kPrimary, fontSize: 12),
+                style: Get.theme.textTheme.headline6.copyWith(color: kPrimary),
               );
             },
           );

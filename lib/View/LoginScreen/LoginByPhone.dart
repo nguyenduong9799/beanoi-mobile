@@ -45,10 +45,8 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
             child: Text(
               " ${country["code"]} (${country["dial_code"]})",
               textAlign: TextAlign.center,
-              style: kTextPrimary.copyWith(
-                  color: kBackgroundGrey[0],
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold),
+              style:
+                  Get.theme.textTheme.headline5.copyWith(color: Colors.white),
             ),
             value: country["dial_code"],
           ),
@@ -128,11 +126,8 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
                           padding: const EdgeInsets.fromLTRB(32, 0, 32, 0),
                           child: Text(
                             "Nhập số điện thoại",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                            ),
+                            style: Get.theme.textTheme.headline1
+                                .copyWith(color: Colors.white),
                           ),
                         ),
                         SizedBox(height: 24),
@@ -157,9 +152,8 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
                                       dropdownColor: kSecondary,
                                       iconSize: 20,
                                       iconEnabledColor: kBackgroundGrey[0],
-                                      style: kTextPrimary.copyWith(
-                                          fontSize: 12,
-                                          color: kBackgroundGrey[0]),
+                                      style: Get.theme.textTheme.headline6
+                                          .copyWith(color: kBackgroundGrey[0]),
                                       items: _dropdownMenuItems,
                                       value: _countryCode,
                                       onChanged: (value) => setState(() {
@@ -197,8 +191,9 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
                                           return null;
                                         },
                                         style: _phoneFocus.hasFocus
-                                            ? kTextSecondary
-                                            : kTextPrimary,
+                                            ? Get.theme.textTheme.headline4
+                                            : Get.theme.textTheme.headline4
+                                                .copyWith(color: Colors.white),
                                         onSaved: (value) {
                                           _phone = value;
                                         },
@@ -275,7 +270,8 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
                                 // width: double.infinity,
                                 child: Text(
                                   "Xác nhận",
-                                  style: kTextSecondary,
+                                  style: Get.theme.textTheme.headline4
+                                      .copyWith(color: Colors.grey),
                                 ),
                               ),
                             ),

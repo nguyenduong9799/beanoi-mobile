@@ -228,8 +228,8 @@ class RootViewModel extends BaseModel {
           // margin: EdgeInsets.only(left: 8, right: 8, bottom: 32, top: 32),
           backgroundColor: kPrimary,
           messageText: Text("Thêm món thành công 🛒",
-              style: kSubtitleTextSyule.copyWith(
-                  fontSize: 16, color: Colors.white)),
+              style:
+                  Get.theme.textTheme.headline2.copyWith(color: Colors.white)),
           // borderRadius: 8,
           icon: Icon(Icons.check),
         );

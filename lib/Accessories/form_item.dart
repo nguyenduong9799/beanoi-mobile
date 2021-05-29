@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
@@ -13,14 +14,14 @@ class FormItem extends StatelessWidget {
   final List<Map<String, dynamic>> radioGroup;
 
   const FormItem(
-      this.label,
-      this.hintText,
-      this.formName, {
-        Key key,
-        this.keyboardType,
-        this.radioGroup,
-        this.isReadOnly = false,
-      }) : super(key: key);
+    this.label,
+    this.hintText,
+    this.formName, {
+    Key key,
+    this.keyboardType,
+    this.radioGroup,
+    this.isReadOnly = false,
+  }) : super(key: key);
 
   Widget _getFormItemType(FormGroup form) {
     final formControl = form.control(formName);
@@ -32,16 +33,16 @@ class FormItem extends StatelessWidget {
           children: [
             ...radioGroup
                 .map((e) => Flexible(
-              child: Row(
-                children: [
-                  ReactiveRadio(
-                    value: e["value"],
-                    formControlName: formName,
-                  ),
-                  Text(e["title"]),
-                ],
-              ),
-            ))
+                      child: Row(
+                        children: [
+                          ReactiveRadio(
+                            value: e["value"],
+                            formControlName: formName,
+                          ),
+                          Text(e["title"]),
+                        ],
+                      ),
+                    ))
                 .toList(),
           ],
         );
@@ -67,9 +68,9 @@ class FormItem extends StatelessWidget {
                         child: Text(
                           formControl.value != null
                               ? DateFormat('dd/MM/yyyy')
-                              .format((formControl.value as DateTime))
+                                  .format((formControl.value as DateTime))
                               : "Chọn ngày",
-                          style: TextStyle(color: Colors.blue),
+                          style: Get.theme.textTheme.headline4,
                         ),
                       ),
                     ],
@@ -90,7 +91,9 @@ class FormItem extends StatelessWidget {
             ValidationMessage.maxLength: 'Tối đa 255 ký tự',
           },
           // enableInteractiveSelection: false,
-          style: TextStyle(color: isReadOnly ? kPrimary : Colors.black),
+          style: isReadOnly
+              ? Get.theme.textTheme.headline4.copyWith(color: kPrimary)
+              : Get.theme.textTheme.headline4,
           readOnly: isReadOnly,
           formControlName: formName,
           textCapitalization: TextCapitalization.words,
@@ -136,13 +139,7 @@ class FormItem extends StatelessWidget {
           children: [
             Flexible(
               flex: 2,
-              child: Text(
-                label,
-                style: TextStyle(
-                  // fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                ),
-              ),
+              child: Text(label, style: Get.theme.textTheme.headline4),
             ),
             Flexible(
               flex: 5,

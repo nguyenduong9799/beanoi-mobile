@@ -120,25 +120,26 @@ class _UpdateAccountState extends State<ProfileScreen> {
                 children: [
                   Text(
                     model.currentUser.name.toUpperCase(),
-                    style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.orange),
+                    style: Get.theme.textTheme.headline1
+                        .copyWith(color: Colors.orange),
                   ),
                   SizedBox(
-                    height: 4,
+                    height: 8,
                   ),
                   infoDetail("Số xu: ", color: Colors.grey, list: [
                     TextSpan(
                         text: "${model.currentUser.balance} xu",
-                        style: TextStyle(fontWeight: FontWeight.normal))
+                        style: Get.theme.textTheme.headline4)
                   ]),
+                  SizedBox(
+                    height: 4,
+                  ),
                   infoDetail("Số bean: ", color: Colors.grey, list: [
                     TextSpan(
                         text: "${model.currentUser.point} ",
-                        style: TextStyle(fontWeight: FontWeight.normal)),
+                        style: Get.theme.textTheme.headline4),
                     WidgetSpan(
-                        alignment: PlaceholderAlignment.bottom,
+                        alignment: PlaceholderAlignment.middle,
                         child: Image(
                           image:
                               AssetImage("assets/images/icons/bean_coin.png"),
@@ -146,10 +147,13 @@ class _UpdateAccountState extends State<ProfileScreen> {
                           height: 20,
                         ))
                   ]),
+                  SizedBox(
+                    height: 4,
+                  ),
                   infoDetail("Mã giới thiệu: ", color: Colors.grey, list: [
                     TextSpan(
                         text: model.currentUser.referalCode ?? "-",
-                        style: TextStyle(fontWeight: FontWeight.normal))
+                        style: Get.theme.textTheme.headline4)
                   ]),
                 ],
               ),
@@ -169,7 +173,8 @@ class _UpdateAccountState extends State<ProfileScreen> {
             section(
                 icon: Icon(Icons.person, color: Colors.black54),
                 title: Text("Cập nhật thông tin",
-                    style: TextStyle(color: Colors.black54)),
+                    style: Get.theme.textTheme.headline4
+                        .copyWith(color: Colors.black54)),
                 function: () async {
                   bool result = await Get.toNamed(RouteHandler.UPDATE,
                       arguments: model.currentUser);
@@ -183,7 +188,8 @@ class _UpdateAccountState extends State<ProfileScreen> {
             section(
                 icon: Icon(Icons.history, color: Colors.black54),
                 title: Text("Lịch sử cộng điểm",
-                    style: TextStyle(color: Colors.black54)),
+                    style: Get.theme.textTheme.headline4
+                        .copyWith(color: Colors.black54)),
                 function: () async {
                   await showStatusDialog("assets/images/coming_soon.gif",
                       "Tính năng đang được triển khai", "");
@@ -192,7 +198,8 @@ class _UpdateAccountState extends State<ProfileScreen> {
             section(
                 icon: Icon(Icons.credit_card_outlined, color: Colors.black54),
                 title: Text("Nhập mã giới thiệu",
-                    style: TextStyle(color: Colors.black54)),
+                    style: Get.theme.textTheme.headline4
+                        .copyWith(color: Colors.black54)),
                 function: () async {
                   await model.showRefferalMessage();
                 }),
@@ -203,7 +210,8 @@ class _UpdateAccountState extends State<ProfileScreen> {
                   color: Colors.black54,
                 ),
                 title: Text("Theo dõi BeanOi",
-                    style: TextStyle(color: Colors.black54)),
+                    style: Get.theme.textTheme.headline4
+                        .copyWith(color: Colors.black54)),
                 function: () async {
                   await _launchUrl(
                       "https://www.facebook.com/Bean-%C6%A0i-103238875095890",
@@ -213,7 +221,8 @@ class _UpdateAccountState extends State<ProfileScreen> {
             section(
                 icon: Icon(Icons.info_outline, color: Colors.black54),
                 title: Text("Giới thiệu ứng dụng",
-                    style: TextStyle(color: Colors.black54)),
+                    style: Get.theme.textTheme.headline4
+                        .copyWith(color: Colors.black54)),
                 function: () async {
                   await _launchUrl(
                       "https://unidelivery-fad6f.web.app/?fbclid=IwAR1_t9Tlz6YCulz1idfZ4jIJ0AVDP6Pdno7qQ1pKMEi0kwR6zAG-qUJC5K8",
@@ -222,14 +231,18 @@ class _UpdateAccountState extends State<ProfileScreen> {
             Divider(),
             section(
                 icon: Icon(Icons.feedback_outlined, color: Colors.black54),
-                title: Text("Góp ý", style: TextStyle(color: Colors.black54)),
+                title: Text("Góp ý",
+                    style: Get.theme.textTheme.headline4
+                        .copyWith(color: Colors.black54)),
                 function: () async {
                   await model.sendFeedback();
                 }),
             Divider(),
             section(
                 icon: Icon(Icons.help_outline, color: Colors.black54),
-                title: Text("Hỗ trợ", style: TextStyle(color: Colors.black54)),
+                title: Text("Hỗ trợ",
+                    style: Get.theme.textTheme.headline4
+                        .copyWith(color: Colors.black54)),
                 function: () async {
                   int option = await showOptionDialog(
                       "Vui lòng liên hệ FanPage",
@@ -246,7 +259,8 @@ class _UpdateAccountState extends State<ProfileScreen> {
                 icon: Icon(Icons.logout, color: Colors.black54),
                 title: Text(
                   "Đăng xuất",
-                  style: TextStyle(color: Colors.red),
+                  style:
+                      Get.theme.textTheme.headline4.copyWith(color: Colors.red),
                 ),
                 function: () async {
                   await model.processSignout();
@@ -263,10 +277,7 @@ class _UpdateAccountState extends State<ProfileScreen> {
     return RichText(
         text: TextSpan(
             text: title,
-            style: TextStyle(
-                color: color ?? Colors.black,
-                fontSize: size ?? 14,
-                fontWeight: FontWeight.bold),
+            style: Get.theme.textTheme.headline4,
             children: list ?? []));
   }
 
@@ -310,7 +321,8 @@ class _UpdateAccountState extends State<ProfileScreen> {
           children: <Widget>[
             Text(
               "Version ${model.version} by UniTeam",
-              style: TextStyle(fontSize: 13, color: kBackgroundGrey[5]),
+              style:
+                  Get.theme.textTheme.headline4.copyWith(color: Colors.black54),
             ),
             SizedBox(
               height: 4,
@@ -320,12 +332,7 @@ class _UpdateAccountState extends State<ProfileScreen> {
               child: RichText(
                 text: TextSpan(
                   text: "Bean delivery ",
-                  style: TextStyle(
-                      fontSize: 13,
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold
-                      // fontStyle: FontStyle.italic,
-                      ),
+                  style: Get.theme.textTheme.headline3,
                   // children: <TextSpan>[
                   //   TextSpan(
                   //     text: "UniTeam",

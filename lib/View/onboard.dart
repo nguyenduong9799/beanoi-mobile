@@ -5,7 +5,6 @@ import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Model/DAO/index.dart';
 import 'package:unidelivery_mobile/Utils/index.dart';
 
-
 class OnBoardScreen extends StatefulWidget {
   OnBoardScreen({Key key}) : super(key: key);
 
@@ -13,10 +12,9 @@ class OnBoardScreen extends StatefulWidget {
   _OnBoardScreenState createState() => _OnBoardScreenState();
 }
 
-const pageDecoration = const PageDecoration(
-  titleTextStyle: const TextStyle(
-      fontSize: 28.0, fontWeight: FontWeight.w700, color: kPrimary),
-  bodyTextStyle: const TextStyle(fontSize: 19.0, color: kPrimary),
+PageDecoration pageDecoration = PageDecoration(
+  titleTextStyle: Get.theme.textTheme.headline1,
+  bodyTextStyle: Get.theme.textTheme.headline2,
   descriptionPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
   pageColor: Colors.white,
   imagePadding: EdgeInsets.zero,
@@ -60,13 +58,12 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
             Icons.arrow_forward,
             color: kPrimary,
           ),
-          skip: const Text(
+          skip: Text(
             'Bỏ qua',
-            style: TextStyle(color: Colors.grey),
+            style: Get.theme.textTheme.headline4.copyWith(color: Colors.grey),
           ),
-          done: const Text('Xong',
-              style: TextStyle(
-                  fontWeight: FontWeight.w600, color: kPrimary, fontSize: 14)),
+          done: Text('Xong',
+              style: Get.theme.textTheme.headline4.copyWith(color: kPrimary)),
           dotsDecorator: const DotsDecorator(
             size: Size(10.0, 10.0),
             color: Colors.grey,

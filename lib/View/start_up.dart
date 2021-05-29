@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Accessories/index.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
@@ -29,8 +30,7 @@ class StartUpView extends StatelessWidget {
                         SizedBox(height: 16),
                         Text(
                           "Bean Oi",
-                          style: kHeadingextStyle.copyWith(
-                              color: kPrimary, fontSize: 18),
+                          style: Get.theme.textTheme.headline1,
                         )
                       ],
                     ),
@@ -43,7 +43,7 @@ class StartUpView extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
                     'Đặt ngay chờ chi 😎',
-                    style: kHeadingextStyle.copyWith(fontSize: 16),
+                    style: Get.theme.textTheme.headline3,
                   ),
                 ),
               ),
@@ -73,7 +73,7 @@ class LoadingScreen extends StatelessWidget {
               SizedBox(height: 16),
               Text(
                 this.title,
-                style: kHeadingextStyle.copyWith(color: kPrimary, fontSize: 18),
+                style: Get.theme.textTheme.headline1,
               )
             ],
           ),

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
 const kPrimary = Color(0xFF4fba6f);
-final kSecondary = Color(0xFF438029);
-final kBean = Color(0xffffe844);
-final kSuccess = Colors.green;
-final kFail = Colors.red;
+const kSecondary = Color(0xFF438029);
+const kBean = Color(0xffffe844);
+const kSuccess = Colors.green;
+const kFail = Colors.red;
 // final kBackgroundGrey = Color(0xfff2f6f8);
-final kBackgroundGrey = [
+const kBackgroundGrey = [
   Color(0xFFFFFFFF),
   Color(0xfffafafa),
   Color(0xfff5f5f5),
@@ -16,10 +16,9 @@ final kBackgroundGrey = [
   Color(0xff757575),
   Color(0xfff2f6f8),
 ];
-final kGreyTitle = Color(0xFF575757);
+const kGreyTitle = Color(0xFF575757);
 
-final kTextPrimary = TextStyle(color: Color(0xFFFFFFFF));
-final kTextSecondary = TextStyle(color: Colors.grey);
+const kTextSecondary = TextStyle(color: Colors.grey);
 
 // Colors
 const kTextColor = Color(0xFF0D1333);
@@ -29,33 +28,38 @@ const kGreenColor = Color(0xFF49CC96);
 const kDescriptionTextColor = Color(0xffa7b4ce);
 
 // My Text Styles
-const kHeadingextStyle = TextStyle(
-  fontSize: 28,
-  color: kTextColor,
+const kHeadingTextStyle = TextStyle(
+  fontSize: 16,
+  color: kPrimary,
   fontWeight: FontWeight.bold,
 );
-const kSubheadingextStyle = TextStyle(
-  fontSize: 24,
-  color: Color(0xFF61688B),
-  height: 2,
+
+const kSubheadingTextStyle = TextStyle(
+  fontSize: 16,
+  color: kPrimary,
 );
 
 const kTitleTextStyle = TextStyle(
-  fontSize: 20,
+  fontSize: 14,
   color: kTextColor,
   fontWeight: FontWeight.bold,
 );
 
-const kSubtitleTextSyule = TextStyle(
-  fontSize: 18,
+const kSubtitleTextStyle = TextStyle(
+  fontSize: 14,
   color: kTextColor,
   // fontWeight: FontWeight.bold,
 );
 
-const kDescriptionTextSyle = TextStyle(
-  fontSize: 14,
+const kDescriptionTextStyle = TextStyle(
+  fontSize: 12,
   color: kDescriptionTextColor,
   fontWeight: FontWeight.bold,
+);
+
+const kSubdescriptionTextStyle = TextStyle(
+  fontSize: 12,
+  color: kDescriptionTextColor,
 );
 
 const String CART_TAG = "cartTag";

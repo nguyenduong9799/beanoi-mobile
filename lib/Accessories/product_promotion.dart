@@ -96,10 +96,8 @@ class _StorePromotionState extends State<StorePromotion> {
                               children: [
                                 Text(
                                   widget.dto.name,
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                      color: kBackgroundGrey[0]),
+                                  style: Get.theme.textTheme.headline1
+                                      .copyWith(color: Colors.white),
                                   overflow: TextOverflow.ellipsis,
                                   maxLines: 2,
                                 ),
@@ -108,8 +106,8 @@ class _StorePromotionState extends State<StorePromotion> {
                                 ),
                                 Text(
                                   widget.dto.supplierName,
-                                  style: TextStyle(
-                                      fontSize: 14, color: kBackgroundGrey[0]),
+                                  style: Get.theme.textTheme.headline4
+                                      .copyWith(color: Colors.white),
                                   overflow: TextOverflow.ellipsis,
                                   maxLines: 1,
                                 )
@@ -130,7 +128,8 @@ class _StorePromotionState extends State<StorePromotion> {
                             RichText(
                               text: TextSpan(
                                   text: "${widget.dto.price} ",
-                                  style: TextStyle(color: kBackgroundGrey[0]),
+                                  style: Get.theme.textTheme.headline4
+                                      .copyWith(color: Colors.white),
                                   children: [
                                     WidgetSpan(
                                       alignment: PlaceholderAlignment.bottom,
@@ -147,7 +146,8 @@ class _StorePromotionState extends State<StorePromotion> {
                             ),
                             Text(
                               "Đổi ngay",
-                              style: TextStyle(color: kBean),
+                              style: Get.theme.textTheme.headline4
+                                  .copyWith(color: kBean),
                               overflow: TextOverflow.ellipsis,
                               maxLines: 2,
                             ),

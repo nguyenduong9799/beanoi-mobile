@@ -111,8 +111,8 @@ class _LoginWithPhoneOTPState extends State<LoginWithPhoneOTP> {
                                   const EdgeInsets.symmetric(vertical: 8.0),
                               child: Text(
                                 'Nhập mã OTP',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 18, color: Colors.white),
+                                style: Get.theme.textTheme.headline1
+                                    .copyWith(color: Colors.white),
                                 textAlign: TextAlign.left,
                               ),
                             ),
@@ -140,15 +140,11 @@ class _LoginWithPhoneOTPState extends State<LoginWithPhoneOTP> {
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 24.0),
                               child: Text(
-                                model.status == ViewStatus.Error
-                                    ? "Bạn chưa nhập đủ mã OTP :(."
-                                    : "",
-                                style: TextStyle(
-                                  color: Colors.red,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ),
+                                  model.status == ViewStatus.Error
+                                      ? "Bạn chưa nhập đủ mã OTP :(."
+                                      : "",
+                                  style: Get.theme.textTheme.headline4
+                                      .copyWith(color: Colors.red)),
                             ),
                             SizedBox(
                               height: 20,
@@ -203,13 +199,8 @@ class _LoginWithPhoneOTPState extends State<LoginWithPhoneOTP> {
                                   }
                                 },
                                 child: Center(
-                                    child: Text(
-                                  "Xác nhận".toUpperCase(),
-                                  style: TextStyle(
-                                      color: kPrimary,
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold),
-                                )),
+                                    child: Text("Xác nhận".toUpperCase(),
+                                        style: Get.theme.textTheme.headline1)),
                               ),
                             ),
                           ],
@@ -228,7 +219,7 @@ class _LoginWithPhoneOTPState extends State<LoginWithPhoneOTP> {
 
   Widget _buildOTPForm(BuildContext context) {
     return PinCodeTextField(
-      textStyle: kTextSecondary.copyWith(fontSize: 18, fontWeight: FontWeight.bold),
+      textStyle: Get.theme.textTheme.headline1,
       length: 6,
       animationType: AnimationType.fade,
       obscureText: false,
@@ -243,14 +234,12 @@ class _LoginWithPhoneOTPState extends State<LoginWithPhoneOTP> {
         borderRadius: BorderRadius.circular(8),
         fieldHeight: 50,
         fieldWidth: 40,
-
       ),
       animationDuration: Duration(milliseconds: 300),
       backgroundColor: Colors.transparent,
       enableActiveFill: true,
       errorAnimationController: errorController,
-      onCompleted: (v) {
-      },
+      onCompleted: (v) {},
       onChanged: (value) {
         form.control('otp').value = value;
       },
