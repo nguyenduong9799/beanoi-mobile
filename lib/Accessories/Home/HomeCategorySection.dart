@@ -8,55 +8,72 @@ import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:unidelivery_mobile/Enums/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/CategoryDTO.dart';
+import 'package:unidelivery_mobile/ViewModel/category_viewModel.dart';
 import 'package:unidelivery_mobile/ViewModel/home_viewModel.dart';
 
-class HomeCategorySection extends StatelessWidget {
+class HomeCategorySection extends StatefulWidget {
   const HomeCategorySection({
     Key key,
   }) : super(key: key);
 
   @override
+  _HomeCategorySectionState createState() => _HomeCategorySectionState();
+}
+
+class _HomeCategorySectionState extends State<HomeCategorySection> {
+  CategoryViewModel _categoryViewModel;
+  @override
+  void initState() {
+    super.initState();
+    _categoryViewModel = CategoryViewModel();
+    _categoryViewModel.getCategories();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return ScopedModelDescendant<HomeViewModel>(
-      builder: (BuildContext context, Widget child, HomeViewModel model) {
-        var categories = model.categories;
-        if (categories == null ||
-            categories.length == 0 ||
-            model.status == ViewStatus.Completed) {
-          return SizedBox();
-        }
-        return Column(
-          children: [
-            Container(
-              child: Image(
-                image: AssetImage("assets/images/bean_oi_category.png"),
-                width: 95,
-                height: 25,
-                fit: BoxFit.fill,
-              ),
-            ),
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(
-                  color: Color(0xff333333),
+    return ScopedModel(
+      model: _categoryViewModel,
+      child: ScopedModelDescendant<CategoryViewModel>(
+        builder: (BuildContext context, Widget child, CategoryViewModel model) {
+          var categories = model.categories;
+          if (model.status == ViewStatus.Loading) {
+            return _buildLoading();
+          }
+          if (categories == null || categories.length == 0) {
+            return SizedBox();
+          }
+          return Column(
+            children: [
+              Container(
+                child: Image(
+                  image: AssetImage("assets/images/bean_oi_category.png"),
+                  width: 95,
+                  height: 25,
+                  fit: BoxFit.fill,
                 ),
               ),
-              width: Get.width,
-              height: 180,
-              child: GridView.count(
-                physics: NeverScrollableScrollPhysics(),
-                padding: const EdgeInsets.fromLTRB(8, 16, 8, 16),
-                crossAxisSpacing: 10,
-                crossAxisCount: 4,
-                children:
-                    categories.map((category) => buildCategoryItem(category)),
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    color: Color(0xff333333),
+                  ),
+                ),
+                padding: EdgeInsets.all(8),
+                width: Get.width,
+                child: Wrap(
+                  alignment: WrapAlignment.spaceBetween,
+                  spacing: 8,
+                  children: categories
+                      .map((category) => buildCategoryItem(category))
+                      .toList(),
+                ),
               ),
-            ),
-          ],
-        );
-      },
+            ],
+          );
+        },
+      ),
     );
   }
 
@@ -70,13 +87,13 @@ class HomeCategorySection extends StatelessWidget {
               arguments: {"category": category.id});
         },
         child: Container(
-          width: 45,
-          height: 60,
+          width: Get.width / 4 - 20,
+          height: Get.width / 4 - 30 + 35,
           child: Column(
             children: [
               Container(
-                width: 45,
-                height: 45,
+                width: Get.width / 4 - 30,
+                height: Get.width / 4 - 30,
                 child: CacheImage(
                   imageUrl: category.imgURL,
                 ),
@@ -86,6 +103,33 @@ class HomeCategorySection extends StatelessWidget {
                 style: kTitleTextStyle.copyWith(fontSize: 14),
               ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLoading() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: Color(0xff333333),
+        ),
+      ),
+      width: Get.width,
+      child: Wrap(
+        alignment: WrapAlignment.center,
+        spacing: 8,
+        children: List.filled(
+          8,
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ShimmerBlock(
+              width: Get.width / 4 - 30,
+              height: Get.width / 4 - 30,
+            ),
           ),
         ),
       ),

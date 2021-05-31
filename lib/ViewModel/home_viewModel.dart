@@ -12,11 +12,9 @@ class HomeViewModel extends BaseModel {
   StoreDAO _storeDAO;
   CollectionDAO _collectionDAO;
   ProductDAO _productDAO;
-  CategoryDAO _categoryDAO;
 
   List<SupplierDTO> suppliers;
   List<BlogDTO> blogs;
-  List<CategoryDTO> categories;
 
   Map<int, ProductDTO> prodInCollections;
   ProductDTO nearlyGift;
@@ -109,24 +107,6 @@ class HomeViewModel extends BaseModel {
       setState(ViewStatus.Completed);
     } catch (e) {
       nearlyGift = null;
-      setState(ViewStatus.Error);
-    }
-  }
-
-  // TODO: 3. Get list category
-  Future getCategories() async {
-    RootViewModel root = Get.find<RootViewModel>();
-    CampusDTO currentCampus = root.currentStore;
-    try {
-      setState(ViewStatus.Loading);
-
-      categories = await _categoryDAO.getCategories(
-        currentCampus.id,
-        currentCampus.selectedTimeSlot,
-      );
-      setState(ViewStatus.Completed);
-    } catch (e) {
-      print(e);
       setState(ViewStatus.Error);
     }
   }
