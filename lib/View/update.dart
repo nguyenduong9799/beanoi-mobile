@@ -120,6 +120,7 @@ class _UpdateState extends State<Update> {
                             return AnimatedContainer(
                               duration: Duration(milliseconds: 2000),
                               curve: Curves.easeInOut,
+                              margin: EdgeInsets.only(bottom: 16),
                               child: Center(
                                 child: ScopedModelDescendant<SignUpViewModel>(
                                   builder: (context, child, model) =>

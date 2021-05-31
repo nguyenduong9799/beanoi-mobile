@@ -24,7 +24,7 @@ class HomeCollection extends StatelessWidget {
         SizedBox(height: 4),
         Text(
           "Các món được lựa chọn cho các bạn IT",
-          style: kDescriptionTextSyle.copyWith(fontSize: 12),
+          style: kDescriptionTextSyle.copyWith(fontSize: 14),
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
         ),

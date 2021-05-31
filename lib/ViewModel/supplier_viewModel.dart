@@ -47,7 +47,7 @@ class SupplierViewModel extends BaseModel {
     try {
       setState(ViewStatus.Loading);
       CampusDTO store = await getStore();
-      collections = await _collectionDAO.getCollections(
+      collections = await _collectionDAO.getCollectionsOfSupplier(
           store.id, supplierId, store.selectedTimeSlot);
       products = await _productDAO.getProducts(
           store.id, supplierId, store.selectedTimeSlot);

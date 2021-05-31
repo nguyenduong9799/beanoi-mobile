@@ -127,9 +127,11 @@ class _HomeScreenState extends State<HomeScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(height: 8),
-        Text(
-          "BEAN ĐÃ LỚN",
-          style: kTitleTextStyle,
+        Container(
+          child: Text(
+            "BEAN ĐÃ LỚN",
+            style: kTitleTextStyle,
+          ),
         ),
         SizedBox(height: 4),
         Row(
@@ -138,14 +140,16 @@ class _HomeScreenState extends State<HomeScreen> {
             Flexible(
               flex: 7,
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     "Bạn sắp nhận được 1 Chai CoCa rồi đấy",
-                    style: kDescriptionTextSyle.copyWith(fontSize: 12),
+                    style: kDescriptionTextSyle.copyWith(fontSize: 14),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
+                  SizedBox(height: 8),
                   Container(
                     margin: EdgeInsets.only(
                       top: 8,

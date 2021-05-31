@@ -478,7 +478,7 @@ class _FixedAppBarState extends State<FixedAppBar> {
       return ValueListenableBuilder<double>(
         valueListenable: this.widget.notifier,
         builder: (context, value, child) {
-          print("value: ${1 - (value) / this.widget.height}");
+          // print("value: ${1 - (value) / this.widget.height}");
           return Opacity(
             // opacity: 1 - (value) / this.widget.height <= 0
             //     ? 0

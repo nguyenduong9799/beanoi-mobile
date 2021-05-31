@@ -12,4 +12,9 @@ class CategoryDTO {
       imgURL: json['imgUrl'],
     );
   }
+
+  static fromList(data) {
+    var list = data as List;
+    return list.map((map) => CategoryDTO.fromJson(map)).toList();
+  }
 }
