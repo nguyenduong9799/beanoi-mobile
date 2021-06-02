@@ -59,6 +59,22 @@ class ProductDAO extends BaseDAO {
     return products;
   }
 
+  Future<List<ProductDTO>> getAllProductOfStore(int storeId, TimeSlot timeSlot,
+      {int page,
+      int size,
+      int type,
+      Map<String, dynamic> params = const {}}) async {
+    Response res = await request.get(
+      'stores/$storeId/products?time-slot=${timeSlot.from.toString()}&time-slot=${timeSlot.to.toString()}',
+      queryParameters: {"page": page ?? 1, "size": size ?? DEFAULT_SIZE}
+        ..addAll(params),
+    );
+
+    final products = ProductDTO.fromList(res.data["data"]);
+    metaDataDTO = MetaDataDTO.fromJson(res.data["metadata"]);
+    return products;
+  }
+
   // Future<List<ProductDTO>> getExtraProducts(
   //     int cat_id, String sup_id, int store_id) async {
   //   print("Category id: " + cat_id.toString());

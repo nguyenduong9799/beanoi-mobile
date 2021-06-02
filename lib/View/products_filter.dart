@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Accessories/index.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
+import 'package:unidelivery_mobile/Enums/index.dart';
+import 'package:unidelivery_mobile/ViewModel/product_filter_viewModel.dart';
 
 class ProductsFilterPage extends StatefulWidget {
   final params;
@@ -12,6 +15,15 @@ class ProductsFilterPage extends StatefulWidget {
 }
 
 class _ProductsFilterPageState extends State<ProductsFilterPage> {
+  ProductFilterViewModel prodFilterModel;
+
+  @override
+  void initState() {
+    super.initState();
+    prodFilterModel = ProductFilterViewModel();
+    prodFilterModel.getProductsWithFilter(params: this.widget.params);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,17 +34,44 @@ class _ProductsFilterPageState extends State<ProductsFilterPage> {
         children: [
           // _buildFilter(),
           // SizedBox(height: 16),
-          Flexible(
+          _buildListProduct(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildListProduct() {
+    return ScopedModel(
+      model: prodFilterModel,
+      child: ScopedModelDescendant<ProductFilterViewModel>(
+        builder: (context, child, model) {
+          if (model.status == ViewStatus.Loading) {
+            return _buildLoading();
+          }
+
+          if (model.status == ViewStatus.Error) {
+            return Flexible(
+              child: Center(
+                child: Text(model.msg ?? "Có gì đó sai sai",
+                    style: kTitleTextStyle.copyWith(
+                      color: Colors.red,
+                    )),
+              ),
+            );
+          }
+
+          return Flexible(
             child: ListView.separated(
-              itemCount: 12 + 1,
+              itemCount: model.listProducts.length + 1,
               separatorBuilder: (context, index) => SizedBox(height: 16),
               itemBuilder: (context, index) {
-                if (index == 12) {
+                if (index == model.listProducts.length) {
                   return Text(
                     "Bạn đã xem hết rồi đấy 🐱‍👓",
                     textAlign: TextAlign.center,
                   );
                 }
+                final product = model.listProducts.elementAt(index);
                 return Container(
                   color: Colors.white,
                   child: Material(
@@ -55,7 +94,7 @@ class _ProductsFilterPageState extends State<ProductsFilterPage> {
                               width: 75,
                               height: 75,
                               child: CacheImage(
-                                imageUrl:
+                                imageUrl: product.imageURL ??
                                     "https://firebasestorage.googleapis.com/v0/b/unidelivery-fad6f.appspot.com/o/00014100085607A.png?alt=media&token=40439c48-411b-41c9-a910-6c2f429509f8",
                               ),
                             ),
@@ -68,7 +107,7 @@ class _ProductsFilterPageState extends State<ProductsFilterPage> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      "Cơm chiên thập cẩm",
+                                      product.name,
                                       textAlign: TextAlign.left,
                                       overflow: TextOverflow.ellipsis,
                                       maxLines: 2,
@@ -77,7 +116,7 @@ class _ProductsFilterPageState extends State<ProductsFilterPage> {
                                     ),
                                     SizedBox(height: 4),
                                     Text(
-                                      "Cơm chiên thơm ngon bổ dưỡng",
+                                      product.description,
                                       style: kDescriptionTextSyle,
                                       textAlign: TextAlign.left,
                                       overflow: TextOverflow.ellipsis,
@@ -94,7 +133,7 @@ class _ProductsFilterPageState extends State<ProductsFilterPage> {
                                         borderRadius: BorderRadius.circular(16),
                                       ),
                                       child: Text(
-                                        "25.000 đ",
+                                        "${product.price} đ",
                                         style: TextStyle(
                                             color: Colors.white, fontSize: 12),
                                       ),
@@ -107,7 +146,7 @@ class _ProductsFilterPageState extends State<ProductsFilterPage> {
                                         borderRadius: BorderRadius.circular(16),
                                       ),
                                       child: Text(
-                                        "+ 8 bean",
+                                        "+ ${product.bean} bean",
                                         style: TextStyle(
                                             color: Colors.white, fontSize: 12),
                                       ),
@@ -124,8 +163,8 @@ class _ProductsFilterPageState extends State<ProductsFilterPage> {
                 );
               },
             ),
-          ),
-        ],
+          );
+        },
       ),
     );
   }
@@ -136,6 +175,46 @@ class _ProductsFilterPageState extends State<ProductsFilterPage> {
       padding: EdgeInsets.fromLTRB(8, 16, 8, 16),
       color: Colors.white,
       child: Text("Filter controler"),
+    );
+  }
+
+  Widget _buildLoading() {
+    return Flexible(
+      child: ListView.separated(
+        itemCount: 10,
+        itemBuilder: (context, index) => Container(
+          // height: 90,
+          width: Get.width,
+          color: Colors.white,
+          padding: EdgeInsets.all(8),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ShimmerBlock(width: 75, height: 75),
+              SizedBox(width: 8),
+              Flexible(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ShimmerBlock(width: 120, height: 20),
+                    SizedBox(height: 4),
+                    ShimmerBlock(width: 175, height: 20),
+                    SizedBox(height: 8),
+                    Row(
+                      children: [
+                        ShimmerBlock(width: 50, height: 20, borderRadius: 16),
+                        SizedBox(width: 8),
+                        ShimmerBlock(width: 50, height: 20, borderRadius: 16),
+                      ],
+                    )
+                  ],
+                ),
+              )
+            ],
+          ),
+        ),
+        separatorBuilder: (context, index) => SizedBox(height: 16),
+      ),
     );
   }
 }

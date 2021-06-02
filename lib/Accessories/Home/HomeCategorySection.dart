@@ -40,7 +40,7 @@ class _HomeCategorySectionState extends State<HomeCategorySection> {
             return _buildLoading();
           }
           if (categories == null || categories.length == 0) {
-            return SizedBox();
+            return Text("Khong co cate");
           }
           return Column(
             children: [
@@ -84,7 +84,7 @@ class _HomeCategorySectionState extends State<HomeCategorySection> {
         onTap: () {
           print('Click category');
           Get.toNamed(RouteHandler.PRODUCT_FILTER_LIST,
-              arguments: {"category": category.id});
+              arguments: {"category-id": category.id});
         },
         child: Container(
           width: Get.width / 4 - 20,
@@ -101,6 +101,7 @@ class _HomeCategorySectionState extends State<HomeCategorySection> {
               Text(
                 category.categoryName,
                 style: kTitleTextStyle.copyWith(fontSize: 14),
+                textAlign: TextAlign.center,
               ),
             ],
           ),
@@ -129,6 +130,7 @@ class _HomeCategorySectionState extends State<HomeCategorySection> {
             child: ShimmerBlock(
               width: Get.width / 4 - 30,
               height: Get.width / 4 - 30,
+              borderRadius: 8,
             ),
           ),
         ),

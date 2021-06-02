@@ -17,15 +17,10 @@ class CategoryViewModel extends BaseModel {
   }
 
   Future getCategories() async {
-    RootViewModel root = Get.find<RootViewModel>();
-    CampusDTO currentCampus = await getStore();
     try {
       setState(ViewStatus.Loading);
 
-      categories = await _categoryDAO.getCategories(
-        currentCampus.id,
-        currentCampus.selectedTimeSlot,
-      );
+      categories = await _categoryDAO.getCategories();
       setState(ViewStatus.Completed);
     } catch (e) {
       print(e);
