@@ -4,6 +4,7 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Accessories/index.dart';
+import 'package:unidelivery_mobile/Accessories/touchopacity.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:unidelivery_mobile/Enums/index.dart';
@@ -66,6 +67,7 @@ class _HomeCategorySectionState extends State<HomeCategorySection> {
                   alignment: WrapAlignment.spaceBetween,
                   spacing: 8,
                   children: categories
+                      .getRange(0, 8)
                       .map((category) => buildCategoryItem(category))
                       .toList(),
                 ),
@@ -80,7 +82,7 @@ class _HomeCategorySectionState extends State<HomeCategorySection> {
   Widget buildCategoryItem(CategoryDTO category) {
     return Material(
       color: Colors.white,
-      child: InkWell(
+      child: TouchOpacity(
         onTap: () {
           print('Click category');
           Get.toNamed(RouteHandler.PRODUCT_FILTER_LIST,

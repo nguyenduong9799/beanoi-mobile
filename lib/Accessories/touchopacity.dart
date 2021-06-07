@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 class TouchOpacity extends StatefulWidget {
   final Function onTap;
   final Widget child;
+  final double activeOpacity;
 
-  const TouchOpacity({Key key, this.onTap, @required this.child})
+  const TouchOpacity(
+      {Key key, this.onTap, @required this.child, this.activeOpacity = 0.5})
       : super(key: key);
   @override
   TouchOpacityState createState() {
@@ -18,17 +20,19 @@ class TouchOpacityState extends State<TouchOpacity> {
   @override
   Widget build(BuildContext context) {
     var onTap = this.widget.onTap;
-    return GestureDetector(
-      onTap: () {
-        onTap != null && onTap();
-      },
-      onTapDown: (_) => setState(() => isTappedDown = true),
-      onTapUp: (_) => setState(() => isTappedDown = false),
-      onTapCancel: () => setState(() => isTappedDown = false),
-      child: AnimatedOpacity(
-        duration: Duration(milliseconds: 300),
-        opacity: isTappedDown ? 0.6 : 1,
-        child: this.widget.child,
+    var activeOpacity = this.widget.activeOpacity;
+    return Listener(
+      onPointerDown: (_) => setState(() => isTappedDown = true),
+      onPointerUp: (_) => setState(() => isTappedDown = false),
+      child: GestureDetector(
+        onTap: () {
+          onTap != null && onTap();
+        },
+        child: AnimatedOpacity(
+          duration: Duration(milliseconds: 300),
+          opacity: isTappedDown ? activeOpacity : 1,
+          child: this.widget.child,
+        ),
       ),
     );
   }
