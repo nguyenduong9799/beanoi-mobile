@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:unidelivery_mobile/Accessories/index.dart';
+import 'package:unidelivery_mobile/Accessories/touchopacity.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Enums/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
@@ -84,7 +85,9 @@ class _SupplierScreenState extends State<SupplierScreen> {
                     floating: false,
                     expandedHeight: Get.width * 0.25 + kToolbarHeight + 32 + 50,
                     bottom: PreferredSize(
-                        preferredSize: Size.fromHeight(50), child: tag()),
+                      preferredSize: Size.fromHeight(50),
+                      child: tag(),
+                    ),
                     title: Text(
                       widget.supplier.name,
                       style: TextStyle(color: kPrimary),
@@ -235,6 +238,9 @@ class _SupplierScreenState extends State<SupplierScreen> {
               shrinkWrap: true,
               itemCount: model.collections.length,
               itemBuilder: (context, index) {
+                if (index == 0) {
+                  return homeBestSellerCollection(model.collections[index]);
+                }
                 if (model.collections.every((element) => !element.isSelected) ||
                     model.collections[index].isSelected) {
                   return homeContent(model.collections[index]);
@@ -247,6 +253,121 @@ class _SupplierScreenState extends State<SupplierScreen> {
         }
       },
     );
+  }
+
+  Widget homeBestSellerCollection(CollectionDTO collection) {
+    return ScopedModelDescendant<SupplierViewModel>(
+        builder: (context, child, model) {
+      List<Widget> listProducts = List();
+      if (collection.products != null && collection.products.isNotEmpty) {
+        collection.products.forEach((product) {
+          double price = product.price;
+          if (product.type == ProductType.MASTER_PRODUCT) {
+            price = product.minPrice;
+          }
+          listProducts.add(TouchOpacity(
+            onTap: () {
+              RootViewModel root = Get.find<RootViewModel>();
+              root.openProductDetail(product);
+            },
+            child: Container(
+              width: Get.width / 2,
+              padding: EdgeInsets.fromLTRB(8, 16, 8, 8),
+              child: Column(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.grey[200]),
+                    ),
+                    width: Get.width / 2,
+                    child: AspectRatio(
+                      aspectRatio: 1,
+                      child: CachedNetworkImage(
+                        imageUrl: product.imageURL ?? defaultImage,
+                        imageBuilder: (context, imageProvider) => Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            image: DecorationImage(
+                              image: imageProvider,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                        progressIndicatorBuilder:
+                            (context, url, downloadProgress) =>
+                                Shimmer.fromColors(
+                          baseColor: Colors.grey[300],
+                          highlightColor: Colors.grey[100],
+                          enabled: true,
+                          child: Container(
+                            width: MediaQuery.of(context).size.width,
+                            // height: 100,
+                            color: Colors.grey,
+                          ),
+                        ),
+                        errorWidget: (context, url, error) => Icon(
+                          MaterialIcons.broken_image,
+                          color: kPrimary.withOpacity(0.5),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    product.name,
+                    style: kTitleTextStyle.copyWith(
+                      fontWeight: FontWeight.bold,
+                      decorationThickness: 0.5,
+                      fontSize: 16,
+                    ),
+                  ),
+                  Text(
+                      product.type != ProductType.MASTER_PRODUCT
+                          ? formatPrice(price)
+                          : "từ " + formatPrice(price ?? product.price),
+                      style: TextStyle(color: kPrimary))
+                ],
+              ),
+            ),
+          ));
+        });
+        return Container(
+          margin: EdgeInsets.only(top: 8, bottom: 0),
+          color: kBackgroundGrey[0],
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+                child: Center(
+                  child: Text(
+                    collection.name,
+                    style: TextStyle(
+                        color: kPrimary,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+              Center(
+                child: Container(
+                  width: collection.name.length * 0.8 * 8,
+                  child: Divider(
+                    color: kPrimary,
+                  ),
+                ),
+              ),
+              Wrap(
+                children: [...listProducts],
+              ),
+              SizedBox(height: 8),
+            ],
+          ),
+        );
+      }
+      return SizedBox.shrink();
+    });
   }
 
   Widget homeContent(CollectionDTO collection) {
@@ -271,36 +392,39 @@ class _SupplierScreenState extends State<SupplierScreen> {
                   border:
                       Border(bottom: BorderSide(color: kBackgroundGrey[3]))),
               child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    width: 64,
-                    height: 64,
-                    child: CachedNetworkImage(
-                      imageUrl: product.imageURL ?? defaultImage,
-                      imageBuilder: (context, imageProvider) => Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          image: DecorationImage(
-                            image: imageProvider,
-                            fit: BoxFit.cover,
+                    height: 80,
+                    child: AspectRatio(
+                      aspectRatio: 1,
+                      child: CachedNetworkImage(
+                        imageUrl: product.imageURL ?? defaultImage,
+                        imageBuilder: (context, imageProvider) => Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            image: DecorationImage(
+                              image: imageProvider,
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ),
-                      ),
-                      progressIndicatorBuilder:
-                          (context, url, downloadProgress) =>
-                              Shimmer.fromColors(
-                        baseColor: Colors.grey[300],
-                        highlightColor: Colors.grey[100],
-                        enabled: true,
-                        child: Container(
-                          width: MediaQuery.of(context).size.width,
-                          // height: 100,
-                          color: Colors.grey,
+                        progressIndicatorBuilder:
+                            (context, url, downloadProgress) =>
+                                Shimmer.fromColors(
+                          baseColor: Colors.grey[300],
+                          highlightColor: Colors.grey[100],
+                          enabled: true,
+                          child: Container(
+                            width: MediaQuery.of(context).size.width,
+                            // height: 100,
+                            color: Colors.grey,
+                          ),
                         ),
-                      ),
-                      errorWidget: (context, url, error) => Icon(
-                        MaterialIcons.broken_image,
-                        color: kPrimary.withOpacity(0.5),
+                        errorWidget: (context, url, error) => Icon(
+                          MaterialIcons.broken_image,
+                          color: kPrimary.withOpacity(0.5),
+                        ),
                       ),
                     ),
                   ),
@@ -535,9 +659,12 @@ class _SupplierScreenState extends State<SupplierScreen> {
               Text(
                 title,
                 style: isSelected
-                    ? kTextPrimary.copyWith(fontStyle: FontStyle.italic)
-                    : kTextPrimary.copyWith(
-                        color: Colors.black, fontStyle: FontStyle.italic),
+                    ? kSubtitleTextSyule.copyWith(
+                        color: Colors.white,
+                      )
+                    : kSubtitleTextSyule.copyWith(
+                        color: Colors.black,
+                      ),
               ),
             ],
           ),
