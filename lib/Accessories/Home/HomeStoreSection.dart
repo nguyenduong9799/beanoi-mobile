@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:unidelivery_mobile/Accessories/section.dart';
 import 'package:unidelivery_mobile/Accessories/shimmer_block.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Enums/index.dart';
@@ -88,35 +89,41 @@ class HomeStoreSection extends StatelessWidget {
                 ),
               );
             }
-            return Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(8, 16.0, 8, 16),
-                  child:
-                      Text('🌟 Danh sách nhà hàng 🌟', style: kTitleTextStyle),
-                ),
-                ColorFiltered(
-                  colorFilter: ColorFilter.mode(
-                    isMenuAvailable ? Colors.transparent : Colors.grey,
-                    BlendMode.saturation,
+            return Section(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(8, 16.0, 8, 16),
+                    child: Text(
+                      'Quán ngon hôm nay',
+                      style: kHeadingextStyle.copyWith(fontSize: 18),
+                      textAlign: TextAlign.left,
+                    ),
                   ),
-                  child: Column(
-                    children: [
-                      ...model.suppliers
-                          .where((supplier) => supplier.available)
-                          .map((supplier) => InkWell(
-                              onTap: () {
-                                model.selectSupplier(supplier);
-                              },
-                              child: buildSupplier(supplier)))
-                          .toList(),
-                    ],
+                  ColorFiltered(
+                    colorFilter: ColorFilter.mode(
+                      isMenuAvailable ? Colors.transparent : Colors.grey,
+                      BlendMode.saturation,
+                    ),
+                    child: Column(
+                      children: [
+                        ...model.suppliers
+                            .where((supplier) => supplier.available)
+                            .map((supplier) => InkWell(
+                                onTap: () {
+                                  model.selectSupplier(supplier);
+                                },
+                                child: buildSupplier(supplier)))
+                            .toList(),
+                      ],
+                    ),
                   ),
-                ),
-                SizedBox(height: 8),
-                _suggestRestaurant(),
-                SizedBox(height: 8),
-              ],
+                  SizedBox(height: 8),
+                  _suggestRestaurant(),
+                  SizedBox(height: 8),
+                ],
+              ),
             );
         }
       },

@@ -95,9 +95,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                   SizedBox(height: 8),
                                   // GITF EXCHANGE
                                   Section(child: buildGiftCanExchangeSection()),
+                                  // END GITF EXCHANGE
                                   SizedBox(height: 8),
                                   Section(child: HomeCollection()),
-                                  // END GITF EXCHANGE
+                                  SizedBox(height: 8),
                                   Container(child: HomeStoreSection()),
                                   SizedBox(height: 46),
                                 ],
