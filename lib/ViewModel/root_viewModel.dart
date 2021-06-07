@@ -223,26 +223,32 @@ class RootViewModel extends BaseModel {
     if (result != null) {
       if (result) {
         Get.rawSnackbar(
-          duration: Duration(seconds: 3),
+          duration: Duration(seconds: 100),
           snackPosition: SnackPosition.BOTTOM,
-          // margin: EdgeInsets.only(left: 8, right: 8, bottom: 32, top: 32),
-          backgroundColor: kPrimary,
-          messageText: Text("Thêm món thành công 🛒",
+          backgroundColor: Colors.white,
+          messageText: Text("Thêm món thành công ",
               style: kSubtitleTextSyule.copyWith(
-                  fontSize: 16, color: Colors.white)),
-          // borderRadius: 8,
-          icon: Icon(Icons.check),
+                fontSize: 16,
+                color: kPrimary,
+              )),
+          icon: Icon(
+            Icons.check,
+            color: kPrimary,
+          ),
+          mainButton: FlatButton(
+            color: kPrimary,
+            onPressed: () {
+              Get.toNamed(RouteHandler.ORDER);
+            },
+            child: Text(
+              "Xem 🛒",
+              style: kSubtitleTextSyule.copyWith(
+                color: Colors.white,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
         );
-        // Get.snackbar(
-        //        "Hey i'm a Get SnackBar!", // title
-        //        "It's unbelievable! I'm using SnackBar without context, without boilerplate, without Scaffold, it is something truly amazing!", // message
-        //       icon: Icon(Icons.alarm),
-        //       shouldIconPulse: true,
-        //       onTap:(){},
-        //       barBlur: 20,
-        //       isDismissible: true,
-        //       duration: Duration(seconds: 3),
-        //     );
       }
     }
     notifyListeners();
