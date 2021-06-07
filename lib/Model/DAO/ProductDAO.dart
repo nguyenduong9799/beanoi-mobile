@@ -5,7 +5,6 @@ import 'package:unidelivery_mobile/Utils/index.dart';
 import 'index.dart';
 
 class ProductDAO extends BaseDAO {
-  // 1. Get Product List from API
   Future<List<ProductDTO>> getProducts(
     int storeId,
     int supplierId,
