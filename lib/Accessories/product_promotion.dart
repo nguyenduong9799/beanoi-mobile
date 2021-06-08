@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:unidelivery_mobile/Accessories/CacheImage.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
@@ -55,33 +56,12 @@ class _StorePromotionState extends State<StorePromotion> {
                       children: [
                         ClipRRect(
                           borderRadius: BorderRadius.circular(16),
-                          child: CachedNetworkImage(
+                          child: Container(
                             width: Get.width * 0.25,
                             height: Get.width * 0.25,
-                            fit: BoxFit.fill,
-                            imageUrl: widget.dto.imageURL ?? defaultImage,
-                            imageBuilder: (context, imageProvider) => Container(
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  image: imageProvider,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
+                            child: CacheImage(
+                              imageUrl: widget.dto.imageURL ?? defaultImage,
                             ),
-                            progressIndicatorBuilder:
-                                (context, url, downloadProgress) =>
-                                    Shimmer.fromColors(
-                              baseColor: Colors.grey[300],
-                              highlightColor: Colors.grey[100],
-                              enabled: true,
-                              child: Container(
-                                width: Get.width * 0.25,
-                                // height: 100,
-                                color: Colors.grey,
-                              ),
-                            ),
-                            errorWidget: (context, url, error) =>
-                                Icon(Icons.error),
                           ),
                         ),
                         SizedBox(

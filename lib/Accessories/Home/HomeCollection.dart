@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
+import 'package:unidelivery_mobile/Accessories/touchopacity.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 
 class HomeCollection extends StatelessWidget {
@@ -38,7 +39,7 @@ class HomeCollection extends StatelessWidget {
             itemBuilder: (context, index) {
               return Material(
                 color: Colors.white,
-                child: InkWell(
+                child: TouchOpacity(
                   onTap: () {
                     print('View Detail item');
                   },

@@ -93,12 +93,11 @@ class _ProductsFilterPageState extends State<ProductsFilterPage> {
                     color: Colors.transparent,
                     child: InkWell(
                       onTap: () {
-                        print("Product selected");
                         RootViewModel root = Get.find<RootViewModel>();
                         root.openProductDetail(product);
                       },
                       child: Container(
-                        height: 130,
+                        height: 140,
                         padding: EdgeInsets.all(16),
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -124,66 +123,61 @@ class _ProductsFilterPageState extends State<ProductsFilterPage> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        product.name,
-                                        textAlign: TextAlign.left,
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 2,
-                                        style: kSubtitleTextSyule.copyWith(
-                                            fontSize: 18),
-                                      ),
-                                      SizedBox(height: 4),
-                                      Container(
-                                        height: 40,
-                                        // color: Colors.amber,
-                                        child: Text(
-                                          product.description ?? "",
-                                          style: kDescriptionTextSyle,
-                                          textAlign: TextAlign.left,
-                                          overflow: TextOverflow.ellipsis,
-                                          maxLines: 2,
-                                        ),
-                                      ),
-                                    ],
+                                  Text(
+                                    product.name,
+                                    textAlign: TextAlign.left,
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 2,
+                                    style: kSubtitleTextSyule.copyWith(
+                                        fontSize: 18),
                                   ),
-                                  Row(
-                                    children: [
-                                      Container(
-                                        padding:
-                                            EdgeInsets.fromLTRB(8, 4, 8, 4),
-                                        decoration: BoxDecoration(
-                                          color: kPrimary,
-                                          borderRadius:
-                                              BorderRadius.circular(16),
+                                  SizedBox(height: 4),
+                                  Container(
+                                    // color: Colors.amber,
+                                    child: Text(
+                                      product.description ?? '',
+                                      style: kDescriptionTextSyle,
+                                      textAlign: TextAlign.left,
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 2,
+                                    ),
+                                  ),
+                                  Flexible(
+                                    child: Row(
+                                      children: [
+                                        Container(
+                                          padding:
+                                              EdgeInsets.fromLTRB(8, 4, 8, 4),
+                                          decoration: BoxDecoration(
+                                            color: kPrimary,
+                                            borderRadius:
+                                                BorderRadius.circular(16),
+                                          ),
+                                          child: Text(
+                                            "${product.price} đ",
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 14),
+                                          ),
                                         ),
-                                        child: Text(
-                                          "${product.price} đ",
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 14),
-                                        ),
-                                      ),
-                                      SizedBox(width: 8),
-                                      Container(
-                                        padding:
-                                            EdgeInsets.fromLTRB(8, 4, 8, 4),
-                                        decoration: BoxDecoration(
-                                          color: kBestSellerColor,
-                                          borderRadius:
-                                              BorderRadius.circular(16),
-                                        ),
-                                        child: Text(
-                                          "+ ${product.bean} bean",
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 14),
-                                        ),
-                                      )
-                                    ],
+                                        SizedBox(width: 8),
+                                        Container(
+                                          padding:
+                                              EdgeInsets.fromLTRB(8, 4, 8, 4),
+                                          decoration: BoxDecoration(
+                                            color: kBestSellerColor,
+                                            borderRadius:
+                                                BorderRadius.circular(16),
+                                          ),
+                                          child: Text(
+                                            "+ ${product.bean} bean",
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 14),
+                                          ),
+                                        )
+                                      ],
+                                    ),
                                   )
                                 ],
                               ),

@@ -32,9 +32,19 @@ class CacheImage extends StatelessWidget {
           color: Colors.grey,
         ),
       ),
-      errorWidget: (context, url, error) => Icon(
-        MaterialIcons.broken_image,
-        color: kPrimary.withOpacity(0.5),
+      errorWidget: (context, url, error) => Container(
+        color: Colors.grey[200],
+        child: Center(
+            child: FittedBox(
+          fit: BoxFit.fitWidth,
+          child: Text(
+            "BEAN OI",
+            style: TextStyle(
+              color: Colors.grey,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        )),
       ),
     );
   }

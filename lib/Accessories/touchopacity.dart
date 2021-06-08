@@ -26,7 +26,9 @@ class TouchOpacityState extends State<TouchOpacity> {
       onPointerUp: (_) => setState(() => isTappedDown = false),
       child: GestureDetector(
         onTap: () {
-          onTap != null && onTap();
+          if (onTap != null) {
+            onTap();
+          }
         },
         child: AnimatedOpacity(
           duration: Duration(milliseconds: 300),

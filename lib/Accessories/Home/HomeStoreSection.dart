@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:unidelivery_mobile/Accessories/CacheImage.dart';
 import 'package:unidelivery_mobile/Accessories/section.dart';
 import 'package:unidelivery_mobile/Accessories/shimmer_block.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
@@ -163,38 +164,11 @@ class HomeStoreSection extends StatelessWidget {
                         MaterialIcons.broken_image,
                         color: kPrimary.withOpacity(0.5),
                       )
-                    : CachedNetworkImage(
-                        imageUrl: dto.imageUrl,
-                        imageBuilder: (context, imageProvider) => Container(
-                          width: 50,
-                          height: 50,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(16),
-                            image: DecorationImage(
-                              image: imageProvider,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                        progressIndicatorBuilder:
-                            (context, url, downloadProgress) =>
-                                Shimmer.fromColors(
-                          baseColor: Colors.grey[300],
-                          highlightColor: Colors.grey[100],
-                          enabled: true,
-                          child: Container(
-                            width: 50,
-                            height: 50,
-                            color: Colors.grey,
-                          ),
-                        ),
-                        errorWidget: (context, url, error) => Container(
-                          width: 50,
-                          height: 50,
-                          child: Icon(
-                            MaterialIcons.broken_image,
-                            color: kPrimary.withOpacity(0.5),
-                          ),
+                    : Container(
+                        width: 50,
+                        height: 50,
+                        child: CacheImage(
+                          imageUrl: dto.imageUrl,
                         ),
                       ),
               ),

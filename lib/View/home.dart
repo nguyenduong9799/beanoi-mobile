@@ -218,37 +218,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Container(
                       // width: 50,
                       // height: 75,
-                      child: CachedNetworkImage(
-                        width: double.infinity,
-                        fit: BoxFit.fitWidth,
-                        height: 65,
+                      width: double.infinity,
+                      // fit: BoxFit.fitWidth,
+                      height: 65,
+                      child: CacheImage(
                         imageUrl:
                             'https://firebasestorage.googleapis.com/v0/b/unidelivery-fad6f.appspot.com/o/images%2Fproducts%2F7b5ad3410d4572cecc6d40e54dbe6142.jpg?alt=media&token=0103ca63-1be8-4ce4-a984-712cc50acd30',
-                        imageBuilder: (context, imageProvider) => Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            image: DecorationImage(
-                              image: imageProvider,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                        progressIndicatorBuilder:
-                            (context, url, downloadProgress) =>
-                                Shimmer.fromColors(
-                          baseColor: Colors.grey[300],
-                          highlightColor: Colors.grey[100],
-                          enabled: true,
-                          child: Container(
-                            width: MediaQuery.of(context).size.width,
-                            // height: 100,
-                            color: Colors.grey,
-                          ),
-                        ),
-                        errorWidget: (context, url, error) => Icon(
-                          MaterialIcons.broken_image,
-                          color: kPrimary.withOpacity(0.5),
-                        ),
                       ),
                     ),
                   ),
