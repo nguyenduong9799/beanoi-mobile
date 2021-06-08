@@ -10,6 +10,23 @@ class CacheImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (imageUrl == null) {
+      return Container(
+        color: Colors.grey[200],
+        child: Center(
+            child: FittedBox(
+          fit: BoxFit.fitWidth,
+          child: Text(
+            "BEAN OI",
+            style: TextStyle(
+              color: Colors.grey,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        )),
+      );
+    }
+
     return CachedNetworkImage(
       imageUrl: imageUrl,
       imageBuilder: (context, imageProvider) => Container(

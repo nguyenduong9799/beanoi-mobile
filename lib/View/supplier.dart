@@ -342,14 +342,15 @@ class _SupplierScreenState extends State<SupplierScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Flexible(
+                                flex: 2,
                                 child: Text(
-                              product.name,
-                              style: kTitleTextStyle.copyWith(
-                                fontWeight: FontWeight.bold,
-                                decorationThickness: 0.5,
-                                fontSize: 14,
-                              ),
-                            )),
+                                  product.name,
+                                  style: kTitleTextStyle.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    decorationThickness: 0.5,
+                                    fontSize: 14,
+                                  ),
+                                )),
                             Flexible(
                                 child: Text(
                                     product.type != ProductType.MASTER_PRODUCT

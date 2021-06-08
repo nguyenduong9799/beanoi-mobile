@@ -12,6 +12,7 @@ import 'package:unidelivery_mobile/Accessories/Home/HomeCollection.dart';
 import 'package:unidelivery_mobile/Accessories/Home/HomeStoreSection.dart';
 import 'package:unidelivery_mobile/Accessories/index.dart';
 import 'package:unidelivery_mobile/Accessories/section.dart';
+import 'package:unidelivery_mobile/Accessories/touchopacity.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Enums/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
@@ -32,12 +33,13 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _refresh() async {
     await Get.find<HomeViewModel>().getSuppliers();
     await orderModel.getNewOrder();
+    await Get.find<HomeViewModel>().getNearlyGiftExchange();
   }
 
   @override
   void initState() {
     super.initState();
-    orderModel.getNewOrder();
+    _refresh();
   }
 
   bool isDarkModeOn =
@@ -124,55 +126,137 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget buildGiftCanExchangeSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(height: 8),
-        Container(
-          child: Text(
-            "BEAN ĐÃ LỚN",
-            style: kTitleTextStyle,
-          ),
-        ),
-        SizedBox(height: 4),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Flexible(
-              flex: 7,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                crossAxisAlignment: CrossAxisAlignment.start,
+    return ScopedModelDescendant<HomeViewModel>(
+      builder: (context, child, model) {
+        if (model.nearlyGift == null) return SizedBox.shrink();
+        final accountModel = Get.find<AccountViewModel>();
+
+        final gift = model.nearlyGift;
+        final userBean = accountModel.currentUser.point;
+
+        final canExchangeGift = userBean > gift.price;
+
+        return TouchOpacity(
+          onTap: () async {
+            final rootModel = Get.find<RootViewModel>();
+            await rootModel.openProductDetail(gift);
+          },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 8),
+              Container(
+                child: Text(
+                  "BEAN ĐÃ LỚN 🎁",
+                  style: kTitleTextStyle,
+                ),
+              ),
+              SizedBox(height: 4),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Text(
-                    "Bạn sắp nhận được 1 Chai CoCa rồi đấy",
-                    style: kDescriptionTextSyle.copyWith(fontSize: 14),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
+                  Flexible(
+                    flex: 7,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          canExchangeGift
+                              ? "Đổi ngay 1 ${gift.name}"
+                              : "Bạn sắp nhận được ${gift.name} rồi đấy",
+                          style: kDescriptionTextSyle.copyWith(fontSize: 14),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        SizedBox(height: 8),
+                        Container(
+                          margin: EdgeInsets.only(
+                            top: 8,
+                            bottom: 8,
+                          ),
+                          width: Get.width,
+                          height: 16,
+                          decoration: BoxDecoration(
+                            color: kBackgroundGrey[2],
+                            borderRadius: BorderRadius.circular((8)),
+                          ),
+                          child: Stack(
+                            overflow: Overflow.visible,
+                            children: [
+                              FractionallySizedBox(
+                                widthFactor: userBean / gift.price > 1
+                                    ? 1
+                                    : userBean / gift.price,
+                                child: AnimatedContainer(
+                                  duration: Duration(seconds: 2),
+                                  decoration: BoxDecoration(
+                                    color: kPrimary,
+                                    borderRadius: BorderRadius.circular((8)),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
                   ),
-                  SizedBox(height: 8),
-                  Container(
-                    margin: EdgeInsets.only(
-                      top: 8,
-                      bottom: 8,
-                    ),
-                    width: Get.width,
-                    height: 16,
-                    decoration: BoxDecoration(
-                      color: kBackgroundGrey[2],
-                      borderRadius: BorderRadius.circular((8)),
-                    ),
+                  SizedBox(width: 16),
+                  Flexible(
+                    flex: 3,
                     child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Flexible(
-                          flex: 7,
                           child: Container(
-                            width: Get.width * 0.5,
-                            // height: 20,
-                            decoration: BoxDecoration(
-                              color: kPrimary,
-                              borderRadius: BorderRadius.circular((8)),
+                            margin: EdgeInsets.only(
+                              top: 8,
+                              bottom: 8,
                             ),
+                            child: canExchangeGift
+                                ? Align(
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      "Đổi ngay",
+                                      style: TextStyle(
+                                        color: kPrimary,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  )
+                                : RichText(
+                                    text: TextSpan(
+                                        text: "",
+                                        style: kDescriptionTextSyle.copyWith(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold),
+                                        children: <TextSpan>[
+                                          TextSpan(
+                                            text: "${userBean.ceil()}",
+                                            style: TextStyle(
+                                              color: kPrimary,
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          TextSpan(
+                                            text: "/${gift.price.ceil()}",
+                                          ),
+                                        ]),
+                                  ),
+                          ),
+                        ),
+                        SizedBox(width: 4),
+                        Container(
+                          width: 50,
+                          height: 75,
+                          // fit: BoxFit.fitWidth,
+                          child: CacheImage(
+                            imageUrl: gift.imageURL,
                           ),
                         ),
                       ],
@@ -180,59 +264,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   )
                 ],
               ),
-            ),
-            SizedBox(width: 16),
-            Flexible(
-              flex: 3,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Container(
-                    margin: EdgeInsets.only(
-                      top: 8,
-                      bottom: 8,
-                    ),
-                    child: RichText(
-                      text: TextSpan(
-                          text: "",
-                          style: kDescriptionTextSyle.copyWith(
-                              fontSize: 14, fontWeight: FontWeight.bold),
-                          children: <TextSpan>[
-                            TextSpan(
-                              text: "20",
-                              style: TextStyle(
-                                color: kPrimary,
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            TextSpan(
-                              text: "/30",
-                            ),
-                          ]),
-                    ),
-                  ),
-                  SizedBox(width: 4),
-                  Flexible(
-                    flex: 7,
-                    child: Container(
-                      // width: 50,
-                      // height: 75,
-                      width: double.infinity,
-                      // fit: BoxFit.fitWidth,
-                      height: 65,
-                      child: CacheImage(
-                        imageUrl:
-                            'https://firebasestorage.googleapis.com/v0/b/unidelivery-fad6f.appspot.com/o/images%2Fproducts%2F7b5ad3410d4572cecc6d40e54dbe6142.jpg?alt=media&token=0103ca63-1be8-4ce4-a984-712cc50acd30',
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            )
-          ],
-        ),
-      ],
+            ],
+          ),
+        );
+      },
     );
   }
 

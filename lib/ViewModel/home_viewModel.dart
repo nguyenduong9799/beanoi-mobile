@@ -21,6 +21,7 @@ class HomeViewModel extends BaseModel {
 
   HomeViewModel() {
     _storeDAO = StoreDAO();
+    _productDAO = ProductDAO();
   }
 
   Future<void> getSuppliers() async {
@@ -98,7 +99,7 @@ class HomeViewModel extends BaseModel {
       var nearLyGifts = await _productDAO.getGifts(
         currentStore.id,
         currentStore.selectedTimeSlot,
-        params: {"sortBy": "price"},
+        params: {"sortBy": "price asc"},
       );
 
       if (nearLyGifts.length > 0) {
@@ -107,7 +108,9 @@ class HomeViewModel extends BaseModel {
       setState(ViewStatus.Completed);
     } catch (e) {
       nearlyGift = null;
-      setState(ViewStatus.Error);
+      print(e);
+      setState(ViewStatus.Completed);
+      // setState(ViewStatus.Error);
     }
   }
 }

@@ -210,14 +210,15 @@ class _ProductsFilterPageState extends State<ProductsFilterPage> {
       child: ListView.separated(
         itemCount: 10,
         itemBuilder: (context, index) => Container(
-          // height: 90,
+          height: 140,
           width: Get.width,
           color: Colors.white,
-          padding: EdgeInsets.all(8),
+          padding: EdgeInsets.all(16),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ShimmerBlock(width: 75, height: 75),
+              AspectRatio(
+                  aspectRatio: 1, child: ShimmerBlock(width: 140, height: 140)),
               SizedBox(width: 8),
               Flexible(
                 child: Column(
@@ -227,6 +228,7 @@ class _ProductsFilterPageState extends State<ProductsFilterPage> {
                     SizedBox(height: 4),
                     ShimmerBlock(width: 175, height: 20),
                     SizedBox(height: 8),
+                    Flexible(child: Container()),
                     Row(
                       children: [
                         ShimmerBlock(width: 50, height: 20, borderRadius: 16),
