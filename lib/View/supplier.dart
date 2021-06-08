@@ -6,6 +6,7 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:get/get.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:unidelivery_mobile/Accessories/index.dart';
 import 'package:unidelivery_mobile/Accessories/touchopacity.dart';
@@ -28,12 +29,17 @@ class _SupplierScreenState extends State<SupplierScreen> {
   PageController _scrollController = new PageController();
   SupplierViewModel model;
 
+  final ItemScrollController itemScrollController = ItemScrollController();
+  final ItemPositionsListener itemPositionsListener =
+      ItemPositionsListener.create();
+
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       new GlobalKey<RefreshIndicatorState>();
 
   @override
   void initState() {
     super.initState();
+
     model = SupplierViewModel(widget.supplier.id);
     model.getProducts();
     model.getGifts();
@@ -55,114 +61,32 @@ class _SupplierScreenState extends State<SupplierScreen> {
     return ScopedModel(
       model: model,
       child: Scaffold(
+        appBar: DefaultAppBar(
+          title: widget.supplier.name,
+        ),
         floatingActionButton: CartButton(),
         body: SafeArea(
-          child: Center(
-            child: RefreshIndicator(
-              key: _refreshIndicatorKey,
-              onRefresh: _refresh,
-              child: CustomScrollView(
-                controller: model.scrollController,
-                physics: AlwaysScrollableScrollPhysics(),
-                slivers: [
-                  SliverAppBar(
-                    leading: Container(
-                      child: IconButton(
-                        icon: Icon(
-                          Icons.arrow_back_ios,
-                          size: 24,
-                          color: kPrimary,
-                        ),
-                        onPressed: () {
-                          Get.back();
-                        },
-                      ),
-                    ),
-                    centerTitle: true,
-                    backgroundColor: Colors.white,
-                    elevation: 10,
-                    pinned: true,
-                    floating: false,
-                    expandedHeight: Get.width * 0.25 + kToolbarHeight + 32 + 50,
-                    bottom: PreferredSize(
-                      preferredSize: Size.fromHeight(50),
-                      child: tag(),
-                    ),
-                    title: Text(
-                      widget.supplier.name,
-                      style: TextStyle(color: kPrimary),
-                    ),
-                    flexibleSpace: ScopedModelDescendant<SupplierViewModel>(
-                      builder: (context, child, model) {
-                        if (model.isLoadGift) {
-                          return Container(
-                            margin: EdgeInsets.only(top: kToolbarHeight),
-                            width: Get.width,
-                            color: Colors.grey[200],
-                          );
-                        } else if (model.status == ViewStatus.Error ||
-                            model.gifts.isEmpty ||
-                            model.gifts == null) {
-                          return Container(
-                            margin: EdgeInsets.only(top: kToolbarHeight),
-                            child: CachedNetworkImage(
-                              imageUrl: defaultPromotionImage,
-                              imageBuilder: (context, imageProvider) =>
-                                  Container(
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    image: imageProvider,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-                              progressIndicatorBuilder:
-                                  (context, url, downloadProgress) =>
-                                      Shimmer.fromColors(
-                                baseColor: Colors.grey[300],
-                                highlightColor: Colors.grey[100],
-                                enabled: true,
-                                child: Container(
-                                  width: MediaQuery.of(context).size.width,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                              errorWidget: (context, url, error) => Icon(
-                                MaterialIcons.broken_image,
-                                color: kPrimary.withOpacity(0.5),
-                              ),
-                            ),
-                          );
-                        } else {
-                          return Container(
-                            margin: EdgeInsets.only(top: kToolbarHeight),
-                            height: Get.width * 0.25 + 32,
-                            color: kBackgroundGrey[3],
-                            child: Swiper(
-                                itemCount: model.gifts.length,
-                                itemBuilder: (context, index) => Padding(
-                                    padding: EdgeInsets.all(8.0),
-                                    child: StorePromotion(
-                                      dto: model.gifts[index],
-                                    )), // -> Text widget.
-                                //viewportFraction: 1,
-                                loop: false,
-                                control: new SwiperControl(
-                                  color: Color(0xffEE9617),
-                                  iconPrevious: AntDesign.leftcircle,
-                                  iconNext: AntDesign.rightcircle,
-                                )),
-                          );
-                        }
-                      },
-                    ),
-                  ),
-                  SliverList(
-                      delegate: SliverChildListDelegate(
-                    <Widget>[buildProducts(), loadMoreIcon()],
-                  ))
-                ],
-              ),
+          child: RefreshIndicator(
+            key: _refreshIndicatorKey,
+            onRefresh: _refresh,
+            child: Column(
+              children: [
+                tag(),
+                Flexible(
+                  child: buildProducts(),
+                ),
+                // Flexible(
+                //   child: RefreshIndicator(
+                //       key: _refreshIndicatorKey,
+                //       onRefresh: _refresh,
+                //       child: Column(
+                //         children: [
+                //           buildProducts(),
+                //           loadMoreIcon(),
+                //         ],
+                //       )),
+                // ),
+              ],
             ),
           ),
         ),
@@ -233,20 +157,26 @@ class _SupplierScreenState extends State<SupplierScreen> {
             );
           case ViewStatus.Completed:
           case ViewStatus.LoadMore:
-            return ListView.builder(
-              physics: NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemCount: model.collections.length,
-              itemBuilder: (context, index) {
-                if (index == 0) {
-                  return homeBestSellerCollection(model.collections[index]);
-                }
-                if (model.collections.every((element) => !element.isSelected) ||
-                    model.collections[index].isSelected) {
-                  return homeContent(model.collections[index]);
-                }
-                return SizedBox.shrink();
-              },
+            return Container(
+              child: ScrollablePositionedList.builder(
+                itemCount: model.collections.length,
+                itemScrollController: itemScrollController,
+                itemPositionsListener: itemPositionsListener,
+                itemBuilder: (context, index) {
+                  if (index == 0) {
+                    return Container(
+                        child:
+                            homeBestSellerCollection(model.collections[index]));
+                  }
+                  if (model.collections
+                          .every((element) => !element.isSelected) ||
+                      model.collections[index].isSelected) {
+                    return Container(
+                        child: homeContent(model.collections[index]));
+                  }
+                  return SizedBox.shrink();
+                },
+              ),
             );
           default:
             return Text("Some thing wrong");
@@ -553,82 +483,111 @@ class _SupplierScreenState extends State<SupplierScreen> {
   }
 
   Widget tag() {
-    return Container(
-      height: 50,
-      width: Get.width,
-      decoration: BoxDecoration(
-        color: Colors.white,
-      ),
-      child: Animator(
-        tween: Tween<Offset>(begin: Offset(-Get.width, 0), end: Offset(-0, 0)),
-        duration: Duration(milliseconds: 700),
-        builder: (context, animatorState, child) => Transform.translate(
-          offset: animatorState.value,
-          child: Container(
-            width: Get.width,
-            child: ScopedModelDescendant<SupplierViewModel>(
-              builder: (context, child, model) {
-                final filterCategories = model.collections;
-                switch (model.status) {
-                  case ViewStatus.Loading:
-                    return Shimmer.fromColors(
-                      baseColor: kBackgroundGrey[0],
-                      highlightColor: Colors.grey[100],
-                      enabled: true,
-                      child: Container(
-                        width: Get.width,
-                        color: Colors.grey,
-                      ),
-                    );
-                  case ViewStatus.Empty:
-                  case ViewStatus.Error:
-                    return Container(
-                      color: kBackgroundGrey[3],
-                    );
-                  default:
-                    return Stack(
-                      children: [
-                        Row(
+    return ValueListenableBuilder<Iterable<ItemPosition>>(
+      valueListenable: itemPositionsListener.itemPositions,
+      builder: (context, positions, child) {
+        int firstIndex = -1;
+        int lastIndex = -1;
+        if (positions.isNotEmpty) {
+          firstIndex = positions
+              .where((ItemPosition position) => position.itemTrailingEdge > 0)
+              .reduce((ItemPosition min, ItemPosition position) =>
+                  position.itemTrailingEdge < min.itemTrailingEdge
+                      ? position
+                      : min)
+              .index;
+          lastIndex = positions
+              .where((ItemPosition position) => position.itemLeadingEdge < 1)
+              .reduce((ItemPosition max, ItemPosition position) =>
+                  position.itemLeadingEdge > max.itemLeadingEdge
+                      ? position
+                      : max)
+              .index;
+        }
+
+        return Container(
+          height: 50,
+          width: Get.width,
+          decoration: BoxDecoration(
+            color: Colors.white,
+          ),
+          child: Animator(
+            tween:
+                Tween<Offset>(begin: Offset(-Get.width, 0), end: Offset(-0, 0)),
+            duration: Duration(milliseconds: 700),
+            builder: (context, animatorState, child) => Transform.translate(
+              offset: animatorState.value,
+              child: Container(
+                width: Get.width,
+                child: ScopedModelDescendant<SupplierViewModel>(
+                  builder: (context, child, model) {
+                    final filterCategories = model.collections;
+                    switch (model.status) {
+                      case ViewStatus.Loading:
+                        return Shimmer.fromColors(
+                          baseColor: kBackgroundGrey[0],
+                          highlightColor: Colors.grey[100],
+                          enabled: true,
+                          child: Container(
+                            width: Get.width,
+                            color: Colors.grey,
+                          ),
+                        );
+                      case ViewStatus.Empty:
+                      case ViewStatus.Error:
+                        return Container(
+                          color: kBackgroundGrey[3],
+                        );
+                      default:
+                        return Stack(
                           children: [
-                            Expanded(
-                              flex: 2,
-                              child: PageView(
-                                controller: _scrollController,
-                                scrollDirection: Axis.horizontal,
-                                children: [
-                                  Container(
-                                    width: Get.width,
-                                    padding: const EdgeInsets.all(10),
-                                    child: ListView.separated(
-                                      itemBuilder: (context, index) =>
-                                          filterButton(filterCategories[index]),
-                                      scrollDirection: Axis.horizontal,
-                                      itemCount: filterCategories.length,
-                                      separatorBuilder:
-                                          (BuildContext context, int index) =>
-                                              SizedBox(width: 8),
-                                    ),
+                            Row(
+                              children: [
+                                Expanded(
+                                  flex: 2,
+                                  child: PageView(
+                                    controller: _scrollController,
+                                    scrollDirection: Axis.horizontal,
+                                    children: [
+                                      Container(
+                                        width: Get.width,
+                                        padding: const EdgeInsets.all(10),
+                                        child: ListView.separated(
+                                          itemBuilder: (context, index) =>
+                                              filterButton(
+                                            filterCategories[index],
+                                            index,
+                                            firstIndex == index,
+                                          ),
+                                          scrollDirection: Axis.horizontal,
+                                          itemCount: filterCategories.length,
+                                          separatorBuilder:
+                                              (BuildContext context,
+                                                      int index) =>
+                                                  SizedBox(width: 8),
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
                           ],
-                        ),
-                      ],
-                    );
-                }
-              },
+                        );
+                    }
+                  },
+                ),
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
-  Widget filterButton(CollectionDTO filter) {
+  Widget filterButton(CollectionDTO filter, int index, bool isOnView) {
     final title = filter.name;
-    final id = filter.id;
-    final isSelected = filter.isSelected;
+    final isSelected = isOnView;
 
     return ButtonTheme(
       minWidth: 62,
@@ -643,7 +602,11 @@ class _SupplierScreenState extends State<SupplierScreen> {
           color: isSelected ? Color(0xFF00d286) : kBackgroundGrey[0],
           padding: EdgeInsets.all(4),
           onPressed: () async {
-            await onChangeFilter(id);
+            itemScrollController.scrollTo(
+              index: index,
+              duration: Duration(milliseconds: 300 * (index + 1)),
+              curve: Curves.easeInOutCubic,
+            );
           },
           child: Row(
             children: [
