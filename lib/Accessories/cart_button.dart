@@ -33,7 +33,7 @@ class _CartButtonState extends State<CartButton> {
               if (cart == null) return SizedBox.shrink();
               int quantity = cart?.itemQuantity();
               return Container(
-                margin: EdgeInsets.only(bottom: 32),
+                margin: EdgeInsets.only(bottom: 40),
                 child: FloatingActionButton(
                   backgroundColor: Colors.transparent,
                   elevation: 4,

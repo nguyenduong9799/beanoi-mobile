@@ -171,18 +171,20 @@ class _HomeLocationSelectState extends State<HomeLocationSelect> {
             margin: EdgeInsets.only(left: 16),
             padding: EdgeInsets.only(left: 16, bottom: 16, top: 16, right: 16),
             child: Row(
+              mainAxisSize: MainAxisSize.max,
               children: [
                 Icon(Icons.panorama_fisheye_outlined,
                     color: kPrimary, size: 12),
                 SizedBox(
                   width: 8,
                 ),
-                Text(
-                  location.address,
-                  style: Get.theme.textTheme.headline6
-                      .copyWith(color: Colors.black),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+                Flexible(
+                  child: Text(
+                    location.address,
+                    style: kSubtitleTextSyule.copyWith(fontSize: 12),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
               ],
             ),

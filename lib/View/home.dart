@@ -7,7 +7,12 @@ import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:get/get.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:unidelivery_mobile/Accessories/Home/HomeCategorySection.dart';
+import 'package:unidelivery_mobile/Accessories/Home/HomeCollection.dart';
+import 'package:unidelivery_mobile/Accessories/Home/HomeStoreSection.dart';
 import 'package:unidelivery_mobile/Accessories/index.dart';
+import 'package:unidelivery_mobile/Accessories/section.dart';
+import 'package:unidelivery_mobile/Accessories/touchopacity.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Enums/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
@@ -22,15 +27,19 @@ class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       new GlobalKey<RefreshIndicatorState>();
   OrderHistoryViewModel orderModel = Get.find<OrderHistoryViewModel>();
+  final double HEIGHT = 48;
+  final ValueNotifier<double> notifier = ValueNotifier(0);
+
   Future<void> _refresh() async {
     await Get.find<HomeViewModel>().getSuppliers();
     await orderModel.getNewOrder();
+    await Get.find<HomeViewModel>().getNearlyGiftExchange();
   }
 
   @override
   void initState() {
     super.initState();
-    orderModel.getNewOrder();
+    _refresh();
   }
 
   bool isDarkModeOn =
@@ -55,7 +64,10 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 Column(
                   children: [
-                    FixedAppBar(),
+                    FixedAppBar(
+                      notifier: notifier,
+                      height: HEIGHT,
+                    ),
                     Expanded(
                       child: Container(
                         color: kBackgroundGrey[2],
@@ -64,15 +76,32 @@ class _HomeScreenState extends State<HomeScreen> {
                           key: _refreshIndicatorKey,
                           onRefresh: _refresh,
                           child: Container(
-                            // height: Get.height * 0.8 - 16,
                             color: kBackgroundGrey[2],
-                            child: ListView(
-                              children: [
-                                SizedBox(height: 8),
-                                banner(),
-                                Container(child: storeList()),
-                                SizedBox(height: 46),
-                              ],
+                            child: NotificationListener<ScrollNotification>(
+                              onNotification: (n) {
+                                if (n.metrics.pixels <= HEIGHT) {
+                                  notifier.value = n.metrics.pixels;
+                                }
+                                return false;
+                              },
+                              child: ListView(
+                                children: [
+                                  SizedBox(height: 8),
+                                  banner(),
+                                  // CATEGORY
+                                  Section(child: HomeCategorySection()),
+                                  // END CATEGORY
+                                  SizedBox(height: 8),
+                                  // GITF EXCHANGE
+                                  Section(child: buildGiftCanExchangeSection()),
+                                  // END GITF EXCHANGE
+                                  SizedBox(height: 8),
+                                  Section(child: HomeCollection()),
+                                  SizedBox(height: 8),
+                                  Container(child: HomeStoreSection()),
+                                  SizedBox(height: 46),
+                                ],
+                              ),
                             ),
                           ),
                         ),
@@ -90,6 +119,152 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget buildGiftCanExchangeSection() {
+    return ScopedModelDescendant<HomeViewModel>(
+      builder: (context, child, model) {
+        if (model.nearlyGift == null) return SizedBox.shrink();
+        final accountModel = Get.find<AccountViewModel>();
+
+        final gift = model.nearlyGift;
+        final userBean = accountModel.currentUser.point;
+
+        final canExchangeGift = userBean > gift.price;
+
+        return TouchOpacity(
+          onTap: () async {
+            final rootModel = Get.find<RootViewModel>();
+            await rootModel.openProductDetail(gift);
+          },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 8),
+              Container(
+                child: Text(
+                  "BEAN ĐÃ LỚN 🎁",
+                  style: kTitleTextStyle,
+                ),
+              ),
+              SizedBox(height: 4),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Flexible(
+                    flex: 7,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          canExchangeGift
+                              ? "Đổi ngay 1 ${gift.name}"
+                              : "Bạn sắp nhận được ${gift.name} rồi đấy",
+                          style: kDescriptionTextSyle.copyWith(fontSize: 14),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        SizedBox(height: 8),
+                        Container(
+                          margin: EdgeInsets.only(
+                            top: 8,
+                            bottom: 8,
+                          ),
+                          width: Get.width,
+                          height: 16,
+                          decoration: BoxDecoration(
+                            color: kBackgroundGrey[2],
+                            borderRadius: BorderRadius.circular((8)),
+                          ),
+                          child: Stack(
+                            overflow: Overflow.visible,
+                            children: [
+                              FractionallySizedBox(
+                                widthFactor: userBean / gift.price > 1
+                                    ? 1
+                                    : userBean / gift.price,
+                                child: AnimatedContainer(
+                                  duration: Duration(seconds: 2),
+                                  decoration: BoxDecoration(
+                                    color: kPrimary,
+                                    borderRadius: BorderRadius.circular((8)),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  SizedBox(width: 16),
+                  Flexible(
+                    flex: 3,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Flexible(
+                          child: Container(
+                            margin: EdgeInsets.only(
+                              top: 8,
+                              bottom: 8,
+                            ),
+                            child: canExchangeGift
+                                ? Align(
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      "Đổi ngay",
+                                      style: TextStyle(
+                                        color: kPrimary,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  )
+                                : RichText(
+                                    text: TextSpan(
+                                        text: "",
+                                        style: kDescriptionTextSyle.copyWith(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold),
+                                        children: <TextSpan>[
+                                          TextSpan(
+                                            text: "${userBean.ceil()}",
+                                            style: TextStyle(
+                                              color: kPrimary,
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          TextSpan(
+                                            text: "/${gift.price.ceil()}",
+                                          ),
+                                        ]),
+                                  ),
+                          ),
+                        ),
+                        SizedBox(width: 4),
+                        Container(
+                          width: 50,
+                          height: 75,
+                          // fit: BoxFit.fitWidth,
+                          child: CacheImage(
+                            imageUrl: gift.imageURL,
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -182,246 +357,10 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _suggestRestaurant() {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16.0, 8, 16, 8),
-      child: Center(
-        child: Text.rich(
-          TextSpan(
-            text: "Gợi ý nhà hàng bạn thích cho chúng mình ",
-            style: Get.theme.textTheme.headline6,
-            children: [
-              WidgetSpan(
-                child: ScopedModel<AccountViewModel>(
-                  model: Get.find<AccountViewModel>(),
-                  child: ScopedModelDescendant<AccountViewModel>(
-                      builder: (context, child, model) {
-                    return InkWell(
-                      onTap: () async {
-                        await model.sendFeedback(
-                            "Nhập nhà hàng mà bạn muốn chúng mình phục vụ nhé");
-                      },
-                      child: Text(
-                        "tại đây",
-                        style: Get.theme.textTheme.headline6
-                            .copyWith(color: Colors.blue),
-                      ),
-                    );
-                  }),
-                ),
-              ),
-              TextSpan(text: " 📝 nha."),
-            ],
-          ),
-          textAlign: TextAlign.center,
-        ),
-      ),
-    );
-  }
-
-  Widget storeList() {
-    return ScopedModelDescendant<HomeViewModel>(
-      builder: (context, child, model) {
-        ViewStatus status = model.status;
-        bool isMenuAvailable = Get.find<RootViewModel>().isCurrentMenuAvailable;
-        switch (status) {
-          case ViewStatus.Error:
-            return Column(
-              children: [
-                Center(
-                  child: Text(
-                    "Có gì đó sai sai..\n Vui lòng thử lại.",
-                    // style: kTextPrimary,
-                  ),
-                ),
-                SizedBox(height: 8),
-                Image.asset(
-                  'assets/images/global_error.png',
-                  fit: BoxFit.contain,
-                ),
-              ],
-            );
-          case ViewStatus.Loading:
-            return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: [
-                  ShimmerBlock(width: Get.width * 0.4, height: 40),
-                  SizedBox(height: 8),
-                  buildSupplier(null, true),
-                  SizedBox(height: 8),
-                  buildSupplier(null, true),
-                  SizedBox(height: 8),
-                  buildSupplier(null, true),
-                  SizedBox(height: 8),
-                  buildSupplier(null, true),
-                  SizedBox(height: 8),
-                  buildSupplier(null, true),
-                ],
-              ),
-            );
-          default:
-            if (model.suppliers == null ||
-                model.suppliers.isEmpty ||
-                model.suppliers
-                        .where((supplier) => supplier.available)
-                        .length ==
-                    0) {
-              return Container(
-                color: Colors.white,
-                padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
-                child: Column(
-                  children: [
-                    Container(
-                      child: AspectRatio(
-                        aspectRatio: 1.5,
-                        child: Image.asset(
-                          'assets/images/empty-product.png',
-                          fit: BoxFit.contain,
-                        ),
-                      ),
-                    ),
-                    Text(
-                      "Aaa, hiện tại các nhà hàng đang bận, bạn vui lòng quay lại sau nhé",
-                      textAlign: TextAlign.center,
-                      style: Get.theme.textTheme.headline2
-                          .copyWith(color: Colors.orange),
-                    ),
-                  ],
-                ),
-              );
-            }
-            return Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(8, 16.0, 8, 16),
-                  child: Text('🌟 Danh sách nhà hàng 🌟',
-                      style: Get.theme.textTheme.headline1),
-                ),
-                ColorFiltered(
-                  colorFilter: ColorFilter.mode(
-                    isMenuAvailable ? Colors.transparent : Colors.grey,
-                    BlendMode.saturation,
-                  ),
-                  child: Column(
-                    children: [
-                      ...model.suppliers
-                          .where((supplier) => supplier.available)
-                          .map((supplier) => InkWell(
-                              onTap: () {
-                                model.selectSupplier(supplier);
-                              },
-                              child: buildSupplier(supplier)))
-                          .toList(),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 8),
-                _suggestRestaurant(),
-                SizedBox(height: 8),
-              ],
-            );
-        }
-      },
-    );
-  }
-
-  Widget loadMoreButton() {
-    return ScopedModelDescendant<RootViewModel>(
-      builder: (context, child, model) {
-        switch (model.status) {
-          case ViewStatus.LoadMore:
-            return CircularProgressIndicator();
-          default:
-            return SizedBox.shrink();
-        }
-      },
-    );
-  }
-
-  Widget buildSupplier(SupplierDTO dto, [bool loading = false]) {
-    if (loading) {
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          ShimmerBlock(
-            height: 50,
-            width: 50,
-            borderRadius: 16,
-          ),
-          SizedBox(width: 8),
-          ShimmerBlock(height: 50, width: Get.width - 80),
-        ],
-      );
-    }
-    return Container(
-      color: Colors.white,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
-          children: [
-            SizedBox(
-              width: 8,
-            ),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(16),
-              child: Opacity(
-                opacity: 1,
-                child: (dto.imageUrl == null || dto.imageUrl == "")
-                    ? Icon(
-                        MaterialIcons.broken_image,
-                        color: kPrimary.withOpacity(0.5),
-                      )
-                    : CachedNetworkImage(
-                        imageUrl: dto.imageUrl,
-                        imageBuilder: (context, imageProvider) => Container(
-                          width: 50,
-                          height: 50,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(16),
-                            image: DecorationImage(
-                              image: imageProvider,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                        progressIndicatorBuilder:
-                            (context, url, downloadProgress) =>
-                                Shimmer.fromColors(
-                          baseColor: Colors.grey[300],
-                          highlightColor: Colors.grey[100],
-                          enabled: true,
-                          child: Container(
-                            width: 50,
-                            height: 50,
-                            color: Colors.grey,
-                          ),
-                        ),
-                        errorWidget: (context, url, error) => Icon(
-                          MaterialIcons.broken_image,
-                          color: kPrimary.withOpacity(0.5),
-                        ),
-                      ),
-              ),
-            ),
-            SizedBox(
-              width: 16,
-            ),
-            Text(
-              dto.name,
-              style: dto.available
-                  ? Get.theme.textTheme.headline4
-                  : Get.theme.textTheme.headline4.copyWith(color: Colors.grey),
-            )
-          ],
-        ),
-      ),
-    );
-  }
-
   Widget banner() {
     return Container(
-      margin: EdgeInsets.only(top: 8),
+      color: Colors.white,
+      padding: EdgeInsets.fromLTRB(8, 16, 8, 8),
       // padding: EdgeInsets.only(bottom: 8),
       child: ScopedModelDescendant<HomeViewModel>(
         builder: (context, child, model) {
@@ -453,6 +392,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     },
                     autoplay: model.blogs.length > 1 ? true : false,
                     autoplayDelay: 5000,
+                    viewportFraction: 0.9,
                     pagination:
                         new SwiperPagination(alignment: Alignment.bottomCenter),
                     itemCount: model.blogs.length,
@@ -471,25 +411,18 @@ class _HomeScreenState extends State<HomeScreen> {
                             Get.toNamed(RouteHandler.BANNER_DETAIL,
                                 arguments: model.blogs[index]);
                           },
-                          child: Container(
-                            margin:
-                                EdgeInsets.only(left: 8, right: 8, bottom: 8),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8),
-                              color: Colors.blue,
-                              image: DecorationImage(
-                                image: imageProvider,
-                                fit: BoxFit.cover,
+                          child: AspectRatio(
+                            aspectRatio: 16 / 9,
+                            child: Container(
+                              margin: EdgeInsets.only(left: 8, right: 8),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                color: Colors.blue,
+                                image: DecorationImage(
+                                  image: imageProvider,
+                                  fit: BoxFit.cover,
+                                ),
                               ),
-                              boxShadow: [
-                                BoxShadow(
-                                    color: Colors.grey.withOpacity(0.7),
-                                    spreadRadius: 3,
-                                    blurRadius: 6,
-                                    offset: Offset(
-                                        0, 3) // changes position of shadow
-                                    ),
-                              ],
                             ),
                           ),
                         ),
@@ -516,5 +449,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  // TODO: Implement category section
   _launchURL(String url) async {}
 }
