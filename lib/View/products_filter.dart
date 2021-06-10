@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Accessories/index.dart';
+import 'package:unidelivery_mobile/Accessories/product_search.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Enums/index.dart';
+import 'package:unidelivery_mobile/Model/DTO/ProductDTO.dart';
 import 'package:unidelivery_mobile/ViewModel/product_filter_viewModel.dart';
 import 'package:unidelivery_mobile/ViewModel/root_viewModel.dart';
 
@@ -22,14 +24,15 @@ class _ProductsFilterPageState extends State<ProductsFilterPage> {
   ProductFilterViewModel prodFilterModel;
 
   Future<void> _refreshHandler() async {
-    await prodFilterModel.getProductsWithFilter(params: this.widget.params);
+    await prodFilterModel.getProductsWithFilter();
   }
 
   @override
   void initState() {
     super.initState();
     prodFilterModel = ProductFilterViewModel();
-    prodFilterModel.getProductsWithFilter(params: this.widget.params);
+    prodFilterModel.setParam(this.widget.params);
+    prodFilterModel.getProductsWithFilter();
   }
 
   @override
@@ -86,108 +89,7 @@ class _ProductsFilterPageState extends State<ProductsFilterPage> {
                   );
                 }
                 final product = model.listProducts.elementAt(index);
-                return Container(
-                  margin: EdgeInsets.only(top: index == 0 ? 16 : 0),
-                  color: Colors.white,
-                  child: Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      onTap: () {
-                        RootViewModel root = Get.find<RootViewModel>();
-                        root.openProductDetail(product);
-                      },
-                      child: Container(
-                        height: 140,
-                        padding: EdgeInsets.all(16),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(4),
-                                // color: Colors.grey,
-                              ),
-                              // width: 110,
-                              child: AspectRatio(
-                                aspectRatio: 1,
-                                child: CacheImage(
-                                  imageUrl: product.imageURL ??
-                                      "https://firebasestorage.googleapis.com/v0/b/unidelivery-fad6f.appspot.com/o/00014100085607A.png?alt=media&token=40439c48-411b-41c9-a910-6c2f429509f8",
-                                ),
-                              ),
-                            ),
-                            SizedBox(width: 16),
-                            Flexible(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    product.name,
-                                    textAlign: TextAlign.left,
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 2,
-                                    style: kSubtitleTextSyule.copyWith(
-                                        fontSize: 18),
-                                  ),
-                                  SizedBox(height: 4),
-                                  Container(
-                                    // color: Colors.amber,
-                                    child: Text(
-                                      product.description ?? '',
-                                      style: kDescriptionTextSyle,
-                                      textAlign: TextAlign.left,
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 2,
-                                    ),
-                                  ),
-                                  Flexible(
-                                    child: Row(
-                                      children: [
-                                        Container(
-                                          padding:
-                                              EdgeInsets.fromLTRB(8, 4, 8, 4),
-                                          decoration: BoxDecoration(
-                                            color: kPrimary,
-                                            borderRadius:
-                                                BorderRadius.circular(16),
-                                          ),
-                                          child: Text(
-                                            "${product.price} đ",
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 14),
-                                          ),
-                                        ),
-                                        SizedBox(width: 8),
-                                        Container(
-                                          padding:
-                                              EdgeInsets.fromLTRB(8, 4, 8, 4),
-                                          decoration: BoxDecoration(
-                                            color: kBestSellerColor,
-                                            borderRadius:
-                                                BorderRadius.circular(16),
-                                          ),
-                                          child: Text(
-                                            "+ ${product.bean} bean",
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 14),
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                );
+                return ProductSearchItem(product: product, index: index);
               },
             ),
           );

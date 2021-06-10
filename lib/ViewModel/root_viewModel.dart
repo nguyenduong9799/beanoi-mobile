@@ -227,7 +227,7 @@ class RootViewModel extends BaseModel {
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.white,
           messageText: Text("Thêm món thành công ",
-              style: kSubtitleTextSyule.copyWith(
+              style: kSubtitleTextStyle.copyWith(
                 fontSize: 16,
                 color: kPrimary,
               )),
@@ -242,7 +242,7 @@ class RootViewModel extends BaseModel {
             },
             child: Text(
               "Xem 🛒",
-              style: kSubtitleTextSyule.copyWith(
+              style: kSubtitleTextStyle.copyWith(
                 color: Colors.white,
               ),
               textAlign: TextAlign.center,

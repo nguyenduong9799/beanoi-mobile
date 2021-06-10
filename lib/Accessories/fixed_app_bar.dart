@@ -459,6 +459,14 @@ class _FixedAppBarState extends State<FixedAppBar> {
         DateTime arrive = DateFormat("HH:mm:ss").parse(selectedTimeSlot.arrive);
 
         return AnimatedContainer(
+          decoration: BoxDecoration(
+            color: Color(0xfffffbe6),
+            borderRadius: BorderRadius.circular(4),
+            border: Border.all(
+              color: Color(0xffffe58f),
+              width: 1.0,
+            ),
+          ),
           duration: Duration(milliseconds: 300),
           padding: EdgeInsets.fromLTRB(8, 8, 8, 8),
           // margin: EdgeInsets.fromLTRB(8, 8, 8, 8),

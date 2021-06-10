@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:dio_http_cache/dio_http_cache.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/Utils/index.dart';
 
@@ -13,6 +14,7 @@ class CategoryDAO {
     Response res = await request.get(
       'categories',
       queryParameters: {}..addAll(params),
+      options: buildCacheOptions(Duration(minutes: 5)),
     );
 
     //final res = await Dio().get("http://api.dominos.reso.vn/api/v1/products");

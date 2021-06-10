@@ -44,6 +44,8 @@ class MyApp extends StatelessWidget {
                 settings: settings);
           case RouteHandler.LOGIN:
             return ScaleRoute(page: LoginScreen());
+          case RouteHandler.SEACH_PAGE:
+            return ScaleRoute(page: SearchScreen());
           case RouteHandler.GIFT:
             return CupertinoPageRoute(
                 builder: (context) => GiftScreen(), settings: settings);

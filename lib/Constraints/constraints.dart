@@ -25,7 +25,7 @@ const kTextColor = Color(0xFF0D1333);
 const kBlueColor = Color(0xFF6E8AFA);
 const kBestSellerColor = Color(0xffF1A23A);
 const kGreenColor = Color(0xFF49CC96);
-const kDescriptionTextColor = Color(0xffaaaaaa);
+const kDescriptionTextColor = Colors.grey;
 
 // My Text Styles
 const kHeadingTextStyle = TextStyle(
@@ -45,14 +45,14 @@ const kTitleTextStyle = TextStyle(
   fontWeight: FontWeight.bold,
 );
 
-const kSubtitleTextSyule = TextStyle(
+const kSubtitleTextStyle = TextStyle(
   fontSize: 14,
   color: kTextColor,
   // fontWeight: FontWeight.bold,
 );
 
 const kDescriptionTextStyle = TextStyle(
-  fontSize: 12,
+  fontSize: 14,
   color: kDescriptionTextColor,
   fontWeight: FontWeight.w100,
 );

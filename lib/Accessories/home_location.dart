@@ -181,7 +181,7 @@ class _HomeLocationSelectState extends State<HomeLocationSelect> {
                 Flexible(
                   child: Text(
                     location.address,
-                    style: kSubtitleTextSyule.copyWith(fontSize: 12),
+                    style: kSubtitleTextStyle.copyWith(fontSize: 12),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),

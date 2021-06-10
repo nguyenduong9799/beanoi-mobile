@@ -15,7 +15,6 @@ import 'package:unidelivery_mobile/Accessories/section.dart';
 import 'package:unidelivery_mobile/Accessories/touchopacity.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Enums/index.dart';
-import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -162,7 +161,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           canExchangeGift
                               ? "Đổi ngay 1 ${gift.name}"
                               : "Bạn sắp nhận được ${gift.name} rồi đấy",
-                          style: kDescriptionTextSyle.copyWith(fontSize: 14),
+                          style: kDescriptionTextStyle.copyWith(fontSize: 14),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -228,7 +227,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 : RichText(
                                     text: TextSpan(
                                         text: "",
-                                        style: kDescriptionTextSyle.copyWith(
+                                        style: kDescriptionTextStyle.copyWith(
                                             fontSize: 14,
                                             fontWeight: FontWeight.bold),
                                         children: <TextSpan>[

@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
@@ -9,7 +8,6 @@ import 'package:unidelivery_mobile/Accessories/shimmer_block.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Enums/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/SupplierDTO.dart';
-import 'package:shimmer/shimmer.dart';
 import 'package:unidelivery_mobile/ViewModel/account_viewModel.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
 
@@ -84,7 +82,7 @@ class HomeStoreSection extends StatelessWidget {
                     Text(
                       "Aaa, hiện tại các nhà hàng đang bận, bạn vui lòng quay lại sau nhé",
                       textAlign: TextAlign.center,
-                      style: kSubtitleTextSyule.copyWith(color: Colors.orange),
+                      style: kSubtitleTextStyle.copyWith(color: Colors.orange),
                     ),
                   ],
                 ),
@@ -98,7 +96,7 @@ class HomeStoreSection extends StatelessWidget {
                     padding: const EdgeInsets.fromLTRB(8, 16.0, 8, 16),
                     child: Text(
                       'Quán ngon hôm nay',
-                      style: kHeadingextStyle.copyWith(fontSize: 18),
+                      style: kHeadingTextStyle.copyWith(fontSize: 18),
                       textAlign: TextAlign.left,
                     ),
                   ),
@@ -194,7 +192,7 @@ class HomeStoreSection extends StatelessWidget {
         child: Text.rich(
           TextSpan(
             text: "Gợi ý nhà hàng bạn thích cho chúng mình ",
-            style: kDescriptionTextSyle.copyWith(
+            style: kDescriptionTextStyle.copyWith(
               fontSize: 12,
             ),
             children: [
