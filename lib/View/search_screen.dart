@@ -117,7 +117,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   context,
                   ScaleRoute(page: ParamScreen()),
                 );
-                // TODO: CALL FETCH PARAM
+
                 prodFilterModel.getProductsWithFilter();
               },
               child: Container(
