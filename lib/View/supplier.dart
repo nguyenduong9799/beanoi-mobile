@@ -87,8 +87,7 @@ class _SupplierScreenState extends State<SupplierScreen> {
                         preferredSize: Size.fromHeight(50), child: tag()),
                     title: Text(
                       widget.supplier.name,
-                      style: Get.theme.textTheme.headline4
-                          .copyWith(color: kPrimary),
+                      style: Get.theme.textTheme.headline2,
                     ),
                     flexibleSpace: ScopedModelDescendant<SupplierViewModel>(
                       builder: (context, child, model) {

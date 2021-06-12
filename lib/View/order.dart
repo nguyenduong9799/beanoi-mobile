@@ -744,7 +744,7 @@ class _OrderScreenState extends State<OrderScreen> {
                 activeColor: kPrimary,
                 groupValue: model.currentCart.payment,
                 value: paymentsType.values.elementAt(i),
-                title: Text(paymentsType.keys.elementAt(i)),
+                title: Text(paymentsType.keys.elementAt(i), style: Get.theme.textTheme.headline4,),
                 onChanged: (value) async {
                   await model.changeOption(value);
                 },

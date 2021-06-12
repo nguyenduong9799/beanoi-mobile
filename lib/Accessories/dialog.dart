@@ -154,7 +154,7 @@ Future<bool> showErrorDialog(
                   padding: EdgeInsets.only(top: 16, bottom: 16),
                   child: Text(
                     "Thử lại",
-                    style: Get.theme.textTheme.headline4,
+                    style: Get.theme.textTheme.headline4.copyWith(color: Colors.white),
                   ),
                 ),
               ),

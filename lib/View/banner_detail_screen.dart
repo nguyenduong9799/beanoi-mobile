@@ -71,6 +71,11 @@ class _BannerDetailScreenState extends State<BannerDetailScreen> {
             Html(
               data: htmlData,
               onImageError: (exception, stackTrace) {},
+              onLinkTap: (url, context, attributes, element) async {
+                if (url != null) {
+                   Get.toNamed(RouteHandler.WEBVIEW, arguments: url);
+                }
+              },
             ),
           ],
         ),

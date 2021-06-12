@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
-import 'package:unidelivery_mobile/Services/firebase.dart';
+import 'package:unidelivery_mobile/Services/firebase_authentication_service.dart';
 import 'package:unidelivery_mobile/Services/push_notification_service.dart';
 import 'package:unidelivery_mobile/Utils/index.dart';
 

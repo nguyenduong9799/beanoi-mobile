@@ -16,7 +16,6 @@ PageDecoration pageDecoration = PageDecoration(
   titleTextStyle: Get.theme.textTheme.subtitle1,
   bodyTextStyle: Get.theme.textTheme.subtitle2,
   descriptionPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
-  pageColor: Colors.white,
   imagePadding: EdgeInsets.zero,
 );
 
@@ -50,6 +49,7 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
       body: Padding(
         padding: const EdgeInsets.only(top: 24.0),
         child: IntroductionScreen(
+          globalBackgroundColor: Colors.white,
           pages: pages,
           onDone: () => _onIntroEnd(),
           onSkip: () => _onIntroEnd(), // You can override onSkip callback

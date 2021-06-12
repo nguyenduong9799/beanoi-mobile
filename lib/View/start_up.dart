@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Accessories/index.dart';
-import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
 
 class StartUpView extends StatelessWidget {

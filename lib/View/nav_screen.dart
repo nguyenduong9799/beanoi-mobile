@@ -8,7 +8,7 @@ import 'package:unidelivery_mobile/ViewModel/index.dart';
 class RootScreen extends StatefulWidget {
   final int initScreenIndex;
 
-  const RootScreen({Key key, this.initScreenIndex = 0}) : super(key: key);
+  const RootScreen({Key key, this.initScreenIndex}) : super(key: key);
 
   @override
   _RootScreenState createState() => _RootScreenState();
@@ -25,13 +25,14 @@ class _RootScreenState extends State<RootScreen> {
     Icons.card_giftcard,
     MaterialCommunityIcons.face_outline,
   ];
-  int _selectedIndex = 0;
+  int _selectedIndex;
   @override
   void initState() {
     super.initState();
     _selectedIndex = widget.initScreenIndex;
     Get.find<HomeViewModel>().getSuppliers();
     Get.find<GiftViewModel>().getGifts();
+    Get.find<AccountViewModel>().fetchUser();
   }
 
   @override
