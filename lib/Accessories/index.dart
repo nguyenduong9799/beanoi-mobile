@@ -15,3 +15,4 @@ export 'tabbar.dart';
 export 'form_item.dart';
 export 'clip_path.dart';
 export 'theme_data.dart';
+export 'CacheImage.dart';

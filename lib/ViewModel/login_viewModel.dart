@@ -133,7 +133,7 @@ class LoginViewModel extends BaseModel {
     } on FirebaseAuthException catch (e) {
       await showStatusDialog(
           "assets/images/global_error.png", "Error", e.message);
-    } catch (e, strack) {
+    } catch (e) {
       await showStatusDialog(
           "assets/images/global_error.png", "Error", e.toString());
     } finally {

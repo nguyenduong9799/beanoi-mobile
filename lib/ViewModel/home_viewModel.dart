@@ -9,13 +9,19 @@ import 'package:unidelivery_mobile/Services/push_notification_service.dart';
 import 'index.dart';
 
 class HomeViewModel extends BaseModel {
-
   StoreDAO _storeDAO;
+  CollectionDAO _collectionDAO;
+  ProductDAO _productDAO;
+
   List<SupplierDTO> suppliers;
   List<BlogDTO> blogs;
 
+  Map<int, ProductDTO> prodInCollections;
+  ProductDTO nearlyGift;
+
   HomeViewModel() {
     _storeDAO = StoreDAO();
+    _productDAO = ProductDAO();
   }
 
   Future<void> getSuppliers() async {
@@ -44,7 +50,7 @@ class HomeViewModel extends BaseModel {
       await Future.delayed(Duration(microseconds: 500));
       // check truong hop product tra ve rong (do khong co menu nao trong TG do)
       setState(ViewStatus.Completed);
-    } catch (e, stacktrace) {
+    } catch (e) {
       suppliers = null;
       setState(ViewStatus.Completed);
     }
@@ -60,6 +66,52 @@ class HomeViewModel extends BaseModel {
     } else {
       showStatusDialog("assets/images/global_error.png", "Opps",
           "Cửa hàng đang tạm đóng 😓");
+    }
+  }
+
+  // TODO: 1. Get List Product With Home Collection
+  Future<void> getListProductInHomeCollection() async {
+    RootViewModel root = Get.find<RootViewModel>();
+    CampusDTO currentStore = root.currentStore;
+    int storeId = currentStore.id;
+    int supplierId = 1;
+    try {
+      setState(ViewStatus.Loading);
+      var homeCollections = await _collectionDAO.getCollectionsOfSupplier(
+          storeId, supplierId, currentStore.selectedTimeSlot);
+
+      // get list products of collection
+      setState(ViewStatus.Completed);
+    } catch (e) {
+      print(e);
+      setState(ViewStatus.Error);
+    }
+
+    return null;
+  }
+
+  // TODO: 2. Get Gift can exchange (or nearly)
+  Future<void> getNearlyGiftExchange() async {
+    RootViewModel root = Get.find<RootViewModel>();
+    CampusDTO currentStore = root.currentStore;
+
+    try {
+      setState(ViewStatus.Loading);
+      var nearLyGifts = await _productDAO.getGifts(
+        currentStore.id,
+        currentStore.selectedTimeSlot,
+        params: {"sortBy": "price asc"},
+      );
+
+      if (nearLyGifts.length > 0) {
+        nearlyGift = nearLyGifts.first;
+      }
+      setState(ViewStatus.Completed);
+    } catch (e) {
+      nearlyGift = null;
+      print(e);
+      setState(ViewStatus.Completed);
+      // setState(ViewStatus.Error);
     }
   }
 }

@@ -168,6 +168,7 @@ class _HomeLocationSelectState extends State<HomeLocationSelect> {
             margin: EdgeInsets.only(left: 16),
             padding: EdgeInsets.only(left: 16, bottom: 16, top: 16, right: 16),
             child: Row(
+              mainAxisSize: MainAxisSize.max,
               children: [
                 Icon(Icons.panorama_fisheye_outlined,
                     color: kPrimary, size: 12),

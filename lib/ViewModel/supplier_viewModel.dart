@@ -47,7 +47,7 @@ class SupplierViewModel extends BaseModel {
     try {
       setState(ViewStatus.Loading);
       CampusDTO store = await getStore();
-      collections = await _collectionDAO.getCollections(
+      collections = await _collectionDAO.getCollectionsOfSupplier(
           store.id, supplierId, store.selectedTimeSlot);
       products = await _productDAO.getProducts(
           store.id, supplierId, store.selectedTimeSlot);
@@ -94,7 +94,7 @@ class SupplierViewModel extends BaseModel {
       await Future.delayed(Duration(microseconds: 500));
       // check truong hop product tra ve rong (do khong co menu nao trong TG do)
       isLoadGift = false;
-    } catch (e, stacktrace) {
+    } catch (e) {
       bool result = await showErrorDialog();
       if (result) {
         await getGifts();
@@ -126,7 +126,7 @@ class SupplierViewModel extends BaseModel {
       await Future.delayed(Duration(milliseconds: 1000));
       // check truong hop product tra ve rong (do khong co menu nao trong TG do)
       setState(ViewStatus.Completed);
-    } catch (e, stacktrace) {
+    } catch (e) {
       bool result = await showErrorDialog();
       if (result) {
         await getMoreProducts();

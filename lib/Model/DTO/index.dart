@@ -11,3 +11,5 @@ export 'CampusDTO.dart';
 export 'SupplierDTO.dart';
 export 'SupplierNoteDTO.dart';
 export 'VoucherDTO.dart';
+export 'CategoryDTO.dart';
+export 'TransactionDTO.dart';

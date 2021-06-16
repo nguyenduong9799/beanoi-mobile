@@ -11,7 +11,9 @@ import 'package:unidelivery_mobile/ViewModel/index.dart';
 import 'index.dart';
 
 class FixedAppBar extends StatefulWidget {
-  FixedAppBar({Key key}) : super(key: key);
+  final double height;
+  final ValueNotifier<double> notifier;
+  FixedAppBar({Key key, this.height, this.notifier}) : super(key: key);
 
   @override
   _FixedAppBarState createState() => _FixedAppBarState();
@@ -455,80 +457,100 @@ class _FixedAppBarState extends State<FixedAppBar> {
           ?.firstWhere((time) => time.available, orElse: () => null);
 
       DateTime arrive = DateFormat("HH:mm:ss").parse(selectedTimeSlot.arrive);
-
-      return AnimatedContainer(
-        duration: Duration(milliseconds: 300),
-        padding: EdgeInsets.fromLTRB(8, 8, 8, 8),
-        // margin: EdgeInsets.fromLTRB(8, 8, 8, 8),
-        width: Get.width,
-        height: 48,
-        child: Align(
-          alignment: Alignment.centerLeft,
-          child: isAvailableMenu
-              ? Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                      Text.rich(
-                        TextSpan(
-                          text: "Chốt đơn: ",
-                          style: Get.theme.textTheme.headline6,
-                          children: [
-                            TextSpan(
-                              text: "$currentTimeSlot",
-                              style: Get.theme.textTheme.headline5
-                                  .copyWith(color: Colors.black),
+      print(this.widget.height);
+      return ValueListenableBuilder<double>(
+        valueListenable: this.widget.notifier,
+        builder: (context, value, child) {
+          // print("value: ${1 - (value) / this.widget.height}");
+          return Opacity(
+            // opacity: 1 - (value) / this.widget.height <= 0
+            //     ? 0
+            //     : 1 - (value) / this.widget.height,
+            opacity: 1,
+            child: AnimatedContainer(
+              duration: Duration(milliseconds: 300),
+              padding: EdgeInsets.fromLTRB(8, 8, 8, 8),
+              // margin: EdgeInsets.fromLTRB(8, 8, 8, 8),
+              width: Get.width,
+              height: 48,
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: isAvailableMenu
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                            Text.rich(
+                              TextSpan(
+                                text: "Chốt đơn: ",
+                                style: Get.theme.textTheme.headline6
+                                    .copyWith(color: kTextColor),
+                                children: [
+                                  TextSpan(
+                                    text: "$currentTimeSlot",
+                                    style: kTitleTextStyle.copyWith(
+                                      color: Colors.black87,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              textAlign: TextAlign.center,
                             ),
-                          ],
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      BeanTimeCountdown(
-                        differentTime: differentTime,
-                        arriveTime: arrive,
-                      ),
-                    ])
-              : Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      // width: Get.width * 0.7,
-                      child: Text(
-                        nextTimeSlot != null
-                            ? "Khung giờ đã đóng bạn vui lòng xem chuyến hàng kế tiếp nha 😉."
-                            : "Hiện tại các khung giờ đều đã đóng. Hẹn gặp bạn hôm sau nhé 😥.",
-                        style: Get.theme.textTheme.headline6
-                            .copyWith(color: Colors.black),
-                        textAlign: nextTimeSlot != null
-                            ? TextAlign.left
-                            : TextAlign.center,
-                      ),
-                    ),
-                    SizedBox(width: 8),
-                    nextTimeSlot != null
-                        ? InkWell(
-                            onTap: () {
-                              if (model.currentStore.selectedTimeSlot != null) {
-                                model.confirmTimeSlot(nextTimeSlot);
-                              }
-                            },
+                            BeanTimeCountdown(
+                              differentTime: differentTime,
+                              arriveTime: arrive,
+                            ),
+                          ])
+                    : Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            // width: Get.width * 0.7,
                             child: Text(
-                              "Xem ngay",
-                              style: Get.theme.textTheme.headline6
-                                  .copyWith(color: kPrimary),
+                              nextTimeSlot != null
+                                  ? "Khung giờ đã đóng bạn vui lòng xem chuyến hàng kế tiếp nha 😉."
+                                  : "Hiện tại các khung giờ đều đã đóng. Hẹn gặp bạn hôm sau nhé 😥.",
+                              style: kTitleTextStyle.copyWith(
+                                color: Colors.black87,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w100,
+                              ),
+                              textAlign: nextTimeSlot != null
+                                  ? TextAlign.left
+                                  : TextAlign.center,
                             ),
-                          )
-                        : SizedBox(),
-                  ],
+                          ),
+                          SizedBox(width: 8),
+                          nextTimeSlot != null
+                              ? InkWell(
+                                  onTap: () {
+                                    if (model.currentStore.selectedTimeSlot !=
+                                        null) {
+                                      model.confirmTimeSlot(nextTimeSlot);
+                                    }
+                                  },
+                                  child: Text(
+                                    "Xem ngay",
+                                    style: TextStyle(
+                                        color: kPrimary, fontSize: 12),
+                                  ),
+                                )
+                              : SizedBox(),
+                        ],
+                      ),
+              ),
+              decoration: BoxDecoration(
+                color: Color(0xfffffbe6),
+                borderRadius: BorderRadius.circular(4),
+                border: Border.all(
+                  color: Color(0xffffe58f),
+                  width: 1.0,
                 ),
-        ),
-        decoration: BoxDecoration(
-          color: Color(0xfffffbe6),
-          borderRadius: BorderRadius.circular(4),
-          border: Border.all(
-            color: Color(0xffffe58f),
-            width: 1.0,
-          ),
-        ),
+              ),
+            ),
+          );
+        },
       );
     });
   }

@@ -5,20 +5,31 @@ import 'package:unidelivery_mobile/Utils/index.dart';
 import 'index.dart';
 
 class ProductDAO extends BaseDAO {
-  // 1. Get Product List from API
   Future<List<ProductDTO>> getProducts(
-      int store_id, int supplier_id, TimeSlot time_slot,
-      {int page, int size, int type}) async {
+    int storeId,
+    int supplierId,
+    TimeSlot timeSlot, {
+    int page = 1,
+    int size = 10,
+    int type,
+    Map<String, dynamic> params = const {},
+  }) async {
     Response res;
 
     if (type != null) {
       res = await request.get(
-          'stores/$store_id/suppliers/$supplier_id/products?fields=ChildProducts&fields=CollectionId&fields=Extras&time-slot=${time_slot.from.toString()}&time-slot=${time_slot.to.toString()}',
-          queryParameters: {"page": page ?? 1, "product-type-id": type, "size" : size ?? DEFAULT_SIZE});
+          'stores/$storeId/suppliers/$supplierId/products?fields=ChildProducts&fields=CollectionId&fields=Extras&time-slot=${timeSlot.from.toString()}&time-slot=${timeSlot.to.toString()}',
+          queryParameters: {
+            "page": page ?? 1,
+            "product-type-id": type,
+            "size": size ?? DEFAULT_SIZE
+          }..addAll(params));
     } else {
       res = await request.get(
-          'stores/$store_id/suppliers/$supplier_id/products?fields=ChildProducts&fields=CollectionId&fields=Extras&time-slot=${time_slot.from.toString()}&time-slot=${time_slot.to.toString()}',
-          queryParameters: {"page": page ?? 1, "size" : size ?? DEFAULT_SIZE});
+        'stores/$storeId/suppliers/$supplierId/products?fields=ChildProducts&fields=CollectionId&fields=Extras&time-slot=${timeSlot.from.toString()}&time-slot=${timeSlot.to.toString()}',
+        queryParameters: {"page": page ?? 1, "size": size ?? DEFAULT_SIZE}
+          ..addAll(params),
+      );
     }
 
     //final res = await Dio().get("http://api.dominos.reso.vn/api/v1/products");
@@ -27,13 +38,37 @@ class ProductDAO extends BaseDAO {
     return products;
   }
 
-  Future<List<ProductDTO>> getGifts(int store_id, TimeSlot time_slot,
-      {int page, int size, int type}) async {
+  Future<List<ProductDTO>> getGifts(
+    int storeId,
+    TimeSlot timeSlot, {
+    int page,
+    int size,
+    int type,
+    Map<String, dynamic> params = const {},
+  }) async {
     Response res = await request.get(
-        'stores/$store_id/gifts?time-slot=${time_slot.from.toString()}&time-slot=${time_slot.to.toString()}',
-        queryParameters: {"page": page ?? 1, "size": size ?? DEFAULT_SIZE});
+      'stores/$storeId/gifts?time-slot=${timeSlot.from.toString()}&time-slot=${timeSlot.to.toString()}',
+      queryParameters: {"page": page ?? 1, "size": size ?? DEFAULT_SIZE}
+        ..addAll(params),
+    );
 
     //final res = await Dio().get("http://api.dominos.reso.vn/api/v1/products");
+    final products = ProductDTO.fromList(res.data["data"]);
+    metaDataDTO = MetaDataDTO.fromJson(res.data["metadata"]);
+    return products;
+  }
+
+  Future<List<ProductDTO>> getAllProductOfStore(int storeId, TimeSlot timeSlot,
+      {int page,
+      int size,
+      int type,
+      Map<String, dynamic> params = const {}}) async {
+    Response res = await request.get(
+      'stores/$storeId/products?time-slot=${timeSlot.from.toString()}&time-slot=${timeSlot.to.toString()}',
+      queryParameters: {"page": page ?? 1, "size": size ?? DEFAULT_SIZE}
+        ..addAll(params),
+    );
+
     final products = ProductDTO.fromList(res.data["data"]);
     metaDataDTO = MetaDataDTO.fromJson(res.data["metadata"]);
     return products;

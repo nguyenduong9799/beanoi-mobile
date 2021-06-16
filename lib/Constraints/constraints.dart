@@ -23,9 +23,9 @@ const kTextSecondary = TextStyle(color: Colors.grey);
 // Colors
 const kTextColor = Color(0xFF0D1333);
 const kBlueColor = Color(0xFF6E8AFA);
-const kBestSellerColor = Color(0xFFFFD073);
+const kBestSellerColor = Color(0xffF1A23A);
 const kGreenColor = Color(0xFF49CC96);
-const kDescriptionTextColor = Color(0xffa7b4ce);
+const kDescriptionTextColor = Color(0xffaaaaaa);
 
 // My Text Styles
 const kHeadingTextStyle = TextStyle(
@@ -54,7 +54,7 @@ const kSubtitleTextStyle = TextStyle(
 const kDescriptionTextStyle = TextStyle(
   fontSize: 12,
   color: kDescriptionTextColor,
-  fontWeight: FontWeight.bold,
+  fontWeight: FontWeight.w100,
 );
 
 const kSubdescriptionTextStyle = TextStyle(
@@ -94,7 +94,6 @@ const int VIRTUAL_STORE_TYPE = 8;
 const int DEFAULT_SIZE = 50;
 const phoneReg = r'^(0|\+)([0-9])+$';
 
-
 class ProductType {
   static const int EXTRA_PRODUCT = 5;
   static const int MASTER_PRODUCT = 6;
@@ -102,4 +101,3 @@ class ProductType {
   static const int COMPLEX_PRODUCT = 10;
   static const int GIFT_PRODUCT = 12;
 }
-

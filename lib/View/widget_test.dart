@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 
-
 class DynamicScreen extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _MainScreenState();
@@ -20,7 +19,7 @@ class _MainScreenState extends State<DynamicScreen> {
       "app. Make sure this isn't being tested on iOS simulator and iOS xcode "
       'is properly setup. Look at firebase_dynamic_links/README.md for more '
       'details.';
-      TextEditingController _controller;
+  TextEditingController _controller;
 
   @override
   void initState() {
@@ -47,7 +46,6 @@ class _MainScreenState extends State<DynamicScreen> {
         bundleId: 'com.unibean.unideliveryMobile',
         minimumVersion: '0',
       ),
-      
     );
 
     Uri url;
@@ -102,7 +100,8 @@ class _MainScreenState extends State<DynamicScreen> {
                 InkWell(
                   onTap: () async {
                     if (_linkMessage != null) {
-                      Get.toNamed(RouteHandler.WEBVIEW, arguments: _linkMessage);
+                      Get.toNamed(RouteHandler.WEBVIEW,
+                          arguments: _linkMessage);
                     }
                   },
                   onLongPress: () {
@@ -126,18 +125,16 @@ class _MainScreenState extends State<DynamicScreen> {
   }
 }
 
-class _DynamicLinkScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Hello World DeepLink'),
-        ),
-        body: const Center(
-          child: Text('Hello, World!'),
-        ),
+@override
+Widget build(BuildContext context) {
+  return Material(
+    child: Scaffold(
+      appBar: AppBar(
+        title: const Text('Hello World DeepLink'),
       ),
-    );
-  }
+      body: const Center(
+        child: Text('Hello, World!'),
+      ),
+    ),
+  );
 }

@@ -11,7 +11,6 @@ import 'index.dart';
 class AccountViewModel extends BaseModel {
   AccountDAO _dao;
   AccountDTO currentUser;
-  static AccountViewModel _instance;
   String version;
 
   AccountViewModel() {
@@ -35,7 +34,7 @@ class AccountViewModel extends BaseModel {
       }
 
       setState(ViewStatus.Completed);
-    } catch (e, stacktrace) {
+    } catch (e) {
       bool result = await showErrorDialog();
       if (result) {
         await fetchUser();

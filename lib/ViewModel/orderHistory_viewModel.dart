@@ -159,7 +159,7 @@ class OrderHistoryViewModel extends BaseModel {
       }
       orderDetail = data;
       setState(ViewStatus.Completed);
-    } catch (e, str) {
+    } catch (e) {
       bool result = await showErrorDialog();
       if (result) {
         await getOrderDetail(orderId);

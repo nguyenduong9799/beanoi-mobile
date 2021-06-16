@@ -29,20 +29,23 @@ class _AppBarSate extends State<DefaultAppBar> {
   Widget build(BuildContext context) {
     return AppBar(
       backgroundColor: Colors.white,
-      elevation: 5.0,
+      elevation: 2.0,
       centerTitle: true,
       leading: widget.backButton != null
           ? widget.backButton
           : Container(
-              child: IconButton(
-                icon: Icon(
-                  Icons.arrow_back_ios,
-                  size: 24,
-                  color: kPrimary,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(32),
+              ),
+              child: Material(
+                color: Colors.white,
+                child: InkWell(
+                  onTap: () {
+                    Get.back();
+                  },
+                  child:
+                      Icon(Icons.arrow_back_ios, size: 20, color: Colors.black),
                 ),
-                onPressed: () {
-                  Get.back();
-                },
               ),
             ),
       title: Text(widget.title, style: Get.theme.textTheme.headline2),
@@ -67,7 +70,6 @@ class _GiftAppBarSate extends State<GiftAppBar> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return ScopedModel(
       model: Get.find<AccountViewModel>(),
       child: Container(
