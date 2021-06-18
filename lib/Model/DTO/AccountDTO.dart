@@ -26,7 +26,7 @@ class AccountDTO {
         name: json['name'] as String ?? "Bean",
         email: json['email'] as String,
         phone: json['phone'] as String,
-        gender: (json['gender'] as bool) == true ? 'nam' : 'nữ',
+        gender: (json['gender'] as int) == 1 ? 'nam' : 'nữ',
         balance: json['balance'],
         point: json['point'],
         isFirstLogin: (json['is_first_login'] as bool) ?? false,
@@ -47,7 +47,7 @@ class AccountDTO {
       "name": name,
       "email": email,
       "phone": phone,
-      "gender": gender == 'nam',
+      "gender": (gender == 'nam') ? 1 : 0,
       "birth_day": birthdate?.toString() ,
       "pic_url": "https://randomuser.me/api/portraits/women/28.jpg",
       "ref_code": referalCode

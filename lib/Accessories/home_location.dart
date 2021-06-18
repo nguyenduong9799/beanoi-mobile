@@ -152,26 +152,20 @@ class _HomeLocationSelectState extends State<HomeLocationSelect> {
   Widget _buildLocationItem(LocationDTO location, CampusDTO campus) {
     return ScopedModelDescendant<RootViewModel>(
         builder: (context, child, model) {
-      return Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: () {
-            model.setLocation(location, campus);
-          },
-          child: Container(
-            width: Get.width,
-            decoration: BoxDecoration(
-              border: Border(
-                bottom: BorderSide(color: Colors.grey[200], width: 1),
-              ),
-            ),
-            margin: EdgeInsets.only(left: 16),
-            padding: EdgeInsets.only(left: 16, bottom: 16, top: 16, right: 16),
-            child: Row(
+      return Container(
+        width: Get.width,
+        decoration: BoxDecoration(
+          border: Border(
+            bottom: BorderSide(color: Colors.grey[200], width: 1),
+          ),
+        ),
+        padding: EdgeInsets.only(left: 16, bottom: 8, right: 16),
+        child: Column(
+          children: [
+            Row(
               mainAxisSize: MainAxisSize.max,
               children: [
-                Icon(Icons.panorama_fisheye_outlined,
-                    color: kPrimary, size: 12),
+                Icon(Icons.do_disturb_on, color: kPrimary, size: 12),
                 SizedBox(
                   width: 8,
                 ),
@@ -184,9 +178,43 @@ class _HomeLocationSelectState extends State<HomeLocationSelect> {
                 ),
               ],
             ),
-          ),
+            ...location.destinations.map((e) => Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                      onTap: () {
+                        model.setLocation(
+                          e,
+                          location,
+                          campus,
+                        );
+                      },
+                      child: buildDestinationItem(e)),
+                ))
+          ],
         ),
       );
     });
+  }
+
+  Widget buildDestinationItem(DestinationDTO dto) {
+    return Container(
+      padding: EdgeInsets.only(left: 16, top: 8, bottom: 8, right: 16),
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          Icon(Icons.panorama_fisheye_outlined, color: kPrimary, size: 12),
+          SizedBox(
+            width: 8,
+          ),
+          Flexible(
+            child: Text(
+              dto.name,
+              style:
+                  Get.theme.textTheme.headline6.copyWith(color: Colors.black),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

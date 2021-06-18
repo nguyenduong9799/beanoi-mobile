@@ -5,19 +5,18 @@ import 'package:unidelivery_mobile/Utils/index.dart';
 
 import 'index.dart';
 
-
 class StoreDAO extends BaseDAO {
   // 1. Get Product List from API
   Future<List<CampusDTO>> getStores({int id}) async {
     Response res;
-    if(id != null){
+    if (id != null) {
       res = await request.get('stores', queryParameters: {
         "type": VIRTUAL_STORE_TYPE,
         "main-store": false,
         "has-menu": true,
-        "id" : id
+        "id": id
       });
-    }else{
+    } else {
       res = await request.get('stores', queryParameters: {
         "type": VIRTUAL_STORE_TYPE,
         "main-store": false,

@@ -34,7 +34,8 @@ class AccountViewModel extends BaseModel {
       }
 
       setState(ViewStatus.Completed);
-    } catch (e) {
+    } catch (e, stacktrace) {
+      print(e.toString() + stacktrace.toString());
       bool result = await showErrorDialog();
       if (result) {
         await fetchUser();

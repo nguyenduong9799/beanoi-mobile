@@ -550,6 +550,13 @@ class _OrderScreenState extends State<OrderScreen> {
       (element) => element.isSelected,
       orElse: () => null,
     );
+    DestinationDTO destination;
+    if (location != null) {
+      destination = location.destinations.firstWhere(
+        (element) => element.isSelected,
+        orElse: () => null,
+      );
+    }
     return Column(
       children: [
         Row(
@@ -578,16 +585,38 @@ class _OrderScreenState extends State<OrderScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Flexible(
-                        child: Text(
-                          location != null
-                              ? location.address
-                              : "Chọn địa điểm giao hàng",
-                          style: Get.theme.textTheme.headline4,
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                        ),
-                      ),
+                      destination != null
+                          ? Column(
+                              children: [
+                                Flexible(
+                                  child: Text(
+                                    location.address,
+                                    style: Get.theme.textTheme.headline4,
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 16),
+                                  child: Flexible(
+                                    child: Text(
+                                      destination.name,
+                                      style: Get.theme.textTheme.headline4,
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            )
+                          : Flexible(
+                              child: Text(
+                                "Chọn địa điểm giao hàng",
+                                style: Get.theme.textTheme.headline4,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                              ),
+                            ),
                       Icon(
                         Icons.navigate_next,
                         color: Colors.orange,
@@ -744,7 +773,10 @@ class _OrderScreenState extends State<OrderScreen> {
                 activeColor: kPrimary,
                 groupValue: model.currentCart.payment,
                 value: paymentsType.values.elementAt(i),
-                title: Text(paymentsType.keys.elementAt(i), style: Get.theme.textTheme.headline4,),
+                title: Text(
+                  paymentsType.keys.elementAt(i),
+                  style: Get.theme.textTheme.headline4,
+                ),
                 onChanged: (value) async {
                   await model.changeOption(value);
                 },

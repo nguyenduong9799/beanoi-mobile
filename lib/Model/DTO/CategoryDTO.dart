@@ -10,9 +10,9 @@ class CategoryDTO {
 
   factory CategoryDTO.fromJson(dynamic json) {
     return CategoryDTO(
-      id: json['cate_id'],
-      categoryName: json['cate_name'],
-      imgURL: json['imgUrl'] ?? defaultImg,
+      id: json['id'],
+      categoryName: json['category_name'],
+      imgURL: json['pic_url'] ?? defaultImg,
     );
   }
 
