@@ -94,7 +94,7 @@ class SupplierViewModel extends BaseModel {
       await Future.delayed(Duration(microseconds: 500));
       // check truong hop product tra ve rong (do khong co menu nao trong TG do)
       isLoadGift = false;
-    } catch (e, stacktrace) {
+    } catch (e) {
       bool result = await showErrorDialog();
       if (result) {
         await getGifts();
@@ -126,7 +126,7 @@ class SupplierViewModel extends BaseModel {
       await Future.delayed(Duration(milliseconds: 1000));
       // check truong hop product tra ve rong (do khong co menu nao trong TG do)
       setState(ViewStatus.Completed);
-    } catch (e, stacktrace) {
+    } catch (e) {
       bool result = await showErrorDialog();
       if (result) {
         await getMoreProducts();

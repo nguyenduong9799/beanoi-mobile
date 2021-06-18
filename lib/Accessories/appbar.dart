@@ -158,7 +158,7 @@ class _GiftAppBarSate extends State<GiftAppBar> {
 
   Widget buildAvatar() {
     return Stack(
-      overflow: Overflow.visible,
+      clipBehavior: Clip.none,
       children: [
         Container(
           width: 45,

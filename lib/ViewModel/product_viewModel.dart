@@ -6,7 +6,6 @@ import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/Services/analytic_service.dart';
 import 'package:unidelivery_mobile/Utils/index.dart';
 
-
 import 'base_model.dart';
 import 'index.dart';
 
@@ -218,7 +217,7 @@ class ProductDetailViewModel extends BaseModel {
 
   Future<void> addProductToCart() async {
     showLoadingDialog();
-    List<ProductDTO> listChoices = new List<ProductDTO>();
+    List<ProductDTO> listChoices = [];
     if (master.type == ProductType.MASTER_PRODUCT) {
       Map choice = new Map();
       for (int i = 0; i < affectPriceContent.keys.toList().length; i++) {
@@ -270,6 +269,6 @@ class ProductDetailViewModel extends BaseModel {
     await AnalyticsService.getInstance()
         .logChangeCart(item.master, item.quantity, true);
     hideDialog();
-    await Get.back(result: true);
+    Get.back(result: true);
   }
 }

@@ -1,11 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
-import 'package:unidelivery_mobile/Services/firebase.dart';
+import 'package:unidelivery_mobile/Services/firebase_authentication_service.dart';
 import 'package:unidelivery_mobile/Services/push_notification_service.dart';
 import 'package:unidelivery_mobile/Utils/index.dart';
 
 import 'index.dart';
-
 
 // TODO: Test Start_up Screen + FCM TOken
 
@@ -25,8 +24,7 @@ class AccountDAO extends BaseDAO {
       requestObj.setToken = accessToken;
       setToken(accessToken);
       return userDTO;
-    } catch (e) {
-    }
+    } catch (e) {}
     return null;
     // return AccountDTO(uid: idToken, name: "Default Name");
   }
@@ -46,7 +44,8 @@ class AccountDAO extends BaseDAO {
   }
 
   Future<String> getRefferalMessage(String refferalCode) async {
-    Response response = await request.post("/me/refferal", data: "'$refferalCode'");
+    Response response =
+        await request.post("/me/refferal", data: "'$refferalCode'");
     // set access token
     return response.data['message'];
     // return AccountDTO(uid: idToken, name: "Default Name");
@@ -63,7 +62,6 @@ class AccountDAO extends BaseDAO {
   }
 
   Future<AccountDTO> updateUser(AccountDTO updateUser) async {
-    final updateJSON = updateUser.toJson();
     Response res = await request.put("me", data: updateUser.toJson());
     return AccountDTO.fromJson(res.data["data"]);
   }

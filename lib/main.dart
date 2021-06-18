@@ -71,9 +71,9 @@ class MyApp extends StatelessWidget {
           case RouteHandler.ORDER:
             return CupertinoPageRoute<bool>(
                 builder: (context) => OrderScreen(), settings: settings);
-          // case RouteHandler.ORDER_DETAIL:
-          //   return CupertinoPageRoute(
-          //       builder: (context) => OrderDetailScreen(), settings: settings);
+          case RouteHandler.DYNAMIC_LINK:
+            return CupertinoPageRoute(
+                builder: (context) => DynamicScreen(), settings: settings);
           case RouteHandler.ORDER_HISTORY:
             return CupertinoPageRoute(
                 builder: (context) => OrderHistoryScreen(), settings: settings);
@@ -116,12 +116,16 @@ class MyApp extends StatelessWidget {
                 settings: settings);
           case RouteHandler.ONBOARD:
             return ScaleRoute(page: OnBoardScreen());
+            case RouteHandler.WEBVIEW:
+            return FadeRoute(
+              page: WebViewScreen(url: settings.arguments),
+            );
           default:
             return CupertinoPageRoute(
                 builder: (context) => NotFoundScreen(), settings: settings);
         }
       },
-      theme: CustomTheme.LightTheme,
+      theme: CustomTheme.lightTheme,
       // home: Scaffold(
       home: StartUpView(),
     );

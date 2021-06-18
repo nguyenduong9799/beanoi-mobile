@@ -252,7 +252,7 @@ class OrderViewModel extends BaseModel {
     } else {
       if (note != null && note.isNotEmpty) {
         if (currentCart.notes == null) {
-          currentCart.notes = List();
+          currentCart.notes = [];
         }
         currentCart.notes.add(SupplierNoteDTO(content: note, supplierId: id));
       } else {

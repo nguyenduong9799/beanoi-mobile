@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 
 class CustomTheme {
-  static ThemeData get LightTheme {
+  static ThemeData get lightTheme {
     return ThemeData(
         fontFamily: 'Gotham',
         primarySwatch: Colors.green,
@@ -17,6 +17,8 @@ class CustomTheme {
           headline4: kSubtitleTextStyle,
           headline5: kDescriptionTextStyle,
           headline6: kSubdescriptionTextStyle,
+          subtitle1: kDashboardTextStyle,
+          subtitle2: kSubdashboardTextStyle
         ));
   }
 }

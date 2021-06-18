@@ -6,7 +6,7 @@ class TouchOpacity extends StatefulWidget {
   final double activeOpacity;
 
   const TouchOpacity(
-      {Key key, this.onTap, @required this.child, this.activeOpacity = 0.7})
+      {Key key, this.onTap, @required this.child, this.activeOpacity = 0.5})
       : super(key: key);
   @override
   TouchOpacityState createState() {
@@ -31,7 +31,7 @@ class TouchOpacityState extends State<TouchOpacity> {
           }
         },
         child: AnimatedOpacity(
-          duration: Duration(milliseconds: 200),
+          duration: Duration(milliseconds: 300),
           opacity: isTappedDown ? activeOpacity : 1,
           child: this.widget.child,
         ),

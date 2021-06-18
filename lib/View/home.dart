@@ -161,7 +161,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           canExchangeGift
                               ? "Đổi ngay 1 ${gift.name}"
                               : "Bạn sắp nhận được ${gift.name} rồi đấy",
-                          style: kDescriptionTextStyle.copyWith(fontSize: 14),
+                          style: Get.theme.textTheme.headline3
+                              .copyWith(color: kDescriptionTextColor),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -227,9 +228,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                 : RichText(
                                     text: TextSpan(
                                         text: "",
-                                        style: kDescriptionTextStyle.copyWith(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold),
+                                        style: Get.theme.textTheme.headline3
+                                            .copyWith(
+                                                color: kDescriptionTextColor),
                                         children: <TextSpan>[
                                           TextSpan(
                                             text: "${userBean.ceil()}",

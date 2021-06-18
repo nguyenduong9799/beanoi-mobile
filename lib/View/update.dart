@@ -56,14 +56,12 @@ class _UpdateState extends State<Update> {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
     return ScopedModel(
       model: SignUpViewModel(),
       child: SafeArea(
         top: false,
         child: Scaffold(
-          resizeToAvoidBottomPadding: false,
+          resizeToAvoidBottomInset: false,
           body: ReactiveForm(
             formGroup: this.form,
             child: Container(
@@ -179,7 +177,7 @@ class _UpdateState extends State<Update> {
                         ),
                       ),
                       Container(
-                        height: screenHeight * 0.25 - 32,
+                        height: Get.height * 0.25 - 32,
                         padding: EdgeInsets.only(top: 8),
                         child: Image.asset(
                           'assets/images/sign_up_character.png',

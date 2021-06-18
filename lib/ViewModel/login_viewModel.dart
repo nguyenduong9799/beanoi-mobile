@@ -7,7 +7,7 @@ import 'package:unidelivery_mobile/Enums/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/Model/DAO/index.dart';
 import 'package:unidelivery_mobile/Services/analytic_service.dart';
-import 'package:unidelivery_mobile/Services/firebase.dart';
+import 'package:unidelivery_mobile/Services/firebase_authentication_service.dart';
 import 'package:unidelivery_mobile/Services/push_notification_service.dart';
 
 import 'index.dart';
@@ -133,7 +133,7 @@ class LoginViewModel extends BaseModel {
     } on FirebaseAuthException catch (e) {
       await showStatusDialog(
           "assets/images/global_error.png", "Error", e.message);
-    } catch (e, strack) {
+    } catch (e) {
       await showStatusDialog(
           "assets/images/global_error.png", "Error", e.toString());
     } finally {

@@ -32,7 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
       model: LoginViewModel(),
       child: Scaffold(
         backgroundColor: Colors.white,
-        resizeToAvoidBottomPadding: false,
+        resizeToAvoidBottomInset: false,
         body: Stack(
           children: [
             Container(

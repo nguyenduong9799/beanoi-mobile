@@ -7,7 +7,6 @@ import 'package:unidelivery_mobile/Accessories/index.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Enums/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class ProfileScreen extends StatefulWidget {
   ProfileScreen();
@@ -23,7 +22,6 @@ class _UpdateAccountState extends State<ProfileScreen> {
   @override
   void initState() {
     super.initState();
-    Get.find<AccountViewModel>().fetchUser();
   }
 
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
@@ -212,8 +210,8 @@ class _UpdateAccountState extends State<ProfileScreen> {
                 title: Text("Theo dõi BeanOi",
                     style: Get.theme.textTheme.headline4
                         .copyWith(color: Colors.black54)),
-                function: () async {
-                  await _launchUrl(
+                function: () {
+                  _launchUrl(
                       "https://www.facebook.com/Bean-%C6%A0i-103238875095890",
                       isFB: true);
                 }),
@@ -223,8 +221,8 @@ class _UpdateAccountState extends State<ProfileScreen> {
                 title: Text("Giới thiệu ứng dụng",
                     style: Get.theme.textTheme.headline4
                         .copyWith(color: Colors.black54)),
-                function: () async {
-                  await _launchUrl(
+                function: () {
+                  _launchUrl(
                       "https://unidelivery-fad6f.web.app/?fbclid=IwAR1_t9Tlz6YCulz1idfZ4jIJ0AVDP6Pdno7qQ1pKMEi0kwR6zAG-qUJC5K8",
                       forceWebView: true);
                 }),
@@ -264,6 +262,15 @@ class _UpdateAccountState extends State<ProfileScreen> {
                 ),
                 function: () async {
                   await model.processSignout();
+                }),
+            Divider(),
+            section(
+                icon: Icon(Icons.link, color: Colors.black54),
+                title: Text("Test creating link",
+                    style: Get.theme.textTheme.headline4
+                        .copyWith(color: Colors.black54)),
+                function: () {
+                  Get.toNamed(RouteHandler.DYNAMIC_LINK);
                 }),
             Divider(),
           ],
@@ -354,8 +361,7 @@ class _UpdateAccountState extends State<ProfileScreen> {
     );
   }
 
-  Future<void> _launchUrl(String url,
-      {bool isFB = false, forceWebView = false}) async {
+  void _launchUrl(String url, {bool isFB = false, forceWebView = false}) {
     // if(isFB){
     //   String fbProtocolUrl;
     //   if (Platform.isIOS) {
@@ -373,10 +379,6 @@ class _UpdateAccountState extends State<ProfileScreen> {
     //     await launch(url, forceSafariVC: false);
     //   }
     // }else
-    if (await canLaunch(url)) {
-      await launch(url, forceWebView: forceWebView);
-    } else {
-      throw 'Could not launch $url';
-    }
+    Get.toNamed(RouteHandler.WEBVIEW, arguments: url);
   }
 }

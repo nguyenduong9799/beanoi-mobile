@@ -25,7 +25,8 @@ class HomeCollection extends StatelessWidget {
         SizedBox(height: 4),
         Text(
           "Các món được lựa chọn cho các bạn IT",
-          style: kDescriptionTextStyle.copyWith(fontSize: 14),
+          style: Get.theme.textTheme.headline4
+              .copyWith(color: kDescriptionTextColor),
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
         ),
@@ -82,8 +83,7 @@ class HomeCollection extends StatelessWidget {
                         ),
                         Text(
                           "200.000 đ",
-                          style: kDescriptionTextStyle.copyWith(
-                            fontSize: 12,
+                          style: Get.theme.textTheme.headline5.copyWith(
                             color: kBestSellerColor,
                           ),
                         ),

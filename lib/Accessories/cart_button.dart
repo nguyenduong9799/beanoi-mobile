@@ -10,7 +10,6 @@ import 'package:unidelivery_mobile/ViewModel/index.dart';
 class CartButton extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    // TODO: implement createState
     return _CartButtonState();
   }
 }
@@ -18,7 +17,6 @@ class CartButton extends StatefulWidget {
 class _CartButtonState extends State<CartButton> {
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return ScopedModel(
       model: Get.find<RootViewModel>(),
       child: ScopedModelDescendant<RootViewModel>(
@@ -46,7 +44,7 @@ class _CartButtonState extends State<CartButton> {
                     await model.openCart();
                   },
                   child: Stack(
-                    overflow: Overflow.visible,
+                    clipBehavior: Clip.none,
                     children: [
                       Container(
                         width: 48,

@@ -82,7 +82,8 @@ class HomeStoreSection extends StatelessWidget {
                     Text(
                       "Aaa, hiện tại các nhà hàng đang bận, bạn vui lòng quay lại sau nhé",
                       textAlign: TextAlign.center,
-                      style: kSubtitleTextStyle.copyWith(color: Colors.orange),
+                      style: Get.theme.textTheme.headline4
+                          .copyWith(color: Colors.orange),
                     ),
                   ],
                 ),
@@ -96,7 +97,8 @@ class HomeStoreSection extends StatelessWidget {
                     padding: const EdgeInsets.fromLTRB(8, 16.0, 8, 16),
                     child: Text(
                       'Quán ngon hôm nay',
-                      style: kHeadingTextStyle.copyWith(fontSize: 18),
+                      style: Get.theme.textTheme.headline2
+                          .copyWith(color: kTextColor),
                       textAlign: TextAlign.left,
                     ),
                   ),
@@ -192,9 +194,7 @@ class HomeStoreSection extends StatelessWidget {
         child: Text.rich(
           TextSpan(
             text: "Gợi ý nhà hàng bạn thích cho chúng mình ",
-            style: kDescriptionTextStyle.copyWith(
-              fontSize: 12,
-            ),
+            style: Get.theme.textTheme.headline5,
             children: [
               WidgetSpan(
                 child: ScopedModel<AccountViewModel>(

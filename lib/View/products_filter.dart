@@ -5,9 +5,7 @@ import 'package:unidelivery_mobile/Accessories/index.dart';
 import 'package:unidelivery_mobile/Accessories/product_search.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Enums/index.dart';
-import 'package:unidelivery_mobile/Model/DTO/ProductDTO.dart';
 import 'package:unidelivery_mobile/ViewModel/product_filter_viewModel.dart';
-import 'package:unidelivery_mobile/ViewModel/root_viewModel.dart';
 
 class ProductsFilterPage extends StatefulWidget {
   final params;

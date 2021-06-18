@@ -19,50 +19,45 @@ class PushNotificationService {
     _instance = null;
   }
 
-  final FirebaseMessaging _fcm = FirebaseMessaging();
-  bool _initialized = false;
+  final FirebaseMessaging _fcm = FirebaseMessaging.instance;
 
   Future init() async {
-    if (!_initialized) {
-      if (Platform.isIOS) {
-        _fcm.requestNotificationPermissions(IosNotificationSettings());
-      } else {
-        _fcm.requestNotificationPermissions();
-      }
-      _fcm.configure(
-        //Called when the app is in the foreground and we receive a push notification
-        onMessage: (Map<String, dynamic> message) async {
-          hideSnackbar();
-          Get.snackbar(
-              Platform.isIOS
-                  ? message['aps']['alert']['title']
-                  : message['notification']['title'], // title
-              Platform.isIOS
-                  ? message['aps']['alert']['body']
-                  : message['notification']['body'],
-              colorText: kBackgroundGrey[0],
-              shouldIconPulse: true,
-              backgroundColor: kPrimary,
-              isDismissible: true,
-              duration: Duration(minutes: 1),
-              mainButton: FlatButton(
-                color: kPrimary,
-                child: Text(
-                  "Đồng ý",
-                  style: Get.theme.textTheme.headline4.copyWith(color: Colors.white),
-                ),
-                onPressed: () {
-                  hideSnackbar();
-                },
-              ));
-        },
-        //Called when the app has been closed completely and its opened
-        onLaunch: (Map<String, dynamic> message) async {},
-        //Called when the app is in the background
-        onResume: (Map<String, dynamic> message) async {},
-      );
-      _initialized = true;
+    if (Platform.isIOS) {
+      await _fcm.requestPermission();
+      _fcm.setForegroundNotificationPresentationOptions(
+          alert: true, badge: true, sound: true);
     }
+
+     RemoteMessage message = await FirebaseMessaging.instance.getInitialMessage();
+     print("onInit: $message");
+
+    FirebaseMessaging.onMessage.listen((event) {
+      hideSnackbar();
+      RemoteNotification notification = event.notification;
+      Get.snackbar(
+          notification.title, // title
+          notification.body,
+          colorText: kPrimary,
+          shouldIconPulse: true,
+          backgroundColor: Colors.white.withOpacity(0.8),
+          isDismissible: true,
+          duration: Duration(minutes: 1),
+          mainButton: TextButton(
+            child: Text(
+              "Đồng ý",
+              style:
+                  Get.theme.textTheme.headline4.copyWith(color: kPrimary),
+            ),
+            onPressed: () {
+              hideSnackbar();
+            },
+          ));
+    });
+
+    FirebaseMessaging.onMessageOpenedApp.listen((event) {
+      print('onResume: $event');
+    });
+
   }
 
   Future<String> getFcmToken() async {

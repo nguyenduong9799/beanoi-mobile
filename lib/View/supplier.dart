@@ -3,7 +3,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
-import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:get/get.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
@@ -343,8 +342,7 @@ class _SupplierScreenState extends State<SupplierScreen> {
                                 flex: 2,
                                 child: Text(
                                   product.name,
-                                  style: kTitleTextStyle.copyWith(
-                                    fontWeight: FontWeight.bold,
+                                  style: Get.theme.textTheme.headline3.copyWith(
                                     decorationThickness: 0.5,
                                     fontSize: 14,
                                   ),
@@ -564,7 +562,6 @@ class _SupplierScreenState extends State<SupplierScreen> {
       textTheme: ButtonTextTheme.normal,
       child: ScopedModelDescendant<SupplierViewModel>(
           builder: (context, child, model) {
-        final onChangeFilter = model.updateFilter;
         return FlatButton(
           color: isSelected ? kPrimary : kBackgroundGrey[0],
           padding: EdgeInsets.all(4),

@@ -227,10 +227,7 @@ class RootViewModel extends BaseModel {
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.white,
           messageText: Text("Thêm món thành công ",
-              style: kSubtitleTextStyle.copyWith(
-                fontSize: 16,
-                color: kPrimary,
-              )),
+              style: Get.theme.textTheme.headline2),
           icon: Icon(
             Icons.check,
             color: kPrimary,
@@ -242,7 +239,7 @@ class RootViewModel extends BaseModel {
             },
             child: Text(
               "Xem 🛒",
-              style: kSubtitleTextStyle.copyWith(
+              style: Get.theme.textTheme.headline2.copyWith(
                 color: Colors.white,
               ),
               textAlign: TextAlign.center,

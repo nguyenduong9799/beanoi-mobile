@@ -114,22 +114,19 @@ class _HomeLocationSelectState extends State<HomeLocationSelect> {
         tapBodyToCollapse: true,
         iconColor: kPrimary,
       ),
+      collapsed: SizedBox.shrink(),
       header: Container(
         padding: EdgeInsets.only(top: 8, bottom: 8),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(
-              children: [
-                Icon(Icons.location_on_outlined, color: kPrimary),
-                SizedBox(width: 8),
-                Text(campus.name,
-                    style: campus.available
-                        ? Get.theme.textTheme.headline4
-                        : Get.theme.textTheme.headline4
-                            .copyWith(color: Colors.grey)),
-              ],
+            Icon(Icons.location_on_outlined, color: kPrimary),
+            SizedBox(width: 8),
+            Flexible(
+              child: Text(campus.name,
+                  style: campus.available
+                      ? Get.theme.textTheme.headline4
+                      : Get.theme.textTheme.headline4
+                          .copyWith(color: Colors.grey)),
             ),
           ],
         ),
@@ -181,9 +178,8 @@ class _HomeLocationSelectState extends State<HomeLocationSelect> {
                 Flexible(
                   child: Text(
                     location.address,
-                    style: kSubtitleTextStyle.copyWith(fontSize: 12),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                    style: Get.theme.textTheme.headline6
+                        .copyWith(color: Colors.black),
                   ),
                 ),
               ],

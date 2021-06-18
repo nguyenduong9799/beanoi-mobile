@@ -9,8 +9,6 @@ import 'package:unidelivery_mobile/Utils/index.dart';
 
 import 'index.dart';
 
-
-
 class OrderHistoryViewModel extends BaseModel {
   List<OrderListDTO> orderThumbnail;
   OrderDAO _orderDAO;
@@ -94,7 +92,7 @@ class OrderHistoryViewModel extends BaseModel {
     } finally {}
   }
 
-  Future<void> clearNewOrder(int orderId) {
+  void clearNewOrder(int orderId) {
     if (newTodayOrder?.id == orderId) {
       newTodayOrder = null;
       notifyListeners();
@@ -161,7 +159,7 @@ class OrderHistoryViewModel extends BaseModel {
       }
       orderDetail = data;
       setState(ViewStatus.Completed);
-    } catch (e, str) {
+    } catch (e) {
       bool result = await showErrorDialog();
       if (result) {
         await getOrderDetail(orderId);

@@ -154,7 +154,7 @@ Future<bool> showErrorDialog(
                   padding: EdgeInsets.only(top: 16, bottom: 16),
                   child: Text(
                     "Thử lại",
-                    style: Get.theme.textTheme.headline4,
+                    style: Get.theme.textTheme.headline4.copyWith(color: Colors.white),
                   ),
                 ),
               ),
@@ -179,7 +179,7 @@ Future<int> showOptionDialog(String text,
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(16.0))),
         child: Stack(
-          overflow: Overflow.visible,
+          clipBehavior: Clip.none,
           children: [
             Column(
               mainAxisSize: MainAxisSize.min,

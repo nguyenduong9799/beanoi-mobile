@@ -25,7 +25,7 @@ const kTextColor = Color(0xFF0D1333);
 const kBlueColor = Color(0xFF6E8AFA);
 const kBestSellerColor = Color(0xffF1A23A);
 const kGreenColor = Color(0xFF49CC96);
-const kDescriptionTextColor = Colors.grey;
+const kDescriptionTextColor = Color(0xffaaaaaa);
 
 // My Text Styles
 const kHeadingTextStyle = TextStyle(
@@ -60,6 +60,17 @@ const kDescriptionTextStyle = TextStyle(
 const kSubdescriptionTextStyle = TextStyle(
   fontSize: 12,
   color: kDescriptionTextColor,
+);
+
+const kDashboardTextStyle = TextStyle(
+  fontSize: 22,
+  color: kPrimary,
+  fontWeight: FontWeight.bold,
+);
+
+const kSubdashboardTextStyle = TextStyle(
+  fontSize: 20,
+  color: kPrimary,
 );
 
 const String CART_TAG = "cartTag";

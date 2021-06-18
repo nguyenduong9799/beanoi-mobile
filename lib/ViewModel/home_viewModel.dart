@@ -2,9 +2,9 @@ import 'package:get/get.dart';
 import 'package:unidelivery_mobile/Accessories/index.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Enums/index.dart';
-import 'package:unidelivery_mobile/Model/DAO/CategoryDAO.dart';
 import 'package:unidelivery_mobile/Model/DAO/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
+import 'package:unidelivery_mobile/Services/push_notification_service.dart';
 
 import 'index.dart';
 
@@ -27,6 +27,8 @@ class HomeViewModel extends BaseModel {
   Future<void> getSuppliers() async {
     try {
       setState(ViewStatus.Loading);
+      String token = await PushNotificationService.getInstance().getFcmToken();
+      print("FCM: $token");
       RootViewModel root = Get.find<RootViewModel>();
       await root.fetchStore();
       CampusDTO currentStore = root.currentStore;
@@ -48,7 +50,7 @@ class HomeViewModel extends BaseModel {
       await Future.delayed(Duration(microseconds: 500));
       // check truong hop product tra ve rong (do khong co menu nao trong TG do)
       setState(ViewStatus.Completed);
-    } catch (e, stacktrace) {
+    } catch (e) {
       suppliers = null;
       setState(ViewStatus.Completed);
     }
@@ -67,9 +69,7 @@ class HomeViewModel extends BaseModel {
     }
   }
 
-  // TODO: 1. Get List Product With Home Collection
   Future<void> getListProductInHomeCollection() async {
-    Map<int, ProductDTO> prodInCollections = {};
     RootViewModel root = Get.find<RootViewModel>();
     CampusDTO currentStore = root.currentStore;
     int storeId = currentStore.id;
@@ -89,7 +89,6 @@ class HomeViewModel extends BaseModel {
     return null;
   }
 
-  // TODO: 2. Get Gift can exchange (or nearly)
   Future<void> getNearlyGiftExchange() async {
     RootViewModel root = Get.find<RootViewModel>();
     CampusDTO currentStore = root.currentStore;

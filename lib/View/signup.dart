@@ -30,13 +30,11 @@ class _SignUpState extends State<SignUp> {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
     return ScopedModel(
       model: SignUpViewModel(),
       child: SafeArea(
         child: Scaffold(
-          resizeToAvoidBottomPadding: false,
+          resizeToAvoidBottomInset: false,
           body: ReactiveForm(
             formGroup: this.form,
             child: Container(
@@ -55,10 +53,8 @@ class _SignUpState extends State<SignUp> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         // HELLO SECTION
-                        Text(
-                          "Cho mình xin cái tên nhé ☺",
-                          style: Get.theme.textTheme.headline1
-                        ),
+                        Text("Cho mình xin cái tên nhé ☺",
+                            style: Get.theme.textTheme.headline1),
                         SizedBox(height: 16),
                         // FORM ITEM
                         FormItem("Họ Tên", "vd: Nguyễn Văn A", "name"),
@@ -95,8 +91,8 @@ class _SignUpState extends State<SignUp> {
                                             form.valid
                                                 ? "Hoàn thành"
                                                 : "Bạn chưa điền xong",
-                                            style: Get.theme.textTheme.headline1.copyWith(color: Colors.white)
-                                          ),
+                                            style: Get.theme.textTheme.headline1
+                                                .copyWith(color: Colors.white)),
                                   ),
                                 ),
                               ),
@@ -120,7 +116,7 @@ class _SignUpState extends State<SignUp> {
                         ),
                       ),
                       Container(
-                        height: screenHeight * 0.25,
+                        height: Get.height * 0.25,
                         // width: 250,
                         child: Image.asset(
                           'assets/images/sign_up_character.png',
@@ -137,4 +133,3 @@ class _SignUpState extends State<SignUp> {
     );
   }
 }
-
