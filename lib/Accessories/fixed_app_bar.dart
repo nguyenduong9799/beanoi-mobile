@@ -7,6 +7,7 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Enums/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
+import 'package:unidelivery_mobile/Utils/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
 import 'index.dart';
 
@@ -421,53 +422,11 @@ class _FixedAppBarState extends State<FixedAppBar> {
 
   Widget _buildTimeAlert() {
     return ScopedModelDescendant<RootViewModel>(
-      builder: (context, child, model) {
-        final currentDate = DateTime.now();
-        final status = model.status;
-        if (status == ViewStatus.Loading) {
-          return Container(
-            padding: EdgeInsets.fromLTRB(8, 8, 8, 8),
-            // margin: EdgeInsets.fromLTRB(8, 8, 8, 8),
-            width: Get.width,
-            height: 48,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                ShimmerBlock(width: Get.width * 0.6, height: 24),
-                ShimmerBlock(width: Get.width * 0.2, height: 24),
-              ],
-            ),
-          );
-        }
-        TimeSlot selectedTimeSlot = model.currentStore?.selectedTimeSlot;
-        if (selectedTimeSlot == null) {
-          return SizedBox();
-        }
-        String currentTimeSlot = selectedTimeSlot?.to;
-        var beanTime = new DateTime(
-          currentDate.year,
-          currentDate.month,
-          currentDate.day,
-          double.parse(currentTimeSlot.split(':')[0]).round(),
-          double.parse(currentTimeSlot.split(':')[1]).round(),
-        );
-        int differentTime = beanTime.difference(currentDate).inMilliseconds;
-        bool isAvailableMenu = selectedTimeSlot.available;
-        TimeSlot nextTimeSlot = model.currentStore.timeSlots
-            ?.firstWhere((time) => time.available, orElse: () => null);
-
-        DateTime arrive = DateFormat("HH:mm:ss").parse(selectedTimeSlot.arrive);
-
-        return AnimatedContainer(
-          decoration: BoxDecoration(
-            color: Color(0xfffffbe6),
-            borderRadius: BorderRadius.circular(4),
-            border: Border.all(
-              color: Color(0xffffe58f),
-              width: 1.0,
-            ),
-          ),
-          duration: Duration(milliseconds: 300),
+        builder: (context, child, model) {
+      final currentDate = DateTime.now();
+      final status = model.status;
+      if (status == ViewStatus.Loading) {
+        return Container(
           padding: EdgeInsets.fromLTRB(8, 8, 8, 8),
           // margin: EdgeInsets.fromLTRB(8, 8, 8, 8),
           width: Get.width,
@@ -493,13 +452,13 @@ class _FixedAppBarState extends State<FixedAppBar> {
         double.parse(currentTimeSlot.split(':')[0]).round(),
         double.parse(currentTimeSlot.split(':')[1]).round(),
       );
+
       int differentTime = beanTime.difference(currentDate).inMilliseconds;
       bool isAvailableMenu = selectedTimeSlot.available;
       TimeSlot nextTimeSlot = model.currentStore.timeSlots
           ?.firstWhere((time) => time.available, orElse: () => null);
 
       DateTime arrive = DateFormat("HH:mm:ss").parse(selectedTimeSlot.arrive);
-      print(this.widget.height);
       return ValueListenableBuilder<double>(
         valueListenable: this.widget.notifier,
         builder: (context, value, child) {

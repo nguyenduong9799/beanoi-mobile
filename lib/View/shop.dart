@@ -156,7 +156,7 @@ class _ShopScreenState extends State<ShopScreen> {
             ),
             Flexible(
               child: Text(
-                category.categoryName,
+                category.categoryName ?? "",
                 style: kTitleTextStyle.copyWith(fontSize: 14),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,

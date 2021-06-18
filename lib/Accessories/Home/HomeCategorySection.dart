@@ -32,7 +32,8 @@ class _HomeCategorySectionState extends State<HomeCategorySection> {
       model: _categoryViewModel,
       child: ScopedModelDescendant<CategoryViewModel>(
         builder: (BuildContext context, Widget child, CategoryViewModel model) {
-          var categories = model.categories;
+          var categories =
+              model.categories?.where((element) => element.showOnHome);
           if (model.status == ViewStatus.Loading) {
             return _buildLoading();
           }
@@ -63,7 +64,6 @@ class _HomeCategorySectionState extends State<HomeCategorySection> {
                   alignment: WrapAlignment.spaceBetween,
                   spacing: 8,
                   children: categories
-                      .getRange(0, 8)
                       .map((category) => buildCategoryItem(category))
                       .toList(),
                 ),
@@ -97,7 +97,7 @@ class _HomeCategorySectionState extends State<HomeCategorySection> {
                 ),
               ),
               Text(
-                category.categoryName,
+                category.categoryName ?? "",
                 style: kTitleTextStyle.copyWith(fontSize: 14),
                 textAlign: TextAlign.center,
               ),

@@ -3,16 +3,26 @@ const defaultImg =
 
 class CategoryDTO {
   int id;
+  int position;
   String categoryName;
   String imgURL;
+  bool showOnHome;
 
-  CategoryDTO({this.id, this.categoryName, this.imgURL});
+  CategoryDTO({
+    this.id,
+    this.categoryName,
+    this.imgURL,
+    this.showOnHome = false,
+    this.position = 0,
+  });
 
   factory CategoryDTO.fromJson(dynamic json) {
     return CategoryDTO(
-      id: json['cate_id'],
-      categoryName: json['cate_name'],
-      imgURL: json['imgUrl'] ?? defaultImg,
+      id: json['id'],
+      categoryName: json['category_name'],
+      imgURL: json['pic_url'] ?? defaultImg,
+      showOnHome: json['show_on_home'] as bool,
+      position: json['position'] as int,
     );
   }
 

@@ -116,7 +116,9 @@ class MyApp extends StatelessWidget {
                 settings: settings);
           case RouteHandler.ONBOARD:
             return ScaleRoute(page: OnBoardScreen());
-            case RouteHandler.WEBVIEW:
+          case RouteHandler.BEAN_MART:
+            return ScaleRoute(page: ShopScreen());
+          case RouteHandler.WEBVIEW:
             return FadeRoute(
               page: WebViewScreen(url: settings.arguments),
             );
