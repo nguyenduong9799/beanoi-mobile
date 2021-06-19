@@ -27,6 +27,13 @@ class RootViewModel extends BaseModel {
       List<LocationDTO> locations = await dao.getLocations(campuses[i].id);
       campuses[i].locations = locations;
     }
+    CampusDTO campus = campuses.firstWhere(
+      (element) => element.id == currentStore.id,
+      orElse: () => null,
+    );
+    if (campus != null) {
+      campus.locations = currentStore.locations;
+    }
     setState(ViewStatus.Completed);
   }
 
