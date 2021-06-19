@@ -86,7 +86,7 @@ class _HomeCategorySectionState extends State<HomeCategorySection> {
         },
         child: Container(
           width: Get.width / 4 - 20,
-          height: Get.width / 4 - 30 + 35,
+          // height: Get.width / 4 - 30 + 35,
           child: Column(
             children: [
               Container(

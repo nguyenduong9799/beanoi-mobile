@@ -1,5 +1,3 @@
-
-
 import 'index.dart';
 
 class CampusDTO extends StoreDTO {
@@ -58,16 +56,26 @@ class LocationDTO {
   String lat;
   String long;
   bool isSelected;
+  List<DestinationDTO> destinations;
 
-  LocationDTO({this.id, this.address, this.lat, this.long, this.isSelected});
+  LocationDTO(
+      {this.id,
+      this.address,
+      this.lat,
+      this.long,
+      this.isSelected,
+      this.destinations});
 
   factory LocationDTO.fromJson(dynamic json) {
     return LocationDTO(
-        id: json['location_id'],
+        id: json['location_id'] ?? json['destination_id'],
         address: json['address'],
         lat: json['lat'],
         long: json['long'],
-        isSelected: json['isSelected'] ?? false);
+        isSelected: json['isSelected'] ?? false,
+        destinations: (json['locations'] as List)
+            ?.map((e) => DestinationDTO.fromJson(e))
+            ?.toList());
   }
 
   Map<String, dynamic> toJson() {
@@ -76,6 +84,34 @@ class LocationDTO {
       "address": address,
       "lat": lat,
       "long": long,
+      "isSelected": isSelected,
+      "locations": destinations?.map((e) => e.toJson())?.toList()
+    };
+  }
+}
+
+class DestinationDTO {
+  int id;
+  String name;
+  String description;
+  bool isSelected;
+
+  DestinationDTO({this.id, this.name, this.description, this.isSelected});
+
+  factory DestinationDTO.fromJson(dynamic json) {
+    print("Destination check");
+    return DestinationDTO(
+        id: json['destination_location_id'],
+        name: json['name'],
+        description: json['description'],
+        isSelected: json['isSelected'] ?? false);
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "destination_location_id": id,
+      "name": name,
+      "description": description,
       "isSelected": isSelected
     };
   }

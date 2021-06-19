@@ -23,10 +23,17 @@ class RootViewModel extends BaseModel {
     setState(ViewStatus.Loading);
     StoreDAO dao = new StoreDAO();
     campuses = await dao.getStores();
+    for (int i = 0; i < campuses.length; i++) {
+      List<LocationDTO> locations = await dao.getLocations(campuses[i].id);
+      campuses[i].locations = locations;
+    }
     setState(ViewStatus.Completed);
   }
 
-  Future<void> setLocation(LocationDTO location, CampusDTO campus) async {
+  getAllCampusesLocation() {}
+
+  Future<void> setLocation(DestinationDTO destination, LocationDTO location,
+      CampusDTO campus) async {
     if (campus.available) {
       if (campus.id != currentStore.id) {
         Cart cart = await getCart();
@@ -41,7 +48,7 @@ class RootViewModel extends BaseModel {
           showLoadingDialog();
           await deleteCart();
           currentStore = campus;
-          setSelectedLocation(currentStore, location);
+          setSelectedLocation(currentStore, location, destination);
           await setStore(currentStore);
           notifyListeners();
           hideDialog();
@@ -49,7 +56,7 @@ class RootViewModel extends BaseModel {
           Get.find<GiftViewModel>().getGifts();
         }
       } else {
-        setSelectedLocation(currentStore, location);
+        setSelectedLocation(currentStore, location, destination);
         await setStore(currentStore);
         notifyListeners();
       }
@@ -181,9 +188,17 @@ class RootViewModel extends BaseModel {
       if (!eq(locations, currentStore.locations)) {
         currentStore.locations.forEach((location) {
           if (location.isSelected) {
+            DestinationDTO destination = location.destinations
+                .where(
+                  (element) => element.isSelected,
+                )
+                .first;
             locations.forEach((element) {
               if (element.id == location.id) {
                 element.isSelected = true;
+                element.destinations.forEach((des) {
+                  if (des.id == destination.id) des.isSelected = true;
+                });
               }
             });
           }
@@ -256,10 +271,16 @@ class RootViewModel extends BaseModel {
     notifyListeners();
   }
 
-  void setSelectedLocation(CampusDTO campus, LocationDTO location) {
+  void setSelectedLocation(
+      CampusDTO campus, LocationDTO location, DestinationDTO destination) {
     campus.locations.forEach((element) {
       if (element.id == location.id) {
         element.isSelected = true;
+        element.destinations.forEach((des) {
+          if (des.id == destination.id) {
+            des.isSelected = true;
+          }
+        });
       } else {
         element.isSelected = false;
       }

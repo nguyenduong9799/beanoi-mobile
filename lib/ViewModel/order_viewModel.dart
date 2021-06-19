@@ -136,7 +136,9 @@ class OrderViewModel extends BaseModel {
       LocationDTO location =
           campusDTO.locations.firstWhere((element) => element.isSelected);
 
-      OrderStatus result = await dao.createOrders(location.id, currentCart);
+      DestinationDTO destination =
+          location.destinations.firstWhere((element) => element.isSelected);
+      OrderStatus result = await dao.createOrders(destination.id, currentCart);
       await Get.find<AccountViewModel>().fetchUser();
       if (result.statusCode == 200) {
         await deleteCart();
