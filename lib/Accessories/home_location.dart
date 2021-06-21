@@ -202,7 +202,12 @@ class _HomeLocationSelectState extends State<HomeLocationSelect> {
       child: Row(
         mainAxisSize: MainAxisSize.max,
         children: [
-          Icon(Icons.panorama_fisheye_outlined, color: kPrimary, size: 12),
+          Icon(
+              dto.isSelected
+                  ? Icons.radio_button_checked_outlined
+                  : Icons.panorama_fisheye_outlined,
+              color: kPrimary,
+              size: 12),
           SizedBox(
             width: 8,
           ),
