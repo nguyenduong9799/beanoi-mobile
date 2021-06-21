@@ -29,7 +29,7 @@ const kDescriptionTextColor = Color(0xffaaaaaa);
 
 // My Text Styles
 const kHeadingTextStyle = TextStyle(
-  fontSize: 16,
+  fontSize: 24,
   color: kPrimary,
   fontWeight: FontWeight.bold,
 );
