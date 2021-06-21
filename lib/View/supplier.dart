@@ -223,6 +223,7 @@ class _SupplierScreenState extends State<SupplierScreen> {
                       decorationThickness: 0.5,
                       fontSize: 16,
                     ),
+                    textAlign: TextAlign.center,
                   ),
                   Text(
                       product.type != ProductType.MASTER_PRODUCT
@@ -300,33 +301,8 @@ class _SupplierScreenState extends State<SupplierScreen> {
                     height: 80,
                     child: AspectRatio(
                       aspectRatio: 1,
-                      child: CachedNetworkImage(
+                      child: CacheImage(
                         imageUrl: product.imageURL ?? defaultImage,
-                        imageBuilder: (context, imageProvider) => Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            image: DecorationImage(
-                              image: imageProvider,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                        progressIndicatorBuilder:
-                            (context, url, downloadProgress) =>
-                                Shimmer.fromColors(
-                          baseColor: Colors.grey[300],
-                          highlightColor: Colors.grey[100],
-                          enabled: true,
-                          child: Container(
-                            width: MediaQuery.of(context).size.width,
-                            // height: 100,
-                            color: Colors.grey,
-                          ),
-                        ),
-                        errorWidget: (context, url, error) => Icon(
-                          MaterialIcons.broken_image,
-                          color: kPrimary.withOpacity(0.5),
-                        ),
                       ),
                     ),
                   ),

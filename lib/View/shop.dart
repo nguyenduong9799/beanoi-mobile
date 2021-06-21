@@ -74,7 +74,8 @@ class _ShopScreenState extends State<ShopScreen> {
   Widget buildCategoryList() {
     return ScopedModelDescendant<CategoryViewModel>(
       builder: (context, child, model) {
-        var categories = model.categories;
+        var categories =
+            model.categories?.where((element) => element.showOnHome);
         if (model.status == ViewStatus.Loading) {
           return Center(
             child: CircularProgressIndicator(),
@@ -95,7 +96,6 @@ class _ShopScreenState extends State<ShopScreen> {
                 alignment: WrapAlignment.spaceBetween,
                 spacing: 8,
                 children: categories
-                    .getRange(0, 8)
                     .map((category) => buildCategoryItem(category))
                     .toList(),
               ),

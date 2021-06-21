@@ -245,7 +245,7 @@ class RootViewModel extends BaseModel {
     if (result != null) {
       if (result) {
         Get.rawSnackbar(
-          duration: Duration(seconds: 1),
+          duration: Duration(seconds: 3),
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.white,
           messageText: Text("Thêm món thành công ",
