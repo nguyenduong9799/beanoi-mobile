@@ -188,9 +188,8 @@ class _UpdateAccountState extends State<ProfileScreen> {
                 title: Text("Lịch sử cộng điểm",
                     style: Get.theme.textTheme.headline4
                         .copyWith(color: Colors.black54)),
-                function: () async {
-                  await showStatusDialog("assets/images/coming_soon.gif",
-                      "Tính năng đang được triển khai", "");
+                function: () {
+                  Get.toNamed(RouteHandler.TRANSACTION);
                 }),
             Divider(),
             section(

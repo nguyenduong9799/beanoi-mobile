@@ -5,36 +5,35 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Accessories/index.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Enums/index.dart';
-import 'package:unidelivery_mobile/Model/DTO/TransactionDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
+import 'package:unidelivery_mobile/Utils/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
 
 class TransactionScreen extends StatefulWidget {
-  final List<TransactionDTO> listTransaction;
-  TransactionScreen({Key key, this.listTransaction}) : super(key: key);
+  TransactionScreen();
 
   @override
   _TransactionScreenState createState() => _TransactionScreenState();
 }
 
 class _TransactionScreenState extends State<TransactionScreen> {
-  OrderHistoryViewModel model = Get.find<OrderHistoryViewModel>();
+  TransactionViewModel model = Get.find<TransactionViewModel>();
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       new GlobalKey<RefreshIndicatorState>();
 
   @override
   void initState() {
     super.initState();
-    model.getOrders();
+    model.getTransactions();
   }
 
   Future<void> refreshFetchOrder() async {
-    await model.getOrders();
+    await model.getTransactions();
   }
 
   @override
   Widget build(BuildContext context) {
-    return ScopedModel<OrderHistoryViewModel>(
+    return ScopedModel<TransactionViewModel>(
       model: model,
       child: Scaffold(
         appBar: DefaultAppBar(
@@ -48,7 +47,6 @@ class _TransactionScreenState extends State<TransactionScreen> {
             Expanded(
               child: Container(
                 child: _buildTransaction(),
-                color: Color(0xffefefef),
               ),
             ),
           ],
@@ -58,50 +56,68 @@ class _TransactionScreenState extends State<TransactionScreen> {
   }
 
   Widget transactionBar() {
-    return ScopedModelDescendant<OrderHistoryViewModel>(
+    return ScopedModelDescendant<TransactionViewModel>(
       builder: (context, child, model) {
-        return Center(
-          child: Container(
-            // color: Colors.amber,
-            padding: EdgeInsets.fromLTRB(0, 8, 0, 8),
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey,
-                  offset: Offset(0.0, 1.0), //(x,y)
-                  blurRadius: 6.0,
-                ),
-              ],
-            ),
-            child: Center(
-              child: ToggleButtons(
-                renderBorder: false,
-                selectedColor: kPrimary,
-                onPressed: (int index) async {
-                  await model.changeStatus(index);
-                },
-                borderRadius: BorderRadius.circular(24),
-                isSelected: model.selections,
-                children: [
-                  Container(
-                    width: MediaQuery.of(context).size.width / 3,
-                    child: Text(
-                      "Mới",
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  Container(
-                    width: MediaQuery.of(context).size.width / 3,
-                    child: Text(
-                      "Hoàn thành",
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ],
+        return Container(
+          margin: EdgeInsets.only(top: 8, bottom: 16),
+          height: 30,
+          padding: EdgeInsets.only(left: 8, right: 8),
+          child: Row(
+            children: [
+              Text(
+                "LỌC THEO",
+                style:
+                    Get.theme.textTheme.headline4.copyWith(color: Colors.grey),
               ),
-            ),
+              SizedBox(width: 8),
+              ListView.separated(
+                shrinkWrap: true,
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (context, index) {
+                  String status;
+                  switch (DateFilter.values[index]) {
+                    case DateFilter.DAY:
+                      status = "Ngày";
+                      break;
+                    case DateFilter.WEEK:
+                      status = "Tuần";
+                      break;
+                    case DateFilter.MONTH:
+                      status = "Tháng";
+                      break;
+                    default:
+                      status = "Tất cả";
+                  }
+                  if (DateFilter.values[index] == model.selectedFilter) {
+                    return Container(
+                        padding: EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: kPrimary,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Center(
+                            child: Text(
+                          status,
+                          style: Get.theme.textTheme.headline4
+                              .copyWith(color: Colors.white),
+                        )));
+                  }
+                  return InkWell(
+                      onTap: () {
+                        model.changeStatus(DateFilter.values[index]);
+                      },
+                      child: Center(
+                          child: Text(
+                        status,
+                        style: Get.theme.textTheme.headline4,
+                      )));
+                },
+                itemCount: DateFilter.values.length,
+                separatorBuilder: (context, index) => SizedBox(
+                  width: 8,
+                ),
+              ),
+            ],
           ),
         );
       },
@@ -109,89 +125,69 @@ class _TransactionScreenState extends State<TransactionScreen> {
   }
 
   Widget _buildTransaction() {
-    return RefreshIndicator(
-      key: _refreshIndicatorKey,
-      onRefresh: refreshFetchOrder,
-      child: Container(
-        child: ListView(
-          physics: AlwaysScrollableScrollPhysics(),
-          controller: model.scrollController,
-          padding: EdgeInsets.all(8),
-          children: [
-            ...widget.listTransaction
-                .map((transacction) => _buildTransactionItem(transacction))
-                .toList(),
-            loadMoreIcon(),
-          ],
-        ),
-      ),
-    );
-    // return ScopedModelDescendant<OrderHistoryViewModel>(
-    //     builder: (context, child, model) {
-    //   final status = model.status;
-    //   final orderSummaryList = model.orderThumbnail;
-    //   if (status == ViewStatus.Loading)
-    //     return Center(
-    //       child: LoadingBean(),
-    //     );
-    //   else if (status == ViewStatus.Empty ||
-    //       orderSummaryList == null ||
-    //       orderSummaryList.length == 0)
-    //     return Center(
-    //       child: Container(
-    //         child: Column(
-    //           mainAxisAlignment: MainAxisAlignment.center,
-    //           children: [
-    //             Text('Bạn chưa đặt đơn hàng nào hôm nay 😵'),
-    //             FlatButton(
-    //               onPressed: () {
-    //                 Get.back();
-    //               },
-    //               child: Text(
-    //                 '🥡 Đặt ngay 🥡',
-    //                 style: kTextPrimary.copyWith(
-    //                   color: kPrimary,
-    //                 ),
-    //               ),
-    //             )
-    //           ],
-    //         ),
-    //       ),
-    //     );
-
-    //   if (status == ViewStatus.Error)
-    //     return Center(
-    //       child: AspectRatio(
-    //         aspectRatio: 1 / 4,
-    //         child: Image.asset(
-    //           'assets/images/error.png',
-    //           width: 24,
-    //         ),
-    //       ),
-    //     );
-
-    //   return RefreshIndicator(
-    //     key: _refreshIndicatorKey,
-    //     onRefresh: refreshFetchOrder,
-    //     child: Container(
-    //       child: ListView(
-    //         physics: AlwaysScrollableScrollPhysics(),
-    //         controller: model.scrollController,
-    //         padding: EdgeInsets.all(8),
-    //         children: [
-    //           ...orderSummaryList
-    //               .map((orderSummary) => _buildOrderSummary(orderSummary))
-    //               .toList(),
-    //           loadMoreIcon(),
-    //         ],
-    //       ),
+    // return RefreshIndicator(
+    //   key: _refreshIndicatorKey,
+    //   onRefresh: refreshFetchOrder,
+    //   child: Container(
+    //     child: ListView(
+    //       physics: AlwaysScrollableScrollPhysics(),
+    //       controller: model.scrollController,
+    //       padding: EdgeInsets.all(8),
+    //       children: [
+    //         ...widget.listTransaction
+    //             .map((transacction) => _buildTransactionItem(transacction))
+    //             .toList(),
+    //         loadMoreIcon(),
+    //       ],
     //     ),
-    //   );
-    // });
+    //   ),
+    // );
+    return ScopedModelDescendant<TransactionViewModel>(
+        builder: (context, child, model) {
+      final status = model.status;
+      if (status == ViewStatus.Loading)
+        return Center(
+          child: LoadingBean(),
+        );
+      if (status == ViewStatus.Error)
+        return Center(
+          child: AspectRatio(
+            aspectRatio: 1 / 4,
+            child: Image.asset(
+              'assets/images/error.png',
+              width: 24,
+            ),
+          ),
+        );
+      if (status == ViewStatus.Empty)
+        return Center(
+          child: Container(
+            child: Text('Chưa có giao dịch nào 😵'),
+          ),
+        );
+
+      return RefreshIndicator(
+        key: _refreshIndicatorKey,
+        onRefresh: refreshFetchOrder,
+        child: Container(
+          child: ListView(
+            physics: AlwaysScrollableScrollPhysics(),
+            controller: model.scrollController,
+            padding: EdgeInsets.all(8),
+            children: [
+              ...model.transactionList
+                  .map((transaction) => _buildTransactionItem(transaction))
+                  .toList(),
+              loadMoreIcon(),
+            ],
+          ),
+        ),
+      );
+    });
   }
 
   Widget loadMoreIcon() {
-    return ScopedModelDescendant<OrderHistoryViewModel>(
+    return ScopedModelDescendant<TransactionViewModel>(
       builder: (context, child, model) {
         switch (model.status) {
           case ViewStatus.LoadMore:
@@ -254,57 +250,43 @@ class _TransactionScreenState extends State<TransactionScreen> {
           borderRadius: BorderRadius.circular(8.0),
           // side: BorderSide(color: Colors.red),
         ),
-        child: Column(
-          children: [
-            ListTile(
-              onTap: () {
-                // _onTapOrderHistory(order);
-              },
-              contentPadding: EdgeInsets.fromLTRB(16, 8, 16, 8),
-              title: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "${dto.name}",
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                    ),
+        child: InkWell(
+          onTap: () {
+            _onTapTransaction(dto);
+          },
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "${dto.isIncrease ? "+ " : "- "} ${formatPriceWithoutUnit(dto.amount)} ${dto.currency}",
+                  style: TextStyle(
+                    color: dto.isIncrease ? kPrimary : Colors.red,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
                   ),
-                  SizedBox(
-                    height: 8,
-                  ),
-                  Text(
-                    DateFormat('dd/MM/yyyy HH:mm').format(dto.date),
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey[600],
-                    ),
-                  ),
-                ],
-              ),
-              trailing: Text(
-                "${dto.isMinus ? "- " : "+ "} ${dto.amount} ${dto.type}",
-                textAlign: TextAlign.right,
-                style: TextStyle(
-                  color: dto.isMinus ? Colors.red : kPrimary,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
                 ),
-              ),
+                SizedBox(
+                  height: 8,
+                ),
+                Text(
+                  DateFormat('dd/MM/yyyy HH:mm').format(dto.date),
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey[600],
+                  ),
+                ),
+              ],
             ),
-            // Text("Chi tiết", style: TextStyle(color: Colors.blue)),
-          ],
+          ),
         ),
       ),
     );
   }
 
-  void _onTapOrderHistory(order) async {
-    // get orderDetail
-    await Get.toNamed(RouteHandler.ORDER_HISTORY_DETAIL, arguments: order);
-    model.getOrders();
+  void _onTapTransaction(TransactionDTO dto) async {
+    await Get.toNamed(RouteHandler.TRANSACTION_DETAIL, arguments: dto);
   }
 }

@@ -99,3 +99,9 @@ class ProductType {
   static const int COMPLEX_PRODUCT = 10;
   static const int GIFT_PRODUCT = 12;
 }
+
+class TransactionStatus {
+  static const int NEW = 0;
+  static const int APPROVE = 1;
+  static const int CANCEL = 2;
+}
