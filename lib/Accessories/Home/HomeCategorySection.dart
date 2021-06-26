@@ -23,7 +23,7 @@ class _HomeCategorySectionState extends State<HomeCategorySection> {
   void initState() {
     super.initState();
     _categoryViewModel = CategoryViewModel();
-    _categoryViewModel.getCategories();
+    _categoryViewModel.getCategories(params: {"type": 1, "showOnHome": true});
   }
 
   @override
@@ -81,8 +81,7 @@ class _HomeCategorySectionState extends State<HomeCategorySection> {
       child: TouchOpacity(
         onTap: () {
           print('Click category');
-          Get.toNamed(RouteHandler.PRODUCT_FILTER_LIST,
-              arguments: {"category-id": category.id});
+          Get.toNamed(RouteHandler.PRODUCT_FILTER_LIST, arguments: category);
         },
         child: Container(
           width: Get.width / 4 - 20,

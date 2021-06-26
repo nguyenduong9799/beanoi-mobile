@@ -45,7 +45,10 @@ class OrderViewModel extends BaseModel {
       }
 
       if (currentCart == null) {
-        currentCart = await getCart();
+        if (Get.find<bool>(tag: "isMart")) {
+          currentCart = await getMart();
+        } else
+          currentCart = await getCart();
       }
 
       orderAmount = await dao.prepareOrder(campusDTO.id, currentCart);
@@ -120,7 +123,11 @@ class OrderViewModel extends BaseModel {
       }
     }
 
-    await updateItemFromCart(item);
+    if (Get.find<bool>(tag: "isMart")) {
+      await updateItemFromCart(item);
+    } else {
+      await updateItemFromMart(item);
+    }
     await prepareOrder();
   }
 
@@ -141,7 +148,10 @@ class OrderViewModel extends BaseModel {
       OrderStatus result = await dao.createOrders(destination.id, currentCart);
       await Get.find<AccountViewModel>().fetchUser();
       if (result.statusCode == 200) {
-        await deleteCart();
+        if (Get.find<bool>(tag: "isMart")) {
+          await deleteMart();
+        } else
+          await deleteCart();
         hideDialog();
         await showStatusDialog(
             "assets/images/global_sucsess.png", result?.code, result?.message);
@@ -168,20 +178,30 @@ class OrderViewModel extends BaseModel {
   Future<void> changeOption(int option) async {
     // showLoadingDialog();
     currentCart.payment = option;
-    await setCart(currentCart);
+    if (Get.find<bool>(tag: "isMart")) {
+      await setMart(currentCart);
+    } else
+      await setCart(currentCart);
     await prepareOrder();
   }
 
   Future<void> deleteItem(CartItem item) async {
     // showLoadingDialog();
-    bool result = await removeItemFromCart(item);
+    bool result;
+    if (Get.find<bool>(tag: "isMart")) {
+      result = await removeItemFromMart(item);
+    } else
+      result = await removeItemFromCart(item);
     if (result) {
       await AnalyticsService.getInstance()
           .logChangeCart(item.master, item.quantity, false);
       hideDialog();
       Get.back(result: false);
     } else {
-      currentCart = await getCart();
+      if (Get.find<bool>(tag: "isMart")) {
+        currentCart = await getMart();
+      } else
+        currentCart = await getCart();
       await prepareOrder();
     }
   }
@@ -262,7 +282,10 @@ class OrderViewModel extends BaseModel {
       }
     }
     if (update) {
-      setCart(currentCart);
+      if (Get.find<bool>(tag: "isMart")) {
+        setMart(currentCart);
+      } else
+        setCart(currentCart);
     }
     notifyListeners();
   }

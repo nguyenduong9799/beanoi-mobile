@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Accessories/CacheImage.dart';
+import 'package:unidelivery_mobile/Accessories/cart_button.dart';
 import 'package:unidelivery_mobile/Accessories/section.dart';
 import 'package:unidelivery_mobile/Accessories/touchopacity.dart';
 import 'package:unidelivery_mobile/Constraints/constraints.dart';
@@ -27,7 +28,7 @@ class _ShopScreenState extends State<ShopScreen> {
   void initState() {
     super.initState();
     _categoryViewModel = CategoryViewModel();
-    _categoryViewModel.getCategories();
+    _categoryViewModel.getCategories(params: {"type": 2});
   }
 
   @override
@@ -50,6 +51,7 @@ class _ShopScreenState extends State<ShopScreen> {
           ),
         ),
       ),
+      floatingActionButton: CartButton(isMart: true,),
       body: ScopedModel(
         model: _categoryViewModel,
         child: Container(
@@ -75,7 +77,7 @@ class _ShopScreenState extends State<ShopScreen> {
     return ScopedModelDescendant<CategoryViewModel>(
       builder: (context, child, model) {
         var categories =
-            model.categories?.where((element) => element.showOnHome);
+            model.categories?.where((element) => !element.showOnHome);
         if (model.status == ViewStatus.Loading) {
           return Center(
             child: CircularProgressIndicator(),
@@ -137,7 +139,7 @@ class _ShopScreenState extends State<ShopScreen> {
     return TouchOpacity(
       onTap: () {
         Get.toNamed(RouteHandler.PRODUCT_FILTER_LIST,
-            arguments: {"category-id": category.id});
+            arguments: category);
       },
       child: Container(
         width: Get.width / 4 - 20,

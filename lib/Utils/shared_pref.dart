@@ -40,9 +40,25 @@ Future<Cart> setCart(Cart cart) async {
   return cart;
 }
 
+Future<Cart> setMart(Cart cart) async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  prefs.setString('MART', jsonEncode(cart.toJson()));
+  return cart;
+}
+
 Future<Cart> getCart() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   String encodedCart = prefs.getString('CART');
+  if (encodedCart != null) {
+    Cart cart = Cart.fromJson(jsonDecode(encodedCart));
+    return cart;
+  }
+  return null;
+}
+
+Future<Cart> getMart() async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  String encodedCart = prefs.getString('MART');
   if (encodedCart != null) {
     Cart cart = Cart.fromJson(jsonDecode(encodedCart));
     return cart;
@@ -57,6 +73,15 @@ Future<void> addItemToCart(CartItem item) async {
   }
   cart.addItem(item);
   setCart(cart);
+}
+
+Future<void> addItemToMart(CartItem item) async {
+  Cart cart = await getMart();
+  if (cart == null) {
+    cart = new Cart();
+  }
+  cart.addItem(item);
+  setMart(cart);
 }
 
 Future<bool> removeItemFromCart(CartItem item) async {
@@ -75,9 +100,30 @@ Future<bool> removeItemFromCart(CartItem item) async {
   }
 }
 
+Future<bool> removeItemFromMart(CartItem item) async {
+  Cart cart = await getMart();
+  if (cart == null) {
+    return false;
+  }
+  cart.removeItem(item);
+
+  if (cart.items.length == 0) {
+    deleteMart();
+    return true;
+  } else {
+    setMart(cart);
+    return false;
+  }
+}
+
 Future<void> deleteCart() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   prefs.remove("CART");
+}
+
+Future<void> deleteMart() async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  prefs.remove("MART");
 }
 
 Future<void> updateItemFromCart(CartItem item) async {
@@ -87,6 +133,15 @@ Future<void> updateItemFromCart(CartItem item) async {
   }
   cart.updateQuantity(item);
   setCart(cart);
+}
+
+Future<void> updateItemFromMart(CartItem item) async {
+  Cart cart = await getMart();
+  if (cart == null) {
+    return;
+  }
+  cart.updateQuantity(item);
+  setMart(cart);
 }
 
 Future<void> setStore(CampusDTO dto) async {

@@ -45,9 +45,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
             transactionBar(),
             SizedBox(height: 16),
             Expanded(
-              child: Container(
-                child: _buildTransaction(),
-              ),
+              child: _buildTransaction(),
             ),
           ],
         ),
@@ -59,7 +57,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
     return ScopedModelDescendant<TransactionViewModel>(
       builder: (context, child, model) {
         return Container(
-          margin: EdgeInsets.only(top: 8, bottom: 16),
+          margin: EdgeInsets.only(top: 32, bottom: 16),
           height: 30,
           padding: EdgeInsets.only(left: 8, right: 8),
           child: Row(
@@ -69,7 +67,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                 style:
                     Get.theme.textTheme.headline4.copyWith(color: Colors.grey),
               ),
-              SizedBox(width: 8),
+              SizedBox(width: 16),
               ListView.separated(
                 shrinkWrap: true,
                 scrollDirection: Axis.horizontal,
@@ -114,7 +112,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                 },
                 itemCount: DateFilter.values.length,
                 separatorBuilder: (context, index) => SizedBox(
-                  width: 8,
+                  width: 16,
                 ),
               ),
             ],
@@ -170,10 +168,10 @@ class _TransactionScreenState extends State<TransactionScreen> {
         key: _refreshIndicatorKey,
         onRefresh: refreshFetchOrder,
         child: Container(
+          margin: EdgeInsets.fromLTRB(8, 0, 8, 0),
           child: ListView(
             physics: AlwaysScrollableScrollPhysics(),
             controller: model.scrollController,
-            padding: EdgeInsets.all(8),
             children: [
               ...model.transactionList
                   .map((transaction) => _buildTransactionItem(transaction))
@@ -238,36 +236,26 @@ class _TransactionScreenState extends State<TransactionScreen> {
 
   Widget _buildTransactionItem(TransactionDTO dto) {
     return Container(
-      // height: 80,
-      margin: EdgeInsets.fromLTRB(8, 0, 8, 16),
+      margin: EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
         color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
       ),
       child: Material(
-        color: Colors.transparent,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8.0),
-          // side: BorderSide(color: Colors.red),
-        ),
-        child: InkWell(
-          onTap: () {
-            _onTapTransaction(dto);
-          },
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-            child: Column(
+          color: Colors.transparent,
+          child: ListTile(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            contentPadding: EdgeInsets.fromLTRB(8, 8, 8, 8),
+            onTap: () {
+              _onTapTransaction(dto);
+            },
+            title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  "${dto.isIncrease ? "+ " : "- "} ${formatPriceWithoutUnit(dto.amount)} ${dto.currency}",
-                  style: TextStyle(
-                    color: dto.isIncrease ? kPrimary : Colors.red,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                ),
+                Text("${dto.name ?? "Giao dịch"}",
+                    style: Get.theme.textTheme.headline3
+                        .copyWith(color: Colors.black)),
                 SizedBox(
                   height: 8,
                 ),
@@ -280,9 +268,12 @@ class _TransactionScreenState extends State<TransactionScreen> {
                 ),
               ],
             ),
-          ),
-        ),
-      ),
+            trailing: Text(
+                "${dto.isIncrease ? "+ " : "- "} ${formatPriceWithoutUnit(dto.amount)} ${dto.currency}",
+                style: Get.theme.textTheme.headline2.copyWith(
+                  color: dto.isIncrease ? kPrimary : Colors.red,
+                )),
+          )),
     );
   }
 

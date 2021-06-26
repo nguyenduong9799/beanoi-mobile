@@ -9,6 +9,7 @@ class TransactionDTO {
   int status;
   double amount;
   bool isIncrease;
+  int code;
 
   TransactionDTO(
       {this.id,
@@ -18,7 +19,8 @@ class TransactionDTO {
       this.type,
       this.status,
       this.amount,
-      this.isIncrease});
+      this.isIncrease,
+      this.code});
 
   factory TransactionDTO.fromJson(dynamic json) {
     return TransactionDTO(
@@ -28,6 +30,8 @@ class TransactionDTO {
         isIncrease: json['is_increase_transaction'],
         type: json['transaction_type'],
         status: json['status'],
-        date: DateTime.parse(json['create_at']));
+        date: DateTime.parse(json['create_at']),
+        name: json['notes'],
+        code: json['account_id']);
   }
 }

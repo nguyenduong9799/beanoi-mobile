@@ -13,11 +13,10 @@ class CategoryViewModel extends BaseModel {
     _categoryDAO = CategoryDAO();
   }
 
-  Future getCategories() async {
+  Future getCategories({Map<String, dynamic> params}) async {
     try {
       setState(ViewStatus.Loading);
-
-      categories = await _categoryDAO.getCategories();
+      categories = await _categoryDAO.getCategories(params: params);
       setState(ViewStatus.Completed);
     } catch (e) {
       print(e);

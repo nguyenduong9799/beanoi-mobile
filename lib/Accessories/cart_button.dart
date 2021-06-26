@@ -8,6 +8,9 @@ import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
 
 class CartButton extends StatefulWidget {
+  final bool isMart;
+  CartButton({this.isMart = false});
+
   @override
   State<StatefulWidget> createState() {
     return _CartButtonState();
@@ -25,7 +28,7 @@ class _CartButtonState extends State<CartButton> {
           return SizedBox.shrink();
         }
         return FutureBuilder(
-            future: model.cart,
+            future: widget.isMart ? model.mart : model.cart,
             builder: (context, snapshot) {
               Cart cart = snapshot.data;
               if (cart == null) return SizedBox.shrink();
@@ -41,7 +44,7 @@ class _CartButtonState extends State<CartButton> {
                     // side: BorderSide(color: Colors.red),
                   ),
                   onPressed: () async {
-                    await model.openCart();
+                    await model.openCart(widget.isMart);
                   },
                   child: Stack(
                     clipBehavior: Clip.none,
@@ -54,8 +57,10 @@ class _CartButtonState extends State<CartButton> {
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Icon(
-                          AntDesign.shoppingcart,
-                          color: kPrimary,
+                          widget.isMart
+                              ? Icons.card_travel_outlined
+                              : AntDesign.shoppingcart,
+                          color: widget.isMart ? kBlueColor : kPrimary,
                         ),
                       ),
                       Positioned(

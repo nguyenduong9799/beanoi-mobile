@@ -9,11 +9,12 @@ class CategoryDAO {
   MetaDataDTO get metaDataDTO => _metaDataDTO;
 
   Future<List<CategoryDTO>> getCategories({
-    Map<String, dynamic> params = const {},
+    Map<String, dynamic> params,
   }) async {
+    print("Params: " + params.toString());
     Response res = await request.get(
       'categories',
-      queryParameters: {}..addAll(params),
+      queryParameters: params,
       // options: buildCacheOptions(Duration(minutes: 5)),
     );
 

@@ -10,10 +10,12 @@ class ProductSearchItem extends StatelessWidget {
     Key key,
     @required this.product,
     this.index = -1,
+    this.showOnHome,
   }) : super(key: key);
 
   final ProductDTO product;
   final int index;
+  final bool showOnHome;
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +27,7 @@ class ProductSearchItem extends StatelessWidget {
         child: InkWell(
           onTap: () {
             RootViewModel root = Get.find<RootViewModel>();
-            root.openProductDetail(product);
+            root.openProductDetail(product, showOnHome: showOnHome);
           },
           child: Container(
             height: 140,

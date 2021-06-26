@@ -226,9 +226,11 @@ class RootViewModel extends BaseModel {
     }
   }
 
-  Future<void> openCart() async {
+  Future<void> openCart(bool isMart) async {
     hideSnackbar();
+    Get.put<bool>(isMart, tag: "isMart");
     await Get.toNamed(RouteHandler.ORDER);
+    await Get.delete<bool>(tag: "isMart");
     notifyListeners();
   }
 
@@ -238,10 +240,22 @@ class RootViewModel extends BaseModel {
     return await getCart();
   }
 
-  Future<void> openProductDetail(ProductDTO product) async {
+  Future<Cart> get mart async {
+    return await getMart();
+  }
+
+  Future<void> openProductDetail(ProductDTO product,
+      {showOnHome = true}) async {
+    Get.put<bool>(
+      showOnHome,
+      tag: "showOnHome",
+    );
     bool result =
         await Get.toNamed(RouteHandler.PRODUCT_DETAIL, arguments: product);
     hideSnackbar();
+    await Get.delete<bool>(
+      tag: "showOnHome",
+    );
     if (result != null) {
       if (result) {
         Get.rawSnackbar(

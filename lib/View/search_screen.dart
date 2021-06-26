@@ -79,6 +79,7 @@ class _SearchScreenState extends State<SearchScreen> {
         shadowColor: Color(0xFFF5F5F5),
         title: buildSearch(),
       ),
+      floatingActionButton: CartButton(isMart: true,),
       body: ScopedModel(
         model: prodFilterModel,
         child: Container(
@@ -218,6 +219,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   ...model.listProducts.map((product) {
                     return ProductSearchItem(
                       product: product,
+                      showOnHome: false,
                     );
                   }),
                   Padding(

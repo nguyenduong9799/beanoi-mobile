@@ -217,6 +217,7 @@ class ProductDetailViewModel extends BaseModel {
 
   Future<void> addProductToCart() async {
     showLoadingDialog();
+    bool showOnHome = Get.find<bool>(tag: "showOnHome");
     List<ProductDTO> listChoices = [];
     if (master.type == ProductType.MASTER_PRODUCT) {
       Map choice = new Map();
@@ -249,7 +250,7 @@ class ProductDetailViewModel extends BaseModel {
 
       double totalBean = account.currentUser.point;
 
-      Cart cart = await getCart();
+      Cart cart = showOnHome ? await getCart() : await getMart();
       if (cart != null) {
         cart.items.forEach((element) {
           if (element.master.type == ProductType.GIFT_PRODUCT) {
@@ -265,7 +266,9 @@ class ProductDetailViewModel extends BaseModel {
       }
     }
 
-    await addItemToCart(item);
+    print("Item: " + item.master.productInMenuId.toString());
+
+    showOnHome ? await addItemToCart(item) : await addItemToMart(item);
     await AnalyticsService.getInstance()
         .logChangeCart(item.master, item.quantity, true);
     hideDialog();
