@@ -59,7 +59,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
         return Container(
           margin: EdgeInsets.only(top: 32, bottom: 16),
           height: 30,
-          padding: EdgeInsets.only(left: 8, right: 8),
+          padding: EdgeInsets.only(left: 16, right: 16),
           child: Row(
             children: [
               Text(
@@ -168,7 +168,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
         key: _refreshIndicatorKey,
         onRefresh: refreshFetchOrder,
         child: Container(
-          margin: EdgeInsets.fromLTRB(8, 0, 8, 0),
+          margin: EdgeInsets.fromLTRB(16, 0, 16, 0),
           child: ListView(
             physics: AlwaysScrollableScrollPhysics(),
             controller: model.scrollController,
@@ -244,8 +244,9 @@ class _TransactionScreenState extends State<TransactionScreen> {
       child: Material(
           color: Colors.transparent,
           child: ListTile(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-            contentPadding: EdgeInsets.fromLTRB(8, 8, 8, 8),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            contentPadding: EdgeInsets.fromLTRB(16, 8, 16, 8),
             onTap: () {
               _onTapTransaction(dto);
             },

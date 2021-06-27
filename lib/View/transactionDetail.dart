@@ -34,13 +34,13 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
         child: Column(
           children: [
             Container(
-              margin: EdgeInsets.fromLTRB(8, 16, 8, 0),
+              margin: EdgeInsets.fromLTRB(16, 16, 16, 0),
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8), color: Colors.white),
               child: buildTitle(),
             ),
             Container(
-              margin: EdgeInsets.fromLTRB(8, 16, 8, 0),
+              margin: EdgeInsets.fromLTRB(16, 16, 16, 0),
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8), color: Colors.white),
               child: buildDetail(),
@@ -68,7 +68,7 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
     }
     return Container(
       width: Get.width,
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.fromLTRB(8, 16, 8, 16),
       child: Column(
         children: [
           Text(
@@ -87,7 +87,7 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
           ),
           Text(
             status,
-            style: Get.theme.textTheme.headline1,
+            style: Get.theme.textTheme.headline2,
           ),
         ],
       ),
@@ -96,7 +96,7 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
 
   Widget buildDetail() {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(8, 16, 8, 16),
+      padding: const EdgeInsets.fromLTRB(8, 24, 8, 24),
       child: Column(
         children: [
           buildItemDetail("Mã giao dịch", widget.transaction.code.toString()),
