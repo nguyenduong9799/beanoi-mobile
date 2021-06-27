@@ -124,96 +124,99 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget buildLinkBtns() {
-    return ScopedModelDescendant<RootViewModel>(
-      builder: (context, child, model) {
-        return Container(
-          color: Colors.white,
-          width: Get.width,
-          padding: EdgeInsets.all(8),
-          height: 72,
-          child: ListView(
-            scrollDirection: Axis.horizontal,
-            children: [
-              TouchOpacity(
-                onTap: () {
-                  Get.toNamed(RouteHandler.BEAN_MART);
-                },
-                child: Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    Container(
-                      padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(
-                          color: Color(0xFFF5F5F5),
-                        ),
-                        borderRadius: BorderRadius.circular(24),
-                        boxShadow: [
-                          BoxShadow(
+    return ScopedModel(
+      model: Get.find<RootViewModel>(),
+          child: ScopedModelDescendant<RootViewModel>(
+        builder: (context, child, model) {
+          return Container(
+            color: Colors.white,
+            width: Get.width,
+            padding: EdgeInsets.all(8),
+            height: 72,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              children: [
+                TouchOpacity(
+                  onTap: () {
+                    Get.toNamed(RouteHandler.BEAN_MART);
+                  },
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(
                             color: Color(0xFFF5F5F5),
-                            spreadRadius: 1,
-                            blurRadius: 5,
-                            offset: Offset(
-                              0,
-                              0,
-                            ), // changes position of shadow
                           ),
-                        ],
-                      ),
-                      child: Center(
-                        child: Row(
-                          children: [
-                            ClipOval(
-                              child: AspectRatio(
-                                aspectRatio: 1,
-                                child: CacheImage(
-                                  imageUrl:
-                                      "https://firebasestorage.googleapis.com/v0/b/unidelivery-fad6f.appspot.com/o/mart.png?alt=media&token=44198698-8bd1-4493-84fa-78e1877e5f1f",
-                                ),
-                              ),
-                            ),
-                            SizedBox(width: 8),
-                            Text(
-                              "BEAN MART",
-                              style: Get.theme.textTheme.headline3
-                                  .copyWith(fontSize: 14),
+                          borderRadius: BorderRadius.circular(24),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Color(0xFFF5F5F5),
+                              spreadRadius: 1,
+                              blurRadius: 5,
+                              offset: Offset(
+                                0,
+                                0,
+                              ), // changes position of shadow
                             ),
                           ],
                         ),
-                      ),
-                    ),
-                    // COUNTER MART
-                    Positioned(
-                      right: -6,
-                      top: -6,
-                      child: FutureBuilder(
-                        future: model.mart,
-                        builder: (context, snapshot) {
-                          Cart cart = snapshot.data;
-                          if (cart == null) return SizedBox.shrink();
-                          return ClipOval(
-                            child: Container(
-                                width: 24,
-                                height: 24,
-                                color: Colors.red,
-                                child: Center(
-                                  child: Text(
-                                    "${cart.itemQuantity()}",
-                                    style: TextStyle(color: Colors.white),
+                        child: Center(
+                          child: Row(
+                            children: [
+                              ClipOval(
+                                child: AspectRatio(
+                                  aspectRatio: 1,
+                                  child: CacheImage(
+                                    imageUrl:
+                                        "https://firebasestorage.googleapis.com/v0/b/unidelivery-fad6f.appspot.com/o/mart.png?alt=media&token=44198698-8bd1-4493-84fa-78e1877e5f1f",
                                   ),
-                                )),
-                          );
-                        },
+                                ),
+                              ),
+                              SizedBox(width: 8),
+                              Text(
+                                "BEAN MART",
+                                style: Get.theme.textTheme.headline3
+                                    .copyWith(fontSize: 14),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
-                    )
-                  ],
-                ),
-              )
-            ],
-          ),
-        );
-      },
+                      // COUNTER MART
+                      Positioned(
+                        right: -6,
+                        top: -6,
+                        child: FutureBuilder(
+                          future: model.mart,
+                          builder: (context, snapshot) {
+                            Cart cart = snapshot.data;
+                            if (cart == null) return SizedBox.shrink();
+                            return ClipOval(
+                              child: Container(
+                                  width: 24,
+                                  height: 24,
+                                  color: Colors.red,
+                                  child: Center(
+                                    child: Text(
+                                      "${cart.itemQuantity()}",
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  )),
+                            );
+                          },
+                        ),
+                      )
+                    ],
+                  ),
+                )
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 

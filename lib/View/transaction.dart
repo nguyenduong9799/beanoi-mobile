@@ -270,7 +270,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
               ],
             ),
             trailing: Text(
-                "${dto.isIncrease ? "+ " : "- "} ${formatPriceWithoutUnit(dto.amount)} ${dto.currency}",
+                "${dto.isIncrease ? "+" : "-"} ${formatPriceWithoutUnit(dto.amount)} ${dto.currency}",
                 style: Get.theme.textTheme.headline2.copyWith(
                   color: dto.isIncrease ? kPrimary : Colors.red,
                 )),

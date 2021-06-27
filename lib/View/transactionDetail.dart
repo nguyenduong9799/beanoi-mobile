@@ -79,7 +79,7 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
             height: 8,
           ),
           Text(
-            "${widget.transaction.isIncrease ? "+ " : "- "} ${formatPriceWithoutUnit(widget.transaction.amount)}",
+            "${widget.transaction.isIncrease ? "+" : "-"} ${formatPriceWithoutUnit(widget.transaction.amount)}",
             style: Get.theme.textTheme.subtitle2.copyWith(color: Colors.black),
           ),
           SizedBox(

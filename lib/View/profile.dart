@@ -185,7 +185,7 @@ class _UpdateAccountState extends State<ProfileScreen> {
             Divider(),
             section(
                 icon: Icon(Icons.history, color: Colors.black54),
-                title: Text("Lịch sử cộng điểm",
+                title: Text("Lịch sử giao dịch",
                     style: Get.theme.textTheme.headline4
                         .copyWith(color: Colors.black54)),
                 function: () {
