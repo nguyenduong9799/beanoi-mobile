@@ -36,8 +36,7 @@ Future<String> getToken() async {
 
 Future<void> setCart(Cart cart) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  bool result = await prefs.setString('CART', jsonEncode(cart.toJson()));
-  print("Save: $result");
+  await prefs.setString('CART', jsonEncode(cart.toJson()));
 }
 
 Future<void> setMart(Cart cart) async {
@@ -132,8 +131,6 @@ Future<void> updateItemFromCart(CartItem item) async {
     return;
   }
   cart.updateQuantity(item);
-  print(
-      "Updated Quantity: ${cart.items.firstWhere((element) => element.findCartItem(item)).quantity}");
   await setCart(cart);
   print("Save");
 }

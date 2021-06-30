@@ -28,7 +28,7 @@ class _UpdateState extends State<Update> {
       Validators.pattern(phoneReg),
       // Validators.number,
     ], touched: false),
-    'birthdate': FormControl(validators: [], touched: false),
+    'birthdate': FormControl<DateTime>(validators: [], touched: false),
     'email': FormControl(validators: [
       Validators.email,
     ], touched: false),
