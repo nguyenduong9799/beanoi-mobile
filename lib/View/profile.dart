@@ -262,16 +262,6 @@ class _UpdateAccountState extends State<ProfileScreen> {
                 function: () async {
                   await model.processSignout();
                 }),
-            Divider(),
-            section(
-                icon: Icon(Icons.link, color: Colors.black54),
-                title: Text("Test creating link",
-                    style: Get.theme.textTheme.headline4
-                        .copyWith(color: Colors.black54)),
-                function: () {
-                  Get.toNamed(RouteHandler.DYNAMIC_LINK);
-                }),
-            Divider(),
           ],
         ),
       ),

@@ -68,23 +68,19 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
     }
     return Container(
       width: Get.width,
-      padding: const EdgeInsets.fromLTRB(8, 16, 8, 16),
+      padding: const EdgeInsets.fromLTRB(16, 24, 16, 24),
       child: Column(
         children: [
           Text(
             widget.transaction.name ?? "Giao dịch",
             style: Get.theme.textTheme.headline1.copyWith(color: Colors.black),
           ),
-          SizedBox(
-            height: 8,
-          ),
+          SizedBox(height: 16),
           Text(
             "${widget.transaction.isIncrease ? "+" : "-"} ${formatPriceWithoutUnit(widget.transaction.amount)}",
             style: Get.theme.textTheme.subtitle2.copyWith(color: Colors.black),
           ),
-          SizedBox(
-            height: 8,
-          ),
+          SizedBox(height: 16),
           Text(
             status,
             style: Get.theme.textTheme.headline2,
@@ -96,18 +92,18 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
 
   Widget buildDetail() {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(8, 24, 8, 24),
+      padding: const EdgeInsets.fromLTRB(16, 24, 16, 24),
       child: Column(
         children: [
           buildItemDetail("Mã giao dịch", widget.transaction.code.toString()),
           Padding(
-            padding: const EdgeInsets.only(top: 4, bottom: 4),
+            padding: const EdgeInsets.only(top: 8, bottom: 8),
             child: Divider(),
           ),
           buildItemDetail("Thời gian giao dịch",
               DateFormat("dd/MM/yyyy HH:mm").format(widget.transaction.date)),
           Padding(
-            padding: const EdgeInsets.only(top: 4, bottom: 4),
+            padding: const EdgeInsets.only(top: 8, bottom: 8),
             child: Divider(),
           ),
           buildItemDetail("Loại giao dịch", widget.transaction.currency,
