@@ -7,6 +7,8 @@ import 'package:unidelivery_mobile/Accessories/index.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Utils/index.dart';
 import 'package:unidelivery_mobile/View/index.dart';
+import 'package:unidelivery_mobile/View/transaction.dart';
+import 'package:unidelivery_mobile/View/transactionDetail.dart';
 import 'package:unidelivery_mobile/setup.dart';
 
 void main() async {
@@ -44,6 +46,8 @@ class MyApp extends StatelessWidget {
                 settings: settings);
           case RouteHandler.LOGIN:
             return ScaleRoute(page: LoginScreen());
+          case RouteHandler.SEACH_PAGE:
+            return ScaleRoute(page: SearchScreen());
           case RouteHandler.GIFT:
             return CupertinoPageRoute(
                 builder: (context) => GiftScreen(), settings: settings);
@@ -114,9 +118,18 @@ class MyApp extends StatelessWidget {
                 settings: settings);
           case RouteHandler.ONBOARD:
             return ScaleRoute(page: OnBoardScreen());
-            case RouteHandler.WEBVIEW:
+          case RouteHandler.BEAN_MART:
+            return ScaleRoute(page: ShopScreen());
+          case RouteHandler.WEBVIEW:
             return FadeRoute(
               page: WebViewScreen(url: settings.arguments),
+            );
+          case RouteHandler.TRANSACTION:
+            return CupertinoPageRoute(
+                builder: (context) => TransactionScreen(), settings: settings);
+          case RouteHandler.TRANSACTION_DETAIL:
+            return SlideBottomRoute(
+              page: TransactionDetailScreen(transaction: settings.arguments),
             );
           default:
             return CupertinoPageRoute(

@@ -11,3 +11,4 @@ export 'gift_viewModel.dart';
 export 'account_viewModel.dart';
 export 'startup_viewModel.dart';
 export 'supplier_viewModel.dart';
+export 'transaction_viewModel.dart';

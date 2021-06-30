@@ -69,7 +69,6 @@ class HomeViewModel extends BaseModel {
     }
   }
 
-  // TODO: 1. Get List Product With Home Collection
   Future<void> getListProductInHomeCollection() async {
     RootViewModel root = Get.find<RootViewModel>();
     CampusDTO currentStore = root.currentStore;
@@ -90,7 +89,6 @@ class HomeViewModel extends BaseModel {
     return null;
   }
 
-  // TODO: 2. Get Gift can exchange (or nearly)
   Future<void> getNearlyGiftExchange() async {
     RootViewModel root = Get.find<RootViewModel>();
     CampusDTO currentStore = root.currentStore;

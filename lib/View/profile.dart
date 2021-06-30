@@ -185,12 +185,11 @@ class _UpdateAccountState extends State<ProfileScreen> {
             Divider(),
             section(
                 icon: Icon(Icons.history, color: Colors.black54),
-                title: Text("Lịch sử cộng điểm",
+                title: Text("Lịch sử giao dịch",
                     style: Get.theme.textTheme.headline4
                         .copyWith(color: Colors.black54)),
-                function: () async {
-                  await showStatusDialog("assets/images/coming_soon.gif",
-                      "Tính năng đang được triển khai", "");
+                function: () {
+                  Get.toNamed(RouteHandler.TRANSACTION);
                 }),
             Divider(),
             section(
@@ -263,16 +262,6 @@ class _UpdateAccountState extends State<ProfileScreen> {
                 function: () async {
                   await model.processSignout();
                 }),
-            Divider(),
-            section(
-                icon: Icon(Icons.link, color: Colors.black54),
-                title: Text("Test creating link",
-                    style: Get.theme.textTheme.headline4
-                        .copyWith(color: Colors.black54)),
-                function: () {
-                  Get.toNamed(RouteHandler.DYNAMIC_LINK);
-                }),
-            Divider(),
           ],
         ),
       ),

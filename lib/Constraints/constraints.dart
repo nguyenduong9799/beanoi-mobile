@@ -29,7 +29,7 @@ const kDescriptionTextColor = Color(0xffaaaaaa);
 
 // My Text Styles
 const kHeadingTextStyle = TextStyle(
-  fontSize: 16,
+  fontSize: 24,
   color: kPrimary,
   fontWeight: FontWeight.bold,
 );
@@ -40,7 +40,7 @@ const kSubheadingTextStyle = TextStyle(
 );
 
 const kTitleTextStyle = TextStyle(
-  fontSize: 14,
+  fontSize: 16,
   color: kTextColor,
   fontWeight: FontWeight.bold,
 );
@@ -52,7 +52,7 @@ const kSubtitleTextStyle = TextStyle(
 );
 
 const kDescriptionTextStyle = TextStyle(
-  fontSize: 12,
+  fontSize: 14,
   color: kDescriptionTextColor,
   fontWeight: FontWeight.w100,
 );
@@ -72,8 +72,6 @@ const kSubdashboardTextStyle = TextStyle(
   fontSize: 20,
   color: kPrimary,
 );
-
-
 
 const String CART_TAG = "cartTag";
 
@@ -100,4 +98,10 @@ class ProductType {
   static const int DETAIL_PRODUCT = 7;
   static const int COMPLEX_PRODUCT = 10;
   static const int GIFT_PRODUCT = 12;
+}
+
+class TransactionStatus {
+  static const int NEW = 0;
+  static const int APPROVE = 1;
+  static const int CANCEL = 2;
 }

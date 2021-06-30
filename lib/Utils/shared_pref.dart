@@ -34,15 +34,29 @@ Future<String> getToken() async {
   return prefs.getString('token');
 }
 
-Future<Cart> setCart(Cart cart) async {
+Future<void> setCart(Cart cart) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  prefs.setString('CART', jsonEncode(cart.toJson()));
-  return cart;
+  await prefs.setString('CART', jsonEncode(cart.toJson()));
+}
+
+Future<void> setMart(Cart cart) async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.setString('MART', jsonEncode(cart.toJson()));
 }
 
 Future<Cart> getCart() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   String encodedCart = prefs.getString('CART');
+  if (encodedCart != null) {
+    Cart cart = Cart.fromJson(jsonDecode(encodedCart));
+    return cart;
+  }
+  return null;
+}
+
+Future<Cart> getMart() async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  String encodedCart = prefs.getString('MART');
   if (encodedCart != null) {
     Cart cart = Cart.fromJson(jsonDecode(encodedCart));
     return cart;
@@ -56,7 +70,16 @@ Future<void> addItemToCart(CartItem item) async {
     cart = new Cart();
   }
   cart.addItem(item);
-  setCart(cart);
+  await setCart(cart);
+}
+
+Future<void> addItemToMart(CartItem item) async {
+  Cart cart = await getMart();
+  if (cart == null) {
+    cart = new Cart();
+  }
+  cart.addItem(item);
+  await setMart(cart);
 }
 
 Future<bool> removeItemFromCart(CartItem item) async {
@@ -65,12 +88,29 @@ Future<bool> removeItemFromCart(CartItem item) async {
     return false;
   }
   cart.removeItem(item);
-
+  print("Delete success!");
+  print("Items: ${cart.items.length.toString()}");
   if (cart.items.length == 0) {
-    deleteCart();
+    await deleteCart();
     return true;
   } else {
-    setCart(cart);
+    await setCart(cart);
+    return false;
+  }
+}
+
+Future<bool> removeItemFromMart(CartItem item) async {
+  Cart cart = await getMart();
+  if (cart == null) {
+    return false;
+  }
+  cart.removeItem(item);
+
+  if (cart.items.length == 0) {
+    await deleteMart();
+    return true;
+  } else {
+    await setMart(cart);
     return false;
   }
 }
@@ -80,13 +120,30 @@ Future<void> deleteCart() async {
   prefs.remove("CART");
 }
 
+Future<void> deleteMart() async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  prefs.remove("MART");
+}
+
 Future<void> updateItemFromCart(CartItem item) async {
   Cart cart = await getCart();
   if (cart == null) {
     return;
   }
   cart.updateQuantity(item);
-  setCart(cart);
+  await setCart(cart);
+  print("Save");
+}
+
+Future<void> updateItemFromMart(CartItem item) async {
+  Cart cart = await getMart();
+  if (cart == null) {
+    return;
+  }
+  cart.updateQuantity(item);
+  print(
+      "Updated Quantity: ${cart.items.firstWhere((element) => element.findCartItem(item)).quantity}");
+  await setMart(cart);
 }
 
 Future<void> setStore(CampusDTO dto) async {

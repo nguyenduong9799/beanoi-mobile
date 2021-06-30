@@ -78,7 +78,6 @@ class _OrderScreenState extends State<OrderScreen> {
                     case ViewStatus.Loading:
                     case ViewStatus.Completed:
                       return ListView(
-                        shrinkWrap: true,
                         children: [
                           Hero(
                             tag: CART_TAG,
@@ -568,7 +567,7 @@ class _OrderScreenState extends State<OrderScreen> {
                 child: RichText(
                   text: TextSpan(
                       text: "Nhận đơn tại:",
-                      style: Get.theme.textTheme.headline3
+                      style: Get.theme.textTheme.headline5
                           .copyWith(color: kPrimary),
                       children: []),
                 ),
@@ -586,29 +585,25 @@ class _OrderScreenState extends State<OrderScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       destination != null
-                          ? Column(
-                              children: [
-                                Flexible(
-                                  child: Text(
+                          ? Flexible(
+                                                      child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
                                     location.address,
                                     style: Get.theme.textTheme.headline4,
                                     overflow: TextOverflow.ellipsis,
                                     maxLines: 1,
                                   ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 16),
-                                  child: Flexible(
-                                    child: Text(
-                                      destination.name,
-                                      style: Get.theme.textTheme.headline4,
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 1,
-                                    ),
+                                  Text(
+                                    destination.name,
+                                    style: Get.theme.textTheme.headline4,
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
                                   ),
-                                ),
-                              ],
-                            )
+                                ],
+                              ),
+                          )
                           : Flexible(
                               child: Text(
                                 "Chọn địa điểm giao hàng",
@@ -642,7 +637,7 @@ class _OrderScreenState extends State<OrderScreen> {
           Expanded(
             flex: 4,
             child: Text("Thời gian: ",
-                style: Get.theme.textTheme.headline3.copyWith(color: kPrimary)),
+                style: Get.theme.textTheme.headline5.copyWith(color: kPrimary)),
           ),
           Expanded(
             flex: 7,
@@ -678,7 +673,7 @@ class _OrderScreenState extends State<OrderScreen> {
                 Text(
                   'Chi phí',
                   style:
-                      Get.theme.textTheme.headline3.copyWith(color: kPrimary),
+                      Get.theme.textTheme.headline5.copyWith(color: kPrimary),
                 ),
               ],
             ),
@@ -801,11 +796,11 @@ class _OrderScreenState extends State<OrderScreen> {
                 text: TextSpan(
                     text: "Phương thức thanh toán ",
                     style:
-                        Get.theme.textTheme.headline3.copyWith(color: kPrimary),
+                        Get.theme.textTheme.headline5.copyWith(color: kPrimary),
                     children: [
                       TextSpan(
                           text: "(*)",
-                          style: Get.theme.textTheme.headline3
+                          style: Get.theme.textTheme.headline5
                               .copyWith(color: Colors.red))
                     ]),
               ),

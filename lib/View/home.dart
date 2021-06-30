@@ -15,6 +15,7 @@ import 'package:unidelivery_mobile/Accessories/section.dart';
 import 'package:unidelivery_mobile/Accessories/touchopacity.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Enums/index.dart';
+import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -46,9 +47,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // SystemChrome.setSystemUIOverlayStyle(
-    //     SystemUiOverlayStyle(statusBarColor: Colors.white));
-    //
     // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
     //     statusBarColor: Colors.white, // Color for Android
     //     statusBarBrightness:
@@ -91,6 +89,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   SizedBox(height: 8),
                                   banner(),
                                   // CATEGORY
+                                  buildLinkBtns(),
                                   Section(child: HomeCategorySection()),
                                   // END CATEGORY
                                   SizedBox(height: 8),
@@ -124,6 +123,103 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  Widget buildLinkBtns() {
+    return ScopedModel(
+      model: Get.find<RootViewModel>(),
+      child: ScopedModelDescendant<RootViewModel>(
+        builder: (context, child, model) {
+          return Container(
+            color: Colors.white,
+            width: Get.width,
+            padding: EdgeInsets.all(8),
+            height: 72,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              children: [
+                TouchOpacity(
+                  onTap: () {
+                    Get.toNamed(RouteHandler.BEAN_MART);
+                  },
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(
+                            color: Color(0xFFF5F5F5),
+                          ),
+                          borderRadius: BorderRadius.circular(24),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Color(0xFFF5F5F5),
+                              spreadRadius: 1,
+                              blurRadius: 5,
+                              offset: Offset(
+                                0,
+                                0,
+                              ), // changes position of shadow
+                            ),
+                          ],
+                        ),
+                        child: Center(
+                          child: Row(
+                            children: [
+                              ClipOval(
+                                child: AspectRatio(
+                                  aspectRatio: 1,
+                                  child: CacheImage(
+                                    imageUrl:
+                                        "https://firebasestorage.googleapis.com/v0/b/unidelivery-fad6f.appspot.com/o/mart.png?alt=media&token=44198698-8bd1-4493-84fa-78e1877e5f1f",
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: 8),
+                              Text(
+                                "BEAN MART",
+                                style: Get.theme.textTheme.headline3
+                                    .copyWith(fontSize: 14),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      // COUNTER MART
+                      Positioned(
+                        right: -6,
+                        top: -6,
+                        child: FutureBuilder(
+                          future: model.mart,
+                          builder: (context, snapshot) {
+                            Cart cart = snapshot.data;
+                            if (cart == null) return SizedBox.shrink();
+                            return ClipOval(
+                              child: Container(
+                                  width: 24,
+                                  height: 24,
+                                  color: Colors.red,
+                                  child: Center(
+                                    child: Text(
+                                      "${cart.itemQuantity()}",
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  )),
+                            );
+                          },
+                        ),
+                      )
+                    ],
+                  ),
+                )
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+
   Widget buildGiftCanExchangeSection() {
     return ScopedModelDescendant<HomeViewModel>(
       builder: (context, child, model) {
@@ -131,7 +227,7 @@ class _HomeScreenState extends State<HomeScreen> {
         final accountModel = Get.find<AccountViewModel>();
 
         final gift = model.nearlyGift;
-        final userBean = accountModel.currentUser.point;
+        final userBean = accountModel.currentUser.point ?? 0;
 
         final canExchangeGift = userBean > gift.price;
 
@@ -155,7 +251,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Flexible(
-                    flex: 7,
+                    flex: 6,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -204,9 +300,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   SizedBox(width: 16),
                   Flexible(
-                    flex: 3,
+                    flex: 4,
                     child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Flexible(

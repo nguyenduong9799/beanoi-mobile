@@ -8,6 +8,9 @@ import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
 
 class CartButton extends StatefulWidget {
+  final bool isMart;
+  CartButton({this.isMart = false});
+
   @override
   State<StatefulWidget> createState() {
     return _CartButtonState();
@@ -21,11 +24,12 @@ class _CartButtonState extends State<CartButton> {
       model: Get.find<RootViewModel>(),
       child: ScopedModelDescendant<RootViewModel>(
           builder: (context, child, model) {
+        print("Rebuild cart with isMart ${widget.isMart}");
         if (model.status == ViewStatus.Loading) {
           return SizedBox.shrink();
         }
         return FutureBuilder(
-            future: model.cart,
+            future: widget.isMart ? model.mart : model.cart,
             builder: (context, snapshot) {
               Cart cart = snapshot.data;
               if (cart == null) return SizedBox.shrink();
@@ -41,21 +45,23 @@ class _CartButtonState extends State<CartButton> {
                     // side: BorderSide(color: Colors.red),
                   ),
                   onPressed: () async {
-                    await model.openCart();
+                    await model.openCart(widget.isMart);
                   },
                   child: Stack(
                     clipBehavior: Clip.none,
                     children: [
                       Container(
-                        width: 48,
-                        height: 48,
+                        width: 56,
+                        height: 56,
                         decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(4),
                         ),
                         child: Icon(
-                          AntDesign.shoppingcart,
-                          color: kPrimary,
+                          widget.isMart
+                              ? Icons.card_travel_outlined
+                              : AntDesign.shoppingcart,
+                          color: widget.isMart ? kBlueColor : kPrimary,
                         ),
                       ),
                       Positioned(

@@ -81,88 +81,43 @@ class _GiftAppBarSate extends State<GiftAppBar> {
             bottomLeft: Radius.circular(16),
             bottomRight: Radius.circular(16),
           ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.5),
-              spreadRadius: 5,
-              blurRadius: 7,
-              offset: Offset(0, 3), // changes position of shadow
-            ),
-          ],
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Row(
-              children: [
-                Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    Container(
-                      width: 45,
-                      height: 45,
-                      decoration: BoxDecoration(
-                          color: _primeColor,
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(10),
-                          )),
-                      child: ScopedModelDescendant<AccountViewModel>(
-                        builder: (context, child, model) {
-                          return GestureDetector(
-                            onTap: () async {
-                              await model.fetchUser();
-                            },
-                            child: Align(
-                              alignment: Alignment.bottomCenter,
-                              child: Image(
-                                image: AssetImage("assets/images/avatar.png"),
-                                width: 45,
-                                height: 45,
+            Expanded(
+              child: Row(
+                children: [
+                  buildAvatar(),
+                  SizedBox(
+                    width: 8,
+                  ),
+                  Flexible(
+                    child: Container(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Flexible(child: _buildWelcome()),
+                          SizedBox(height: 8),
+                          Row(
+                            children: [
+                              Image(
+                                image: AssetImage("assets/images/balance.png"),
+                                width: 18,
+                                height: 18,
                               ),
-                            ),
-                          );
-                        },
+                              SizedBox(width: 8),
+                              Flexible(child: _buildBalance()),
+                            ],
+                          )
+                        ],
                       ),
                     ),
-                    Positioned(
-                      right: 5,
-                      top: -5,
-                      child: Container(
-                        width: 10,
-                        height: 10,
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle, color: Colors.red),
-                      ),
-                    )
-                  ],
-                ),
-                SizedBox(
-                  width: 8,
-                ),
-                Container(
-                  width: 220,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Flexible(child: _buildWelcome()),
-                      SizedBox(height: 8),
-                      Row(
-                        children: [
-                          Image(
-                            image: AssetImage("assets/images/balance.png"),
-                            width: 18,
-                            height: 18,
-                          ),
-                          SizedBox(width: 8),
-                          Flexible(child: _buildBalance()),
-                        ],
-                      )
-                    ],
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
             Container(
               child: Material(
@@ -190,6 +145,50 @@ class _GiftAppBarSate extends State<GiftAppBar> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget buildAvatar() {
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        Container(
+          width: 45,
+          height: 45,
+          decoration: BoxDecoration(
+              color: _primeColor,
+              borderRadius: BorderRadius.all(
+                Radius.circular(10),
+              )),
+          child: ScopedModelDescendant<AccountViewModel>(
+            builder: (context, child, model) {
+              return GestureDetector(
+                onTap: () async {
+                  await model.fetchUser();
+                },
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Image(
+                    image: AssetImage("assets/images/avatar.png"),
+                    width: 45,
+                    height: 45,
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+        Positioned(
+          right: 5,
+          top: -5,
+          child: Container(
+            width: 10,
+            height: 10,
+            decoration:
+                BoxDecoration(shape: BoxShape.circle, color: Colors.red),
+          ),
+        )
+      ],
     );
   }
 

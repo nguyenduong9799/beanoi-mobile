@@ -63,11 +63,16 @@ class ProductDAO extends BaseDAO {
       int size,
       int type,
       Map<String, dynamic> params = const {}}) async {
-    Response res = await request.get(
-      'stores/$storeId/products?time-slot=${timeSlot.from.toString()}&time-slot=${timeSlot.to.toString()}',
-      queryParameters: {"page": page ?? 1, "size": size ?? DEFAULT_SIZE}
-        ..addAll(params),
-    );
+    final query = convertToQueryParams({
+      "page": (page ?? 1).toString(),
+      "size": (size ?? DEFAULT_SIZE).toString(),
+      "time-slot": [timeSlot.from.toString(), timeSlot.to.toString()]
+    }..addAll(params));
+
+    String queryStr = Uri(
+      queryParameters: query,
+    ).query;
+    Response res = await request.get('stores/$storeId/products?$queryStr');
 
     final products = ProductDTO.fromList(res.data["data"]);
     metaDataDTO = MetaDataDTO.fromJson(res.data["metadata"]);

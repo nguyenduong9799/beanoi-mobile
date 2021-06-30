@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+// import 'package:dio_http_cache/dio_http_cache.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/Utils/index.dart';
 
@@ -8,11 +9,13 @@ class CategoryDAO {
   MetaDataDTO get metaDataDTO => _metaDataDTO;
 
   Future<List<CategoryDTO>> getCategories({
-    Map<String, dynamic> params = const {},
+    Map<String, dynamic> params,
   }) async {
+    print("Params: " + params.toString());
     Response res = await request.get(
       'categories',
-      queryParameters: {}..addAll(params),
+      queryParameters: params,
+      // options: buildCacheOptions(Duration(minutes: 5)),
     );
 
     //final res = await Dio().get("http://api.dominos.reso.vn/api/v1/products");

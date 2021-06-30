@@ -45,9 +45,9 @@ class _GiftScreenState extends State<GiftScreen> {
                         elevation: 2,
                         child: Container(
                           width: Get.width,
-                          padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
+                          padding: const EdgeInsets.all(16),
                           child: Center(
-                            child: Text("🎁 Danh sách quà tặng 🎁",
+                            child: Text("Danh sách quà tặng",
                                 style: Get.theme.textTheme.headline1
                                     .copyWith(color: Colors.orange)),
                           ),
@@ -116,18 +116,21 @@ class _GiftScreenState extends State<GiftScreen> {
                                     ],
                                   );
                                 }
-                                return ListView.builder(
-                                  controller: model.giftScrollController,
-                                  physics: AlwaysScrollableScrollPhysics(),
-                                  shrinkWrap: true,
-                                  itemCount: model.gifts.length,
-                                  itemBuilder: (context, index) => Container(
-                                      padding: EdgeInsets.all(8.0),
-                                      height: Get.width * 0.25 + 32,
-                                      child: StorePromotion(
-                                        dto: model.gifts[index],
-                                      )), // -> Text widget.
-                                  //viewportFraction: 1,
+                                return Container(
+                                  margin: EdgeInsets.only(top: 16),
+                                  child: ListView.builder(
+                                    controller: model.giftScrollController,
+                                    physics: AlwaysScrollableScrollPhysics(),
+                                    shrinkWrap: true,
+                                    itemCount: model.gifts.length,
+                                    itemBuilder: (context, index) => Container(
+                                        padding: EdgeInsets.all(8.0),
+                                        height: Get.width * 0.25 + 32,
+                                        child: StorePromotion(
+                                          dto: model.gifts[index],
+                                        )), // -> Text widget.
+                                    //viewportFraction: 1,
+                                  ),
                                 );
                             }
                           },

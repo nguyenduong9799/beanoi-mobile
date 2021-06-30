@@ -124,8 +124,8 @@ class _HomeLocationSelectState extends State<HomeLocationSelect> {
             Flexible(
               child: Text(campus.name,
                   style: campus.available
-                      ? Get.theme.textTheme.headline4
-                      : Get.theme.textTheme.headline4
+                      ? Get.theme.textTheme.headline3
+                      : Get.theme.textTheme.headline3
                           .copyWith(color: Colors.grey)),
             ),
           ],
@@ -159,7 +159,7 @@ class _HomeLocationSelectState extends State<HomeLocationSelect> {
             bottom: BorderSide(color: Colors.grey[200], width: 1),
           ),
         ),
-        padding: EdgeInsets.only(left: 16, bottom: 8, right: 16),
+        padding: EdgeInsets.only(left: 16, bottom: 8, right: 16, top: 8),
         child: Column(
           children: [
             Row(
@@ -172,8 +172,8 @@ class _HomeLocationSelectState extends State<HomeLocationSelect> {
                 Flexible(
                   child: Text(
                     location.address,
-                    style: Get.theme.textTheme.headline6.copyWith(
-                        color: location.isSelected ? kPrimary : Colors.black),
+                    style: Get.theme.textTheme.headline3
+                        .copyWith(color: Colors.black),
                   ),
                 ),
               ],
@@ -198,7 +198,7 @@ class _HomeLocationSelectState extends State<HomeLocationSelect> {
 
   Widget buildDestinationItem(DestinationDTO dto) {
     return Container(
-      padding: EdgeInsets.only(left: 16, top: 8, bottom: 8, right: 16),
+      padding: EdgeInsets.only(left: 16, top: 16, bottom: 8, right: 16),
       child: Row(
         mainAxisSize: MainAxisSize.max,
         children: [
@@ -214,8 +214,8 @@ class _HomeLocationSelectState extends State<HomeLocationSelect> {
           Flexible(
             child: Text(
               dto.name,
-              style: Get.theme.textTheme.headline6
-                  .copyWith(color: dto.isSelected ? kPrimary : Colors.black),
+              style: Get.theme.textTheme.headline3
+                  .copyWith(color: Colors.black, fontWeight: FontWeight.normal),
             ),
           ),
         ],

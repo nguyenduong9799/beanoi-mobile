@@ -23,7 +23,7 @@ class _HomeCategorySectionState extends State<HomeCategorySection> {
   void initState() {
     super.initState();
     _categoryViewModel = CategoryViewModel();
-    _categoryViewModel.getCategories();
+    _categoryViewModel.getCategories(params: {"type": 1, "showOnHome": true});
   }
 
   @override
@@ -32,7 +32,8 @@ class _HomeCategorySectionState extends State<HomeCategorySection> {
       model: _categoryViewModel,
       child: ScopedModelDescendant<CategoryViewModel>(
         builder: (BuildContext context, Widget child, CategoryViewModel model) {
-          var categories = model.categories;
+          var categories =
+              model.categories?.where((element) => element.showOnHome);
           if (model.status == ViewStatus.Loading) {
             return _buildLoading();
           }
@@ -63,7 +64,6 @@ class _HomeCategorySectionState extends State<HomeCategorySection> {
                   alignment: WrapAlignment.spaceBetween,
                   spacing: 8,
                   children: categories
-                      .getRange(0, 8)
                       .map((category) => buildCategoryItem(category))
                       .toList(),
                 ),
@@ -81,8 +81,7 @@ class _HomeCategorySectionState extends State<HomeCategorySection> {
       child: TouchOpacity(
         onTap: () {
           print('Click category');
-          Get.toNamed(RouteHandler.PRODUCT_FILTER_LIST,
-              arguments: {"category-id": category.id});
+          Get.toNamed(RouteHandler.PRODUCT_FILTER_LIST, arguments: category);
         },
         child: Container(
           width: Get.width / 4 - 20,
@@ -97,8 +96,8 @@ class _HomeCategorySectionState extends State<HomeCategorySection> {
                 ),
               ),
               Text(
-                category.categoryName,
-                style: Get.theme.textTheme.headline6.copyWith(color: kTextColor),
+                category.categoryName ?? "",
+                style: kTitleTextStyle.copyWith(fontSize: 14),
                 textAlign: TextAlign.center,
               ),
             ],

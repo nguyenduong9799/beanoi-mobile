@@ -7,7 +7,7 @@ class CustomTheme {
         fontFamily: 'Gotham',
         primarySwatch: Colors.green,
         primaryColor: kPrimary,
-        scaffoldBackgroundColor: Color(0xFFF0F2F5),
+        scaffoldBackgroundColor: Color(0xFFF5F5F5),
         toggleableActiveColor: kPrimary,
         visualDensity: VisualDensity.adaptivePlatformDensity,
         textTheme: TextTheme(

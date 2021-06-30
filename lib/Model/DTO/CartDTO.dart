@@ -116,6 +116,7 @@ class Cart {
   }
 
   void removeItem(CartItem item) {
+    print("Quantity: ${item.quantity}");
     items.removeWhere((element) =>
         element.findCartItem(item) && element.quantity == item.quantity);
   }
@@ -123,6 +124,7 @@ class Cart {
   void updateQuantity(CartItem item) {
     for (CartItem cart in items) {
       if (cart.findCartItem(item)) {
+        print("Found item");
         cart.quantity = item.quantity;
       }
     }

@@ -4,6 +4,20 @@ import 'package:get/get.dart' as Get;
 import 'package:unidelivery_mobile/Accessories/index.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 
+Map<String, dynamic> convertToQueryParams(
+    [Map<String, dynamic> params = const {}]) {
+  Map<String, dynamic> queryParams = Map.from(params);
+  return queryParams.map<String, dynamic>(
+    (key, value) => MapEntry(
+        key,
+        value == null
+            ? null
+            : (value is List)
+                ? value.map<String>((e) => e.toString()).toList()
+                : value.toString()),
+  );
+}
+
 class AppException implements Exception {
   final _message;
   final _prefix;
@@ -48,6 +62,8 @@ class CustomInterceptors extends Interceptor {
   void onResponse(Response response, ResponseInterceptorHandler handler) {
     print(
         'RESPONSE[${response.statusCode}] => PATH: ${response.requestOptions?.path}');
+        print(
+        'DATA: ${response.data}');
     return super.onResponse(response, handler);
   }
 
@@ -63,7 +79,7 @@ class CustomInterceptors extends Interceptor {
 class MyRequest {
   static BaseOptions options = new BaseOptions(
       // baseUrl: 'https://beanapi.unibean.net/api/',
-      baseUrl: "http://13.212.101.182:8090/api/",
+      baseUrl: "http://dev.unibean.net/api/",
       headers: {
         Headers.contentTypeHeader: "application/json",
       },

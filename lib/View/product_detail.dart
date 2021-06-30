@@ -50,12 +50,24 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
           SliverAppBar(
             leading: Container(
               margin: EdgeInsets.only(left: 8),
-              padding: EdgeInsets.only(left: 8),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: kPrimary.withOpacity(0.8),
               ),
-              child: CupertinoNavigationBarBackButton(color: Colors.white),
+              child: Center(
+                child: Container(
+                  child: IconButton(
+                      padding: EdgeInsets.all(0),
+                      onPressed: () {
+                        Get.back();
+                      },
+                      icon: Icon(
+                        Icons.chevron_left_outlined,
+                        color: Colors.white,
+                        size: 32,
+                      )),
+                ),
+              ),
             ),
             elevation: 0,
             pinned: true,
@@ -72,10 +84,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
           SliverList(
             delegate: SliverChildListDelegate(<Widget>[
               Container(
-                // height: 500,
                 width: MediaQuery.of(context).size.width,
-                //padding: EdgeInsets.fromLTRB(30, 20, 20, 10),
-
                 child: ScopedModel(
                   model: productDetailViewModel,
                   child: Column(
@@ -342,7 +351,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                                       .copyWith(color: Colors.white)),
                             ),
                             Flexible(
-                              child: Text("Thêm ",
+                              child: Text("Thêm",
                                   style: Get.theme.textTheme.headline3
                                       .copyWith(color: Colors.white)),
                             ),
