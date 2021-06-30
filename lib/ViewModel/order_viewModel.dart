@@ -44,12 +44,10 @@ class OrderViewModel extends BaseModel {
         campusDTO = root.currentStore;
       }
 
-      if (currentCart == null) {
-        if (Get.find<bool>(tag: "isMart")) {
-          currentCart = await getMart();
-        } else
-          currentCart = await getCart();
-      }
+      if (Get.find<bool>(tag: "isMart")) {
+        currentCart = await getMart();
+      } else
+        currentCart = await getCart();
 
       orderAmount = await dao.prepareOrder(campusDTO.id, currentCart);
       if (listPayments == null) {
@@ -187,11 +185,16 @@ class OrderViewModel extends BaseModel {
 
   Future<void> deleteItem(CartItem item) async {
     // showLoadingDialog();
+    print("Delete item...");
     bool result;
     if (Get.find<bool>(tag: "isMart")) {
+      print("Delete mart");
       result = await removeItemFromMart(item);
-    } else
+    } else {
+      print("Delete cart");
       result = await removeItemFromCart(item);
+    }
+    print("Result: $result");
     if (result) {
       await AnalyticsService.getInstance()
           .logChangeCart(item.master, item.quantity, false);

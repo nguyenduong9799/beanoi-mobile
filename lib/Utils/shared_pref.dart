@@ -34,16 +34,15 @@ Future<String> getToken() async {
   return prefs.getString('token');
 }
 
-Future<Cart> setCart(Cart cart) async {
+Future<void> setCart(Cart cart) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  prefs.setString('CART', jsonEncode(cart.toJson()));
-  return cart;
+  bool result = await prefs.setString('CART', jsonEncode(cart.toJson()));
+  print("Save: $result");
 }
 
-Future<Cart> setMart(Cart cart) async {
+Future<void> setMart(Cart cart) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  prefs.setString('MART', jsonEncode(cart.toJson()));
-  return cart;
+  await prefs.setString('MART', jsonEncode(cart.toJson()));
 }
 
 Future<Cart> getCart() async {
@@ -72,7 +71,7 @@ Future<void> addItemToCart(CartItem item) async {
     cart = new Cart();
   }
   cart.addItem(item);
-  setCart(cart);
+  await setCart(cart);
 }
 
 Future<void> addItemToMart(CartItem item) async {
@@ -81,7 +80,7 @@ Future<void> addItemToMart(CartItem item) async {
     cart = new Cart();
   }
   cart.addItem(item);
-  setMart(cart);
+  await setMart(cart);
 }
 
 Future<bool> removeItemFromCart(CartItem item) async {
@@ -90,12 +89,13 @@ Future<bool> removeItemFromCart(CartItem item) async {
     return false;
   }
   cart.removeItem(item);
-
+  print("Delete success!");
+  print("Items: ${cart.items.length.toString()}");
   if (cart.items.length == 0) {
-    deleteCart();
+    await deleteCart();
     return true;
   } else {
-    setCart(cart);
+    await setCart(cart);
     return false;
   }
 }
@@ -108,10 +108,10 @@ Future<bool> removeItemFromMart(CartItem item) async {
   cart.removeItem(item);
 
   if (cart.items.length == 0) {
-    deleteMart();
+    await deleteMart();
     return true;
   } else {
-    setMart(cart);
+    await setMart(cart);
     return false;
   }
 }
@@ -132,7 +132,10 @@ Future<void> updateItemFromCart(CartItem item) async {
     return;
   }
   cart.updateQuantity(item);
-  setCart(cart);
+  print(
+      "Updated Quantity: ${cart.items.firstWhere((element) => element.findCartItem(item)).quantity}");
+  await setCart(cart);
+  print("Save");
 }
 
 Future<void> updateItemFromMart(CartItem item) async {
@@ -141,7 +144,9 @@ Future<void> updateItemFromMart(CartItem item) async {
     return;
   }
   cart.updateQuantity(item);
-  setMart(cart);
+  print(
+      "Updated Quantity: ${cart.items.firstWhere((element) => element.findCartItem(item)).quantity}");
+  await setMart(cart);
 }
 
 Future<void> setStore(CampusDTO dto) async {

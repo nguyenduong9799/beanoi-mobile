@@ -24,6 +24,7 @@ class _CartButtonState extends State<CartButton> {
       model: Get.find<RootViewModel>(),
       child: ScopedModelDescendant<RootViewModel>(
           builder: (context, child, model) {
+        print("Rebuild cart with isMart ${widget.isMart}");
         if (model.status == ViewStatus.Loading) {
           return SizedBox.shrink();
         }
