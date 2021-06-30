@@ -483,8 +483,7 @@ class _FixedAppBarState extends State<FixedAppBar> {
                             Text.rich(
                               TextSpan(
                                 text: "Chốt đơn: ",
-                                style: Get.theme.textTheme.headline6
-                                    .copyWith(color: kTextColor),
+                                style: Get.theme.textTheme.headline5,
                                 children: [
                                   TextSpan(
                                     text: "$currentTimeSlot",
@@ -603,12 +602,42 @@ class _BeanTimeCountdownState extends State<BeanTimeCountdown> {
                       Get.theme.textTheme.headline6.copyWith(color: Colors.red),
                 );
               }
-              return Text(
-                "Còn lại ${time.hours ?? '0'}h : ${time.min ?? '0'}ph ",
-                style: Get.theme.textTheme.headline6.copyWith(color: kPrimary),
+              return Row(
+                children: [
+                  buildTimeBlock("${time.hours < 10 ? "0" : ""}${time.hours}"),
+                  Text(
+                    ":",
+                    style: Get.theme.textTheme.headline6
+                        .copyWith(color: Colors.black),
+                  ),
+                  buildTimeBlock("${time.min < 10 ? "0" : ""}${time.min}"),
+                  Text(
+                    ":",
+                    style: Get.theme.textTheme.headline6
+                        .copyWith(color: Colors.black),
+                  ),
+                  buildTimeBlock("${time.sec < 10 ? "0" : ""}${time.sec}"),
+                ],
               );
             },
           );
         });
+  }
+
+  Widget buildTimeBlock(String text) {
+    return Container(
+        width: 27,
+        height: 27,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(4), color: Color(0xFFF2994A)),
+        padding: EdgeInsets.all(4),
+        child: Center(
+          child: Text(
+            text,
+            style: Get.theme.textTheme.headline6.copyWith(
+              color: Colors.white,
+            ),
+          ),
+        ));
   }
 }
