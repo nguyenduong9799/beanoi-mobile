@@ -44,14 +44,16 @@ class _ShopScreenState extends State<ShopScreen> {
         centerTitle: true,
         backgroundColor: Colors.white,
         title: Text(
-          "Bean Shop",
+          "Bean Mart",
           style: kHeadingTextStyle.copyWith(
             fontSize: 20,
             fontWeight: FontWeight.normal,
           ),
         ),
       ),
-      floatingActionButton: CartButton(isMart: true,),
+      floatingActionButton: CartButton(
+        isMart: true,
+      ),
       body: ScopedModel(
         model: _categoryViewModel,
         child: Container(
@@ -138,8 +140,7 @@ class _ShopScreenState extends State<ShopScreen> {
   Widget buildCategoryItem(CategoryDTO category) {
     return TouchOpacity(
       onTap: () {
-        Get.toNamed(RouteHandler.PRODUCT_FILTER_LIST,
-            arguments: category);
+        Get.toNamed(RouteHandler.PRODUCT_FILTER_LIST, arguments: category);
       },
       child: Container(
         width: Get.width / 4 - 20,
