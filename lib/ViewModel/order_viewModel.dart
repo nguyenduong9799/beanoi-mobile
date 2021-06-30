@@ -44,10 +44,12 @@ class OrderViewModel extends BaseModel {
         campusDTO = root.currentStore;
       }
 
-      if (Get.find<bool>(tag: "isMart")) {
-        currentCart = await getMart();
-      } else
-        currentCart = await getCart();
+      if (currentCart == null) {
+        if (Get.find<bool>(tag: "isMart")) {
+          currentCart = await getMart();
+        } else
+          currentCart = await getCart();
+      }
 
       orderAmount = await dao.prepareOrder(campusDTO.id, currentCart);
       if (listPayments == null) {
@@ -122,9 +124,9 @@ class OrderViewModel extends BaseModel {
     }
 
     if (Get.find<bool>(tag: "isMart")) {
-      await updateItemFromCart(item);
-    } else {
       await updateItemFromMart(item);
+    } else {
+      await updateItemFromCart(item);
     }
     await prepareOrder();
   }
