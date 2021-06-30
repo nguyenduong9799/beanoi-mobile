@@ -126,7 +126,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget buildLinkBtns() {
     return ScopedModel(
       model: Get.find<RootViewModel>(),
-          child: ScopedModelDescendant<RootViewModel>(
+      child: ScopedModelDescendant<RootViewModel>(
         builder: (context, child, model) {
           return Container(
             color: Colors.white,
@@ -251,7 +251,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Flexible(
-                    flex: 7,
+                    flex: 6,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -300,9 +300,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   SizedBox(width: 16),
                   Flexible(
-                    flex: 3,
+                    flex: 4,
                     child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Flexible(

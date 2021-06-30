@@ -51,11 +51,11 @@ class _CartButtonState extends State<CartButton> {
                     clipBehavior: Clip.none,
                     children: [
                       Container(
-                        width: 48,
-                        height: 48,
+                        width: 56,
+                        height: 56,
                         decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(4),
                         ),
                         child: Icon(
                           widget.isMart
