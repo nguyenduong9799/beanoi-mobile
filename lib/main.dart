@@ -42,6 +42,7 @@ class MyApp extends StatelessWidget {
                 builder: (context) => LoginWithPhoneOTP(
                       phoneNumber: map["phoneNumber"],
                       verificationId: map["verId"],
+                      confirmationResult: map["confirmationResult"],
                     ),
                 settings: settings);
           case RouteHandler.LOGIN:

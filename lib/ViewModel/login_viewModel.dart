@@ -9,7 +9,8 @@ import 'package:unidelivery_mobile/Model/DAO/index.dart';
 import 'package:unidelivery_mobile/Services/analytic_service.dart';
 import 'package:unidelivery_mobile/Services/firebase_authentication_service.dart';
 import 'package:unidelivery_mobile/Services/push_notification_service.dart';
-
+import 'package:flutter/foundation.dart';
+import 'package:unidelivery_mobile/Utils/index.dart';
 import 'index.dart';
 
 class LoginViewModel extends BaseModel {
@@ -23,11 +24,12 @@ class LoginViewModel extends BaseModel {
     _analyticsService = AnalyticsService.getInstance();
   }
 
-  Future<AccountDTO> signIn(AuthCredential authCredential) async {
+  Future<AccountDTO> signIn(UserCredential userCredential,
+      [String method = "phone"]) async {
     try {
       // lay thong tin user tu firebase
-      final userCredential = await AuthService().signIn(authCredential);
-      await _analyticsService.logLogin(authCredential.signInMethod);
+
+      await _analyticsService.logLogin(method);
       // TODO: Thay uid = idToken
       String token = await userCredential.user.getIdToken();
       final userInfo = await dao.login(token);
@@ -38,7 +40,7 @@ class LoginViewModel extends BaseModel {
     } catch (e) {
       bool result = await showErrorDialog();
       if (result) {
-        await signIn(authCredential);
+        await signIn(userCredential);
       } else
         setState(ViewStatus.Error);
     }
@@ -50,7 +52,8 @@ class LoginViewModel extends BaseModel {
         (AuthCredential authCredential) async {
       try {
         showLoadingDialog();
-        final userInfo = await signIn(authCredential);
+        final userCredential = await AuthService().signIn(authCredential);
+        final userInfo = await signIn(userCredential);
         hideDialog();
         // TODO: Kiem tra xem user moi hay cu
         if (userInfo.isFirstLogin) {
@@ -84,15 +87,23 @@ class LoginViewModel extends BaseModel {
     final PhoneCodeAutoRetrievalTimeout phoneTimeout = (String verId) {
       verificationId = verId;
     };
-
-    await FirebaseAuth.instance.verifyPhoneNumber(
-      phoneNumber: phone,
-      timeout: Duration(seconds: 30),
-      verificationCompleted: verificationCompleted,
-      verificationFailed: verificationFailed,
-      codeSent: phoneCodeSent,
-      codeAutoRetrievalTimeout: phoneTimeout,
-    );
+    if (isSmartPhoneDevice()) {
+      await FirebaseAuth.instance.verifyPhoneNumber(
+        phoneNumber: phone,
+        timeout: Duration(seconds: 30),
+        verificationCompleted: verificationCompleted,
+        verificationFailed: verificationFailed,
+        codeSent: phoneCodeSent,
+        codeAutoRetrievalTimeout: phoneTimeout,
+      );
+    } else {
+      final confirmationResult =
+          await FirebaseAuth.instance.signInWithPhoneNumber(phone);
+      await Get.offNamed(RouteHandler.LOGIN_OTP, arguments: {
+        "confirmationResult": confirmationResult,
+        "phoneNumber": phone
+      });
+    }
   }
 
   Future<void> onSignInWithGmail() async {
@@ -116,8 +127,40 @@ class LoginViewModel extends BaseModel {
     try {
       final authCredential =
           await AuthService().signInWithOTP(smsCode, verificationId);
-      final userInfo = await signIn(authCredential);
+      final userCredential = await AuthService().signIn(authCredential);
+      final userInfo = await signIn(userCredential);
 
+      if (userInfo.isFirstLogin || userInfo.isFirstLogin == null) {
+        // Navigate to sign up screen
+        await Get.offAndToNamed(RouteHandler.SIGN_UP, arguments: userInfo);
+      } else {
+        Get.rawSnackbar(
+            message: "Đăng nhập thành công!!",
+            duration: Duration(seconds: 3),
+            snackPosition: SnackPosition.BOTTOM,
+            margin: EdgeInsets.only(left: 8, right: 8, bottom: 32),
+            borderRadius: 8);
+        await Get.offAllNamed(RouteHandler.NAV);
+      }
+    } on FirebaseAuthException catch (e) {
+      await showStatusDialog(
+          "assets/images/global_error.png", "Error", e.message);
+    } catch (e) {
+      await showStatusDialog(
+          "assets/images/global_error.png", "Error", e.toString());
+    } finally {
+      hideDialog();
+    }
+  }
+
+  Future<void> onsignInWithOTPForWeb(
+      smsCode, ConfirmationResult confirmationResult) async {
+    showLoadingDialog();
+
+    try {
+      final userCredential =
+          await AuthService().signInWithOTPForWeb(smsCode, confirmationResult);
+      final userInfo = await signIn(userCredential);
       if (userInfo.isFirstLogin || userInfo.isFirstLogin == null) {
         // Navigate to sign up screen
         await Get.offAndToNamed(RouteHandler.SIGN_UP, arguments: userInfo);

@@ -1,9 +1,10 @@
-import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:unidelivery_mobile/Accessories/index.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
+import 'package:flutter/foundation.dart';
+import 'package:unidelivery_mobile/Utils/index.dart';
 
 class PushNotificationService {
   static PushNotificationService _instance;
@@ -22,14 +23,15 @@ class PushNotificationService {
   final FirebaseMessaging _fcm = FirebaseMessaging.instance;
 
   Future init() async {
-    if (Platform.isIOS) {
+    if ((defaultTargetPlatform == TargetPlatform.iOS)) {
       await _fcm.requestPermission();
       _fcm.setForegroundNotificationPresentationOptions(
           alert: true, badge: true, sound: true);
     }
 
-     RemoteMessage message = await FirebaseMessaging.instance.getInitialMessage();
-     print("onInit: $message");
+    RemoteMessage message =
+        await FirebaseMessaging.instance.getInitialMessage();
+    print("onInit: $message");
 
     FirebaseMessaging.onMessage.listen((event) {
       hideSnackbar();
@@ -45,8 +47,7 @@ class PushNotificationService {
           mainButton: TextButton(
             child: Text(
               "Đồng ý",
-              style:
-                  Get.theme.textTheme.headline4.copyWith(color: kPrimary),
+              style: Get.theme.textTheme.headline4.copyWith(color: kPrimary),
             ),
             onPressed: () {
               hideSnackbar();
@@ -57,10 +58,10 @@ class PushNotificationService {
     FirebaseMessaging.onMessageOpenedApp.listen((event) {
       print('onResume: $event');
     });
-
   }
 
   Future<String> getFcmToken() async {
+    if (!isSmartPhoneDevice()) return null;
     String token = await _fcm.getToken();
     return token;
   }

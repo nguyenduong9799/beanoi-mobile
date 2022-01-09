@@ -11,8 +11,10 @@ import 'index.dart';
 class AccountDAO extends BaseDAO {
   Future<AccountDTO> login(String idToken) async {
     try {
-      String fcmToken =
-          await PushNotificationService.getInstance().getFcmToken();
+      String fcmToken = null;
+      if (isSmartPhoneDevice()) {
+        fcmToken = await PushNotificationService.getInstance().getFcmToken();
+      }
 
       Response response = await request
           .post("login", data: {"id_token": idToken, "fcm_token": fcmToken});

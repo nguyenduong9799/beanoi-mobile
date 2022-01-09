@@ -28,7 +28,7 @@ class AccountViewModel extends BaseModel {
       String token = await getToken();
       print(token.toString());
 
-      if (version == null) {
+      if (version == null && isSmartPhoneDevice()) {
         PackageInfo packageInfo = await PackageInfo.fromPlatform();
         version = packageInfo.version;
       }

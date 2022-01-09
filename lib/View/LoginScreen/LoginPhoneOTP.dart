@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
@@ -7,13 +8,18 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Enums/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
+import 'package:flutter/foundation.dart';
 
 class LoginWithPhoneOTP extends StatefulWidget {
   final String verificationId;
   final String phoneNumber;
+  final ConfirmationResult confirmationResult;
 
   LoginWithPhoneOTP(
-      {Key key, @required this.verificationId, @required this.phoneNumber})
+      {Key key,
+      this.verificationId,
+      @required this.phoneNumber,
+      this.confirmationResult})
       : super(key: key);
 
   @override
@@ -186,14 +192,24 @@ class _LoginWithPhoneOTPState extends State<LoginWithPhoneOTP> {
                                         .shake); // Triggering error shake animation
                                     model.setState(ViewStatus.Loading);
                                   } else {
-                                    if ((form.value["otp"] as String).length != 6) {
+                                    if ((form.value["otp"] as String).length !=
+                                        6) {
                                       errorController.add(ErrorAnimationType
                                           .shake); // Triggering error shake animation
                                       model.setState(ViewStatus.Error);
                                     } else {
-                                      await model.onsignInWithOTP(
-                                          form.value["otp"],
-                                          widget.verificationId);
+                                      if ((defaultTargetPlatform ==
+                                              TargetPlatform.iOS) ||
+                                          (defaultTargetPlatform ==
+                                              TargetPlatform.android)) {
+                                        await model.onsignInWithOTP(
+                                            form.value["otp"],
+                                            widget.verificationId);
+                                      } else {
+                                        await model.onsignInWithOTPForWeb(
+                                            form.value["otp"],
+                                            widget.confirmationResult);
+                                      }
                                     }
                                   }
                                 },

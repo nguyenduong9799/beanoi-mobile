@@ -27,8 +27,6 @@ class HomeViewModel extends BaseModel {
   Future<void> getSuppliers() async {
     try {
       setState(ViewStatus.Loading);
-      String token = await PushNotificationService.getInstance().getFcmToken();
-      print("FCM: $token");
       RootViewModel root = Get.find<RootViewModel>();
       await root.fetchStore();
       CampusDTO currentStore = root.currentStore;

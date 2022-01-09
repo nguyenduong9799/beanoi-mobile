@@ -260,7 +260,6 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
                                       _phone = _phone.substring(1);
                                     }
                                     String phone = _countryCode + _phone;
-                                    // print("phone $phone");
                                     await model.onLoginWithPhone(phone);
                                   }
                                 }

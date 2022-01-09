@@ -41,4 +41,10 @@ class AuthService {
         PhoneAuthProvider.credential(verificationId: verId, smsCode: smsCode);
     return authCredential;
   }
+
+  Future<UserCredential> signInWithOTPForWeb(
+      String smsCode, ConfirmationResult confirmationResult) async {
+    UserCredential userCredential = await confirmationResult.confirm(smsCode);
+    return userCredential;
+  }
 }

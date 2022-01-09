@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
@@ -6,6 +5,7 @@ import 'package:unidelivery_mobile/Accessories/index.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Services/firebase_dynamic_link_service.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:flutter/foundation.dart';
 
 class WebViewScreen extends StatefulWidget {
   final String url;
@@ -24,7 +24,8 @@ class _WebViewScreenState extends State<WebViewScreen> {
   void initState() {
     super.initState();
     // Enable hybrid composition.
-    if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
+    if ((defaultTargetPlatform == TargetPlatform.android))
+      WebView.platform = SurfaceAndroidWebView();
   }
 
   @override
