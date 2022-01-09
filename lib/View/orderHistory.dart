@@ -198,7 +198,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(left: 24, bottom: 16),
+          padding: const EdgeInsets.only(left: 8, bottom: 16),
           child: isToday
               ? Text(
                   'Hôm nay 😋',
@@ -207,7 +207,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
               : Text(
                   DateFormat('dd/MM/yyyy')
                       .format(DateTime.parse(orderSummary.checkInDate)),
-                  style: Get.theme.textTheme.headline1
+                  style: Get.theme.textTheme.headline3
                       .copyWith(color: Colors.black)),
         ),
         ...orderSummary.orders
@@ -247,19 +247,9 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                     children: [
                       Text(
                         "${order.invoiceId} / ${order.itemQuantity} món",
-                        style: Get.theme.textTheme.headline1
-                            .copyWith(color: Colors.black),
+                        style: Get.theme.textTheme.headline2.copyWith(
+                            color: Colors.black, fontWeight: FontWeight.bold),
                       ),
-                      // Text(
-                      //   DateFormat('HH:MM dd/MM/yyyy')
-                      //       .format(DateTime.parse(order.orderTime)),
-                      //   style: TextStyle(
-                      //     fontSize: 8,
-                      //     color: Colors.grey[600],
-                      //   ),
-                      //   maxLines: 1,
-                      //   overflow: TextOverflow.ellipsis,
-                      // ),
                     ],
                   ),
                   SizedBox(
@@ -282,7 +272,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                   Text(
                     "${formatPrice(order.finalAmount)}",
                     textAlign: TextAlign.right,
-                    style: Get.theme.textTheme.headline1,
+                    style: Get.theme.textTheme.headline2,
                   ),
                 ],
               ),

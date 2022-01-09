@@ -80,9 +80,11 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Container(
                                 width: 100,
+                                height: 35,
                                 child: orderDetail.status == OrderFilter.NEW
                                     ? TyperAnimatedTextKit(
                                         speed: Duration(milliseconds: 100),

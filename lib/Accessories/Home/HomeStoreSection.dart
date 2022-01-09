@@ -97,8 +97,8 @@ class HomeStoreSection extends StatelessWidget {
                     padding: const EdgeInsets.fromLTRB(8, 16.0, 8, 16),
                     child: Text(
                       'Quán ngon hôm nay',
-                      style: Get.theme.textTheme.headline2
-                          .copyWith(color: kTextColor),
+                      style: Get.theme.textTheme.headline2.copyWith(
+                          color: kTextColor, fontWeight: FontWeight.w900),
                       textAlign: TextAlign.left,
                     ),
                   ),

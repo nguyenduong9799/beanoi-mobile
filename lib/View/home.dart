@@ -88,16 +88,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                 children: [
                                   SizedBox(height: 8),
                                   banner(),
-                                  // CATEGORY
-                                  buildLinkBtns(),
+                                  // buildLinkBtns(),
                                   Section(child: HomeCategorySection()),
-                                  // END CATEGORY
                                   SizedBox(height: 8),
-                                  // GITF EXCHANGE
-                                  Section(child: buildGiftCanExchangeSection()),
-                                  // END GITF EXCHANGE
+                                  // Section(child: buildGiftCanExchangeSection()),
                                   SizedBox(height: 8),
-                                  Section(child: HomeCollection()),
+                                  // Section(child: HomeCollection()),
                                   SizedBox(height: 8),
                                   Container(child: HomeStoreSection()),
                                   SizedBox(height: 46),

@@ -62,8 +62,7 @@ class CustomInterceptors extends Interceptor {
   void onResponse(Response response, ResponseInterceptorHandler handler) {
     print(
         'RESPONSE[${response.statusCode}] => PATH: ${response.requestOptions?.path}');
-        print(
-        'DATA: ${response.data}');
+    print('DATA: ${response.data}');
     return super.onResponse(response, handler);
   }
 
@@ -79,7 +78,7 @@ class CustomInterceptors extends Interceptor {
 class MyRequest {
   static BaseOptions options = new BaseOptions(
       // baseUrl: 'https://beanapi.unibean.net/api/',
-      baseUrl: "http://dev.unibean.net/api/",
+      baseUrl: "https://localhost:5001/api/",
       headers: {
         Headers.contentTypeHeader: "application/json",
       },

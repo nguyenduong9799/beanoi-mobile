@@ -138,7 +138,7 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
                             // mainAxisSize: MainAxisSize.max,
                             children: [
                               Expanded(
-                                flex: 1,
+                                flex: 2,
                                 child: Container(
                                   height: 48,
                                   decoration: BoxDecoration(
@@ -165,7 +165,7 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
                               ),
                               SizedBox(width: 8),
                               Expanded(
-                                  flex: 2,
+                                  flex: 3,
                                   child: Container(
                                     height: 48,
                                     // height: 100,
@@ -175,8 +175,7 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
                                         autofocus: true,
                                         focusNode: _phoneFocus,
                                         inputFormatters: <TextInputFormatter>[
-                                          WhitelistingTextInputFormatter
-                                              .digitsOnly
+                                          FilteringTextInputFormatter.digitsOnly
                                         ],
                                         keyboardType: TextInputType.number,
                                         validator: (input) {
