@@ -45,10 +45,7 @@ class OrderViewModel extends BaseModel {
       }
 
       if (currentCart == null) {
-        if (Get.find<bool>(tag: "isMart")) {
-          currentCart = await getMart();
-        } else
-          currentCart = await getCart();
+        currentCart = await getCart();
       }
 
       orderAmount = await dao.prepareOrder(campusDTO.id, currentCart);

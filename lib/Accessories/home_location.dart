@@ -150,17 +150,17 @@ class _HomeLocationSelectState extends State<HomeLocationSelect> {
   }
 
   Widget _buildLocationItem(LocationDTO location, CampusDTO campus) {
-    return ScopedModelDescendant<RootViewModel>(
-        builder: (context, child, model) {
-      return Container(
-        width: Get.width,
-        decoration: BoxDecoration(
-          border: Border(
-            bottom: BorderSide(color: Colors.grey[200], width: 1),
-          ),
+    return Container(
+      width: Get.width,
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(color: Colors.grey[200], width: 1),
         ),
-        padding: EdgeInsets.only(left: 16, bottom: 8, right: 16, top: 8),
-        child: Column(
+      ),
+      padding: EdgeInsets.only(left: 16, bottom: 8, right: 16, top: 8),
+      child: ScopedModelDescendant<RootViewModel>(
+          builder: (context, child, model) {
+        return Column(
           children: [
             Row(
               mainAxisSize: MainAxisSize.max,
@@ -178,7 +178,7 @@ class _HomeLocationSelectState extends State<HomeLocationSelect> {
                 ),
               ],
             ),
-            ...location.destinations.map((e) => Material(
+            ...location.destinations?.map((e) => Material(
                   color: Colors.transparent,
                   child: InkWell(
                       onTap: () {
@@ -191,9 +191,9 @@ class _HomeLocationSelectState extends State<HomeLocationSelect> {
                       child: buildDestinationItem(e)),
                 ))
           ],
-        ),
-      );
-    });
+        );
+      }),
+    );
   }
 
   Widget buildDestinationItem(DestinationDTO dto) {

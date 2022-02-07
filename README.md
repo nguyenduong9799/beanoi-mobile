@@ -1,15 +1,6 @@
-## 30/01/2021
-- [ ] Confirm Huy don
-- [ ] Implement Cancle order
-- [ ] Confirm chot don
-
-
-
-# unidelivery_mobile
-
-A new Flutter project.
-
 ## Getting Started
+
+This app use flutter **v2.2.0**
 
 This project is a starting point for a Flutter application.
 

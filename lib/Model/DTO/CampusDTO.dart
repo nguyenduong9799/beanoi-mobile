@@ -99,7 +99,6 @@ class DestinationDTO {
   DestinationDTO({this.id, this.name, this.description, this.isSelected});
 
   factory DestinationDTO.fromJson(dynamic json) {
-    print("Destination check");
     return DestinationDTO(
         id: json['destination_location_id'],
         name: json['name'],
