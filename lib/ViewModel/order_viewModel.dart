@@ -175,10 +175,7 @@ class OrderViewModel extends BaseModel {
   Future<void> changeOption(int option) async {
     // showLoadingDialog();
     currentCart.payment = option;
-    if (Get.find<bool>(tag: "isMart")) {
-      await setMart(currentCart);
-    } else
-      await setCart(currentCart);
+    await setCart(currentCart);
     await prepareOrder();
   }
 

@@ -10,7 +10,7 @@ class ProductDAO extends BaseDAO {
     int supplierId,
     TimeSlot timeSlot, {
     int page = 1,
-    int size = 10,
+    int size = 20,
     int type,
     Map<String, dynamic> params = const {},
   }) async {

@@ -96,7 +96,7 @@ class MyRequest {
       },
       onError: (e, handler) async {
         print(e.response.toString());
-        if (e.response.statusCode == 401) {
+        if (e.response?.statusCode == 401) {
           await showStatusDialog("assets/images/global_error.png", "Lỗi",
               "Vui lòng đăng nhập lại");
           Get.Get.offAllNamed(RouteHandler.LOGIN);

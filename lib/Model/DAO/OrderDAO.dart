@@ -75,6 +75,8 @@ class OrderDAO extends BaseDAO {
           statusCode: e.response.statusCode,
           code: e.response.data['code'],
           message: e.response.data['message']);
+    } catch (e) {
+      throw e;
     }
     return null;
   }

@@ -76,7 +76,7 @@ class _ProductsFilterPageState extends State<ProductsFilterPage> {
           return Flexible(
             child: ListView.separated(
               itemCount: model.listProducts.length + 1,
-              separatorBuilder: (context, index) => SizedBox(height: 8),
+              separatorBuilder: (context, index) => SizedBox(height: 2),
               itemBuilder: (context, index) {
                 if (index == model.listProducts.length) {
                   return Padding(

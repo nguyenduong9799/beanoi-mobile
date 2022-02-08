@@ -362,12 +362,14 @@ class _FixedAppBarState extends State<FixedAppBar> {
           (element) => element.isSelected,
           orElse: () => null,
         );
+        DestinationDTO destinationDTO = location?.destinations
+            ?.firstWhere((element) => element.isSelected, orElse: () => null);
         String text = "Đợi tý đang load...";
         final status = root.status;
         if (root.changeAddress) {
           text = "Đang thay đổi...";
         } else if (location != null) {
-          text = location.address;
+          text = destinationDTO.name;
         } else {
           text = "Chưa chọn";
         }

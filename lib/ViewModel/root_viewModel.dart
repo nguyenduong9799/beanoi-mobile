@@ -301,6 +301,8 @@ class RootViewModel extends BaseModel {
         element.destinations.forEach((des) {
           if (des.id == destination.id) {
             des.isSelected = true;
+          } else {
+            des.isSelected = false;
           }
         });
       } else {

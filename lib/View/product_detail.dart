@@ -92,7 +92,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                     children: [
                       productTitle(),
                       tabAffectAtritbute(),
-                      AffectAtributeContent(),
+                      affectedAtributeContent(),
                     ],
                   ),
                 ),
@@ -107,7 +107,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
   Widget productTitle() {
     return Container(
       color: kBackgroundGrey[0],
-      padding: EdgeInsets.all(8),
+      padding: EdgeInsets.fromLTRB(8, 16, 8, 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -209,7 +209,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
     return Container();
   }
 
-  Widget AffectAtributeContent() {
+  Widget affectedAtributeContent() {
     List<Widget> attributes;
     List<String> listOptions;
     return ScopedModelDescendant(
@@ -229,7 +229,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
             );
           case ViewStatus.Completed:
             if (!model.isExtra) {
-              attributes = new List();
+              attributes = [];
               if (widget.dto.type == ProductType.MASTER_PRODUCT) {
                 listOptions = model.affectPriceContent[
                     model.affectPriceContent.keys.elementAt(model.affectIndex)];
@@ -247,23 +247,29 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                 }
               }
             } else {
-              attributes = new List();
+              attributes = [];
               for (int i = 0; i < model.extra.keys.toList().length; i++) {
                 attributes.add(CheckboxListTile(
                   title: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(model.extra.keys.elementAt(i).name.contains("Extra")
-                          ? model.extra.keys
-                              .elementAt(i)
-                              .name
-                              .replaceAll("Extra", "+")
-                          : model.extra.keys.elementAt(i).name),
+                      Text(
+                        model.extra.keys.elementAt(i).name.contains("Extra")
+                            ? model.extra.keys
+                                .elementAt(i)
+                                .name
+                                .replaceAll("Extra", "+")
+                            : model.extra.keys.elementAt(i).name,
+                        style: kSubtitleTextStyle,
+                      ),
                       Flexible(
                         child: Padding(
                           padding: const EdgeInsets.only(right: 8.0),
-                          child: Text(NumberFormat.simpleCurrency(locale: "vi")
-                              .format(model.extra.keys.elementAt(i).price)),
+                          child: Text(
+                            NumberFormat.simpleCurrency(locale: "vi")
+                                .format(model.extra.keys.elementAt(i).price),
+                            style: kSubtitleTextStyle,
+                          ),
                         ),
                       )
                     ],

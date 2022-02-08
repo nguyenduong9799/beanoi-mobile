@@ -117,7 +117,10 @@ class _OrderScreenState extends State<OrderScreen> {
                       );
 
                     default:
-                      return LoadingScreen();
+                      return Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: LoadingScreen(),
+                      );
                   }
                 },
               ),
@@ -474,7 +477,20 @@ class _OrderScreenState extends State<OrderScreen> {
                     color: Colors.grey,
                   ),
                 ),
-                errorWidget: (context, url, error) => Icon(Icons.error),
+                errorWidget: (context, url, error) => Container(
+                  color: Colors.grey[200],
+                  child: Center(
+                      child: FittedBox(
+                    fit: BoxFit.fitWidth,
+                    child: Text(
+                      "BEAN OI",
+                      style: TextStyle(
+                        color: Colors.grey,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  )),
+                ),
               ),
             ),
             SizedBox(
@@ -586,8 +602,8 @@ class _OrderScreenState extends State<OrderScreen> {
                     children: [
                       destination != null
                           ? Flexible(
-                                                      child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
                                     location.address,
@@ -603,7 +619,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                   ),
                                 ],
                               ),
-                          )
+                            )
                           : Flexible(
                               child: Text(
                                 "Chọn địa điểm giao hàng",
