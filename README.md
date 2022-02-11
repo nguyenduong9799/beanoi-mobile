@@ -1,6 +1,6 @@
 ## Getting Started
 
-This app use flutter **v2.2.0**
+This app use flutter **v2.2.2**
 
 This project is a starting point for a Flutter application.
 

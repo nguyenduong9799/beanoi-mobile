@@ -228,10 +228,7 @@ class RootViewModel extends BaseModel {
 
   Future<void> openCart(bool isMart) async {
     hideSnackbar();
-    Get.put<bool>(isMart, tag: "isMart");
     await Get.toNamed(RouteHandler.ORDER);
-    await Get.delete<bool>(tag: "isMart");
-    print("Delete order tag!");
     notifyListeners();
   }
 

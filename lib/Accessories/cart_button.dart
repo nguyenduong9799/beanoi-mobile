@@ -24,12 +24,11 @@ class _CartButtonState extends State<CartButton> {
       model: Get.find<RootViewModel>(),
       child: ScopedModelDescendant<RootViewModel>(
           builder: (context, child, model) {
-        print("Rebuild cart with isMart ${widget.isMart}");
         if (model.status == ViewStatus.Loading) {
           return SizedBox.shrink();
         }
         return FutureBuilder(
-            future: widget.isMart ? model.mart : model.cart,
+            future: model.cart,
             builder: (context, snapshot) {
               Cart cart = snapshot.data;
               if (cart == null) return SizedBox.shrink();
@@ -58,10 +57,8 @@ class _CartButtonState extends State<CartButton> {
                           borderRadius: BorderRadius.circular(4),
                         ),
                         child: Icon(
-                          widget.isMart
-                              ? Icons.card_travel_outlined
-                              : AntDesign.shoppingcart,
-                          color: widget.isMart ? kBlueColor : kPrimary,
+                          AntDesign.shoppingcart,
+                          color: kPrimary,
                         ),
                       ),
                       Positioned(

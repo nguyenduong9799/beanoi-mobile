@@ -120,11 +120,7 @@ class OrderViewModel extends BaseModel {
       }
     }
 
-    if (Get.find<bool>(tag: "isMart")) {
-      await updateItemFromMart(item);
-    } else {
-      await updateItemFromCart(item);
-    }
+    await updateItemFromCart(item);
     await prepareOrder();
   }
 
@@ -145,10 +141,7 @@ class OrderViewModel extends BaseModel {
       OrderStatus result = await dao.createOrders(destination.id, currentCart);
       await Get.find<AccountViewModel>().fetchUser();
       if (result.statusCode == 200) {
-        if (Get.find<bool>(tag: "isMart")) {
-          await deleteMart();
-        } else
-          await deleteCart();
+        await deleteCart();
         hideDialog();
         await showStatusDialog(
             "assets/images/global_sucsess.png", result?.code, result?.message);
@@ -183,13 +176,8 @@ class OrderViewModel extends BaseModel {
     // showLoadingDialog();
     print("Delete item...");
     bool result;
-    if (Get.find<bool>(tag: "isMart")) {
-      print("Delete mart");
-      result = await removeItemFromMart(item);
-    } else {
-      print("Delete cart");
-      result = await removeItemFromCart(item);
-    }
+
+    result = await removeItemFromCart(item);
     print("Result: $result");
     if (result) {
       await AnalyticsService.getInstance()
@@ -197,10 +185,7 @@ class OrderViewModel extends BaseModel {
       hideDialog();
       Get.back(result: false);
     } else {
-      if (Get.find<bool>(tag: "isMart")) {
-        currentCart = await getMart();
-      } else
-        currentCart = await getCart();
+      currentCart = await getCart();
       await prepareOrder();
     }
   }
@@ -281,10 +266,7 @@ class OrderViewModel extends BaseModel {
       }
     }
     if (update) {
-      if (Get.find<bool>(tag: "isMart")) {
-        setMart(currentCart);
-      } else
-        setCart(currentCart);
+      setCart(currentCart);
     }
     notifyListeners();
   }
