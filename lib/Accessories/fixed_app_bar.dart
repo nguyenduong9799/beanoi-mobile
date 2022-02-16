@@ -606,19 +606,22 @@ class _BeanTimeCountdownState extends State<BeanTimeCountdown> {
               }
               return Row(
                 children: [
-                  buildTimeBlock("${time.hours < 10 ? "0" : ""}${time.hours}"),
+                  buildTimeBlock(
+                      "${(time.hours ?? 0) < 10 ? "0" : ""}${time.hours ?? "0"}"),
                   Text(
                     ":",
                     style: Get.theme.textTheme.headline6
                         .copyWith(color: Colors.black),
                   ),
-                  buildTimeBlock("${time.min < 10 ? "0" : ""}${time.min}"),
+                  buildTimeBlock(
+                      "${(time.min ?? 0) < 10 ? "0" : ""}${time.min ?? "0"}"),
                   Text(
                     ":",
                     style: Get.theme.textTheme.headline6
                         .copyWith(color: Colors.black),
                   ),
-                  buildTimeBlock("${time.sec < 10 ? "0" : ""}${time.sec}"),
+                  buildTimeBlock(
+                      "${(time.sec ?? 0) < 10 ? "0" : ""}${time.sec ?? "0"}"),
                 ],
               );
             },
