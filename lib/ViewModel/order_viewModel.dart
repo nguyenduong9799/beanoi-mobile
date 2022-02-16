@@ -112,8 +112,8 @@ class OrderViewModel extends BaseModel {
       });
 
       if (totalBean < (item.master.price * item.quantity)) {
-        await showStatusDialog("assets/images/global_error.png", "ERR_BALANCE",
-            "Số bean hiện tại không đủ");
+        await showStatusDialog("assets/images/global_error.png",
+            "Không đủ bean", "Số bean hiện tại không đủ");
         item.quantity = originalQuantity;
         hideDialog();
         return;

@@ -221,9 +221,7 @@ class _UpdateAccountState extends State<ProfileScreen> {
                     style: Get.theme.textTheme.headline4
                         .copyWith(color: Colors.black54)),
                 function: () {
-                  _launchUrl(
-                      "https://unidelivery-fad6f.web.app/?fbclid=IwAR1_t9Tlz6YCulz1idfZ4jIJ0AVDP6Pdno7qQ1pKMEi0kwR6zAG-qUJC5K8",
-                      forceWebView: true);
+                  _launchUrl("https://unibean.net", forceWebView: true);
                 }),
             Divider(),
             section(
