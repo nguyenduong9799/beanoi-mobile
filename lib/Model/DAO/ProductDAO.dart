@@ -66,7 +66,8 @@ class ProductDAO extends BaseDAO {
     final query = convertToQueryParams({
       "page": (page ?? 1).toString(),
       "size": (size ?? DEFAULT_SIZE).toString(),
-      "time-slot": [timeSlot.from.toString(), timeSlot.to.toString()]
+      "time-slot": [timeSlot.from.toString(), timeSlot.to.toString()],
+      "fields": ['ChildProducts', 'CollectionId', 'Extras']
     }..addAll(params));
 
     String queryStr = Uri(
