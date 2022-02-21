@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/setup.dart';
@@ -26,7 +27,21 @@ Future<String> getFCMToken() async {
 
 Future<bool> setToken(String value) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
+  String expireDate = DateFormat("yyyy-MM-dd hh:mm:ss")
+      .format(DateTime.now().add(Duration(days: 7)));
+  prefs.setString('expireDate', expireDate.toString());
   return prefs.setString('token', value);
+}
+
+Future<bool> expireToken() async {
+  try {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    DateTime tempDate = new DateFormat("yyyy-MM-dd hh:mm:ss")
+        .parse(prefs.getString('expireDate'));
+    return tempDate.compareTo(DateTime.now()) < 0;
+  } catch (e) {
+    return true;
+  }
 }
 
 Future<String> getToken() async {
@@ -117,7 +132,7 @@ Future<bool> removeItemFromMart(CartItem item) async {
 
 Future<void> deleteCart() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  prefs.remove("CART");
+  await prefs.remove("CART");
 }
 
 Future<void> deleteMart() async {
