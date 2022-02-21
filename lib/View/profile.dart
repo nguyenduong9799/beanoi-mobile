@@ -184,6 +184,15 @@ class _UpdateAccountState extends State<ProfileScreen> {
                 }),
             Divider(),
             section(
+                icon: Icon(Icons.shopping_bag, color: Colors.black54),
+                title: Text("Đơn hàng",
+                    style: Get.theme.textTheme.headline4
+                        .copyWith(color: Colors.black54)),
+                function: () {
+                  Get.toNamed(RouteHandler.ORDER_HISTORY);
+                }),
+            Divider(),
+            section(
                 icon: Icon(Icons.history, color: Colors.black54),
                 title: Text("Lịch sử giao dịch",
                     style: Get.theme.textTheme.headline4
