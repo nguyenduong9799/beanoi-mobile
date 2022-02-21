@@ -29,7 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
   OrderHistoryViewModel orderModel = Get.find<OrderHistoryViewModel>();
   final double HEIGHT = 48;
   final ValueNotifier<double> notifier = ValueNotifier(0);
-
+  final PageController controller = PageController();
   Future<void> _refresh() async {
     await Get.find<HomeViewModel>().getSuppliers();
     await orderModel.getNewOrder();
@@ -373,79 +373,97 @@ class _HomeScreenState extends State<HomeScreen> {
       model: orderModel,
       child: ScopedModelDescendant<OrderHistoryViewModel>(
           builder: (context, child, model) {
-        if (model.status == ViewStatus.Loading || model.newTodayOrder == null) {
+        if (model.status == ViewStatus.Loading ||
+            model.newTodayOrders == null) {
           return SizedBox();
         }
-        final order = model.newTodayOrder;
-        return Card(
-          // width: Get.width,
-          // color: Color(0xff9dd1ad),
-          // padding: EdgeInsets.all(8),
-          // height: 40,
-          margin: EdgeInsets.fromLTRB(8, 0, 8, 8),
-          elevation: 3,
-          child: AnimatedContainer(
-            duration: Duration(seconds: 2),
-            width: Get.width * 0.95,
-            child: IntrinsicHeight(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Expanded(
-                    child: InkWell(
-                      onTap: () {
-                        _onTapOrderHistory(order);
-                      },
-                      child: Container(
-                        padding: EdgeInsets.fromLTRB(8, 8, 8, 8),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  order.invoiceId,
-                                  style: Get.theme.textTheme.headline3,
-                                ),
-                                SizedBox(height: 8),
-                                Text('Đơn hàng mới',
-                                    style: Get.theme.textTheme.headline6)
-                              ],
-                            ),
-                            SizedBox(width: 24),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    order.address,
-                                    style: Get.theme.textTheme.headline3,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
+        return Container(
+          width: Get.width,
+          height: 80,
+          child: PageView(
+            children: model.newTodayOrders
+                .map((order) => Card(
+                      margin: EdgeInsets.fromLTRB(8, 0, 8, 8),
+                      elevation: 3,
+                      child: AnimatedContainer(
+                        duration: Duration(seconds: 2),
+                        decoration: BoxDecoration(
+                            border: Border(
+                                left: BorderSide(color: kPrimary, width: 3))),
+                        width: Get.width * 0.95,
+                        child: IntrinsicHeight(
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Expanded(
+                                child: InkWell(
+                                  onTap: () {
+                                    _onTapOrderHistory(order);
+                                  },
+                                  child: Container(
+                                    padding: EdgeInsets.fromLTRB(8, 8, 8, 8),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              order.invoiceId,
+                                              style:
+                                                  Get.theme.textTheme.headline3,
+                                            ),
+                                            SizedBox(height: 8),
+                                            Text('Đơn hàng mới',
+                                                style: Get
+                                                    .theme.textTheme.headline6)
+                                          ],
+                                        ),
+                                        SizedBox(width: 24),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                order.address,
+                                                style: Get
+                                                    .theme.textTheme.headline3,
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                              SizedBox(height: 8),
+                                              Text('Nhận đơn tại',
+                                                  style: Get.theme.textTheme
+                                                      .headline6)
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                  SizedBox(height: 8),
-                                  Text('Nhận đơn tại',
-                                      style: Get.theme.textTheme.headline6)
-                                ],
+                                ),
                               ),
-                            ),
-                          ],
+                              IconButton(
+                                icon: Icon(Icons.close),
+                                onPressed: () {
+                                  orderModel.closeNewOrder(order.id);
+                                },
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.close),
-                    onPressed: () {
-                      orderModel.closeNewOrder();
-                    },
-                  ),
-                ],
-              ),
-            ),
+                    ))
+                .toList(),
+            scrollDirection: Axis.horizontal,
+            controller: controller,
           ),
         );
       }),
