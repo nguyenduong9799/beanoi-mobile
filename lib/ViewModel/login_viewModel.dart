@@ -87,7 +87,15 @@ class LoginViewModel extends BaseModel {
     final PhoneCodeAutoRetrievalTimeout phoneTimeout = (String verId) {
       verificationId = verId;
     };
-    if (isSmartPhoneDevice()) {
+
+    if (kIsWeb) {
+      final confirmationResult =
+          await FirebaseAuth.instance.signInWithPhoneNumber(phone);
+      await Get.offNamed(RouteHandler.LOGIN_OTP, arguments: {
+        "confirmationResult": confirmationResult,
+        "phoneNumber": phone
+      });
+    } else {
       await FirebaseAuth.instance.verifyPhoneNumber(
         phoneNumber: phone,
         timeout: Duration(seconds: 30),
@@ -96,13 +104,6 @@ class LoginViewModel extends BaseModel {
         codeSent: phoneCodeSent,
         codeAutoRetrievalTimeout: phoneTimeout,
       );
-    } else {
-      final confirmationResult =
-          await FirebaseAuth.instance.signInWithPhoneNumber(phone);
-      await Get.offNamed(RouteHandler.LOGIN_OTP, arguments: {
-        "confirmationResult": confirmationResult,
-        "phoneNumber": phone
-      });
     }
   }
 
