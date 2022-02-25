@@ -15,5 +15,14 @@ class CollectionDAO {
   }
 
   // TODO: Get Collection of area
-
+  Future<List<CollectionDTO>> getCollections(TimeSlot timeSlot,{
+    Map<String, dynamic> params = const {}
+  }) async {
+    final res = await request.get(
+      'collections?time-slot=${timeSlot.from.toString()}&time-slot=${timeSlot.to.toString()}',
+      queryParameters: params,
+    );
+    final collections = CollectionDTO.fromList(res.data["data"]);
+    return collections;
+  }
 }

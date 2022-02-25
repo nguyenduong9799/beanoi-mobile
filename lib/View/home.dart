@@ -32,8 +32,9 @@ class _HomeScreenState extends State<HomeScreen> {
   final PageController controller = PageController();
   Future<void> _refresh() async {
     await Get.find<HomeViewModel>().getSuppliers();
-    await orderModel.getNewOrder();
+    await Get.find<HomeViewModel>().getCollections();
     await Get.find<HomeViewModel>().getNearlyGiftExchange();
+    await orderModel.getNewOrder();
   }
 
   @override
@@ -92,8 +93,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   Section(child: HomeCategorySection()),
                                   SizedBox(height: 8),
                                   // Section(child: buildGiftCanExchangeSection()),
-                                  SizedBox(height: 8),
-                                  // Section(child: HomeCollection()),
+                                  Section(child: HomeCollection(), padding: EdgeInsets.zero),
                                   SizedBox(height: 8),
                                   Container(child: HomeStoreSection()),
                                   SizedBox(height: 46),
