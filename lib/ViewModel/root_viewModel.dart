@@ -17,7 +17,11 @@ class RootViewModel extends BaseModel {
   CampusDTO currentStore;
   List<CampusDTO> campuses;
 
-  RootViewModel();
+  ProductDAO _productDAO;
+
+  RootViewModel() {
+    _productDAO = ProductDAO();
+  }
 
   Future getStores() async {
     setState(ViewStatus.Loading);
@@ -243,11 +247,14 @@ class RootViewModel extends BaseModel {
   }
 
   Future<void> openProductDetail(ProductDTO product,
-      {showOnHome = true}) async {
+      {showOnHome = true, fetchDetail = false}) async {
     Get.put<bool>(
       showOnHome,
       tag: "showOnHome",
     );
+    if(fetchDetail) {
+      product = await _productDAO.getProductDetail(product.id);
+    }
     bool result =
         await Get.toNamed(RouteHandler.PRODUCT_DETAIL, arguments: product);
     hideSnackbar();

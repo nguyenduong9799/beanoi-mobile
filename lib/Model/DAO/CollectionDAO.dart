@@ -14,7 +14,6 @@ class CollectionDAO {
     return categories;
   }
 
-  // TODO: Get Collection of area
   Future<List<CollectionDTO>> getCollections(TimeSlot timeSlot,{
     Map<String, dynamic> params = const {}
   }) async {

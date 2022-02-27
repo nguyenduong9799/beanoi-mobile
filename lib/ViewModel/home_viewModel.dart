@@ -88,6 +88,7 @@ class HomeViewModel extends BaseModel {
 
     return null;
   }
+
   Future<void> getCollections() async {
     try {
       setState(ViewStatus.Loading);
@@ -103,7 +104,8 @@ class HomeViewModel extends BaseModel {
         return;
       }
       homeCollections = await _collectionDAO.getCollections(
-          currentStore.selectedTimeSlot, params: {"show-on-home" : true});
+          currentStore.selectedTimeSlot,
+          params: {"show-on-home": true});
       await Future.delayed(Duration(microseconds: 500));
       setState(ViewStatus.Completed);
     } catch (e) {

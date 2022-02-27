@@ -370,7 +370,7 @@ class _OrderScreenState extends State<OrderScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    list[0].master.supplierName,
+                    list[0].master.supplierName ?? '',
                     style: Get.theme.textTheme.headline3,
                   ),
                   Text(

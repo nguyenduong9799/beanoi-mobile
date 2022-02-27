@@ -21,7 +21,8 @@ class CollectionDTO {
         description: json['description'],
         isSelected: false,
         products: (json['products'] as List ?? [])
-            .map((data) => ProductDTO.fromJson(data)));
+            .map((data) => ProductDTO.fromJson(data))
+            .toList());
   }
 
   static List<CollectionDTO> fromList(dynamic jsonList) {

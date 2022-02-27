@@ -12,6 +12,7 @@ import 'package:unidelivery_mobile/Model/DTO/CollectionDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/ProductDTO.dart';
 import 'package:unidelivery_mobile/ViewModel/collection_viewmodel.dart';
 import 'package:unidelivery_mobile/ViewModel/home_viewModel.dart';
+import 'package:unidelivery_mobile/ViewModel/root_viewModel.dart';
 
 class HomeCollection extends StatelessWidget {
   const HomeCollection({
@@ -33,8 +34,15 @@ class HomeCollection extends StatelessWidget {
           }
           return Column(
             children: collections
-                .where((element) => element.products != null && element.products?.length != 0)
-                .map((c) => buildHomeCollection(c))
+                .where((element) =>
+                    element.products != null && element.products?.length != 0)
+                .map(
+                  (c) => Container(
+                      margin: EdgeInsets.only(bottom: 16),
+                      color: Colors.white,
+                      padding: EdgeInsets.all(8),
+                      child: buildHomeCollection(c)),
+                )
                 .toList(),
           );
         },
@@ -49,9 +57,9 @@ class HomeCollection extends StatelessWidget {
         SizedBox(height: 8),
         Text(
           collection.name,
-          style: kTitleTextStyle,
+          style: kTitleTextStyle.copyWith(fontSize: 20),
         ),
-        SizedBox(height: 4),
+        // SizedBox(height: 4),
         Text(
           collection.description ?? "",
           style: Get.theme.textTheme.headline4
@@ -59,21 +67,26 @@ class HomeCollection extends StatelessWidget {
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
         ),
-        SizedBox(height: 8),
+        SizedBox(height: 16),
         Container(
           width: Get.width,
-          height: 210,
+          height: 200,
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             separatorBuilder: (context, index) => SizedBox(width: 16),
             itemBuilder: (context, index) {
+              var product = collection.products[index];
               return Material(
                 color: Colors.white,
                 child: TouchOpacity(
                   onTap: () {
-                    print('View Detail item');
+                    RootViewModel root = Get.find<RootViewModel>();
+                    if(product.type == ProductType.MASTER_PRODUCT) {
+
+                    }
+                    root.openProductDetail(product,fetchDetail: true);
                   },
-                  child: buildProductInCollection(collection.products[index]),
+                  child: buildProductInCollection(product),
                 ),
               );
             },
@@ -120,6 +133,7 @@ class HomeCollection extends StatelessWidget {
               color: kPrimary.withOpacity(0.5),
             ),
           ),
+          SizedBox(height: 8),
           Text(
             NumberFormat.simpleCurrency(locale: "vi").format(product.price),
             style: Get.theme.textTheme.headline5.copyWith(
@@ -127,36 +141,39 @@ class HomeCollection extends StatelessWidget {
             ),
           ),
           SizedBox(height: 4),
-          Text(
-            product.name,
-            style: kTitleTextStyle.copyWith(
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
+          Container(
+            height: 40,
+            child: Text(
+              product.name,
+              style: kTitleTextStyle.copyWith(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+              ),
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
             ),
-            textAlign: TextAlign.center,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
           ),
           SizedBox(height: 4),
-          Material(
-            child: InkWell(
-              onTap: () {
-                print("ADD TO CART");
-              },
-              child: Container(
-                width: kWitdthItem,
-                padding: EdgeInsets.all(4),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: kPrimary)),
-                child: Text(
-                  "Chọn",
-                  style: TextStyle(fontSize: 12),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ),
-          ),
+          // Material(
+          //   child: InkWell(
+          //     onTap: () {
+          //       print("ADD TO CART");
+          //     },
+          //     child: Container(
+          //       width: kWitdthItem,
+          //       padding: EdgeInsets.all(4),
+          //       decoration: BoxDecoration(
+          //           borderRadius: BorderRadius.circular(16),
+          //           border: Border.all(color: kPrimary)),
+          //       child: Text(
+          //         "Chọn",
+          //         style: TextStyle(fontSize: 12),
+          //         textAlign: TextAlign.center,
+          //       ),
+          //     ),
+          //   ),
+          // ),
         ],
       ),
     );

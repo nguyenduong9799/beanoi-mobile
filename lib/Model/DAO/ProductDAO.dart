@@ -80,6 +80,13 @@ class ProductDAO extends BaseDAO {
     return products;
   }
 
+  Future<ProductDTO> getProductDetail(int id) async {
+    Response res = await request.get('products/$id');
+
+    final products = ProductDTO.fromJson(res.data);
+    return products;
+  }
+
   // Future<List<ProductDTO>> getExtraProducts(
   //     int cat_id, String sup_id, int store_id) async {
   //   print("Category id: " + cat_id.toString());

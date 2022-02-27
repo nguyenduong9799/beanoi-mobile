@@ -94,7 +94,7 @@ class ProductDTO {
 
     switch (type) {
       case ProductType.MASTER_PRODUCT:
-        var listChildJson = json['child_products'] as List;
+        var listChildJson = json['child_products'] as List ?? [];
 
         List<ProductDTO> listChild =
             listChildJson.map((e) => ProductDTO.fromJson(e)).toList();
