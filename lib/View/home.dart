@@ -17,7 +17,7 @@ import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Enums/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
-import 'package:url_launcher/url_launcher.dart';
+// import 'package:url_launcher/url_launcher.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -122,8 +122,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                         "2. Đặt hàng qua Fanpage ",
                                         textAlign: TextAlign.center,
                                       ),
-                                      onTap: () =>
-                                          launch('fb://page/103238875095890'),
+                                      // onTap: () =>
+                                      //     launch('fb://page/103238875095890'),
                                     ),
                                   ),
                                 ],
