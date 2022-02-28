@@ -111,8 +111,8 @@ class _OrderScreenState extends State<OrderScreen> {
                               child: Container(
                                 color: kBackgroundGrey[2],
                               )),
-                          selectPaymentMethods()
-                          //SizedBox(height: 16),
+                          selectPaymentMethods(),
+                          SizedBox(height: 16),
                         ],
                       );
 
@@ -286,39 +286,53 @@ class _OrderScreenState extends State<OrderScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          color: kBackgroundGrey[0],
-          padding: const EdgeInsets.only(left: 8, right: 8),
-          child: Column(
+          padding: const EdgeInsets.all(8),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "Các món trong giỏ",
-                    style: Get.theme.textTheme.headline3,
-                  ),
-                  OutlineButton(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(8))),
-                    highlightedBorderColor: kPrimary,
-                    onPressed: () {
-                      Get.back();
-                    },
-                    borderSide: BorderSide(color: kPrimary),
-                    child: Text(
-                      "Thêm món",
-                      style: Get.theme.textTheme.headline6
-                          .copyWith(color: kPrimary),
-                    ),
-                  )
-                ],
+              Text(
+                "Các món trong giỏ",
+                style: Get.theme.textTheme.headline3,
               ),
-              Divider(
-                color: Colors.black,
-              )
             ],
           ),
         ),
+        // Container(
+        //   color: kBackgroundGrey[0],
+        //   padding: const EdgeInsets.only(left: 8, right: 8),
+        //   child: Column(
+        //     children: [
+        //       Row(
+        //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //         children: [
+        //           Text(
+        //             "Các món trong giỏ",
+        //             style:
+        //                 Get.theme.textTheme.headline3.copyWith(color: kPrimary),
+        //           ),
+        //           OutlineButton(
+        //             shape: RoundedRectangleBorder(
+        //                 borderRadius: BorderRadius.all(Radius.circular(8))),
+        //             highlightedBorderColor: kPrimary,
+        //             onPressed: () {
+        //               Get.back();
+        //             },
+        //             borderSide: BorderSide(color: kPrimary),
+        //             child: Text(
+        //               "Thêm món",
+        //               style: Get.theme.textTheme.headline6
+        //                   .copyWith(color: kPrimary),
+        //             ),
+        //           )
+        //         ],
+        //       ),
+        //       // Divider(
+        //       //   color: Colors.black,
+        //       // )
+        //     ],
+        //   ),
+        // ),
         ListView.separated(
           physics: NeverScrollableScrollPhysics(),
           shrinkWrap: true,
@@ -358,20 +372,23 @@ class _OrderScreenState extends State<OrderScreen> {
     }
 
     return Container(
-      color: kBackgroundGrey[0],
-      padding: const EdgeInsets.only(top: 8),
+      margin: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+      // padding: const EdgeInsets.all(8),
+      // decoration: BoxDecoration(
+      //     border: Border.all(color: kPrimary),
+      //     borderRadius: BorderRadius.all(Radius.circular(8))),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Padding(
-              padding: const EdgeInsets.only(left: 8, right: 8),
+              padding: const EdgeInsets.only(left: 0, right: 4),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
                     list[0].master.supplierName,
-                    style: Get.theme.textTheme.headline3,
+                    style: Get.theme.textTheme.headline4,
                   ),
                   Text(
                     list
@@ -387,19 +404,48 @@ class _OrderScreenState extends State<OrderScreen> {
                 ],
               ),
             ),
-            Material(
-              color: Colors.transparent,
-              child: InkWell(
-                  onTap: () {
-                    orderViewModel.addSupplierNote(list[0].master.supplierId);
-                  },
-                  child: Padding(
-                    padding: EdgeInsets.all(8),
-                    child: Text(
-                        (supplierNote == null) ? "Thêm ghi chú" : "Sửa ghi chú",
-                        style: Get.theme.textTheme.headline6),
-                  )),
-            ),
+            Container(
+                padding: const EdgeInsets.only(left: 0, right: 8),
+                width: Get.width,
+                child: Column(
+                  children: [
+                    Divider(
+                      color: kBackgroundGrey[6],
+                    ),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.note_alt_outlined,
+                          color: Colors.black,
+                          size: 18,
+                        ),
+                        Flexible(
+                          child: Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                                onTap: () {
+                                  orderViewModel.addSupplierNote(
+                                      list[0].master.supplierId);
+                                },
+                                child: Padding(
+                                  padding: EdgeInsets.only(left: 8, right: 8),
+                                  child: Text(
+                                      (supplierNote == null)
+                                          ? "Thêm ghi chú"
+                                          : supplierNote.content,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: Get.theme.textTheme.headline4
+                                          .copyWith(color: Colors.grey)),
+                                )),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Divider(
+                      color: kBackgroundGrey[6],
+                    )
+                  ],
+                ))
           ]),
           ...card
         ],
@@ -429,6 +475,7 @@ class _OrderScreenState extends State<OrderScreen> {
           style: Get.theme.textTheme.headline4.copyWith(color: Colors.grey)));
       price += item.products[i].price * item.quantity;
     }
+    // item.description = "Test đơn hàng";
 
     if (item.description != null && item.description.isNotEmpty) {
       list.add(SizedBox(
@@ -451,51 +498,6 @@ class _OrderScreenState extends State<OrderScreen> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: CachedNetworkImage(
-                width: MediaQuery.of(context).size.width * 0.25,
-                height: MediaQuery.of(context).size.width * 0.25,
-                fit: BoxFit.fill,
-                imageUrl: item.master.imageURL ?? defaultImage,
-                imageBuilder: (context, imageProvider) => Container(
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: imageProvider,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-                progressIndicatorBuilder: (context, url, downloadProgress) =>
-                    Shimmer.fromColors(
-                  baseColor: Colors.grey[300],
-                  highlightColor: Colors.grey[100],
-                  enabled: true,
-                  child: Container(
-                    width: MediaQuery.of(context).size.width * 0.25,
-                    // height: 100,
-                    color: Colors.grey,
-                  ),
-                ),
-                errorWidget: (context, url, error) => Container(
-                  color: Colors.grey[200],
-                  child: Center(
-                      child: FittedBox(
-                    fit: BoxFit.fitWidth,
-                    child: Text(
-                      "BEAN OI",
-                      style: TextStyle(
-                        color: Colors.grey,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  )),
-                ),
-              ),
-            ),
-            SizedBox(
-              width: 8,
-            ),
             Flexible(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -509,7 +511,7 @@ class _OrderScreenState extends State<OrderScreen> {
                             item.master.type != ProductType.MASTER_PRODUCT
                                 ? item.master.name
                                 : item.products[0].name,
-                            style: Get.theme.textTheme.headline3),
+                            style: Get.theme.textTheme.headline4),
                       ),
                       SizedBox(width: 8),
                     ],
@@ -679,23 +681,16 @@ class _OrderScreenState extends State<OrderScreen> {
         children: [
           Container(
             padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              border: Border(left: BorderSide(color: kPrimary, width: 4)),
-            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
                   'Chi phí',
-                  style:
-                      Get.theme.textTheme.headline5.copyWith(color: kPrimary),
+                  style: Get.theme.textTheme.headline3,
                 ),
               ],
             ),
-          ),
-          SizedBox(
-            height: 8,
           ),
           Container(
             margin: const EdgeInsets.fromLTRB(8, 8, 8, 0),
@@ -804,15 +799,12 @@ class _OrderScreenState extends State<OrderScreen> {
                 color: model.currentCart.payment != null
                     ? kBackgroundGrey[0]
                     : Colors.yellow[100],
-                border: Border(left: BorderSide(color: kPrimary, width: 4)),
               ),
-              padding:
-                  const EdgeInsets.only(left: 8, right: 8, bottom: 8, top: 8),
+              padding: const EdgeInsets.only(left: 8, right: 8, top: 8),
               child: RichText(
                 text: TextSpan(
                     text: "Phương thức thanh toán ",
-                    style:
-                        Get.theme.textTheme.headline5.copyWith(color: kPrimary),
+                    style: Get.theme.textTheme.headline3,
                     children: [
                       TextSpan(
                           text: "(*)",
@@ -1069,35 +1061,52 @@ class _OrderScreenState extends State<OrderScreen> {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          IconButton(
-            icon: Icon(
-              AntDesign.minuscircleo,
-              size: 16,
-              color: minusColor,
-            ),
-            onPressed: () async {
-              if (item.quantity >= 1) {
-                if (item.quantity == 1) {
-                  await orderViewModel.deleteItem(item);
-                } else {
-                  item.quantity--;
-                  await orderViewModel.updateQuantity(item);
+          SizedBox(
+            height: 20,
+            width: 20,
+            child: IconButton(
+              padding: new EdgeInsets.all(0.0),
+              icon: Icon(
+                AntDesign.minuscircleo,
+                size: 16,
+                color: minusColor,
+              ),
+              onPressed: () async {
+                if (item.quantity >= 1) {
+                  if (item.quantity == 1) {
+                    await orderViewModel.deleteItem(item);
+                  } else {
+                    item.quantity--;
+                    await orderViewModel.updateQuantity(item);
+                  }
                 }
-              }
-            },
-          ),
-          Text(item.quantity.toString()),
-          IconButton(
-            icon: Icon(
-              AntDesign.pluscircleo,
-              size: 16,
-              color: plusColor,
+              },
             ),
-            onPressed: () async {
-              item.quantity++;
-              await orderViewModel.updateQuantity(item);
-            },
+          ),
+          Container(
+            width: 30,
+            child: Text(
+              item.quantity.toString(),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          SizedBox(
+            height: 20,
+            width: 20,
+            child: IconButton(
+              padding: new EdgeInsets.all(0.0),
+              icon: Icon(
+                AntDesign.pluscircleo,
+                size: 16,
+                color: plusColor,
+              ),
+              onPressed: () async {
+                item.quantity++;
+                await orderViewModel.updateQuantity(item);
+              },
+            ),
           ),
         ],
       ),

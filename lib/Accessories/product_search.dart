@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:unidelivery_mobile/Accessories/CacheImage.dart';
 import 'package:unidelivery_mobile/Constraints/constraints.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
+import 'package:unidelivery_mobile/Utils/format_price.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
 
 class ProductSearchItem extends StatelessWidget {
@@ -81,7 +82,7 @@ class ProductSearchItem extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(16),
                               ),
                               child: Text(
-                                "${product.price} đ",
+                                formatPrice(product.price),
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 14),
                               ),

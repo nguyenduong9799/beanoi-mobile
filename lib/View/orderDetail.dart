@@ -83,19 +83,17 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Container(
-                                width: 100,
-                                height: 35,
+                                height: 25,
+                                alignment: Alignment.centerLeft,
                                 child: orderDetail.status == OrderFilter.NEW
-                                    ? TyperAnimatedTextKit(
-                                        speed: Duration(milliseconds: 100),
-                                        onTap: () {},
-                                        text: ['Mới ☕'],
-                                        textStyle: Get.theme.textTheme.headline4
+                                    ? Text(
+                                        'Đang thực hiện ☕',
+                                        style: Get.theme.textTheme.headline3
                                             .copyWith(color: kPrimary),
                                         textAlign: TextAlign.start,
                                       )
-                                    : Text('Đã nhận hàng',
-                                        style: Get.theme.textTheme.headline4
+                                    : Text('Hoàn thành',
+                                        style: Get.theme.textTheme.headline3
                                             .copyWith(color: kPrimary)),
                               ),
                               Expanded(
@@ -120,15 +118,12 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                             ],
                           ),
                           SizedBox(height: 8),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          Row(
                             children: [
-                              Text("🎯 Nhận đơn tại: "),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 8),
-                                child: Text(orderDetail.address,
-                                    style: Get.theme.textTheme.headline4),
-                              )
+                              Text("🎯 Nhận đơn tại: ",
+                                  style: Get.theme.textTheme.headline4),
+                              Text(orderDetail.address,
+                                  style: Get.theme.textTheme.headline4),
                             ],
                           )
                         ],
@@ -174,7 +169,7 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
       });
     } else if (status == OrderFilter.DONE) {
       return Container(
-        padding: EdgeInsets.only(top: 8, bottom: 8),
+        padding: EdgeInsets.only(top: 8, bottom: 30),
         child: Text(
           'Bạn đã có bữa cơm ngon miệng phải không 😋?',
           textAlign: TextAlign.center,
@@ -209,7 +204,7 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
             children: [
               Text(
                 items[0].supplierName,
-                style: Get.theme.textTheme.headline3.copyWith(color: kPrimary),
+                style: Get.theme.textTheme.headline3,
               ),
               (note != null)
                   ? Container(
