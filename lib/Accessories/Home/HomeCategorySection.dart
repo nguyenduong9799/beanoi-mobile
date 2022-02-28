@@ -81,7 +81,7 @@ class _HomeCategorySectionState extends State<HomeCategorySection> {
       model: Get.find<RootViewModel>(),
       child: ScopedModelDescendant(
         builder: (BuildContext context, Widget child, RootViewModel root) {
-          var firstTimeSlot = root.currentStore.timeSlots.first;
+          var firstTimeSlot = root.currentStore.timeSlots?.first;
           return Material(
             color: Colors.white,
             child: TouchOpacity(
