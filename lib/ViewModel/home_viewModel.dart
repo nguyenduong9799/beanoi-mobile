@@ -15,11 +15,13 @@ class HomeViewModel extends BaseModel {
 
   List<SupplierDTO> suppliers;
   List<BlogDTO> blogs;
+  List<CollectionDTO> homeCollections;
 
   Map<int, ProductDTO> prodInCollections;
   ProductDTO nearlyGift;
 
   HomeViewModel() {
+    _collectionDAO = CollectionDAO();
     _storeDAO = StoreDAO();
     _productDAO = ProductDAO();
   }
@@ -85,6 +87,31 @@ class HomeViewModel extends BaseModel {
     }
 
     return null;
+  }
+
+  Future<void> getCollections() async {
+    try {
+      setState(ViewStatus.Loading);
+      RootViewModel root = Get.find<RootViewModel>();
+      var currentStore = root.currentStore;
+      if (root.status == ViewStatus.Error) {
+        setState(ViewStatus.Error);
+        return;
+      }
+      if (currentStore.selectedTimeSlot == null) {
+        homeCollections = null;
+        setState(ViewStatus.Completed);
+        return;
+      }
+      homeCollections = await _collectionDAO.getCollections(
+          currentStore.selectedTimeSlot,
+          params: {"show-on-home": true});
+      await Future.delayed(Duration(microseconds: 500));
+      setState(ViewStatus.Completed);
+    } catch (e) {
+      homeCollections = null;
+      setState(ViewStatus.Completed);
+    }
   }
 
   Future<void> getNearlyGiftExchange() async {

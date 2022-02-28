@@ -18,7 +18,7 @@ class OrderHistoryViewModel extends BaseModel {
   ScrollController scrollController;
   List<bool> selections = [true, false];
 
-  OrderDTO newTodayOrder;
+  List<OrderDTO> newTodayOrders;
 
   OrderHistoryViewModel() {
     _orderDAO = OrderDAO();
@@ -93,10 +93,8 @@ class OrderHistoryViewModel extends BaseModel {
   }
 
   void clearNewOrder(int orderId) {
-    if (newTodayOrder?.id == orderId) {
-      newTodayOrder = null;
-      notifyListeners();
-    }
+    newTodayOrders = null;
+    notifyListeners();
   }
 
   Future<void> getNewOrder() async {
@@ -111,7 +109,7 @@ class OrderHistoryViewModel extends BaseModel {
               0,
           orElse: () => null);
       if (currentDateData != null) {
-        newTodayOrder = currentDateData.orders.first;
+        newTodayOrders = currentDateData.orders;
       }
       setState(ViewStatus.Completed);
     } catch (e) {
@@ -123,8 +121,8 @@ class OrderHistoryViewModel extends BaseModel {
     } finally {}
   }
 
-  Future<void> closeNewOrder() async {
-    newTodayOrder = null;
+  Future<void> closeNewOrder(orderId) async {
+    newTodayOrders.removeWhere((element) => element.id == orderId);
     notifyListeners();
   }
 

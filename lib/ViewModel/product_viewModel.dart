@@ -260,8 +260,8 @@ class ProductDetailViewModel extends BaseModel {
       }
 
       if (totalBean < (master.price * count)) {
-        await showStatusDialog("assets/images/global_error.png", "ERR_BALANCE",
-            "Số bean hiện tại không đủ");
+        await showStatusDialog("assets/images/global_error.png",
+            "Không đủ Bean", "Số bean hiện tại không đủ");
         return;
       }
     }

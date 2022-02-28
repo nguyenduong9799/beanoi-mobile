@@ -66,7 +66,8 @@ class ProductDAO extends BaseDAO {
     final query = convertToQueryParams({
       "page": (page ?? 1).toString(),
       "size": (size ?? DEFAULT_SIZE).toString(),
-      "time-slot": [timeSlot.from.toString(), timeSlot.to.toString()]
+      "time-slot": [timeSlot.from.toString(), timeSlot.to.toString()],
+      "fields": ['ChildProducts', 'CollectionId', 'Extras']
     }..addAll(params));
 
     String queryStr = Uri(
@@ -76,6 +77,13 @@ class ProductDAO extends BaseDAO {
 
     final products = ProductDTO.fromList(res.data["data"]);
     metaDataDTO = MetaDataDTO.fromJson(res.data["metadata"]);
+    return products;
+  }
+
+  Future<ProductDTO> getProductDetail(int id) async {
+    Response res = await request.get('products/$id');
+
+    final products = ProductDTO.fromJson(res.data);
     return products;
   }
 

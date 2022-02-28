@@ -7,6 +7,7 @@ import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Enums/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/CategoryDTO.dart';
 import 'package:unidelivery_mobile/ViewModel/category_viewModel.dart';
+import 'package:unidelivery_mobile/ViewModel/index.dart';
 
 class HomeCategorySection extends StatefulWidget {
   const HomeCategorySection({
@@ -76,33 +77,55 @@ class _HomeCategorySectionState extends State<HomeCategorySection> {
   }
 
   Widget buildCategoryItem(CategoryDTO category) {
-    return Material(
-      color: Colors.white,
-      child: TouchOpacity(
-        onTap: () {
-          print('Click category');
-          Get.toNamed(RouteHandler.PRODUCT_FILTER_LIST, arguments: category);
-        },
-        child: Container(
-          width: Get.width / 4 - 20,
-          // height: Get.width / 4 - 30 + 35,
-          child: Column(
-            children: [
-              Container(
-                width: Get.width / 4 - 30,
-                height: Get.width / 4 - 30,
-                child: CacheImage(
-                  imageUrl: category.imgURL,
+    return ScopedModel(
+      model: Get.find<RootViewModel>(),
+      child: ScopedModelDescendant(
+        builder: (BuildContext context, Widget child, RootViewModel root) {
+          var firstTimeSlot = root.currentStore.timeSlots.first;
+          return Material(
+            color: Colors.white,
+            child: TouchOpacity(
+              onTap: () {
+                if (!root.isCurrentMenuAvailable) {
+                  showStatusDialog("assets/images/global_error.png", "Opps",
+                      "Hiện tại khung giờ bạn chọn đã chốt đơn. ${firstTimeSlot != null ? 'Bạn hãy quay lại vào lúc ${firstTimeSlot.arrive} hôm sau nhé.' : 'Bạn vui lòng xem khung giờ khác nhé 😓.'} ");
+                } else {
+                  Get.toNamed(RouteHandler.PRODUCT_FILTER_LIST,
+                      arguments: category);
+                }
+              },
+              child: Container(
+                width: Get.width / 4 - 20,
+                child: Column(
+                  children: [
+                    Container(
+                      width: Get.width / 4 - 30,
+                      height: Get.width / 4 - 30,
+                      decoration:
+                          BoxDecoration(borderRadius: BorderRadius.circular(8)),
+                      child: ColorFiltered(
+                        colorFilter: ColorFilter.mode(
+                          root.isCurrentMenuAvailable
+                              ? Colors.transparent
+                              : Colors.grey,
+                          BlendMode.saturation,
+                        ),
+                        child: CacheImage(
+                          imageUrl: category.imgURL,
+                        ),
+                      ),
+                    ),
+                    Text(
+                      category.categoryName ?? "",
+                      style: kTitleTextStyle.copyWith(fontSize: 14),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
                 ),
               ),
-              Text(
-                category.categoryName ?? "",
-                style: kTitleTextStyle.copyWith(fontSize: 14),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }
