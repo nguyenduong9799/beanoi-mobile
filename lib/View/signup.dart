@@ -21,6 +21,7 @@ class _SignUpState extends State<SignUp> {
     'name': FormControl(validators: [
       Validators.required,
     ], touched: false),
+    'ref_code': FormControl(touched: false),
   });
 
   @override
@@ -53,11 +54,12 @@ class _SignUpState extends State<SignUp> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         // HELLO SECTION
-                        Text("Cho mình xin cái tên nhé ☺",
+                        Text("Cho mình xin ít \"in4\" nhé ☺",
                             style: Get.theme.textTheme.headline1),
                         SizedBox(height: 16),
                         // FORM ITEM
                         FormItem("Họ Tên", "vd: Nguyễn Văn A", "name"),
+                        FormItem("Mã Giới Thiệu", "Nếu có", "ref_code"),
 
                         //SIGN UP BUTTON
                         ReactiveFormConsumer(builder: (context, form, child) {
