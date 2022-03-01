@@ -80,8 +80,15 @@ class ProductDAO extends BaseDAO {
     return products;
   }
 
-  Future<ProductDTO> getProductDetail(int id) async {
-    Response res = await request.get('products/$id');
+  Future<ProductDTO> getProductDetail(int id, int storeId, TimeSlot timeSlot) async {
+    final query = convertToQueryParams({
+      "time-slot": [timeSlot.from.toString(), timeSlot.to.toString()],
+      "store-id" : storeId
+    });
+    String queryStr = Uri(
+      queryParameters: query,
+    ).query;
+    Response res = await request.get('products/$id?$queryStr');
 
     final products = ProductDTO.fromJson(res.data);
     return products;

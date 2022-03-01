@@ -5,11 +5,13 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
+import 'package:unidelivery_mobile/Accessories/CacheImage.dart';
 import 'package:unidelivery_mobile/Accessories/touchopacity.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Enums/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/CollectionDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/ProductDTO.dart';
+import 'package:unidelivery_mobile/Utils/format_price.dart';
 import 'package:unidelivery_mobile/ViewModel/collection_viewmodel.dart';
 import 'package:unidelivery_mobile/ViewModel/home_viewModel.dart';
 import 'package:unidelivery_mobile/ViewModel/root_viewModel.dart';
@@ -104,38 +106,20 @@ class HomeCollection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          CachedNetworkImage(
-            fit: BoxFit.fitWidth,
+          Container(
             width: kWitdthItem,
             height: kWitdthItem,
-            imageUrl: product.imageURL,
-            imageBuilder: (context, imageProvider) => Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                image: DecorationImage(
-                  image: imageProvider,
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-            progressIndicatorBuilder: (context, url, downloadProgress) =>
-                Shimmer.fromColors(
-              baseColor: Colors.grey[300],
-              highlightColor: Colors.grey[100],
-              enabled: true,
-              child: Container(
-                width: MediaQuery.of(context).size.width,
-                color: Colors.grey,
-              ),
-            ),
-            errorWidget: (context, url, error) => Icon(
-              MaterialIcons.broken_image,
-              color: kPrimary.withOpacity(0.5),
+            child: CacheImage(
+              imageUrl: product.imageURL,
             ),
           ),
+
           SizedBox(height: 8),
           Text(
-            NumberFormat.simpleCurrency(locale: "vi").format(product.price),
+              product.type != ProductType.MASTER_PRODUCT
+                  ? formatPrice(product.price)
+                  : "từ " + formatPrice(product.minPrice ?? product.price),
+            // NumberFormat.simpleCurrency(locale: "vi").format(product.price),
             style: Get.theme.textTheme.headline5.copyWith(
               color: kBestSellerColor,
             ),

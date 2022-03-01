@@ -253,11 +253,14 @@ class RootViewModel extends BaseModel {
       tag: "showOnHome",
     );
     if(fetchDetail) {
-      product = await _productDAO.getProductDetail(product.id);
+      showLoadingDialog();
+      CampusDTO store = await getStore();
+      product = await _productDAO.getProductDetail(product.id,store.id,store.selectedTimeSlot);
     }
     bool result =
         await Get.toNamed(RouteHandler.PRODUCT_DETAIL, arguments: product);
     hideSnackbar();
+    hideDialog();
     await Get.delete<bool>(
       tag: "showOnHome",
     );
