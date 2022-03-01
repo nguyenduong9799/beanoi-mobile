@@ -17,6 +17,7 @@ import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Enums/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
+// import 'package:url_launcher/url_launcher.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -27,6 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       new GlobalKey<RefreshIndicatorState>();
   OrderHistoryViewModel orderModel = Get.find<OrderHistoryViewModel>();
+  BlogsViewModel blogsModel = BlogsViewModel();
   final double HEIGHT = 48;
   final ValueNotifier<double> notifier = ValueNotifier(0);
   final PageController controller = PageController();
@@ -35,6 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
     await Get.find<HomeViewModel>().getCollections();
     await Get.find<HomeViewModel>().getNearlyGiftExchange();
     await orderModel.getNewOrder();
+    await blogsModel.getBlogs();
   }
 
   @override
@@ -76,31 +79,75 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: RefreshIndicator(
                           key: _refreshIndicatorKey,
                           onRefresh: _refresh,
-                          child: Container(
-                            color: kBackgroundGrey[2],
-                            child: NotificationListener<ScrollNotification>(
-                              onNotification: (n) {
-                                if (n.metrics.pixels <= HEIGHT) {
-                                  notifier.value = n.metrics.pixels;
-                                }
-                                return false;
-                              },
-                              child: ListView(
+                          child: ScopedModelDescendant<HomeViewModel>(
+                              builder: (context, child, model) {
+                            if (model.status == ViewStatus.Error) {
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
+                                  Center(
+                                    child: Text(
+                                      "BeanOi đã cố gắng hết sức ..\nNhưng vẫn bị con quỷ Bug đánh bại.",
+                                      textAlign: TextAlign.center,
+                                      style: Get.theme.textTheme.headline3,
+                                    ),
+                                  ),
                                   SizedBox(height: 8),
-                                  banner(),
-                                  // buildLinkBtns(),
-                                  Section(child: HomeCategorySection()),
-                                  SizedBox(height: 16),
-                                  // Section(child: buildGiftCanExchangeSection()),
-                                  HomeCollection(),
+                                  Container(
+                                    width: 300,
+                                    height: 300,
+                                    child: Image.asset(
+                                      'assets/images/global_error.png',
+                                      fit: BoxFit.contain,
+                                    ),
+                                  ),
                                   SizedBox(height: 8),
-                                  Container(child: HomeStoreSection()),
-                                  SizedBox(height: 46),
+                                  Center(
+                                    child: Text(
+                                      "Bạn vui lòng thử một số cách sau nhé!",
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                  SizedBox(height: 8),
+                                  Center(
+                                    child: Text(
+                                      "1. Tắt ứng dụng và mở lại",
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                  SizedBox(height: 8),
+                                  Center(
+                                    child: InkWell(
+                                      child: Text(
+                                        "2. Đặt hàng qua Fanpage ",
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      // onTap: () =>
+                                      //     launch('fb://page/103238875095890'),
+                                    ),
+                                  ),
                                 ],
-                              ),
-                            ),
-                          ),
+                              );
+                            } else {
+                              return Container(
+                                color: kBackgroundGrey[2],
+                                child: NotificationListener<ScrollNotification>(
+                                  onNotification: (n) {
+                                    if (n.metrics.pixels <= HEIGHT) {
+                                      notifier.value = n.metrics.pixels;
+                                    }
+                                    return false;
+                                  },
+                                  child: ListView(
+                                    children: [
+                                      SizedBox(height: 8),
+                                      ...renderHomeSections().toList(),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            }
+                          }),
                         ),
                       ),
                     ),
@@ -117,6 +164,20 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
+  }
+
+  List<Widget> renderHomeSections() {
+    return [
+      banner(),
+      // buildLinkBtns(),
+      Section(child: HomeCategorySection()),
+      SizedBox(height: 16),
+      // Section(child: buildGiftCanExchangeSection()),
+      HomeCollection(),
+      SizedBox(height: 8),
+      Container(child: HomeStoreSection()),
+      SizedBox(height: 46)
+    ];
   }
 
   Widget buildLinkBtns() {
@@ -471,95 +532,97 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget banner() {
-    return Container(
-      color: Colors.white,
-      padding: EdgeInsets.fromLTRB(8, 16, 8, 8),
-      // padding: EdgeInsets.only(bottom: 8),
-      child: ScopedModelDescendant<HomeViewModel>(
-        builder: (context, child, model) {
-          ViewStatus status = model.status;
-          switch (status) {
-            case ViewStatus.Loading:
-              return Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ShimmerBlock(
-                  height: (Get.width) * (747 / 1914),
-                  width: (Get.width),
-                ),
-              );
-            case ViewStatus.Empty:
-            case ViewStatus.Error:
-              return SizedBox.shrink();
-            default:
-              if (model.blogs == null || model.blogs.isEmpty) {
-                return SizedBox.shrink();
-              }
-              return Container(
-                height: (Get.width) * (747 / 1914),
-                width: (Get.width),
-                margin: EdgeInsets.only(bottom: 8),
-                child: Swiper(
-                    onTap: (index) async {
-                      await _launchURL(
-                          "https://www.youtube.com/embed/wu32Wj_Uix4");
-                    },
-                    autoplay: model.blogs.length > 1 ? true : false,
-                    autoplayDelay: 5000,
-                    viewportFraction: 0.9,
-                    pagination:
-                        new SwiperPagination(alignment: Alignment.bottomCenter),
-                    itemCount: model.blogs.length,
-                    itemBuilder: (context, index) {
-                      if (model.blogs[index].imageUrl == null ||
-                          model.blogs[index].imageUrl == "")
-                        return Icon(
-                          MaterialIcons.broken_image,
-                          color: kPrimary.withOpacity(0.5),
-                        );
+    return ScopedModel<BlogsViewModel>(
+        model: blogsModel,
+        child: Container(
+          color: Colors.white,
+          padding: EdgeInsets.fromLTRB(8, 16, 8, 8),
+          // padding: EdgeInsets.only(bottom: 8),
+          child: ScopedModelDescendant<BlogsViewModel>(
+            builder: (context, child, model) {
+              ViewStatus status = model.status;
+              switch (status) {
+                case ViewStatus.Loading:
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ShimmerBlock(
+                      height: (Get.width) * (747 / 1914),
+                      width: (Get.width),
+                    ),
+                  );
+                case ViewStatus.Empty:
+                case ViewStatus.Error:
+                  return SizedBox.shrink();
+                default:
+                  if (model.blogs == null || model.blogs.isEmpty) {
+                    return SizedBox.shrink();
+                  }
+                  return Container(
+                    height: (Get.width) * (747 / 1914),
+                    width: (Get.width),
+                    margin: EdgeInsets.only(bottom: 8),
+                    child: Swiper(
+                        onTap: (index) async {
+                          await _launchURL(
+                              "https://www.youtube.com/embed/wu32Wj_Uix4");
+                        },
+                        autoplay: model.blogs.length > 1 ? true : false,
+                        autoplayDelay: 5000,
+                        viewportFraction: 0.9,
+                        pagination: new SwiperPagination(
+                            alignment: Alignment.bottomCenter),
+                        itemCount: model.blogs.length,
+                        itemBuilder: (context, index) {
+                          if (model.blogs[index].imageUrl == null ||
+                              model.blogs[index].imageUrl == "")
+                            return Icon(
+                              MaterialIcons.broken_image,
+                              color: kPrimary.withOpacity(0.5),
+                            );
 
-                      return CachedNetworkImage(
-                        imageUrl: model.blogs[index].imageUrl,
-                        imageBuilder: (context, imageProvider) => InkWell(
-                          onTap: () {
-                            Get.toNamed(RouteHandler.BANNER_DETAIL,
-                                arguments: model.blogs[index]);
-                          },
-                          child: AspectRatio(
-                            aspectRatio: 16 / 9,
-                            child: Container(
-                              margin: EdgeInsets.only(left: 8, right: 8),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8),
-                                color: Colors.blue,
-                                image: DecorationImage(
-                                  image: imageProvider,
-                                  fit: BoxFit.cover,
+                          return CachedNetworkImage(
+                            imageUrl: model.blogs[index].imageUrl,
+                            imageBuilder: (context, imageProvider) => InkWell(
+                              onTap: () {
+                                Get.toNamed(RouteHandler.BANNER_DETAIL,
+                                    arguments: model.blogs[index]);
+                              },
+                              child: AspectRatio(
+                                aspectRatio: 16 / 9,
+                                child: Container(
+                                  margin: EdgeInsets.only(left: 8, right: 8),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    color: Colors.blue,
+                                    image: DecorationImage(
+                                      image: imageProvider,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        ),
-                        progressIndicatorBuilder:
-                            (context, url, downloadProgress) =>
-                                Shimmer.fromColors(
-                          baseColor: Colors.grey[300],
-                          highlightColor: Colors.grey[100],
-                          enabled: true,
-                          child: Container(
-                            color: Colors.grey,
-                          ),
-                        ),
-                        errorWidget: (context, url, error) => Icon(
-                          MaterialIcons.broken_image,
-                          color: kPrimary.withOpacity(0.5),
-                        ),
-                      );
-                    }),
-              );
-          }
-        },
-      ),
-    );
+                            progressIndicatorBuilder:
+                                (context, url, downloadProgress) =>
+                                    Shimmer.fromColors(
+                              baseColor: Colors.grey[300],
+                              highlightColor: Colors.grey[100],
+                              enabled: true,
+                              child: Container(
+                                color: Colors.grey,
+                              ),
+                            ),
+                            errorWidget: (context, url, error) => Icon(
+                              MaterialIcons.broken_image,
+                              color: kPrimary.withOpacity(0.5),
+                            ),
+                          );
+                        }),
+                  );
+              }
+            },
+          ),
+        ));
   }
 
   // TODO: Implement category section

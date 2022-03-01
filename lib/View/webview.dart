@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:unidelivery_mobile/Accessories/index.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Services/firebase_dynamic_link_service.dart';
+import 'package:unidelivery_mobile/Utils/index.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:flutter/foundation.dart';
 
@@ -56,7 +57,9 @@ class _WebViewScreenState extends State<WebViewScreen> {
                 .substring(request.url.indexOf("https://unidelivery.mobile/"));
             String route = url.split(";")[0];
             Uri deepLink = Uri.parse(route);
-            DynamicLinkService.handleNaviagtion(deepLink.path);
+            if (isSmartPhoneDevice()) {
+              DynamicLinkService.handleNaviagtion(deepLink.path);
+            }
           }
 
           return NavigationDecision.navigate;

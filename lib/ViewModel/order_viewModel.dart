@@ -51,6 +51,9 @@ class OrderViewModel extends BaseModel {
       orderAmount = await dao.prepareOrder(campusDTO.id, currentCart);
       if (listPayments == null) {
         listPayments = await dao.getPayments();
+        if (listPayments.values.contains(1)) {
+          currentCart.payment = 1;
+        }
       }
       errorMessage = null;
       await Future.delayed(Duration(milliseconds: 500));

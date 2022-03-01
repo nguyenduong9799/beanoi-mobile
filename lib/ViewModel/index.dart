@@ -12,3 +12,4 @@ export 'account_viewModel.dart';
 export 'startup_viewModel.dart';
 export 'supplier_viewModel.dart';
 export 'transaction_viewModel.dart';
+export 'blogs_viewModel.dart';

@@ -10,8 +10,7 @@ Future setUp() async {
   await Firebase.initializeApp();
   PushNotificationService ps = PushNotificationService.getInstance();
   await ps.init();
-  if ((defaultTargetPlatform == TargetPlatform.iOS) ||
-      (defaultTargetPlatform == TargetPlatform.android)) {
+  if (!kIsWeb) {
     await DynamicLinkService.initDynamicLinks();
   }
 }

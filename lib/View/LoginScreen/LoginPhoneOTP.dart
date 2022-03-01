@@ -198,17 +198,17 @@ class _LoginWithPhoneOTPState extends State<LoginWithPhoneOTP> {
                                           .shake); // Triggering error shake animation
                                       model.setState(ViewStatus.Error);
                                     } else {
-                                      if ((defaultTargetPlatform ==
-                                              TargetPlatform.iOS) ||
-                                          (defaultTargetPlatform ==
-                                              TargetPlatform.android)) {
-                                        await model.onsignInWithOTP(
-                                            form.value["otp"],
-                                            widget.verificationId);
-                                      } else {
+                                      if (kIsWeb) {
                                         await model.onsignInWithOTPForWeb(
                                             form.value["otp"],
                                             widget.confirmationResult);
+                                      } else {
+                                        // await model.onsignInWithOTPForWeb(
+                                        //     form.value["otp"],
+                                        //     widget.confirmationResult);
+                                        await model.onsignInWithOTP(
+                                            form.value["otp"],
+                                            widget.verificationId);
                                       }
                                     }
                                   }

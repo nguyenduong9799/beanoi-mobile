@@ -87,7 +87,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                   Container(
                     width: MediaQuery.of(context).size.width / 3,
                     child: Text(
-                      "Mới",
+                      "Đang thực hiện",
                       textAlign: TextAlign.center,
                     ),
                   ),

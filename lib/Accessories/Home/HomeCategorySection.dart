@@ -20,10 +20,12 @@ class HomeCategorySection extends StatefulWidget {
 
 class _HomeCategorySectionState extends State<HomeCategorySection> {
   CategoryViewModel _categoryViewModel;
+  HomeViewModel _homeViewModal;
   @override
   void initState() {
     super.initState();
     _categoryViewModel = CategoryViewModel();
+    _homeViewModal = HomeViewModel();
     _categoryViewModel.getCategories(params: {"type": 1, "showOnHome": true});
   }
 
@@ -41,36 +43,47 @@ class _HomeCategorySectionState extends State<HomeCategorySection> {
           if (categories == null || categories.length == 0) {
             return Text("Khong co cate");
           }
-          return Column(
-            children: [
-              Container(
-                child: Image(
-                  image: AssetImage("assets/images/bean_oi_category.png"),
-                  width: 95,
-                  height: 25,
-                  fit: BoxFit.fill,
-                ),
-              ),
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(
-                    color: Color(0xff333333),
+          return ScopedModelDescendant<HomeViewModel>(builder:
+              (BuildContext context, Widget child, HomeViewModel model) {
+            if (model.suppliers == null ||
+                model.suppliers.isEmpty ||
+                model.suppliers
+                        .where((supplier) => supplier.available)
+                        .length ==
+                    0) {
+              return SizedBox();
+            }
+            return Column(
+              children: [
+                Container(
+                  child: Image(
+                    image: AssetImage("assets/images/bean_oi_category.png"),
+                    width: 95,
+                    height: 25,
+                    fit: BoxFit.fill,
                   ),
                 ),
-                padding: EdgeInsets.all(8),
-                width: Get.width,
-                child: Wrap(
-                  alignment: WrapAlignment.spaceBetween,
-                  spacing: 8,
-                  children: categories
-                      .map((category) => buildCategoryItem(category))
-                      .toList(),
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: Color(0xff333333),
+                    ),
+                  ),
+                  padding: EdgeInsets.all(8),
+                  width: Get.width,
+                  child: Wrap(
+                    alignment: WrapAlignment.spaceBetween,
+                    spacing: 8,
+                    children: categories
+                        .map((category) => buildCategoryItem(category))
+                        .toList(),
+                  ),
                 ),
-              ),
-            ],
-          );
+              ],
+            );
+          });
         },
       ),
     );
