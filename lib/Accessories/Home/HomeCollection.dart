@@ -16,17 +16,31 @@ import 'package:unidelivery_mobile/ViewModel/collection_viewmodel.dart';
 import 'package:unidelivery_mobile/ViewModel/home_viewModel.dart';
 import 'package:unidelivery_mobile/ViewModel/root_viewModel.dart';
 
-class HomeCollection extends StatelessWidget {
+class HomeCollection extends StatefulWidget {
   const HomeCollection({
     Key key,
   }) : super(key: key);
+  @override
+  _HomeCollectionState createState() => _HomeCollectionState();
+}
+
+class _HomeCollectionState extends State<HomeCollection> {
+  HomeViewModel _homeCollectionViewModel;
+
+  @override
+  void initState() {
+    super.initState();
+    _homeCollectionViewModel = HomeViewModel();
+    _homeCollectionViewModel.getCollections();
+  }
+
   final double kWitdthItem = 125;
 
   @override
   Widget build(BuildContext context) {
     return ScopedModel<HomeViewModel>(
       model: Get.find<HomeViewModel>(),
-      child: ScopedModelDescendant(
+      child: ScopedModelDescendant<HomeViewModel>(
         builder: (BuildContext context, Widget child, HomeViewModel model) {
           var collections = model.homeCollections;
           if (model.status == ViewStatus.Loading ||
@@ -83,10 +97,8 @@ class HomeCollection extends StatelessWidget {
                 child: TouchOpacity(
                   onTap: () {
                     RootViewModel root = Get.find<RootViewModel>();
-                    if(product.type == ProductType.MASTER_PRODUCT) {
-
-                    }
-                    root.openProductDetail(product,fetchDetail: true);
+                    if (product.type == ProductType.MASTER_PRODUCT) {}
+                    root.openProductDetail(product, fetchDetail: true);
                   },
                   child: buildProductInCollection(product),
                 ),
@@ -116,9 +128,9 @@ class HomeCollection extends StatelessWidget {
 
           SizedBox(height: 8),
           Text(
-              product.type != ProductType.MASTER_PRODUCT
-                  ? formatPrice(product.price)
-                  : "từ " + formatPrice(product.minPrice ?? product.price),
+            product.type != ProductType.MASTER_PRODUCT
+                ? formatPrice(product.price)
+                : "từ " + formatPrice(product.minPrice ?? product.price),
             // NumberFormat.simpleCurrency(locale: "vi").format(product.price),
             style: Get.theme.textTheme.headline5.copyWith(
               color: kBestSellerColor,

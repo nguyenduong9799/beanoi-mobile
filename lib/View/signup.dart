@@ -21,7 +21,7 @@ class _SignUpState extends State<SignUp> {
     'name': FormControl(validators: [
       Validators.required,
     ], touched: false),
-    'ref_code': FormControl(touched: false),
+    // 'ref_code': FormControl(touched: false),
   });
 
   @override
@@ -59,7 +59,7 @@ class _SignUpState extends State<SignUp> {
                         SizedBox(height: 16),
                         // FORM ITEM
                         FormItem("Họ Tên", "vd: Nguyễn Văn A", "name"),
-                        FormItem("Mã Giới Thiệu", "Nếu có", "ref_code"),
+                        // FormItem("Mã Giới Thiệu", "Nếu có", "ref_code"),
 
                         //SIGN UP BUTTON
                         ReactiveFormConsumer(builder: (context, form, child) {
