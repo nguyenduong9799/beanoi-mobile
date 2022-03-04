@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 import 'package:unidelivery_mobile/Accessories/index.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
@@ -64,14 +65,16 @@ class SignUpViewModel extends BaseModel {
       if (refferalCode != null && refferalCode.isNotEmpty) {
         showLoadingDialog();
         String message = await dao.getRefferalMessage(refferalCode);
-        // await showStatusDialog("assets/images/option.png", "", message);
-      }else{
+        await showStatusDialog("assets/images/option.png", "", message);
+        Get.offAllNamed(RouteHandler.NAV);
+        hideDialog();
+      } else {
         Get.offAllNamed(RouteHandler.NAV);
       }
     } catch (e, stacktrace) {
       print(e.toString() + stacktrace.toString());
-      bool result = await showErrorDialog();
-      setState(ViewStatus.Error);
+      bool result = await showErrorDialog(
+          errorTitle: (e as DioError).response.data['error']['message']);
     }
   }
 }

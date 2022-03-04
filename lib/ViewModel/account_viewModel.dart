@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 import 'package:package_info/package_info.dart';
 import 'package:unidelivery_mobile/Accessories/index.dart';
@@ -55,11 +56,8 @@ class AccountViewModel extends BaseModel {
       }
     } catch (e, stacktrace) {
       print(e.toString() + stacktrace.toString());
-      bool result = await showErrorDialog();
-      if (result) {
-        await showRefferalMessage();
-      } else
-        setState(ViewStatus.Error);
+      bool result = await showErrorDialog(
+          errorTitle: (e as DioError).response.data['error']['message']);
     }
   }
 

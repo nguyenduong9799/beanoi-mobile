@@ -125,6 +125,7 @@ Future<bool> showErrorDialog(
             ),
             Text(
               errorTitle,
+              textAlign: TextAlign.center,
               style: Get.theme.textTheme.headline2,
             ),
             SizedBox(
@@ -154,7 +155,8 @@ Future<bool> showErrorDialog(
                   padding: EdgeInsets.only(top: 16, bottom: 16),
                   child: Text(
                     "Thử lại",
-                    style: Get.theme.textTheme.headline4.copyWith(color: Colors.white),
+                    style: Get.theme.textTheme.headline4
+                        .copyWith(color: Colors.white),
                   ),
                 ),
               ),

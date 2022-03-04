@@ -45,7 +45,7 @@ class AccountDTO {
       "name": name,
       "email": email,
       "phone": phone,
-      "gender": gender == 'nam',
+      "gender": gender,
       "birth_day": birthdate?.toString(),
       "pic_url": "https://randomuser.me/api/portraits/women/28.jpg",
       "ref_code": referalCode

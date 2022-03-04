@@ -48,10 +48,15 @@ class AccountDAO extends BaseDAO {
   }
 
   Future<String> getRefferalMessage(String refferalCode) async {
-    Response response =
-        await request.post("/me/refferal", data: "'$refferalCode'");
-    // set access token
-    return response.data['message'];
+    try {
+      Response response =
+          await request.post("/me/refferal", data: "'$refferalCode'");
+      // set access token
+      return response.data['message'];
+    } catch (e) {
+      throw e;
+    }
+
     // return AccountDTO(uid: idToken, name: "Default Name");
   }
 
@@ -66,7 +71,12 @@ class AccountDAO extends BaseDAO {
   }
 
   Future<AccountDTO> updateUser(AccountDTO updateUser) async {
-    Response res = await request.put("me", data: updateUser.toJson());
-    return AccountDTO.fromJson(res.data["data"]);
+    try {
+      var dataJson = updateUser.toJson();
+      Response res = await request.put("me", data: dataJson);
+      return AccountDTO.fromJson(res.data["data"]);
+    } on DioError catch (e) {
+      print('error caught: $e');
+    }
   }
 }
