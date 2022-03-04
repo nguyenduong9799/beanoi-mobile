@@ -47,7 +47,8 @@ class SignUpViewModel extends BaseModel {
       await dao.updateUser(userDTO);
       // setToken here
       setState(ViewStatus.Completed);
-      Get.offAllNamed(RouteHandler.NAV);
+      Get.toNamed(RouteHandler.SIGN_UP_REFERRAL);
+
       // await Future.delayed(Duration(seconds: 3));
     } catch (e) {
       bool result = await showErrorDialog();
@@ -55,6 +56,22 @@ class SignUpViewModel extends BaseModel {
         await signupUser(user);
       } else
         setState(ViewStatus.Error);
+    }
+  }
+
+  Future<void> addReferralCode(String refferalCode) async {
+    try {
+      if (refferalCode != null && refferalCode.isNotEmpty) {
+        showLoadingDialog();
+        String message = await dao.getRefferalMessage(refferalCode);
+        // await showStatusDialog("assets/images/option.png", "", message);
+      }else{
+        Get.offAllNamed(RouteHandler.NAV);
+      }
+    } catch (e, stacktrace) {
+      print(e.toString() + stacktrace.toString());
+      bool result = await showErrorDialog();
+      setState(ViewStatus.Error);
     }
   }
 }

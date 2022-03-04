@@ -13,6 +13,7 @@ class RouteHandler {
   static const String PRODUCT_DETAIL = "/product_detail";
   static const String PROFILE = "/profile";
   static const String SIGN_UP = "/signup";
+  static const String SIGN_UP_REFERRAL = "/signup-referral";
   static const String UPDATE = "/update";
   static const String NETWORK_ERROR = "/network_error";
   static const String LOADING = "/loading";

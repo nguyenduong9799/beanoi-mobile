@@ -7,21 +7,17 @@ import 'package:unidelivery_mobile/Enums/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
 
-class SignUp extends StatefulWidget {
-  final AccountDTO user;
+class ReferralScreen extends StatefulWidget {
 
   @override
-  _SignUpState createState() => _SignUpState();
+  _ReferralScreenState createState() => _ReferralScreenState();
 
-  SignUp({this.user});
+  ReferralScreen();
 }
 
-class _SignUpState extends State<SignUp> {
+class _ReferralScreenState extends State<ReferralScreen> {
   final form = FormGroup({
-    'name': FormControl(validators: [
-      Validators.required,
-    ], touched: false),
-    // 'ref_code': FormControl(touched: false),
+    'ref_code': FormControl(touched: false),
   });
 
   @override
@@ -54,10 +50,11 @@ class _SignUpState extends State<SignUp> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         // HELLO SECTION
-                        Text("Cho mình xin ít \"in4\" nhé ☺",
+                        Text("Mã giới thiệu",
                             style: Get.theme.textTheme.headline1),
                         SizedBox(height: 16),
-                        FormItem("Họ Tên", "vd: Nguyễn Văn A", "name"),
+                        FormItem("Mã Giới Thiệu", "Nếu có", "ref_code"),
+
                         //SIGN UP BUTTON
                         ReactiveFormConsumer(builder: (context, form, child) {
                           return AnimatedContainer(
@@ -77,8 +74,9 @@ class _SignUpState extends State<SignUp> {
                                       : Colors.grey,
                                   onPressed: () async {
                                     if (model.status ==
-                                        ViewStatus.Completed) if (form.valid) {
-                                      await model.signupUser(form.value);
+                                        ViewStatus.Completed){
+                                      var refCode = form.value['ref_code']  as String;
+                                        await model.addReferralCode(refCode);
                                     }
                                   },
                                   child: Padding(
@@ -87,9 +85,9 @@ class _SignUpState extends State<SignUp> {
                                         ? CircularProgressIndicator(
                                             backgroundColor: Color(0xFFFFFFFF))
                                         : Text(
-                                            form.valid
-                                                ? "Hoàn thành"
-                                                : "Bạn chưa điền xong",
+                                            (form.value['ref_code'] as String) == null || (form.value['ref_code'] as String).isEmpty
+                                                ? "Đăng ký không cần mã"
+                                                : "Đăng ký",
                                             style: Get.theme.textTheme.headline1
                                                 .copyWith(color: Colors.white)),
                                   ),
