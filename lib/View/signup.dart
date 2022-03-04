@@ -58,6 +58,8 @@ class _SignUpState extends State<SignUp> {
                             style: Get.theme.textTheme.headline1),
                         SizedBox(height: 16),
                         FormItem("Họ Tên", "vd: Nguyễn Văn A", "name"),
+                        // FormItem("Mã Giới Thiệu", "Nếu có", "ref_code"),
+
                         //SIGN UP BUTTON
                         ReactiveFormConsumer(builder: (context, form, child) {
                           return AnimatedContainer(

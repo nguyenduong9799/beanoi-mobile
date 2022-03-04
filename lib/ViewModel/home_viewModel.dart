@@ -30,7 +30,7 @@ class HomeViewModel extends BaseModel {
     try {
       setState(ViewStatus.Loading);
       RootViewModel root = Get.find<RootViewModel>();
-      await root.fetchStore();
+      // await root.fetchStore();
       CampusDTO currentStore = root.currentStore;
       if (root.status == ViewStatus.Error) {
         setState(ViewStatus.Error);

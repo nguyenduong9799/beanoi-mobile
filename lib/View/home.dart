@@ -16,6 +16,7 @@ import 'package:unidelivery_mobile/Accessories/touchopacity.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Enums/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
+import 'package:unidelivery_mobile/ViewModel/collection_viewmodel.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
 // import 'package:url_launcher/url_launcher.dart';
 
@@ -33,11 +34,13 @@ class _HomeScreenState extends State<HomeScreen> {
   final ValueNotifier<double> notifier = ValueNotifier(0);
   final PageController controller = PageController();
   Future<void> _refresh() async {
+    await Get.find<RootViewModel>().fetchStore();
     await Get.find<HomeViewModel>().getSuppliers();
-    await Get.find<HomeViewModel>().getCollections();
-    await Get.find<HomeViewModel>().getNearlyGiftExchange();
-    await orderModel.getNewOrder();
+    // await Get.find<HomeViewModel>().getNearlyGiftExchange();
     await blogsModel.getBlogs();
+    await Get.find<HomeViewModel>().getCollections();
+    orderModel.getNewOrder();
+
   }
 
   @override
@@ -138,11 +141,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                     }
                                     return false;
                                   },
-                                  child: ListView(
-                                    children: [
-                                      SizedBox(height: 8),
-                                      ...renderHomeSections().toList(),
-                                    ],
+                                  child: SingleChildScrollView(
+                                    child: Column(
+                                      // addAutomaticKeepAlives: true,
+                                      children: [
+                                        SizedBox(height: 8),
+                                        ...renderHomeSections().toList(),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               );
