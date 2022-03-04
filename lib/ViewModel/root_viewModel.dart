@@ -252,47 +252,52 @@ class RootViewModel extends BaseModel {
       showOnHome,
       tag: "showOnHome",
     );
-    if(fetchDetail) {
-      showLoadingDialog();
-      CampusDTO store = await getStore();
-      product = await _productDAO.getProductDetail(product.id,store.id,store.selectedTimeSlot);
-    }
-    bool result =
-        await Get.toNamed(RouteHandler.PRODUCT_DETAIL, arguments: product);
-    hideSnackbar();
-    hideDialog();
-    await Get.delete<bool>(
-      tag: "showOnHome",
-    );
-    if (result != null) {
-      if (result) {
-        Get.rawSnackbar(
-          duration: Duration(seconds: 3),
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.white,
-          messageText: Text("Thêm món thành công ",
-              style: Get.theme.textTheme.headline2),
-          icon: Icon(
-            Icons.check,
-            color: kPrimary,
-          ),
-          mainButton: FlatButton(
-            color: kPrimary,
-            onPressed: () {
-              Get.toNamed(RouteHandler.ORDER);
-            },
-            child: Text(
-              "Xem 🛒",
-              style: Get.theme.textTheme.headline2.copyWith(
-                color: Colors.white,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ),
-        );
+    try {
+      if(fetchDetail) {
+        showLoadingDialog();
+        CampusDTO store = await getStore();
+        product = await _productDAO.getProductDetail(product.id,store.id,store.selectedTimeSlot);
       }
+      bool result = await Get.toNamed(RouteHandler.PRODUCT_DETAIL, arguments: product);
+      hideSnackbar();
+      hideDialog();
+      await Get.delete<bool>(
+        tag: "showOnHome",
+      );
+      if (result != null) {
+        if (result) {
+          Get.rawSnackbar(
+            duration: Duration(seconds: 3),
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.white,
+            messageText: Text("Thêm món thành công ",
+                style: Get.theme.textTheme.headline2),
+            icon: Icon(
+              Icons.check,
+              color: kPrimary,
+            ),
+            mainButton: FlatButton(
+              color: kPrimary,
+              onPressed: () {
+                Get.toNamed(RouteHandler.ORDER);
+              },
+              child: Text(
+                "Xem 🛒",
+                style: Get.theme.textTheme.headline2.copyWith(
+                  color: Colors.white,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          );
+        }
+      }
+      notifyListeners();
+    }catch (e)  {
+      await showErrorDialog(errorTitle: "Không tìm thấy sản phẩm");
+      hideDialog();
     }
-    notifyListeners();
+
   }
 
   Future<void> clearCart() async {

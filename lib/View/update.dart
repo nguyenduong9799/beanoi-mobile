@@ -34,7 +34,7 @@ class _UpdateState extends State<Update> {
     ], touched: false),
     'gender': FormControl(validators: [
       Validators.required,
-    ], touched: false, value: 'nam'),
+    ], touched: false, value: 0),
   });
 
   @override
@@ -105,11 +105,15 @@ class _UpdateState extends State<Update> {
                                 radioGroup: [
                                   {
                                     "title": "Nam",
-                                    "value": "nam",
+                                    "value": 0,
                                   },
                                   {
                                     "title": "Nữ",
-                                    "value": "nữ",
+                                    "value": 1,
+                                  },
+                                  {
+                                    "title": "Khác",
+                                    "value": 2,
                                   }
                                 ],
                               ),

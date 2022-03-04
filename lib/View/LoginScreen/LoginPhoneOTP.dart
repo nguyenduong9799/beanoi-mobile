@@ -141,7 +141,8 @@ class _LoginWithPhoneOTPState extends State<LoginWithPhoneOTP> {
                             //   //   textAlign: TextAlign.center,
                             //   // ),
                             // ),
-                            _buildOTPForm(context),
+                            _buildOTPForm(context, model),
+
                             Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 24.0),
@@ -232,12 +233,13 @@ class _LoginWithPhoneOTPState extends State<LoginWithPhoneOTP> {
     );
   }
 
-  Widget _buildOTPForm(BuildContext context) {
+  Widget _buildOTPForm(BuildContext context, LoginViewModel model) {
     return PinCodeTextField(
       textStyle: Get.theme.textTheme.headline1,
       length: 6,
       animationType: AnimationType.fade,
       obscureText: false,
+      keyboardType: TextInputType.number,
       pinTheme: PinTheme(
         shape: PinCodeFieldShape.box,
         inactiveColor: kBackgroundGrey[0],
@@ -254,9 +256,12 @@ class _LoginWithPhoneOTPState extends State<LoginWithPhoneOTP> {
       backgroundColor: Colors.transparent,
       enableActiveFill: true,
       errorAnimationController: errorController,
-      onCompleted: (v) {},
+      onCompleted: (value) {},
       onChanged: (value) {
         form.control('otp').value = value;
+        if (value?.length == 6) {
+          model.onsignInWithOTP(value, widget.verificationId);
+        }
       },
       validator: (v) {
         if (v.length < 3) {

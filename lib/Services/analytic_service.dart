@@ -29,7 +29,7 @@ class AnalyticsService {
     );
     await _analytics.setUserProperty(
       name: 'sex',
-      value: user.gender,
+      value: user.gender.toString(),
     );
     await _analytics.setUserProperty(
       name: 'birthdate',

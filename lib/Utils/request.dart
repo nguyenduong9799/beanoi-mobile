@@ -101,7 +101,7 @@ class MyRequest {
               "Vui lòng đăng nhập lại");
           Get.Get.offAllNamed(RouteHandler.LOGIN);
         } else {
-          throw e;
+          handler.next(e);
         }
       },
     ));

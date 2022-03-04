@@ -7,6 +7,7 @@ import 'package:unidelivery_mobile/Accessories/index.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Utils/index.dart';
 import 'package:unidelivery_mobile/View/index.dart';
+import 'package:unidelivery_mobile/View/referral.dart';
 import 'package:unidelivery_mobile/View/transaction.dart';
 import 'package:unidelivery_mobile/View/transactionDetail.dart';
 import 'package:unidelivery_mobile/setup.dart';
@@ -104,6 +105,10 @@ class MyApp extends StatelessWidget {
                 builder: (context) => SignUp(
                       user: settings.arguments,
                     ),
+                settings: settings);
+          case RouteHandler.SIGN_UP_REFERRAL:
+            return CupertinoPageRoute<bool>(
+                builder: (context) => ReferralScreen(),
                 settings: settings);
           case RouteHandler.UPDATE:
             return CupertinoPageRoute<bool>(
