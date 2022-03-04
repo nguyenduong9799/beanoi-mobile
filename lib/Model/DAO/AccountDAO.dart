@@ -71,12 +71,8 @@ class AccountDAO extends BaseDAO {
   }
 
   Future<AccountDTO> updateUser(AccountDTO updateUser) async {
-    try {
-      var dataJson = updateUser.toJson();
-      Response res = await request.put("me", data: dataJson);
-      return AccountDTO.fromJson(res.data["data"]);
-    } on DioError catch (e) {
-      print('error caught: $e');
-    }
+    var dataJson = updateUser.toJson();
+    Response res = await request.put("me", data: dataJson);
+    return AccountDTO.fromJson(res.data["data"]);
   }
 }
