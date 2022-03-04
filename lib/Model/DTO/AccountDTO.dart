@@ -1,8 +1,9 @@
 class AccountDTO {
   final int uid;
-  final String name, gender, email;
+  final String name, email;
   String phone;
   final DateTime birthdate;
+  final int gender;
   final double balance;
   final double point;
   final String referalCode;
@@ -25,7 +26,7 @@ class AccountDTO {
       name: json['name'] as String ?? "Bean",
       email: json['email'] as String,
       phone: json['phone'] as String,
-      gender: (json['gender']) == 1 ? 'nam' : 'nữ',
+      gender: (json['gender']),
       balance: json['balance'],
       point: json['point'],
       isFirstLogin: (json['is_first_login'] as bool) ?? false,

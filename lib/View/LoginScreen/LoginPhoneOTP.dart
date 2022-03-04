@@ -256,11 +256,12 @@ class _LoginWithPhoneOTPState extends State<LoginWithPhoneOTP> {
       backgroundColor: Colors.transparent,
       enableActiveFill: true,
       errorAnimationController: errorController,
-      onCompleted: (value) {
-        model.onsignInWithOTP(value, widget.verificationId);
-      },
+      onCompleted: (value) {},
       onChanged: (value) {
         form.control('otp').value = value;
+        if (value?.length == 6) {
+          model.onsignInWithOTP(value, widget.verificationId);
+        }
       },
       validator: (v) {
         if (v.length < 3) {
