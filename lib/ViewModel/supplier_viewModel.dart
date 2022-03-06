@@ -55,8 +55,7 @@ class SupplierViewModel extends BaseModel {
         collections.forEach((element) {
           element.products = products
               .where((product) =>
-                  product.collections.any((e) => e == element.id) &&
-                  product.type != ProductType.GIFT_PRODUCT)
+                  product.collections.any((e) => e == element.id))
               .toList();
         });
       }

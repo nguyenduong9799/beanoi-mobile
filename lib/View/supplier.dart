@@ -225,7 +225,26 @@ class _SupplierScreenState extends State<SupplierScreen> {
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  Text(
+                  product.type != ProductType.MASTER_PRODUCT ? RichText(
+                    text: TextSpan(
+                        text: "${product.price} ",
+                        style: Get.theme.textTheme.headline4
+                            .copyWith(color: kBean),
+                        children: [
+                          WidgetSpan(
+                            alignment: PlaceholderAlignment.bottom,
+                            child: Image(
+                              image: AssetImage(
+                                  "assets/images/icons/bean_coin.png"),
+                              width: 20,
+                              height: 20,
+                            ),
+                          )
+                        ]),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                  ) : Text(
+
                       product.type != ProductType.MASTER_PRODUCT
                           ? formatPrice(price)
                           : "từ " + formatPrice(price ?? product.price),
