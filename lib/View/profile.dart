@@ -224,15 +224,15 @@ class _UpdateAccountState extends State<ProfileScreen> {
                       isFB: true);
                 }),
             Divider(),
-            section(
-                icon: Icon(Icons.info_outline, color: Colors.black54),
-                title: Text("Giới thiệu ứng dụng",
-                    style: Get.theme.textTheme.headline4
-                        .copyWith(color: Colors.black54)),
-                function: () {
-                  _launchUrl("https://unibean.net", forceWebView: true);
-                }),
-            Divider(),
+            // section(
+            //     icon: Icon(Icons.info_outline, color: Colors.black54),
+            //     title: Text("Giới thiệu ứng dụng",
+            //         style: Get.theme.textTheme.headline4
+            //             .copyWith(color: Colors.black54)),
+            //     function: () {
+            //       _launchUrl("https://unibean.net", forceWebView: true);
+            //     }),
+            // Divider(),
             section(
                 icon: Icon(Icons.feedback_outlined, color: Colors.black54),
                 title: Text("Góp ý",
