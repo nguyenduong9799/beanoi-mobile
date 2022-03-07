@@ -253,12 +253,14 @@ class RootViewModel extends BaseModel {
       tag: "showOnHome",
     );
     try {
-      if(fetchDetail) {
+      if (fetchDetail) {
         showLoadingDialog();
         CampusDTO store = await getStore();
-        product = await _productDAO.getProductDetail(product.id,store.id,store.selectedTimeSlot);
+        product = await _productDAO.getProductDetail(
+            product.id, store.id, store.selectedTimeSlot);
       }
-      bool result = await Get.toNamed(RouteHandler.PRODUCT_DETAIL, arguments: product);
+      bool result =
+          await Get.toNamed(RouteHandler.PRODUCT_DETAIL, arguments: product);
       hideSnackbar();
       hideDialog();
       await Get.delete<bool>(
@@ -293,11 +295,10 @@ class RootViewModel extends BaseModel {
         }
       }
       notifyListeners();
-    }catch (e)  {
+    } catch (e) {
       await showErrorDialog(errorTitle: "Không tìm thấy sản phẩm");
       hideDialog();
     }
-
   }
 
   Future<void> clearCart() async {

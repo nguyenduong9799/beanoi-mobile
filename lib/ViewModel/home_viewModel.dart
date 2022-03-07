@@ -103,6 +103,21 @@ class HomeViewModel extends BaseModel {
         setState(ViewStatus.Completed);
         return;
       }
+      final currentDate = DateTime.now();
+      String currentTimeSlot = currentStore.selectedTimeSlot.to;
+      var beanTime = new DateTime(
+        currentDate.year,
+        currentDate.month,
+        currentDate.day,
+        double.parse(currentTimeSlot.split(':')[0]).round(),
+        double.parse(currentTimeSlot.split(':')[1]).round(),
+      );
+      int differentTime = beanTime.difference(currentDate).inMilliseconds;
+      if (differentTime <= 0) {
+        homeCollections = null;
+        setState(ViewStatus.Completed);
+        return;
+      }
       homeCollections = await _collectionDAO.getCollections(
           currentStore.selectedTimeSlot,
           params: {"show-on-home": true});

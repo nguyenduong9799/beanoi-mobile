@@ -4,6 +4,7 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Accessories/CacheImage.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
+import 'package:unidelivery_mobile/Utils/format_price.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
 
 class StorePromotion extends StatefulWidget {
@@ -74,7 +75,7 @@ class _StorePromotionState extends State<StorePromotion> {
                               children: [
                                 Text(
                                   widget.dto.name,
-                                  style: Get.theme.textTheme.headline1
+                                  style: Get.theme.textTheme.headline3
                                       .copyWith(color: Colors.white),
                                   overflow: TextOverflow.ellipsis,
                                   maxLines: 2,
@@ -105,7 +106,8 @@ class _StorePromotionState extends State<StorePromotion> {
                           children: [
                             RichText(
                               text: TextSpan(
-                                  text: "${widget.dto.price} ",
+                                  text:
+                                      formatPriceWithoutUnit(widget.dto.price),
                                   style: Get.theme.textTheme.headline4
                                       .copyWith(color: Colors.white),
                                   children: [
