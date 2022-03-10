@@ -270,16 +270,11 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
               trailing: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  (order.status == OrderFilter.DONE)
-                      ? (Text(
-                          "${formatPrice(order.finalAmount)}",
-                          textAlign: TextAlign.right,
-                          style: Get.theme.textTheme.headline2,
-                        ))
-                      : (Icon(
-                          Entypo.time_slot,
-                          size: 36,
-                        )),
+                  Text(
+                    "${formatPrice(order.finalAmount)}",
+                    textAlign: TextAlign.right,
+                    style: Get.theme.textTheme.headline2,
+                  )
                 ],
               ),
             ),

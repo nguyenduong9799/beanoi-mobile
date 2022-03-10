@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -269,11 +270,13 @@ class _TransactionScreenState extends State<TransactionScreen> {
                 ),
               ],
             ),
-            trailing: Text(
-                "${dto.isIncrease ? "+" : "-"} ${formatPriceWithoutUnit(dto.amount)} ${dto.currency}",
-                style: Get.theme.textTheme.headline2.copyWith(
-                  color: dto.isIncrease ? kPrimary : Colors.red,
-                )),
+            trailing: (dto.status == TransactionStatus.NEW)
+                ? (Icon(Entypo.time_slot))
+                : (Text(
+                    "${dto.isIncrease ? "+" : "-"} ${formatPriceWithoutUnit(dto.amount)} ${dto.currency}",
+                    style: Get.theme.textTheme.headline2.copyWith(
+                      color: dto.isIncrease ? kPrimary : Colors.red,
+                    ))),
           )),
     );
   }
