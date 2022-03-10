@@ -1,1 +1,1 @@
-enum ViewStatus { Empty, Loading, Completed, Error, LoadMore }
+enum ViewStatus { Empty, Loading, Completed, Error, LoadMore, Refreshing }

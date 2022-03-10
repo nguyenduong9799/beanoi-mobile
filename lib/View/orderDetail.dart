@@ -1,5 +1,6 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
@@ -154,28 +155,99 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
     if (status == OrderFilter.NEW) {
       return ScopedModelDescendant<OrderHistoryViewModel>(
           builder: (context, child, model) {
-        return Material(
-          elevation: 2,
-          color: Color(0xFFF0F2F5),
-          child: FlatButton(
-            onPressed: () {
-              model.cancelOrder(this.widget.order.id);
-            },
-            child: Text("Hủy đơn 😢",
-                style:
-                    Get.theme.textTheme.headline4.copyWith(color: Colors.grey)),
+        return Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey,
+                offset: Offset(0.0, 1.0), //(x,y)
+                blurRadius: 6.0,
+              ),
+            ],
+          ),
+          height: 130,
+          padding: EdgeInsets.fromLTRB(16, 16, 16, 32),
+          child: Container(
+            child: ListView(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: kPrimary, width: 3),
+                  ),
+                  child: TextButton(
+                      onPressed: () async {
+                        int option = await showOptionDialog(
+                            "Vui lòng liên hệ FanPage",
+                            firstOption: "Quay lại",
+                            secondOption: "Liên hệ");
+                        if (option == 1) {
+                          _launchUrl("https://www.m.me/beanoivn", isFB: true);
+                        }
+                      },
+                      child: Text(
+                        "Ét o ét! Liên hệ BeanOi ngay! ",
+                        style: TextStyle(
+                            fontWeight: FontWeight.normal,
+                            color: kPrimary,
+                            fontSize: 18),
+                      )),
+                ),
+                SizedBox(
+                  height: 6,
+                ),
+                Center(
+                  child: InkWell(
+                    onTap: () {
+                      model.cancelOrder(this.widget.order.id);
+                    },
+                    child: Text("Hủy đơn 😢",
+                        style: Get.theme.textTheme.headline3
+                            .copyWith(color: Colors.grey)),
+                  ),
+                ),
+              ],
+            ),
           ),
         );
       });
     } else if (status == OrderFilter.DONE) {
       return Container(
-        padding: EdgeInsets.only(top: 8, bottom: 30),
-        child: Text(
-          'Bạn đã có bữa cơm ngon miệng phải không 😋?',
-          textAlign: TextAlign.center,
-          style: Get.theme.textTheme.headline4.copyWith(color: Colors.grey),
-        ),
-      );
+          decoration: BoxDecoration(
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey,
+                offset: Offset(0.0, 1.0), //(x,y)
+                blurRadius: 6.0,
+              ),
+            ],
+          ),
+          padding: EdgeInsets.fromLTRB(16, 16, 16, 32),
+          child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: kPrimary, width: 3),
+              ),
+              child: TextButton(
+                onPressed: () async {
+                  int option = await showOptionDialog(
+                      "Vui lòng liên hệ FanPage",
+                      firstOption: "Quay lại",
+                      secondOption: "Liên hệ");
+                  if (option == 1) {
+                    _launchUrl("https://www.m.me/beanoivn", isFB: true);
+                  }
+                },
+                child: Text(
+                  "Ét o ét! Liên hệ BeanOi ngay! ",
+                  style: TextStyle(
+                      fontWeight: FontWeight.normal,
+                      color: kPrimary,
+                      fontSize: 18),
+                ),
+              )));
     } else {
       return Container(
         padding: EdgeInsets.only(top: 8, bottom: 8),
@@ -429,5 +501,26 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
               otherAmount: amountObj,
             ))
         .toList();
+  }
+
+  void _launchUrl(String url, {bool isFB = false, forceWebView = false}) {
+    // if(isFB){
+    //   String fbProtocolUrl;
+    //   if (Platform.isIOS) {
+    //     fbProtocolUrl = 'fb://profile/Bean-Ơi-103238875095890';
+    //   } else {
+    //     fbProtocolUrl = 'fb://page/Bean-Ơi-103238875095890';
+    //   }
+    //   try {
+    //     bool launched = await launch(fbProtocolUrl, forceSafariVC: false);
+    //
+    //     if (!launched) {
+    //       await launch(url, forceSafariVC: false);
+    //     }
+    //   } catch (e) {
+    //     await launch(url, forceSafariVC: false);
+    //   }
+    // }else
+    Get.toNamed(RouteHandler.WEBVIEW, arguments: url);
   }
 }

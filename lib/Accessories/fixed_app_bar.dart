@@ -595,6 +595,7 @@ class _BeanTimeCountdownState extends State<BeanTimeCountdown> {
               );
               // remove cart
               await model.clearCart();
+              await model.fetchStore();
             },
             widgetBuilder: (_, CurrentRemainingTime time) {
               if (time == null) {

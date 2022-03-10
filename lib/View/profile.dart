@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Accessories/index.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
@@ -107,7 +108,12 @@ class _UpdateAccountState extends State<ProfileScreen> {
               width: Get.width * 0.3,
               decoration:
                   BoxDecoration(color: kPrimary, shape: BoxShape.circle),
-              child: ClipOval(child: Image.asset('assets/images/avatar.png')),
+              child: GestureDetector(
+                  onTap: () async {
+                    await model.fetchUser();
+                  },
+                  child:
+                      ClipOval(child: Image.asset('assets/images/avatar.png'))),
             ),
             SizedBox(
               width: 16,
@@ -132,19 +138,39 @@ class _UpdateAccountState extends State<ProfileScreen> {
                   SizedBox(
                     height: 4,
                   ),
-                  infoDetail("Số bean: ", color: Colors.grey, list: [
-                    TextSpan(
-                        text: "${model.currentUser.point} ",
-                        style: Get.theme.textTheme.headline4),
-                    WidgetSpan(
-                        alignment: PlaceholderAlignment.middle,
-                        child: Image(
-                          image:
-                              AssetImage("assets/images/icons/bean_coin.png"),
-                          width: 20,
-                          height: 20,
-                        ))
-                  ]),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      infoDetail("Số bean: ", color: Colors.grey, list: [
+                        TextSpan(
+                            text: "${model.currentUser.point} ",
+                            style: Get.theme.textTheme.headline4),
+                        WidgetSpan(
+                            alignment: PlaceholderAlignment.middle,
+                            child: Image(
+                              image: AssetImage(
+                                  "assets/images/icons/bean_coin.png"),
+                              width: 20,
+                              height: 20,
+                            ))
+                      ]),
+                      Padding(
+                        padding: EdgeInsets.only(right: 30),
+                        child: InkWell(
+                          onTap: () async {
+                            showLoadingDialog();
+                            await model.fetchUser();
+                            hideDialog();
+                          },
+                          child: Icon(
+                            Icons.replay,
+                            color: kPrimary,
+                            size: 26,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                   SizedBox(
                     height: 4,
                   ),
