@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -269,11 +270,16 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
               trailing: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    "${formatPrice(order.finalAmount)}",
-                    textAlign: TextAlign.right,
-                    style: Get.theme.textTheme.headline2,
-                  ),
+                  (order.status == OrderFilter.DONE)
+                      ? (Text(
+                          "${formatPrice(order.finalAmount)}",
+                          textAlign: TextAlign.right,
+                          style: Get.theme.textTheme.headline2,
+                        ))
+                      : (Icon(
+                          Entypo.time_slot,
+                          size: 36,
+                        )),
                 ],
               ),
             ),

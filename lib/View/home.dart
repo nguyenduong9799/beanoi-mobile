@@ -40,7 +40,6 @@ class _HomeScreenState extends State<HomeScreen> {
     await blogsModel.getBlogs();
     await Get.find<HomeViewModel>().getCollections();
     orderModel.getNewOrder();
-
   }
 
   @override
@@ -465,6 +464,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               Expanded(
                                 child: InkWell(
                                   onTap: () {
+                                    model.getOrders();
                                     _onTapOrderHistory(order);
                                   },
                                   child: Container(
