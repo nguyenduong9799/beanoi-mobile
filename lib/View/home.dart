@@ -431,6 +431,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _onTapOrderHistory(order) async {
     // get orderDetail
+    await Get.find<OrderHistoryViewModel>().getOrders();
     await Get.toNamed(RouteHandler.ORDER_HISTORY_DETAIL, arguments: order);
   }
 
@@ -464,7 +465,6 @@ class _HomeScreenState extends State<HomeScreen> {
                               Expanded(
                                 child: InkWell(
                                   onTap: () {
-                                    model.getOrders();
                                     _onTapOrderHistory(order);
                                   },
                                   child: Container(

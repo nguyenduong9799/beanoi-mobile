@@ -18,11 +18,14 @@ class AccountViewModel extends BaseModel {
     _dao = AccountDAO();
   }
 
-  Future<void> fetchUser() async {
+  Future<void> fetchUser({bool isRefetch = false}) async {
     try {
-      if (status != ViewStatus.Refreshing) {
+      if (isRefetch) {
         setState(ViewStatus.Refreshing);
+      } else if (status != ViewStatus.Loading) {
+        setState(ViewStatus.Loading);
       }
+
       final user = await _dao.getUser();
       currentUser = user;
 
