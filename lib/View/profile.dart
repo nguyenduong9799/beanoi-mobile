@@ -7,6 +7,7 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Accessories/index.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Enums/index.dart';
+import 'package:unidelivery_mobile/Utils/format_price.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -108,12 +109,7 @@ class _UpdateAccountState extends State<ProfileScreen> {
               width: Get.width * 0.3,
               decoration:
                   BoxDecoration(color: kPrimary, shape: BoxShape.circle),
-              child: GestureDetector(
-                  onTap: () async {
-                    await model.fetchUser();
-                  },
-                  child:
-                      ClipOval(child: Image.asset('assets/images/avatar.png'))),
+              child: ClipOval(child: Image.asset('assets/images/avatar.png')),
             ),
             SizedBox(
               width: 16,
@@ -132,7 +128,9 @@ class _UpdateAccountState extends State<ProfileScreen> {
                   ),
                   infoDetail("Số xu: ", color: Colors.grey, list: [
                     TextSpan(
-                        text: "${model.currentUser.balance} xu",
+                        text:
+                            formatPriceWithoutUnit(model.currentUser.balance) +
+                                " xu",
                         style: Get.theme.textTheme.headline4)
                   ]),
                   SizedBox(
@@ -143,7 +141,8 @@ class _UpdateAccountState extends State<ProfileScreen> {
                     children: [
                       infoDetail("Số bean: ", color: Colors.grey, list: [
                         TextSpan(
-                            text: "${model.currentUser.point} ",
+                            text:
+                                formatPriceWithoutUnit(model.currentUser.point),
                             style: Get.theme.textTheme.headline4),
                         WidgetSpan(
                             alignment: PlaceholderAlignment.middle,
@@ -159,7 +158,7 @@ class _UpdateAccountState extends State<ProfileScreen> {
                         child: InkWell(
                           onTap: () async {
                             showLoadingDialog();
-                            await model.fetchUser();
+                            await model.fetchUser(isRefetch: true);
                             hideDialog();
                           },
                           child: Icon(
