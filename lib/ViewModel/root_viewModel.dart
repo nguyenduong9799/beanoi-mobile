@@ -63,8 +63,10 @@ class RootViewModel extends BaseModel {
           await setStore(currentStore);
           notifyListeners();
           hideDialog();
+          await Get.find<RootViewModel>().fetchStore();
           Get.find<HomeViewModel>().getSuppliers();
           Get.find<GiftViewModel>().getGifts();
+          await Get.find<HomeViewModel>().getCollections();
         }
       } else {
         setSelectedLocation(currentStore, location, destination);
@@ -327,6 +329,6 @@ class RootViewModel extends BaseModel {
   }
 
   bool get isCurrentMenuAvailable {
-    return currentStore?.selectedTimeSlot?.available;
+    return currentStore?.selectedTimeSlot?.available ?? false;
   }
 }
