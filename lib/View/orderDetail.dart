@@ -13,6 +13,7 @@ import 'package:unidelivery_mobile/Enums/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/Utils/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class OrderHistoryDetail extends StatefulWidget {
   final OrderDTO order;
@@ -183,7 +184,8 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                             firstOption: "Quay lại",
                             secondOption: "Liên hệ");
                         if (option == 1) {
-                          _launchUrl("https://www.m.me/beanoivn", isFB: true);
+                          if (!await launch("https://www.m.me/beanoivn"))
+                            throw 'Could not launch https://www.m.me/beanoivn';
                         }
                       },
                       child: Text(
@@ -237,7 +239,8 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                       firstOption: "Quay lại",
                       secondOption: "Liên hệ");
                   if (option == 1) {
-                    _launchUrl("https://www.m.me/beanoivn", isFB: true);
+                    if (!await launch("https://www.m.me/beanoivn"))
+                      throw 'Could not launch https://www.m.me/beanoivn';
                   }
                 },
                 child: Text(
