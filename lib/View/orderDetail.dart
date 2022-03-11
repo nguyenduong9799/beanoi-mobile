@@ -167,15 +167,15 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
               ),
             ],
           ),
-          height: 130,
-          padding: EdgeInsets.fromLTRB(16, 16, 16, 32),
+          height: 125,
+          padding: EdgeInsets.fromLTRB(16, 16, 16, 16),
           child: Container(
             child: ListView(
               children: [
                 Container(
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: kPrimary, width: 3),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: kPrimary, width: 2),
                   ),
                   child: TextButton(
                       onPressed: () async {
@@ -193,7 +193,7 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                         style: TextStyle(
                             fontWeight: FontWeight.normal,
                             color: kPrimary,
-                            fontSize: 18),
+                            fontSize: 16),
                       )),
                 ),
                 SizedBox(
