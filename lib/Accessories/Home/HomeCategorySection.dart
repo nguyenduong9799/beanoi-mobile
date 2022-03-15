@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Accessories/index.dart';
+import 'package:unidelivery_mobile/Accessories/section.dart';
 import 'package:unidelivery_mobile/Accessories/touchopacity.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Enums/index.dart';
@@ -54,35 +55,37 @@ class _HomeCategorySectionState extends State<HomeCategorySection> {
                     0) {
               return SizedBox();
             }
-            return Column(
-              children: [
-                Container(
-                  child: Image(
-                    image: AssetImage("assets/images/bean_oi_category.png"),
-                    width: 95,
-                    height: 25,
-                    fit: BoxFit.fill,
-                  ),
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(
-                      color: Color(0xff333333),
+            return Section(
+              child: Column(
+                children: [
+                  Container(
+                    child: Image(
+                      image: AssetImage("assets/images/bean_oi_category.png"),
+                      width: 95,
+                      height: 25,
+                      fit: BoxFit.fill,
                     ),
                   ),
-                  padding: EdgeInsets.all(8),
-                  width: Get.width,
-                  child: Wrap(
-                    alignment: WrapAlignment.spaceBetween,
-                    spacing: 8,
-                    children: categories
-                        .map((category) => buildCategoryItem(category))
-                        .toList(),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: Color(0xff333333),
+                      ),
+                    ),
+                    padding: EdgeInsets.all(8),
+                    width: Get.width,
+                    child: Wrap(
+                      alignment: WrapAlignment.spaceBetween,
+                      spacing: 8,
+                      children: categories
+                          .map((category) => buildCategoryItem(category))
+                          .toList(),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             );
           });
         },

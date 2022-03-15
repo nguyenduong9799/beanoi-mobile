@@ -125,9 +125,14 @@ class RootViewModel extends BaseModel {
         currentStore.selectedTimeSlot = timeSlot;
         await deleteCart();
         await setStore(currentStore);
-        hideDialog();
         Get.find<HomeViewModel>().getSuppliers();
         Get.find<GiftViewModel>().getGifts();
+        Get.find<HomeViewModel>().getCollections();
+        Get.find<HomeViewModel>().getNearlyGiftExchange();
+        BlogsViewModel model = BlogsViewModel();
+        model.getBlogs();
+
+        hideDialog();
       }
     }
   }

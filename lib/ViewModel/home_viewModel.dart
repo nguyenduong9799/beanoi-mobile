@@ -142,7 +142,14 @@ class HomeViewModel extends BaseModel {
       );
 
       if (nearLyGifts.length > 0) {
-        nearlyGift = nearLyGifts.first;
+        nearlyGift = nearLyGifts[0];
+        for (int i = 1; i < nearLyGifts.length; i++) {
+          if (nearlyGift.price > nearLyGifts[i].price) {
+            nearlyGift = nearLyGifts[i];
+          }
+        }
+      } else {
+        nearlyGift = null;
       }
       setState(ViewStatus.Completed);
     } catch (e) {

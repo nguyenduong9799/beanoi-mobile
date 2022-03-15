@@ -313,12 +313,15 @@ class _FixedAppBarState extends State<FixedAppBar> {
                       DateTime arrive = DateFormat("HH:mm:ss")
                           .parse(model.currentStore.timeSlots[index].arrive);
                       DateTime arriveRangeFrom = arrive;
-                      DateTime arriveRangeTo = arrive.add(Duration(minutes: 30));
-                      if(model.currentStore.timeSlots[index].arriveRange.length == 2) {
-                        arriveRangeFrom = DateFormat("HH:mm:ss")
-                            .parse(model.currentStore.timeSlots[index].arriveRange[0]);
-                        arriveRangeTo = DateFormat("HH:mm:ss")
-                            .parse(model.currentStore.timeSlots[index].arriveRange[1]);
+                      DateTime arriveRangeTo =
+                          arrive.add(Duration(minutes: 30));
+                      if (model.currentStore.timeSlots[index].arriveRange
+                              .length ==
+                          2) {
+                        arriveRangeFrom = DateFormat("HH:mm:ss").parse(
+                            model.currentStore.timeSlots[index].arriveRange[0]);
+                        arriveRangeTo = DateFormat("HH:mm:ss").parse(
+                            model.currentStore.timeSlots[index].arriveRange[1]);
                       }
 
                       bool isSelect =

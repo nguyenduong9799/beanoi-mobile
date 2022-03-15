@@ -36,7 +36,8 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _refresh() async {
     await Get.find<RootViewModel>().fetchStore();
     await Get.find<HomeViewModel>().getSuppliers();
-    // await Get.find<HomeViewModel>().getNearlyGiftExchange();
+    await Get.find<HomeViewModel>().getNearlyGiftExchange();
+    await Get.find<GiftViewModel>().getGifts();
     await blogsModel.getBlogs();
     await Get.find<HomeViewModel>().getCollections();
     orderModel.getNewOrder();
@@ -175,11 +176,12 @@ class _HomeScreenState extends State<HomeScreen> {
     return [
       banner(),
       // buildLinkBtns(),
-      Section(child: HomeCategorySection()),
+      HomeCategorySection(),
       SizedBox(height: 16),
-      // Section(child: buildGiftCanExchangeSection()),
+      buildGiftCanExchangeSection(),
+      SizedBox(height: 16),
       HomeCollection(),
-      SizedBox(height: 8),
+      SizedBox(height: 16),
       Container(child: HomeStoreSection()),
       SizedBox(height: 46)
     ];
@@ -293,136 +295,138 @@ class _HomeScreenState extends State<HomeScreen> {
 
         final canExchangeGift = userBean > gift.price;
 
-        return TouchOpacity(
-          onTap: () async {
-            final rootModel = Get.find<RootViewModel>();
-            await rootModel.openProductDetail(gift);
-          },
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: 8),
-              Container(
-                child: Text(
-                  "BEAN ĐÃ LỚN 🎁",
-                  style: kTitleTextStyle,
-                ),
-              ),
-              SizedBox(height: 4),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Flexible(
-                    flex: 6,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          canExchangeGift
-                              ? "Đổi ngay 1 ${gift.name}"
-                              : "Bạn sắp nhận được ${gift.name} rồi đấy",
-                          style: Get.theme.textTheme.headline3
-                              .copyWith(color: kDescriptionTextColor),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        SizedBox(height: 8),
-                        Container(
-                          margin: EdgeInsets.only(
-                            top: 8,
-                            bottom: 8,
-                          ),
-                          width: Get.width,
-                          height: 16,
-                          decoration: BoxDecoration(
-                            color: kBackgroundGrey[2],
-                            borderRadius: BorderRadius.circular((8)),
-                          ),
-                          child: Stack(
-                            overflow: Overflow.visible,
-                            children: [
-                              FractionallySizedBox(
-                                widthFactor: userBean / gift.price > 1
-                                    ? 1
-                                    : userBean / gift.price,
-                                child: AnimatedContainer(
-                                  duration: Duration(seconds: 2),
-                                  decoration: BoxDecoration(
-                                    color: kPrimary,
-                                    borderRadius: BorderRadius.circular((8)),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
+        return Section(
+          child: TouchOpacity(
+            onTap: () async {
+              final rootModel = Get.find<RootViewModel>();
+              await rootModel.openProductDetail(gift);
+            },
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: 8),
+                Container(
+                  child: Text(
+                    "BEAN ĐÃ LỚN 🎁",
+                    style: kTitleTextStyle,
                   ),
-                  SizedBox(width: 16),
-                  Flexible(
-                    flex: 4,
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Flexible(
-                          child: Container(
+                ),
+                SizedBox(height: 4),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Flexible(
+                      flex: 6,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            canExchangeGift
+                                ? "Đổi ngay 1 ${gift.name}"
+                                : "Bạn sắp nhận được ${gift.name} rồi đấy",
+                            style: Get.theme.textTheme.headline3
+                                .copyWith(color: kDescriptionTextColor),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          SizedBox(height: 8),
+                          Container(
                             margin: EdgeInsets.only(
                               top: 8,
                               bottom: 8,
                             ),
-                            child: canExchangeGift
-                                ? Align(
-                                    alignment: Alignment.center,
-                                    child: Text(
-                                      "Đổi ngay",
-                                      style: TextStyle(
-                                        color: kPrimary,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                      textAlign: TextAlign.center,
+                            width: Get.width,
+                            height: 16,
+                            decoration: BoxDecoration(
+                              color: kBackgroundGrey[2],
+                              borderRadius: BorderRadius.circular((8)),
+                            ),
+                            child: Stack(
+                              overflow: Overflow.visible,
+                              children: [
+                                FractionallySizedBox(
+                                  widthFactor: userBean / gift.price > 1
+                                      ? 1
+                                      : userBean / gift.price,
+                                  child: AnimatedContainer(
+                                    duration: Duration(seconds: 2),
+                                    decoration: BoxDecoration(
+                                      color: kPrimary,
+                                      borderRadius: BorderRadius.circular((8)),
                                     ),
-                                  )
-                                : RichText(
-                                    text: TextSpan(
-                                        text: "",
-                                        style: Get.theme.textTheme.headline3
-                                            .copyWith(
-                                                color: kDescriptionTextColor),
-                                        children: <TextSpan>[
-                                          TextSpan(
-                                            text: "${userBean.ceil()}",
-                                            style: TextStyle(
-                                              color: kPrimary,
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          TextSpan(
-                                            text: "/${gift.price.ceil()}",
-                                          ),
-                                        ]),
                                   ),
-                          ),
-                        ),
-                        SizedBox(width: 4),
-                        Container(
-                          width: 50,
-                          height: 75,
-                          // fit: BoxFit.fitWidth,
-                          child: CacheImage(
-                            imageUrl: gift.imageURL,
-                          ),
-                        ),
-                      ],
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
                     ),
-                  )
-                ],
-              ),
-            ],
+                    SizedBox(width: 16),
+                    Flexible(
+                      flex: 4,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Flexible(
+                            child: Container(
+                              margin: EdgeInsets.only(
+                                top: 8,
+                                bottom: 8,
+                              ),
+                              child: canExchangeGift
+                                  ? Align(
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        "Đổi ngay",
+                                        style: TextStyle(
+                                          color: kPrimary,
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    )
+                                  : RichText(
+                                      text: TextSpan(
+                                          text: "",
+                                          style: Get.theme.textTheme.headline3
+                                              .copyWith(
+                                                  color: kDescriptionTextColor),
+                                          children: <TextSpan>[
+                                            TextSpan(
+                                              text: "${userBean.ceil()}",
+                                              style: TextStyle(
+                                                color: kPrimary,
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            TextSpan(
+                                              text: "/${gift.price.ceil()}",
+                                            ),
+                                          ]),
+                                    ),
+                            ),
+                          ),
+                          SizedBox(width: 4),
+                          Container(
+                            width: 50,
+                            height: 75,
+                            // fit: BoxFit.fitWidth,
+                            child: CacheImage(
+                              imageUrl: gift.imageURL,
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ],
+            ),
           ),
         );
       },
