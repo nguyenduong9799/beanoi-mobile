@@ -10,7 +10,7 @@ class ProductDAO extends BaseDAO {
     int supplierId,
     TimeSlot timeSlot, {
     int page = 1,
-    int size = 20,
+    int size = 50,
     int type,
     Map<String, dynamic> params = const {},
   }) async {
@@ -83,7 +83,8 @@ class ProductDAO extends BaseDAO {
   Future<ProductDTO> getProductDetail(int id, int storeId, TimeSlot timeSlot) async {
     final query = convertToQueryParams({
       "time-slot": [timeSlot.from.toString(), timeSlot.to.toString()],
-      "store-id" : storeId
+      "store-id" : storeId,
+      "fields": ['ChildProducts', 'CollectionId', 'Extras']
     });
     String queryStr = Uri(
       queryParameters: query,

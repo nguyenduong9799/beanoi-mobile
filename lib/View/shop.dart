@@ -140,7 +140,8 @@ class _ShopScreenState extends State<ShopScreen> {
   Widget buildCategoryItem(CategoryDTO category) {
     return TouchOpacity(
       onTap: () {
-        Get.toNamed(RouteHandler.PRODUCT_FILTER_LIST, arguments: category);
+        Get.toNamed(RouteHandler.PRODUCT_FILTER_LIST,
+            arguments: {'category-id': category.id});
       },
       child: Container(
         width: Get.width / 4 - 20,

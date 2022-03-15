@@ -31,32 +31,21 @@ class PushNotificationService {
 
     RemoteMessage message =
         await FirebaseMessaging.instance.getInitialMessage();
-    print("onInit: $message");
 
-    FirebaseMessaging.onMessage.listen((event) {
+    FirebaseMessaging.onMessage.listen( (event) async {
       hideSnackbar();
       RemoteNotification notification = event.notification;
-      Get.snackbar(
-          notification.title, // title
-          notification.body,
-          colorText: kPrimary,
-          shouldIconPulse: true,
-          backgroundColor: Colors.white.withOpacity(0.8),
-          isDismissible: true,
-          duration: Duration(minutes: 1),
-          mainButton: TextButton(
-            child: Text(
-              "Đồng ý",
-              style: Get.theme.textTheme.headline4.copyWith(color: kPrimary),
-            ),
-            onPressed: () {
-              hideSnackbar();
-            },
-          ));
+      await showStatusDialog("assets/images/option.png", notification.title, notification.body);
+
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((event) {
-      print('onResume: $event');
+      var screen = event.data['screen'];
+      if(screen == RouteHandler.PRODUCT_FILTER_LIST) {
+        Get.toNamed(RouteHandler.PRODUCT_FILTER_LIST,
+          arguments: event.data,
+        );
+      }
     });
   }
 

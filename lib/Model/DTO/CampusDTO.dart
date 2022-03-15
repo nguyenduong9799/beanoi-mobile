@@ -121,17 +121,23 @@ class TimeSlot {
   String from;
   String to;
   String arrive;
+  List<dynamic> arriveRange;
   bool available;
 
-  TimeSlot({this.menuId, this.from, this.to, this.available, this.arrive});
+  TimeSlot({this.menuId, this.from, this.to, this.available, this.arrive, this.arriveRange = const []});
 
   factory TimeSlot.fromJson(dynamic json) {
-    return TimeSlot(
+    var arriveRange = json['arrive_time_range'] != "null" ? json['arrive_time_range'] : ["00:00:00","03:00:00"];
+    print(json);
+    var timeSlot = TimeSlot(
         menuId: json['menu_id'],
         from: json['from'],
         to: json['to'].toString(),
         available: json['available'] ?? false,
+        // arriveRange: arriveRange,
         arrive: json['arrive_time']);
+    // timeSlot.arriveRange = arriveRange;
+    return timeSlot;
   }
 
   Map<String, dynamic> toJson() {
@@ -140,7 +146,8 @@ class TimeSlot {
       "from": from,
       "to": to,
       "available": available,
-      'arrive_time': arrive
+      'arrive_time': arrive,
+      'arrive_time_range': arriveRange.toString()
     };
   }
 }

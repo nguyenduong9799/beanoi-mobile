@@ -11,7 +11,7 @@ class ProductSearchItem extends StatelessWidget {
     Key key,
     @required this.product,
     this.index = -1,
-    this.showOnHome,
+    this.showOnHome = false,
   }) : super(key: key);
 
   final ProductDTO product;
@@ -28,7 +28,7 @@ class ProductSearchItem extends StatelessWidget {
         child: InkWell(
           onTap: () {
             RootViewModel root = Get.find<RootViewModel>();
-            root.openProductDetail(product, showOnHome: showOnHome);
+            root.openProductDetail(product);
           },
           child: Container(
             height: 140,

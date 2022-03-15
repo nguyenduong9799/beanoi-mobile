@@ -21,6 +21,7 @@ class HomeCategorySection extends StatefulWidget {
 class _HomeCategorySectionState extends State<HomeCategorySection> {
   CategoryViewModel _categoryViewModel;
   HomeViewModel _homeViewModal;
+
   @override
   void initState() {
     super.initState();
@@ -104,7 +105,7 @@ class _HomeCategorySectionState extends State<HomeCategorySection> {
                       "Hiện tại khung giờ bạn chọn đã chốt đơn. ${firstTimeSlot != null ? 'Bạn hãy quay lại vào lúc ${firstTimeSlot.arrive} hôm sau nhé.' : 'Bạn vui lòng xem khung giờ khác nhé 😓.'} ");
                 } else {
                   Get.toNamed(RouteHandler.PRODUCT_FILTER_LIST,
-                      arguments: category);
+                      arguments: {"category-id": category.id});
                 }
               },
               child: Container(

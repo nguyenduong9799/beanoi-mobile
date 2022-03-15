@@ -66,48 +66,64 @@ class _HomeCollectionState extends State<HomeCollection> {
     );
   }
 
-  Column buildHomeCollection(CollectionDTO collection) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(height: 8),
-        Text(
-          collection.name,
-          style: kTitleTextStyle.copyWith(fontSize: 20),
-        ),
-        // SizedBox(height: 4),
-        Text(
-          collection.description ?? "",
-          style: Get.theme.textTheme.headline4
-              .copyWith(color: kDescriptionTextColor),
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-        ),
-        SizedBox(height: 16),
-        Container(
-          width: Get.width,
-          height: 200,
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            separatorBuilder: (context, index) => SizedBox(width: 16),
-            itemBuilder: (context, index) {
-              var product = collection.products[index];
-              return Material(
-                color: Colors.white,
-                child: TouchOpacity(
-                  onTap: () {
-                    RootViewModel root = Get.find<RootViewModel>();
-                    if (product.type == ProductType.MASTER_PRODUCT) {}
-                    root.openProductDetail(product, fetchDetail: true);
-                  },
-                  child: buildProductInCollection(product),
-                ),
-              );
-            },
-            itemCount: collection.products?.length,
+  Widget buildHomeCollection(CollectionDTO collection) {
+    return TouchOpacity(
+      onTap: () {
+        Get.toNamed(RouteHandler.PRODUCT_FILTER_LIST,
+            arguments: {"collection-id": collection.id});
+      },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(height: 8),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    collection.name,
+                    style: kTitleTextStyle.copyWith(fontSize: 20),
+                  ),
+                  Text(
+                    collection.description ?? "",
+                    style: Get.theme.textTheme.headline4
+                        .copyWith(color: kDescriptionTextColor),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+              Text('Xem tất cả', style: TextStyle(color: kPrimary),)
+            ],
           ),
-        )
-      ],
+          SizedBox(height: 16),
+          Container(
+            width: Get.width,
+            height: 200,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              separatorBuilder: (context, index) => SizedBox(width: 16),
+              itemBuilder: (context, index) {
+                var product = collection.products[index];
+                return Material(
+                  color: Colors.white,
+                  child: TouchOpacity(
+                    onTap: () {
+                      RootViewModel root = Get.find<RootViewModel>();
+                      if (product.type == ProductType.MASTER_PRODUCT) {}
+                      root.openProductDetail(product, fetchDetail: true);
+                    },
+                    child: buildProductInCollection(product),
+                  ),
+                );
+              },
+              itemCount: collection.products?.length,
+            ),
+          )
+        ],
+      ),
     );
   }
 

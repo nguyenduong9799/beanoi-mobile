@@ -312,6 +312,15 @@ class _FixedAppBarState extends State<FixedAppBar> {
                     itemBuilder: (context, index) {
                       DateTime arrive = DateFormat("HH:mm:ss")
                           .parse(model.currentStore.timeSlots[index].arrive);
+                      DateTime arriveRangeFrom = arrive;
+                      DateTime arriveRangeTo = arrive.add(Duration(minutes: 30));
+                      if(model.currentStore.timeSlots[index].arriveRange.length == 2) {
+                        arriveRangeFrom = DateFormat("HH:mm:ss")
+                            .parse(model.currentStore.timeSlots[index].arriveRange[0]);
+                        arriveRangeTo = DateFormat("HH:mm:ss")
+                            .parse(model.currentStore.timeSlots[index].arriveRange[1]);
+                      }
+
                       bool isSelect =
                           model.currentStore.selectedTimeSlot.arrive ==
                               model.currentStore.timeSlots[index].arrive;
@@ -333,7 +342,7 @@ class _FixedAppBarState extends State<FixedAppBar> {
                           },
                           child: Center(
                             child: Text(
-                                "${DateFormat("HH:mm").format(arrive)} - ${DateFormat("HH:mm").format(arrive.add(Duration(minutes: 30)))}",
+                                "${DateFormat("HH:mm").format(arriveRangeFrom)} - ${DateFormat("HH:mm").format(arriveRangeTo)}",
                                 style: isSelect
                                     ? Get.theme.textTheme.headline5
                                         .copyWith(color: Colors.white)
