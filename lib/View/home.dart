@@ -177,11 +177,11 @@ class _HomeScreenState extends State<HomeScreen> {
       banner(),
       // buildLinkBtns(),
       HomeCategorySection(),
-      SizedBox(height: 16),
+      SizedBox(height: 8),
       buildGiftCanExchangeSection(),
-      SizedBox(height: 16),
+      SizedBox(height: 8),
       HomeCollection(),
-      SizedBox(height: 16),
+      SizedBox(height: 8),
       Container(child: HomeStoreSection()),
       SizedBox(height: 46)
     ];
