@@ -23,4 +23,5 @@ void createRouteBindings() async {
   Get.put(OrderHistoryViewModel());
   Get.put(ProductFilterViewModel());
   Get.put(TransactionViewModel());
+  Get.put(BlogsViewModel());
 }

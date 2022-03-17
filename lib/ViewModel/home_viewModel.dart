@@ -30,7 +30,6 @@ class HomeViewModel extends BaseModel {
     try {
       setState(ViewStatus.Loading);
       RootViewModel root = Get.find<RootViewModel>();
-      // await root.fetchStore();
       CampusDTO currentStore = root.currentStore;
       if (root.status == ViewStatus.Error) {
         setState(ViewStatus.Error);
@@ -126,37 +125,6 @@ class HomeViewModel extends BaseModel {
     } catch (e) {
       homeCollections = null;
       setState(ViewStatus.Completed);
-    }
-  }
-
-  Future<void> getNearlyGiftExchange() async {
-    RootViewModel root = Get.find<RootViewModel>();
-    CampusDTO currentStore = root.currentStore;
-
-    try {
-      setState(ViewStatus.Loading);
-      var nearLyGifts = await _productDAO.getGifts(
-        currentStore.id,
-        currentStore.selectedTimeSlot,
-        params: {"sortBy": "price asc"},
-      );
-
-      if (nearLyGifts.length > 0) {
-        nearlyGift = nearLyGifts[0];
-        for (int i = 1; i < nearLyGifts.length; i++) {
-          if (nearlyGift.price > nearLyGifts[i].price) {
-            nearlyGift = nearLyGifts[i];
-          }
-        }
-      } else {
-        nearlyGift = null;
-      }
-      setState(ViewStatus.Completed);
-    } catch (e) {
-      nearlyGift = null;
-      print(e);
-      setState(ViewStatus.Completed);
-      // setState(ViewStatus.Error);
     }
   }
 }

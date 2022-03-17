@@ -66,9 +66,11 @@ class SignUpViewModel extends BaseModel {
         showLoadingDialog();
         String message = await dao.getRefferalMessage(refferalCode);
         await showStatusDialog("assets/images/option.png", "", message);
+        await Get.find<RootViewModel>().startUp();
         Get.offAllNamed(RouteHandler.NAV);
         hideDialog();
       } else {
+        await Get.find<RootViewModel>().startUp();
         Get.offAllNamed(RouteHandler.NAV);
       }
     } catch (e, stacktrace) {

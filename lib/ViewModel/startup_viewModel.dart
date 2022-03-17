@@ -6,12 +6,9 @@ import 'package:unidelivery_mobile/utils/shared_pref.dart';
 import 'index.dart';
 
 class StartUpViewModel extends BaseModel {
-
-
   StartUpViewModel() {
     handleStartUpLogic();
   }
-
   Future handleStartUpLogic() async {
     AccountDAO _accountDAO = AccountDAO();
     await Future.delayed(Duration(seconds: 3));
@@ -19,8 +16,10 @@ class StartUpViewModel extends BaseModel {
     bool isFirstOnBoard = await getIsFirstOnboard() ?? true;
 
     if (isFirstOnBoard) {
+      await Get.find<RootViewModel>().startUp();
       Get.offAndToNamed(RouteHandler.ONBOARD);
     } else if (hasLoggedInUser) {
+      await Get.find<RootViewModel>().startUp();
       Get.offAndToNamed(RouteHandler.NAV);
     } else {
       Get.offAndToNamed(RouteHandler.LOGIN);
