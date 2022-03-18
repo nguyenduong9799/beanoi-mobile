@@ -119,12 +119,12 @@ class _UpdateAccountState extends State<ProfileScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    model.currentUser.name.toUpperCase(),
+                    model.currentUser.name,
                     style: Get.theme.textTheme.headline1
                         .copyWith(color: Colors.orange),
                   ),
                   SizedBox(
-                    height: 8,
+                    height: 4,
                   ),
                   infoDetail("Số xu: ", color: Colors.grey, list: [
                     TextSpan(

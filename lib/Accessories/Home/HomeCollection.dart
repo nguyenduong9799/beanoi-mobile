@@ -95,7 +95,10 @@ class _HomeCollectionState extends State<HomeCollection> {
                   ),
                 ],
               ),
-              Text('Xem tất cả', style: TextStyle(color: kPrimary),)
+              Text(
+                'Xem tất cả',
+                style: TextStyle(color: kPrimary),
+              )
             ],
           ),
           SizedBox(height: 16),

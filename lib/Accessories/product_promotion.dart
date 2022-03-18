@@ -85,7 +85,7 @@ class _StorePromotionState extends State<StorePromotion> {
                                 ),
                                 Text(
                                   widget.dto.supplierName,
-                                  style: Get.theme.textTheme.headline4
+                                  style: Get.theme.textTheme.headline3
                                       .copyWith(color: Colors.white),
                                   overflow: TextOverflow.ellipsis,
                                   maxLines: 1,
@@ -108,7 +108,7 @@ class _StorePromotionState extends State<StorePromotion> {
                               text: TextSpan(
                                   text:
                                       formatPriceWithoutUnit(widget.dto.price),
-                                  style: Get.theme.textTheme.headline4
+                                  style: Get.theme.textTheme.headline3
                                       .copyWith(color: Colors.white),
                                   children: [
                                     WidgetSpan(
@@ -126,7 +126,7 @@ class _StorePromotionState extends State<StorePromotion> {
                             ),
                             Text(
                               "Đổi ngay",
-                              style: Get.theme.textTheme.headline4
+                              style: Get.theme.textTheme.headline3
                                   .copyWith(color: kBean),
                               overflow: TextOverflow.ellipsis,
                               maxLines: 2,

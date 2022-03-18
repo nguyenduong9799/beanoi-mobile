@@ -112,9 +112,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Flexible(
+              Expanded(
                 child: Text(
                   widget.dto.name + " ",
                   style: Get.theme.textTheme.headline1
@@ -122,22 +122,24 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                 ),
               ),
               widget.dto.type != ProductType.GIFT_PRODUCT
-                  ? Flexible(
+                  ? Container(
+                      width: 80,
                       child: RichText(
+                          textAlign: TextAlign.end,
                           text: TextSpan(
                               text: "+ " + widget.dto.bean.toString() + " ",
-                              style: Get.theme.textTheme.headline1
+                              style: Get.theme.textTheme.headline3
                                   .copyWith(color: Colors.orange),
                               children: [
-                            WidgetSpan(
-                                alignment: PlaceholderAlignment.bottom,
-                                child: Image(
-                                  image: AssetImage(
-                                      "assets/images/icons/bean_coin.png"),
-                                  width: 30,
-                                  height: 30,
-                                ))
-                          ])),
+                                WidgetSpan(
+                                    alignment: PlaceholderAlignment.bottom,
+                                    child: Image(
+                                      image: AssetImage(
+                                          "assets/images/icons/bean_coin.png"),
+                                      width: 25,
+                                      height: 25,
+                                    ))
+                              ])),
                     )
                   : SizedBox.shrink()
             ],
