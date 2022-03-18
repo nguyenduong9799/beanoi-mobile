@@ -17,14 +17,13 @@ class BlogsViewModel extends BaseModel {
     try {
       setState(ViewStatus.Loading);
       RootViewModel root = Get.find<RootViewModel>();
-      // await root.fetchStore();
       CampusDTO currentStore = root.currentStore;
       if (root.status == ViewStatus.Error) {
         setState(ViewStatus.Error);
         return;
       }
       if (blogs == null) {
-        blogs = await _storeDAO.getBlogs(currentStore.id);
+        blogs = await _storeDAO.getBlogs(150);
       }
       await Future.delayed(Duration(microseconds: 500));
       // check truong hop product tra ve rong (do khong co menu nao trong TG do)

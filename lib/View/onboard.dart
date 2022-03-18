@@ -4,6 +4,7 @@ import 'package:introduction_screen/introduction_screen.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Model/DAO/index.dart';
 import 'package:unidelivery_mobile/Utils/index.dart';
+import 'package:unidelivery_mobile/ViewModel/index.dart';
 
 class OnBoardScreen extends StatefulWidget {
   OnBoardScreen({Key key}) : super(key: key);
@@ -84,6 +85,7 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
     var hasLoggedInUser = await _accountDAO.isUserLoggedIn();
     await setIsFirstOnboard(false);
     if (hasLoggedInUser) {
+      await Get.find<RootViewModel>().startUp();
       Get.offAndToNamed(RouteHandler.NAV);
     } else {
       Get.offAndToNamed(RouteHandler.LOGIN);

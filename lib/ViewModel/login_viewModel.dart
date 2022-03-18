@@ -60,6 +60,7 @@ class LoginViewModel extends BaseModel {
           // Navigate to sign up screen
           await Get.offAllNamed(RouteHandler.SIGN_UP, arguments: userInfo);
         } else {
+          await Get.find<RootViewModel>().startUp();
           await Get.offAllNamed(RouteHandler.NAV);
           // chuyen sang trang home
         }
@@ -113,6 +114,7 @@ class LoginViewModel extends BaseModel {
       if (authCredential == null) return;
 
       showLoadingDialog();
+      await Get.find<RootViewModel>().startUp();
       return Get.offAllNamed(RouteHandler.NAV);
     } on FirebaseAuthException catch (e) {
       await showStatusDialog(
@@ -141,6 +143,7 @@ class LoginViewModel extends BaseModel {
             snackPosition: SnackPosition.BOTTOM,
             margin: EdgeInsets.only(left: 8, right: 8, bottom: 32),
             borderRadius: 8);
+        await Get.find<RootViewModel>().startUp();
         await Get.offAllNamed(RouteHandler.NAV);
       }
     } on FirebaseAuthException catch (e) {
@@ -172,6 +175,7 @@ class LoginViewModel extends BaseModel {
             snackPosition: SnackPosition.BOTTOM,
             margin: EdgeInsets.only(left: 8, right: 8, bottom: 32),
             borderRadius: 8);
+        await Get.find<RootViewModel>().startUp();
         await Get.offAllNamed(RouteHandler.NAV);
       }
     } on FirebaseAuthException catch (e) {
