@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -18,6 +20,7 @@ import 'package:unidelivery_mobile/Enums/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/ViewModel/collection_viewmodel.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
+import 'package:url_launcher/url_launcher.dart';
 // import 'package:url_launcher/url_launcher.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -28,25 +31,20 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       new GlobalKey<RefreshIndicatorState>();
-  OrderHistoryViewModel orderModel = Get.find<OrderHistoryViewModel>();
-  BlogsViewModel blogsModel = BlogsViewModel();
+
   final double HEIGHT = 48;
   final ValueNotifier<double> notifier = ValueNotifier(0);
   final PageController controller = PageController();
   Future<void> _refresh() async {
-    await Get.find<RootViewModel>().fetchStore();
-    await Get.find<HomeViewModel>().getSuppliers();
-    await Get.find<HomeViewModel>().getNearlyGiftExchange();
-    await Get.find<GiftViewModel>().getGifts();
-    await blogsModel.getBlogs();
-    await Get.find<HomeViewModel>().getCollections();
-    orderModel.getNewOrder();
+    await Get.find<RootViewModel>().startUp();
+    Timer.run(showImageDialog);
   }
 
   @override
   void initState() {
     super.initState();
-    _refresh();
+    // _refresh();
+    Timer.run(showImageDialog);
   }
 
   bool isDarkModeOn =
@@ -182,7 +180,7 @@ class _HomeScreenState extends State<HomeScreen> {
       SizedBox(height: 8),
       HomeCollection(),
       SizedBox(height: 8),
-      Container(child: HomeStoreSection()),
+      HomeStoreSection(),
       SizedBox(height: 46)
     ];
   }
@@ -285,151 +283,158 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget buildGiftCanExchangeSection() {
-    return ScopedModelDescendant<HomeViewModel>(
-      builder: (context, child, model) {
-        if (model.nearlyGift == null) return SizedBox.shrink();
-        final accountModel = Get.find<AccountViewModel>();
+    return ScopedModel(
+      model: Get.find<GiftViewModel>(),
+      child: ScopedModelDescendant<GiftViewModel>(
+        builder: (context, child, GiftViewModel model) {
+          if (model.status == ViewStatus.Loading || model.nearlyGift == null) {
+            return SizedBox.shrink();
+          }
+          final accountModel = Get.find<AccountViewModel>();
 
-        final gift = model.nearlyGift;
-        final userBean = accountModel.currentUser.point ?? 0;
+          final gift = model.nearlyGift;
+          final userBean = accountModel.currentUser?.point ?? 0;
 
-        final canExchangeGift = userBean > gift.price;
+          final canExchangeGift = userBean > gift.price;
 
-        return Section(
-          child: TouchOpacity(
-            onTap: () async {
-              final rootModel = Get.find<RootViewModel>();
-              await rootModel.openProductDetail(gift);
-            },
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: 8),
-                Container(
-                  child: Text(
-                    "BEAN ĐÃ LỚN 🎁",
-                    style: kTitleTextStyle,
-                  ),
-                ),
-                SizedBox(height: 4),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Flexible(
-                      flex: 6,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            canExchangeGift
-                                ? "Đổi ngay 1 ${gift.name}"
-                                : "Bạn sắp nhận được ${gift.name} rồi đấy",
-                            style: Get.theme.textTheme.headline3
-                                .copyWith(color: kDescriptionTextColor),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          SizedBox(height: 8),
-                          Container(
-                            margin: EdgeInsets.only(
-                              top: 8,
-                              bottom: 8,
-                            ),
-                            width: Get.width,
-                            height: 16,
-                            decoration: BoxDecoration(
-                              color: kBackgroundGrey[2],
-                              borderRadius: BorderRadius.circular((8)),
-                            ),
-                            child: Stack(
-                              overflow: Overflow.visible,
-                              children: [
-                                FractionallySizedBox(
-                                  widthFactor: userBean / gift.price > 1
-                                      ? 1
-                                      : userBean / gift.price,
-                                  child: AnimatedContainer(
-                                    duration: Duration(seconds: 2),
-                                    decoration: BoxDecoration(
-                                      color: kPrimary,
-                                      borderRadius: BorderRadius.circular((8)),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
+          return Section(
+            child: TouchOpacity(
+              onTap: () async {
+                final rootModel = Get.find<RootViewModel>();
+                await rootModel.openProductDetail(gift);
+              },
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: 8),
+                  Container(
+                    child: Text(
+                      "BEAN ĐÃ LỚN 🎁",
+                      style: kTitleTextStyle,
                     ),
-                    SizedBox(width: 16),
-                    Flexible(
-                      flex: 4,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Flexible(
-                            child: Container(
+                  ),
+                  SizedBox(height: 4),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Flexible(
+                        flex: 6,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              canExchangeGift
+                                  ? "Đổi ngay 1 ${gift.name}"
+                                  : "Bạn sắp nhận được ${gift.name} rồi đấy",
+                              style: Get.theme.textTheme.headline3
+                                  .copyWith(color: kDescriptionTextColor),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            SizedBox(height: 8),
+                            Container(
                               margin: EdgeInsets.only(
                                 top: 8,
                                 bottom: 8,
                               ),
-                              child: canExchangeGift
-                                  ? Align(
-                                      alignment: Alignment.center,
-                                      child: Text(
-                                        "Đổi ngay",
-                                        style: TextStyle(
-                                          color: kPrimary,
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                        textAlign: TextAlign.center,
+                              width: Get.width,
+                              height: 16,
+                              decoration: BoxDecoration(
+                                color: kBackgroundGrey[2],
+                                borderRadius: BorderRadius.circular((8)),
+                              ),
+                              child: Stack(
+                                overflow: Overflow.visible,
+                                children: [
+                                  FractionallySizedBox(
+                                    widthFactor: userBean / gift.price > 1
+                                        ? 1
+                                        : userBean / gift.price,
+                                    child: AnimatedContainer(
+                                      duration: Duration(seconds: 2),
+                                      decoration: BoxDecoration(
+                                        color: kPrimary,
+                                        borderRadius:
+                                            BorderRadius.circular((8)),
                                       ),
-                                    )
-                                  : RichText(
-                                      text: TextSpan(
-                                          text: "",
-                                          style: Get.theme.textTheme.headline3
-                                              .copyWith(
-                                                  color: kDescriptionTextColor),
-                                          children: <TextSpan>[
-                                            TextSpan(
-                                              text: "${userBean.ceil()}",
-                                              style: TextStyle(
-                                                color: kPrimary,
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                            TextSpan(
-                                              text: "/${gift.price.ceil()}",
-                                            ),
-                                          ]),
                                     ),
-                            ),
-                          ),
-                          SizedBox(width: 4),
-                          Container(
-                            width: 50,
-                            height: 75,
-                            // fit: BoxFit.fitWidth,
-                            child: CacheImage(
-                              imageUrl: gift.imageURL,
-                            ),
-                          ),
-                        ],
+                                  ),
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
                       ),
-                    )
-                  ],
-                ),
-              ],
+                      SizedBox(width: 16),
+                      Flexible(
+                        flex: 4,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Flexible(
+                              child: Container(
+                                margin: EdgeInsets.only(
+                                  top: 8,
+                                  bottom: 8,
+                                ),
+                                child: canExchangeGift
+                                    ? Align(
+                                        alignment: Alignment.center,
+                                        child: Text(
+                                          "Đổi ngay",
+                                          style: TextStyle(
+                                            color: kPrimary,
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      )
+                                    : RichText(
+                                        text: TextSpan(
+                                            text: "",
+                                            style: Get.theme.textTheme.headline3
+                                                .copyWith(
+                                                    color:
+                                                        kDescriptionTextColor),
+                                            children: <TextSpan>[
+                                              TextSpan(
+                                                text: "${userBean.ceil()}",
+                                                style: TextStyle(
+                                                  color: kPrimary,
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              TextSpan(
+                                                text: "/${gift.price.ceil()}",
+                                              ),
+                                            ]),
+                                      ),
+                              ),
+                            ),
+                            SizedBox(width: 4),
+                            Container(
+                              width: 50,
+                              height: 75,
+                              // fit: BoxFit.fitWidth,
+                              child: CacheImage(
+                                imageUrl: gift.imageURL,
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 
@@ -441,7 +446,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget buildNewOrder() {
     return ScopedModel<OrderHistoryViewModel>(
-      model: orderModel,
+      model: Get.find<OrderHistoryViewModel>(),
       child: ScopedModelDescendant<OrderHistoryViewModel>(
           builder: (context, child, model) {
         if (model.status == ViewStatus.Loading ||
@@ -524,7 +529,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               IconButton(
                                 icon: Icon(Icons.close),
                                 onPressed: () {
-                                  orderModel.closeNewOrder(order.id);
+                                  Get.find<OrderHistoryViewModel>()
+                                      .closeNewOrder(order.id);
                                 },
                               ),
                             ],
@@ -543,7 +549,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget banner() {
     return ScopedModel<BlogsViewModel>(
-        model: blogsModel,
+        model: Get.find<BlogsViewModel>(),
         child: Container(
           color: Colors.white,
           padding: EdgeInsets.fromLTRB(8, 16, 8, 8),
@@ -573,7 +579,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     margin: EdgeInsets.only(bottom: 8),
                     child: Swiper(
                         onTap: (index) async {
-                          await _launchURL(
+                          await launch(
                               "https://www.youtube.com/embed/wu32Wj_Uix4");
                         },
                         autoplay: model.blogs.length > 1 ? true : false,
@@ -635,6 +641,111 @@ class _HomeScreenState extends State<HomeScreen> {
         ));
   }
 
+  Future<void> showImageDialog() async {
+    hideDialog();
+    await Get.dialog(Dialog(
+      child: ScopedModel<BlogsViewModel>(
+        model: Get.find<BlogsViewModel>(),
+        child: ScopedModelDescendant<BlogsViewModel>(
+            builder: (context, child, model) {
+          ViewStatus status = model.status;
+          switch (status) {
+            case ViewStatus.Loading:
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ShimmerBlock(
+                  // height: (Get.width) * (747 / 1914),
+                  width: (Get.width),
+                ),
+              );
+            case ViewStatus.Empty:
+            case ViewStatus.Error:
+              return SizedBox.shrink();
+            default:
+              if (model.dialogBlog == null) {
+                return SizedBox.shrink();
+              }
+              return AspectRatio(
+                aspectRatio: 9 / 16,
+                child: CachedNetworkImage(
+                  imageUrl: model.dialogBlog.imageUrl,
+                  imageBuilder: (context, imageProvider) => InkWell(
+                      onTap: () {
+                        Get.toNamed(RouteHandler.BANNER_DETAIL,
+                            arguments: model.dialogBlog);
+                      },
+                      child: Container(
+                        // margin: EdgeInsets.only(left: 8, right: 8),
+                        decoration: BoxDecoration(
+                          // borderRadius: BorderRadius.circular(8),
+                          // color: Colors.blue,
+                          image: DecorationImage(
+                            image: imageProvider,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              alignment: Alignment.topRight,
+                              child: IconButton(
+                                icon: Icon(
+                                  AntDesign.closecircleo,
+                                  color: Colors.white,
+                                ),
+                                onPressed: () {
+                                  hideDialog();
+                                },
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: InkWell(
+                                onTap: () {
+                                  Get.toNamed(RouteHandler.BANNER_DETAIL,
+                                      arguments: model.dialogBlog);
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(8),
+                                      border: Border.all(color: kPrimary)),
+                                  child: Text(
+                                    model.dialogBlog.metaData["btnTitle"] !=
+                                            null
+                                        ? model.dialogBlog.metaData["btnTitle"]
+                                        : "Chi Tiết",
+                                    style: TextStyle(
+                                        fontSize: 14, color: kPrimary),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      )),
+                  progressIndicatorBuilder: (context, url, downloadProgress) =>
+                      Shimmer.fromColors(
+                    baseColor: Colors.grey[300],
+                    highlightColor: Colors.grey[100],
+                    enabled: true,
+                    child: Container(
+                      color: Colors.grey,
+                    ),
+                  ),
+                  errorWidget: (context, url, error) => Icon(
+                    MaterialIcons.broken_image,
+                    color: kPrimary.withOpacity(0.5),
+                  ),
+                ),
+              );
+          }
+        }),
+      ),
+    ));
+  }
   // TODO: Implement category section
-  _launchURL(String url) async {}
 }
