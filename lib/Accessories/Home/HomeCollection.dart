@@ -95,7 +95,10 @@ class _HomeCollectionState extends State<HomeCollection> {
                   ),
                 ],
               ),
-              Text('Xem tất cả', style: TextStyle(color: kPrimary),)
+              Text(
+                'Xem tất cả',
+                style: TextStyle(color: kPrimary),
+              )
             ],
           ),
           SizedBox(height: 16),
@@ -145,8 +148,10 @@ class _HomeCollectionState extends State<HomeCollection> {
           SizedBox(height: 8),
           Text(
             product.type != ProductType.MASTER_PRODUCT
-                ? formatPrice(product.price)
-                : "từ " + formatPrice(product.minPrice ?? product.price),
+                ? formatPriceWithoutUnit(product.price) + " đ"
+                : "từ " +
+                    formatPriceWithoutUnit(product.minPrice ?? product.price) +
+                    " đ",
             // NumberFormat.simpleCurrency(locale: "vi").format(product.price),
             style: Get.theme.textTheme.headline5.copyWith(
               color: kBestSellerColor,

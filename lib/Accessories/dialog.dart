@@ -33,6 +33,7 @@ Future<void> showStatusDialog(
               child: Text(
                 status ?? "",
                 style: Get.theme.textTheme.headline2,
+                textAlign: TextAlign.center,
               ),
             ),
             Padding(
@@ -208,6 +209,7 @@ Future<int> showOptionDialog(String text,
                   child: Text(
                     text,
                     style: Get.theme.textTheme.headline4,
+                    textAlign: TextAlign.center,
                   ),
                 ),
                 SizedBox(

@@ -26,11 +26,12 @@ class RootViewModel extends BaseModel {
   Future startUp() async {
     await Get.find<RootViewModel>().fetchStore();
     await Get.find<HomeViewModel>().getSuppliers();
-    await Get.find<GiftViewModel>().getNearlyGiftExchange();
-    await Get.find<GiftViewModel>().getGifts();
     await Get.find<BlogsViewModel>().getBlogs();
+    await Get.find<BlogsViewModel>().getDialogBlog();
     await Get.find<HomeViewModel>().getCollections();
     await Get.find<OrderHistoryViewModel>().getNewOrder();
+    await Get.find<GiftViewModel>().getNearlyGiftExchange();
+    await Get.find<GiftViewModel>().getGifts();
   }
 
   Future getStores() async {
@@ -132,12 +133,7 @@ class RootViewModel extends BaseModel {
         currentStore.selectedTimeSlot = timeSlot;
         await deleteCart();
         await setStore(currentStore);
-        Get.find<RootViewModel>().fetchStore();
-        Get.find<HomeViewModel>().getSuppliers();
-        Get.find<GiftViewModel>().getGifts();
-        Get.find<HomeViewModel>().getCollections();
-        Get.find<GiftViewModel>().getNearlyGiftExchange();
-        Get.find<BlogsViewModel>().getBlogs();
+        Get.find<RootViewModel>().startUp();
         hideDialog();
       }
     }
@@ -194,11 +190,14 @@ class RootViewModel extends BaseModel {
           if (differentTime <= 0) {
             DateTime arrive = DateFormat("HH:mm:ss")
                 .parse(currentStore.selectedTimeSlot.arrive);
-            await showStatusDialog(
-              "assets/images/global_error.png",
-              "Khung giờ cho \n ${currentStore.name}  \n đã kết thúc",
-              "Đã hết giờ chốt đơn cho khung giờ \n ${DateFormat("HH:mm").format(arrive)} - ${DateFormat("HH:mm").format(arrive.add(Duration(minutes: 30)))}. \n Bạn vui lòng chọn khu vực hoặc khung giờ khác nhé 😢.",
-            );
+            int option = await showOptionDialog(
+                "Khung giờ cho ${currentStore.name} đã kết thúc \n "
+                "Đã hết giờ chốt đơn cho khung giờ \n ${DateFormat("HH:mm").format(arrive)} - ${DateFormat("HH:mm").format(arrive.add(Duration(minutes: 30)))}.",
+                firstOption: "Chọn khu vực",
+                secondOption: "Đóng");
+            if (option == 0) {
+              await changeCampusDialog(Get.find<RootViewModel>());
+            }
             // remove cart
             await deleteCart();
           }

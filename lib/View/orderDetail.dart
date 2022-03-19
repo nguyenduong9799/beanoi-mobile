@@ -361,17 +361,15 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
+            Text(
+              "${item.quantity} x",
+              style: Get.theme.textTheme.headline4.copyWith(color: Colors.grey),
+              overflow: TextOverflow.ellipsis,
+            ),
             Container(
               width: Get.width * 0.6,
               child: Wrap(
-                //mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Text(
-                    "${item.quantity}x ",
-                    style: Get.theme.textTheme.headline4
-                        .copyWith(color: Colors.grey),
-                    overflow: TextOverflow.ellipsis,
-                  ),
                   Container(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,

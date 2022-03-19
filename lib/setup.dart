@@ -18,10 +18,10 @@ Future setUp() async {
 void createRouteBindings() async {
   Get.put(RootViewModel());
   Get.put(HomeViewModel());
-  Get.put(GiftViewModel());
   Get.put(AccountViewModel());
   Get.put(OrderHistoryViewModel());
   Get.put(ProductFilterViewModel());
   Get.put(TransactionViewModel());
   Get.put(BlogsViewModel());
+  Get.put(GiftViewModel());
 }

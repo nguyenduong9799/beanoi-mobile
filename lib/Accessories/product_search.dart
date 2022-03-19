@@ -31,8 +31,8 @@ class ProductSearchItem extends StatelessWidget {
             root.openProductDetail(product);
           },
           child: Container(
-            height: 140,
-            padding: EdgeInsets.all(16),
+            height: 110,
+            padding: EdgeInsets.all(12),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -48,62 +48,61 @@ class ProductSearchItem extends StatelessWidget {
                   ),
                 ),
                 SizedBox(width: 16),
-                Flexible(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        product.name,
-                        textAlign: TextAlign.left,
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 2,
-                        style: kSubtitleTextStyle.copyWith(fontSize: 18),
-                      ),
-                      SizedBox(height: 4),
-                      Container(
-                        // color: Colors.amber,
-                        child: Text(
-                          product.description ?? '',
-                          style: kDescriptionTextStyle,
+                Expanded(
+                  child: Container(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          product.name,
                           textAlign: TextAlign.left,
                           overflow: TextOverflow.ellipsis,
                           maxLines: 2,
+                          style: kSubtitleTextStyle.copyWith(fontSize: 18),
                         ),
-                      ),
-                      Expanded(
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Container(
-                              padding: EdgeInsets.fromLTRB(8, 4, 8, 4),
-                              decoration: BoxDecoration(
-                                color: kPrimary,
-                                borderRadius: BorderRadius.circular(16),
-                              ),
-                              child: Text(
-                                formatPrice(product.price),
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 14),
-                              ),
-                            ),
-                            SizedBox(width: 8),
-                            Container(
-                              padding: EdgeInsets.fromLTRB(8, 4, 8, 4),
-                              decoration: BoxDecoration(
-                                color: kBestSellerColor,
-                                borderRadius: BorderRadius.circular(16),
-                              ),
-                              child: Text(
-                                "+ ${product.bean} bean",
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 14),
-                              ),
-                            )
-                          ],
+                        Flexible(
+                          child: Text(
+                            product.description ?? '',
+                            style: kDescriptionTextStyle,
+                            textAlign: TextAlign.left,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
-                      )
-                    ],
+                        Expanded(
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Container(
+                                padding: EdgeInsets.fromLTRB(8, 4, 8, 4),
+                                decoration: BoxDecoration(
+                                  color: kPrimary,
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                                child: Text(
+                                  formatPrice(product.price),
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 14),
+                                ),
+                              ),
+                              SizedBox(width: 8),
+                              Container(
+                                padding: EdgeInsets.fromLTRB(8, 4, 8, 4),
+                                decoration: BoxDecoration(
+                                  color: kBestSellerColor,
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                                child: Text(
+                                  "+ ${product.bean} bean",
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 14),
+                                ),
+                              )
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ],
