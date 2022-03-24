@@ -106,8 +106,7 @@ class _StorePromotionState extends State<StorePromotion> {
                           children: [
                             RichText(
                               text: TextSpan(
-                                  text:
-                                      formatPriceWithoutUnit(widget.dto.price),
+                                  text: formatBean(widget.dto.price),
                                   style: Get.theme.textTheme.headline3
                                       .copyWith(color: Colors.white),
                                   children: [

@@ -11,6 +11,7 @@ import 'package:unidelivery_mobile/Accessories/index.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Enums/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
+import 'package:unidelivery_mobile/Utils/format_time.dart';
 import 'package:unidelivery_mobile/Utils/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -125,6 +126,15 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                               Text("🎯 Nhận đơn tại: ",
                                   style: Get.theme.textTheme.headline4),
                               Text(orderDetail.address,
+                                  style: Get.theme.textTheme.headline4),
+                            ],
+                          ),
+                          SizedBox(height: 8),
+                          Row(
+                            children: [
+                              Text(" Giờ nhận đơn: ",
+                                  style: Get.theme.textTheme.headline4),
+                              Text(formatTime(orderDetail.arriveTime),
                                   style: Get.theme.textTheme.headline4),
                             ],
                           )
@@ -480,7 +490,9 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                         style: Get.theme.textTheme.headline3,
                       ),
                       Text(
-                        "${formatPrice(orderDetail.finalAmount)}",
+                        orderDetail.paymentType == PaymentTypeEnum.Cash
+                            ? "${formatPrice(orderDetail.finalAmount)}"
+                            : "${formatBean(orderDetail.finalAmount)} xu",
                         style: Get.theme.textTheme.headline3,
                       ),
                     ],

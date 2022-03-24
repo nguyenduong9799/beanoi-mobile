@@ -374,7 +374,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                                 : Flexible(
                                     child: RichText(
                                         text: TextSpan(
-                                            text: model.total.toString() + " ",
+                                            text: formatBean(model.total) + " ",
                                             style: Get.theme.textTheme.headline3
                                                 .copyWith(color: Colors.white),
                                             children: [

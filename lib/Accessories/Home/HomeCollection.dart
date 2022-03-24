@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
 import 'package:unidelivery_mobile/Accessories/CacheImage.dart';
 import 'package:unidelivery_mobile/Accessories/touchopacity.dart';
@@ -12,7 +11,6 @@ import 'package:unidelivery_mobile/Enums/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/CollectionDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/ProductDTO.dart';
 import 'package:unidelivery_mobile/Utils/format_price.dart';
-import 'package:unidelivery_mobile/ViewModel/collection_viewmodel.dart';
 import 'package:unidelivery_mobile/ViewModel/home_viewModel.dart';
 import 'package:unidelivery_mobile/ViewModel/root_viewModel.dart';
 
@@ -148,10 +146,8 @@ class _HomeCollectionState extends State<HomeCollection> {
           SizedBox(height: 8),
           Text(
             product.type != ProductType.MASTER_PRODUCT
-                ? formatPriceWithoutUnit(product.price) + " đ"
-                : "từ " +
-                    formatPriceWithoutUnit(product.minPrice ?? product.price) +
-                    " đ",
+                ? formatPrice(product.price)
+                : "từ " + formatPrice(product.minPrice ?? product.price),
             // NumberFormat.simpleCurrency(locale: "vi").format(product.price),
             style: Get.theme.textTheme.headline5.copyWith(
               color: kBestSellerColor,
