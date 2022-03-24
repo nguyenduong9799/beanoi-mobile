@@ -38,14 +38,8 @@ class BlogsViewModel extends BaseModel {
   Future<void> getDialogBlog() async {
     try {
       setState(ViewStatus.Loading);
-      RootViewModel root = Get.find<RootViewModel>();
-      CampusDTO currentStore = root.currentStore;
-      if (root.status == ViewStatus.Error) {
-        setState(ViewStatus.Error);
-        return;
-      }
       if (blogs == null) {
-        blogs = await _storeDAO.getBlogs(currentStore.id);
+        blogs = await _storeDAO.getBlogs(150);
         dialogBlog = blogs.firstWhere((element) => element.isDialog == true,
             orElse: () => null);
       } else {

@@ -228,7 +228,7 @@ class _SupplierScreenState extends State<SupplierScreen> {
                   product.type == ProductType.GIFT_PRODUCT
                       ? RichText(
                           text: TextSpan(
-                              text: "${product.price} ",
+                              text: formatBean(product.price),
                               style: Get.theme.textTheme.headline4
                                   .copyWith(color: kBean),
                               children: [

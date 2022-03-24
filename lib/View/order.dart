@@ -529,8 +529,9 @@ class _OrderScreenState extends State<OrderScreen> {
                             ),
                             RichText(
                               text: TextSpan(
-                                  text:
-                                      isGift ? "${price} " : formatPrice(price),
+                                  text: isGift
+                                      ? formatBean(price)
+                                      : formatPrice(price),
                                   style: Get.theme.textTheme.headline4,
                                   children: [
                                     WidgetSpan(
@@ -709,9 +710,7 @@ class _OrderScreenState extends State<OrderScreen> {
                         "Tạm tính",
                         style: Get.theme.textTheme.headline4,
                       ),
-                      Text(
-                          NumberFormat.simpleCurrency(locale: 'vi')
-                              .format(orderViewModel.orderAmount.totalAmount),
+                      Text(formatPrice(orderViewModel.orderAmount.totalAmount),
                           style: Get.theme.textTheme.headline4),
                     ],
                   ),
@@ -728,8 +727,11 @@ class _OrderScreenState extends State<OrderScreen> {
                     children: [
                       Text("Tổng cộng", style: Get.theme.textTheme.headline3),
                       Text(
-                          NumberFormat.simpleCurrency(locale: 'vi')
-                              .format(orderViewModel.orderAmount.finalAmount),
+                          orderViewModel.currentCart.payment ==
+                                  PaymentTypeEnum.Cash
+                              ? formatPrice(
+                                  orderViewModel.orderAmount.finalAmount)
+                              : "${formatBean(orderViewModel.orderAmount.finalAmount)} xu",
                           style: Get.theme.textTheme.headline3),
                     ],
                   ),

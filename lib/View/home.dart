@@ -18,7 +18,6 @@ import 'package:unidelivery_mobile/Accessories/touchopacity.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Enums/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
-import 'package:unidelivery_mobile/ViewModel/collection_viewmodel.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
 import 'package:url_launcher/url_launcher.dart';
 // import 'package:url_launcher/url_launcher.dart';
@@ -31,20 +30,20 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       new GlobalKey<RefreshIndicatorState>();
-
   final double HEIGHT = 48;
   final ValueNotifier<double> notifier = ValueNotifier(0);
   final PageController controller = PageController();
   Future<void> _refresh() async {
     await Get.find<RootViewModel>().startUp();
-    Timer.run(showImageDialog);
   }
 
   @override
   void initState() {
     super.initState();
+    if (Get.find<BlogsViewModel>().dialogBlog != null) {
+      Timer.run(showImageDialog);
+    }
     // _refresh();
-    Timer.run(showImageDialog);
   }
 
   bool isDarkModeOn =
@@ -641,111 +640,194 @@ class _HomeScreenState extends State<HomeScreen> {
         ));
   }
 
+  // Future<void> showImageDialog() async {
+  //   hideDialog();
+  //   if (Get.find<BlogsViewModel>().dialogBlog == null) {
+  //     return;
+  //   } else
+  //     await Get.dialog(Dialog(
+  //       child: ScopedModel<BlogsViewModel>(
+  //         model: Get.find<BlogsViewModel>(),
+  //         child: ScopedModelDescendant<BlogsViewModel>(
+  //             builder: (context, child, model) {
+  //           ViewStatus status = model.status;
+  //           switch (status) {
+  //             case ViewStatus.Loading:
+  //               return Padding(
+  //                 padding: const EdgeInsets.all(8.0),
+  //                 child: ShimmerBlock(
+  //                   // height: (Get.width) * (747 / 1914),
+  //                   width: (Get.width),
+  //                 ),
+  //               );
+  //             case ViewStatus.Empty:
+  //             case ViewStatus.Error:
+  //               return SizedBox.shrink();
+  //             default:
+  //               return AspectRatio(
+  //                 aspectRatio: 9 / 16,
+  //                 child: CachedNetworkImage(
+  //                   imageUrl: model.dialogBlog.imageUrl,
+  //                   imageBuilder: (context, imageProvider) => InkWell(
+  //                       onTap: () {
+  //                         Get.toNamed(RouteHandler.BANNER_DETAIL,
+  //                             arguments: model.dialogBlog);
+  //                       },
+  //                       child: Container(
+  //                         // margin: EdgeInsets.only(left: 8, right: 8),
+  //                         decoration: BoxDecoration(
+  //                           // borderRadius: BorderRadius.circular(8),
+  //                           // color: Colors.blue,
+  //                           image: DecorationImage(
+  //                             image: imageProvider,
+  //                             fit: BoxFit.cover,
+  //                           ),
+  //                         ),
+  //                         child: Column(
+  //                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                           children: [
+  //                             Container(
+  //                               alignment: Alignment.topRight,
+  //                               child: IconButton(
+  //                                 icon: Icon(
+  //                                   AntDesign.closecircleo,
+  //                                   color: Colors.white,
+  //                                 ),
+  //                                 onPressed: () {
+  //                                   hideDialog();
+  //                                 },
+  //                               ),
+  //                             ),
+  //                             Padding(
+  //                               padding: const EdgeInsets.all(8.0),
+  //                               child: InkWell(
+  //                                 onTap: () {
+  //                                   Get.toNamed(RouteHandler.BANNER_DETAIL,
+  //                                       arguments: model.dialogBlog);
+  //                                 },
+  //                                 child: Container(
+  //                                   padding: EdgeInsets.all(8),
+  //                                   decoration: BoxDecoration(
+  //                                       color: Colors.white,
+  //                                       borderRadius: BorderRadius.circular(8),
+  //                                       border: Border.all(color: kPrimary)),
+  //                                   child: Text(
+  //                                     model.dialogBlog.metaData["btnTitle"] !=
+  //                                             null
+  //                                         ? model
+  //                                             .dialogBlog.metaData["btnTitle"]
+  //                                         : "Chi Tiết",
+  //                                     style: TextStyle(
+  //                                         fontSize: 14, color: kPrimary),
+  //                                     textAlign: TextAlign.center,
+  //                                   ),
+  //                                 ),
+  //                               ),
+  //                             ),
+  //                           ],
+  //                         ),
+  //                       )),
+  //                   progressIndicatorBuilder:
+  //                       (context, url, downloadProgress) => Shimmer.fromColors(
+  //                     baseColor: Colors.grey[300],
+  //                     highlightColor: Colors.grey[100],
+  //                     enabled: true,
+  //                     child: Container(
+  //                       color: Colors.grey,
+  //                     ),
+  //                   ),
+  //                   errorWidget: (context, url, error) => Icon(
+  //                     MaterialIcons.broken_image,
+  //                     color: kPrimary.withOpacity(0.5),
+  //                   ),
+  //                 ),
+  //               );
+  //           }
+  //         }),
+  //       ),
+  //     ));
+  // }
+
   Future<void> showImageDialog() async {
     hideDialog();
-    await Get.dialog(Dialog(
-      child: ScopedModel<BlogsViewModel>(
-        model: Get.find<BlogsViewModel>(),
-        child: ScopedModelDescendant<BlogsViewModel>(
-            builder: (context, child, model) {
-          ViewStatus status = model.status;
-          switch (status) {
-            case ViewStatus.Loading:
-              return Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ShimmerBlock(
-                  // height: (Get.width) * (747 / 1914),
-                  width: (Get.width),
+    var dialog = Get.find<BlogsViewModel>().dialogBlog;
+    await Get.dialog(
+      Dialog(
+          child: AspectRatio(
+        aspectRatio: 9 / 16,
+        child: CachedNetworkImage(
+          imageUrl: dialog.imageUrl,
+          imageBuilder: (context, imageProvider) => InkWell(
+              onTap: () {
+                Get.toNamed(RouteHandler.BANNER_DETAIL, arguments: dialog);
+              },
+              child: Container(
+                // margin: EdgeInsets.only(left: 8, right: 8),
+                decoration: BoxDecoration(
+                  // borderRadius: BorderRadius.circular(8),
+                  // color: Colors.blue,
+                  image: DecorationImage(
+                    image: imageProvider,
+                    fit: BoxFit.cover,
+                  ),
                 ),
-              );
-            case ViewStatus.Empty:
-            case ViewStatus.Error:
-              return SizedBox.shrink();
-            default:
-              if (model.dialogBlog == null) {
-                return SizedBox.shrink();
-              }
-              return AspectRatio(
-                aspectRatio: 9 / 16,
-                child: CachedNetworkImage(
-                  imageUrl: model.dialogBlog.imageUrl,
-                  imageBuilder: (context, imageProvider) => InkWell(
-                      onTap: () {
-                        Get.toNamed(RouteHandler.BANNER_DETAIL,
-                            arguments: model.dialogBlog);
-                      },
-                      child: Container(
-                        // margin: EdgeInsets.only(left: 8, right: 8),
-                        decoration: BoxDecoration(
-                          // borderRadius: BorderRadius.circular(8),
-                          // color: Colors.blue,
-                          image: DecorationImage(
-                            image: imageProvider,
-                            fit: BoxFit.cover,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      alignment: Alignment.topRight,
+                      child: IconButton(
+                        icon: Icon(
+                          AntDesign.closecircleo,
+                          color: Colors.white,
+                        ),
+                        onPressed: () {
+                          hideDialog();
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: InkWell(
+                        onTap: () {
+                          Get.toNamed(RouteHandler.BANNER_DETAIL,
+                              arguments: dialog);
+                        },
+                        child: Container(
+                          padding: EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(color: kPrimary)),
+                          child: Text(
+                            dialog.metaData["btnTitle"] != null
+                                ? dialog.metaData["btnTitle"]
+                                : "Chi Tiết",
+                            style: TextStyle(fontSize: 14, color: kPrimary),
+                            textAlign: TextAlign.center,
                           ),
                         ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              alignment: Alignment.topRight,
-                              child: IconButton(
-                                icon: Icon(
-                                  AntDesign.closecircleo,
-                                  color: Colors.white,
-                                ),
-                                onPressed: () {
-                                  hideDialog();
-                                },
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: InkWell(
-                                onTap: () {
-                                  Get.toNamed(RouteHandler.BANNER_DETAIL,
-                                      arguments: model.dialogBlog);
-                                },
-                                child: Container(
-                                  padding: EdgeInsets.all(8),
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(8),
-                                      border: Border.all(color: kPrimary)),
-                                  child: Text(
-                                    model.dialogBlog.metaData["btnTitle"] !=
-                                            null
-                                        ? model.dialogBlog.metaData["btnTitle"]
-                                        : "Chi Tiết",
-                                    style: TextStyle(
-                                        fontSize: 14, color: kPrimary),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      )),
-                  progressIndicatorBuilder: (context, url, downloadProgress) =>
-                      Shimmer.fromColors(
-                    baseColor: Colors.grey[300],
-                    highlightColor: Colors.grey[100],
-                    enabled: true,
-                    child: Container(
-                      color: Colors.grey,
+                      ),
                     ),
-                  ),
-                  errorWidget: (context, url, error) => Icon(
-                    MaterialIcons.broken_image,
-                    color: kPrimary.withOpacity(0.5),
-                  ),
+                  ],
                 ),
-              );
-          }
-        }),
-      ),
-    ));
+              )),
+          progressIndicatorBuilder: (context, url, downloadProgress) =>
+              Shimmer.fromColors(
+            baseColor: Colors.grey[300],
+            highlightColor: Colors.grey[100],
+            enabled: true,
+            child: Container(
+              color: Colors.grey,
+            ),
+          ),
+          errorWidget: (context, url, error) => Icon(
+            MaterialIcons.broken_image,
+            color: kPrimary.withOpacity(0.5),
+          ),
+        ),
+      )),
+    );
   }
   // TODO: Implement category section
 }

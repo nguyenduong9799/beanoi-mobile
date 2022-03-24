@@ -2,7 +2,6 @@ import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Enums/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 
-
 class OrderListDTO {
   final checkInDate;
   final List<OrderDTO> orders;
@@ -30,6 +29,7 @@ class OrderDTO {
   final List<OrderItemDTO> orderItems;
   // update
   final int paymentType;
+  final String arriveTime;
   final List<OtherAmount> otherAmounts;
   final String address;
   final List<SupplierNoteDTO> notes;
@@ -43,6 +43,7 @@ class OrderDTO {
       this.status,
       this.orderItems,
       this.paymentType,
+      this.arriveTime,
       this.invoiceId = "INVOICE-ID-###",
       this.address,
       this.notes});
@@ -64,6 +65,7 @@ class OrderDTO {
               ?.map((otherAmountJSON) => OtherAmount.fromJSON(otherAmountJSON))
               ?.toList(),
           paymentType: map["payment_type"],
+          arriveTime: map["arrive_time"],
           address: map['delivery_address'] ?? "Into the unknown",
           notes: (map["supplier_notes"] as List)
               ?.map((e) => SupplierNoteDTO.fromJson(e))

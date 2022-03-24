@@ -39,7 +39,7 @@ class StartUpView extends StatelessWidget {
               Align(
                 alignment: Alignment.bottomCenter,
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(16.0),
                   child: Text(
                     'Đặt ngay chờ chi 😎',
                     style: Get.theme.textTheme.headline3,

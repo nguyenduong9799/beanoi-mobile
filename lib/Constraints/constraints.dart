@@ -105,3 +105,8 @@ class TransactionStatus {
   static const int APPROVE = 1;
   static const int CANCEL = 2;
 }
+
+class PaymentTypeEnum {
+  static const int Cash = 1;
+  static const int CreditPayment = 2; //tra bang xu
+}

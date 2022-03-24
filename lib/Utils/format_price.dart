@@ -5,8 +5,13 @@ String formatPrice(double price) {
 }
 
 String formatPriceWithoutUnit(double price) {
-  
-  NumberFormat format = NumberFormat("#,##0.00");
+  NumberFormat format = NumberFormat("###0.00");
+  format.minimumFractionDigits = 0;
+  return format.format(price);
+}
+
+String formatBean(double price) {
+  NumberFormat format = NumberFormat("###0.00");
   format.minimumFractionDigits = 0;
   return format.format(price);
 }
