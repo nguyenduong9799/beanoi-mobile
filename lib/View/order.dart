@@ -742,28 +742,29 @@ class _OrderScreenState extends State<OrderScreen> {
             ),
           ),
           SizedBox(height: 8),
-          Container(
-            width: Get.width,
-            child: RichText(
-                textAlign: TextAlign.center,
-                text: TextSpan(
-                  text:
-                      "Bạn được tặng ${orderViewModel.orderAmount.beanAmount.round().toString()} ",
-                  style: Get.theme.textTheme.headline5
-                      .copyWith(color: Colors.orange),
-                  children: [
-                    WidgetSpan(
-                        alignment: PlaceholderAlignment.bottom,
-                        child: Image(
-                          image:
-                              AssetImage("assets/images/icons/bean_coin.png"),
-                          width: 16,
-                          height: 16,
-                        )),
-                    TextSpan(text: " cho đơn hàng 🎉."),
-                  ],
-                )),
-          ),
+          if (orderViewModel.orderAmount.beanAmount.round() != 0)
+            Container(
+              width: Get.width,
+              child: RichText(
+                  textAlign: TextAlign.center,
+                  text: TextSpan(
+                    text:
+                        "Bạn được tặng ${orderViewModel.orderAmount.beanAmount.round().toString()} ",
+                    style: Get.theme.textTheme.headline5
+                        .copyWith(color: Colors.orange),
+                    children: [
+                      WidgetSpan(
+                          alignment: PlaceholderAlignment.bottom,
+                          child: Image(
+                            image:
+                                AssetImage("assets/images/icons/bean_coin.png"),
+                            width: 16,
+                            height: 16,
+                          )),
+                      TextSpan(text: " cho đơn hàng 🎉."),
+                    ],
+                  )),
+            ),
           SizedBox(height: 8),
         ],
       ),
