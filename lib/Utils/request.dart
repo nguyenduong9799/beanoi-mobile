@@ -77,8 +77,8 @@ class CustomInterceptors extends Interceptor {
 
 class MyRequest {
   static BaseOptions options = new BaseOptions(
-      baseUrl: 'https://localhost:5001/api/',
-      // baseUrl: 'https://dev.unibean.net/api/',
+      // baseUrl: 'https://localhost:5001/api/',
+      baseUrl: 'https://beanapi.unibean.net/api/',
       headers: {
         Headers.contentTypeHeader: "application/json",
       },
