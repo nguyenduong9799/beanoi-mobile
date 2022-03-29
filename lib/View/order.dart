@@ -727,11 +727,13 @@ class _OrderScreenState extends State<OrderScreen> {
                     children: [
                       Text("Tổng cộng", style: Get.theme.textTheme.headline3),
                       Text(
-                          orderViewModel.currentCart.payment ==
-                                  PaymentTypeEnum.Cash
-                              ? formatPrice(
-                                  orderViewModel.orderAmount.finalAmount)
-                              : "${formatBean(orderViewModel.orderAmount.finalAmount)} xu",
+                          orderViewModel.status == ViewStatus.Loading
+                              ? "..."
+                              : orderViewModel.currentCart.payment ==
+                                      PaymentTypeEnum.Cash
+                                  ? formatPrice(
+                                      orderViewModel.orderAmount.finalAmount)
+                                  : "${formatBean(orderViewModel.orderAmount.finalAmount)} xu",
                           style: Get.theme.textTheme.headline3),
                     ],
                   ),
@@ -776,7 +778,7 @@ class _OrderScreenState extends State<OrderScreen> {
         for (int i = 0; i < paymentsType.length; i++) {
           listPayments.add(
             Container(
-              height: 45,
+              height: 35,
               child: RadioListTile(
                 activeColor: kPrimary,
                 groupValue: model.currentCart.payment,

@@ -146,9 +146,8 @@ class _HomeCollectionState extends State<HomeCollection> {
           SizedBox(height: 8),
           Text(
             product.type != ProductType.MASTER_PRODUCT
-                ? formatPrice(product.price)
-                : "từ " + formatPrice(product.minPrice ?? product.price),
-            // NumberFormat.simpleCurrency(locale: "vi").format(product.price),
+                ? '${formatPriceWithoutUnit(product.price)} đ'
+                : 'từ ${formatPriceWithoutUnit(product.minPrice ?? product.price)} đ',
             style: Get.theme.textTheme.headline5.copyWith(
               color: kBestSellerColor,
             ),
