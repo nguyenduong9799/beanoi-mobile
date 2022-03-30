@@ -171,8 +171,10 @@ class OrderViewModel extends BaseModel {
   Future<void> changeOption(int option) async {
     // showLoadingDialog();
     currentCart.payment = option;
+    showLoadingDialog();
     await setCart(currentCart);
     await prepareOrder();
+    hideDialog();
   }
 
   Future<void> deleteItem(CartItem item) async {
