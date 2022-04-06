@@ -420,6 +420,9 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
     if (index >= 0 && index < orderDetailModel.listPayments.keys.length) {
       payment = orderDetailModel.listPayments.keys.elementAt(index);
     }
+    if (orderDetail.paymentType == PaymentTypeEnum.Momo) {
+      payment = "Momo";
+    }
     return Container(
       width: MediaQuery.of(context).size.width,
       padding: const EdgeInsets.all(8),
