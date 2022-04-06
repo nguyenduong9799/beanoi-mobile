@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
@@ -129,105 +130,6 @@ class _OrderScreenState extends State<OrderScreen> {
     );
   }
 
-  Widget voucherList() {
-    return ScopedModelDescendant<OrderViewModel>(
-        builder: (context, child, model) {
-      final vouchers = model.vouchers;
-      if (vouchers == null || vouchers.isEmpty) {
-        return SizedBox();
-      }
-      return Container(
-        width: Get.width,
-        color: kBackgroundGrey[2],
-        padding: EdgeInsets.only(left: 8),
-        height: 72,
-        child: ListView.builder(
-          shrinkWrap: true,
-          itemCount: vouchers.length,
-          scrollDirection: Axis.horizontal,
-          itemBuilder: (context, index) {
-            final voucher = vouchers[index];
-            final vouchersInCart = model.currentCart.vouchers;
-            bool isApplied =
-                vouchersInCart.any((e) => e.voucherCode == voucher.voucherCode);
-            return ClipPath(
-              clipper: ShapeBorderClipper(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                ),
-              ),
-              child: AnimatedContainer(
-                duration: Duration(milliseconds: 300),
-                padding: EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: isApplied ? kPrimary.withOpacity(0.4) : Colors.white,
-                  border: Border(
-                    left: BorderSide(color: kPrimary, width: 6),
-                    top: BorderSide(
-                        color: Colors.transparent, width: isApplied ? 2 : 0),
-                    bottom: BorderSide(
-                        color: Colors.transparent, width: isApplied ? 2 : 0),
-                    right: BorderSide(
-                        color: Colors.transparent, width: isApplied ? 2 : 0),
-                  ),
-                ),
-                width: Get.width * 0.7,
-                margin: EdgeInsets.only(right: 8),
-                // height: 72,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            voucher.voucherName,
-                            style: Get.theme.textTheme.headline1
-                                .copyWith(color: kTextColor),
-                          ),
-                          Text(
-                            voucher.promotionName,
-                            style: Get.theme.textTheme.headline6,
-                          ),
-                        ],
-                      ),
-                    ),
-                    VerticalDivider(),
-                    Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        onTap: () {
-                          if (isApplied) {
-                            model.unselectVoucher(voucher);
-                          } else {
-                            model.selectVoucher(voucher);
-                          }
-                        },
-                        child: Container(
-                          height: 72,
-                          child: Center(
-                            child: Text(
-                              isApplied ? 'Hủy' : 'Chọn',
-                              style: Get.theme.textTheme.headline6
-                                  .copyWith(color: kPrimary),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
-        ),
-      );
-    });
-  }
-
   Widget buildBeanReward() {
     return Center(
       child: Container(
@@ -338,11 +240,7 @@ class _OrderScreenState extends State<OrderScreen> {
     }
 
     return Container(
-      margin: const EdgeInsets.fromLTRB(8, 8, 8, 0),
-      // padding: const EdgeInsets.all(8),
-      // decoration: BoxDecoration(
-      //     border: Border.all(color: kPrimary),
-      //     borderRadius: BorderRadius.all(Radius.circular(8))),
+      margin: const EdgeInsets.fromLTRB(8, 0, 8, 0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -544,9 +442,10 @@ class _OrderScreenState extends State<OrderScreen> {
     return Column(
       children: [
         Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Expanded(
-              flex: 4,
+              flex: 3,
               child: Container(
                 padding: const EdgeInsets.all(8),
                 child: RichText(
@@ -565,13 +464,13 @@ class _OrderScreenState extends State<OrderScreen> {
                   await orderViewModel.changeLocationOfStore();
                 },
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 8, 4, 8),
+                  padding: const EdgeInsets.only(right: 8),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       destination != null
                           ? Flexible(
-                              child: Column(
+                              child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
@@ -579,6 +478,10 @@ class _OrderScreenState extends State<OrderScreen> {
                                     style: Get.theme.textTheme.headline4,
                                     overflow: TextOverflow.ellipsis,
                                     maxLines: 1,
+                                  ),
+                                  Icon(
+                                    Icons.arrow_forward_ios,
+                                    size: 16,
                                   ),
                                   Text(
                                     destination.name,
@@ -618,17 +521,20 @@ class _OrderScreenState extends State<OrderScreen> {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Expanded(
-            flex: 4,
+            flex: 3,
             child: Text("Thời gian: ",
                 style: Get.theme.textTheme.headline5.copyWith(color: kPrimary)),
           ),
           Expanded(
             flex: 7,
             child: Text(
-                "${DateFormat("HH:mm").format(arrive)} ~ ${DateFormat("HH:mm").format(arrive.add(Duration(minutes: 30)))}",
-                style: Get.theme.textTheme.headline4),
+              "${DateFormat("HH:mm").format(arrive)} - ${DateFormat("HH:mm").format(arrive.add(Duration(minutes: 30)))}",
+              style: Get.theme.textTheme.headline4,
+            ),
           ),
         ],
       ),
@@ -660,7 +566,7 @@ class _OrderScreenState extends State<OrderScreen> {
             ),
           ),
           Container(
-            margin: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+            margin: const EdgeInsets.fromLTRB(8, 0, 8, 0),
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
                 border: Border.all(color: kPrimary),
@@ -668,7 +574,7 @@ class _OrderScreenState extends State<OrderScreen> {
             child: Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(top: 5, bottom: 10),
+                  padding: const EdgeInsets.only(bottom: 8),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -688,7 +594,7 @@ class _OrderScreenState extends State<OrderScreen> {
               ],
             ),
           ),
-          SizedBox(height: 8),
+          SizedBox(height: 4),
           if (orderViewModel.orderAmount.beanAmount.round() != 0)
             Container(
               width: Get.width,
@@ -746,7 +652,7 @@ class _OrderScreenState extends State<OrderScreen> {
             );
           }
           return Container(
-            height: Get.height * 0.3,
+            height: Get.height * 0.4,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -804,7 +710,6 @@ class _OrderScreenState extends State<OrderScreen> {
                     padding: EdgeInsets.all(8),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Container(
                           alignment: Alignment.centerLeft,
@@ -919,79 +824,108 @@ class _OrderScreenState extends State<OrderScreen> {
                       children: [
                         Container(
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Container(
-                                  child: TextButton(
-                                      onPressed: () async {
-                                        Get.bottomSheet(
-                                          selectPaymentMethods(),
-                                          backgroundColor: Colors.white,
-                                          elevation: 0,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                          ),
-                                        );
-                                        // pr.hide();
-                                        // showStateDialog();
-                                      },
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          Icon(model.currentCart.payment ==
-                                                  PaymentTypeEnum.Cash
-                                              ? FontAwesome5.money_bill_alt
-                                              : FontAwesome5.money_bill_alt),
-                                          SizedBox(
-                                            width: 16,
-                                          ),
-                                          Text(
-                                              model.listPayments.keys.elementAt(
-                                                  model.currentCart.payment -
-                                                      1),
-                                              style: Get
-                                                  .theme.textTheme.headline3),
-                                          SizedBox(
-                                            width: 8,
-                                          ),
-                                          Icon(Icons.keyboard_arrow_up,
-                                              size: 30, color: Colors.black),
-                                        ],
-                                      ))),
-                              // Container(
-                              //   child: TextButton(
-                              //       onPressed: () async {},
-                              //       child: Text("THÊM VOUCHER",
-                              //           style: Get.theme.textTheme.headline2)),
-                              // ),
-                              // SizedBox(
-                              //   width: 8,
-                              // )
+                              Expanded(
+                                flex: 1,
+                                child: Container(
+                                    child: TextButton(
+                                        onPressed: () async {
+                                          Get.bottomSheet(
+                                            selectPaymentMethods(),
+                                            backgroundColor: Colors.white,
+                                            elevation: 0,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                          );
+                                          // pr.hide();
+                                          // showStateDialog();
+                                        },
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            Expanded(
+                                              flex: 2,
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                children: [
+                                                  Icon(
+                                                    model.currentCart.payment ==
+                                                            PaymentTypeEnum.Cash
+                                                        ? FontAwesome5
+                                                            .money_bill_alt
+                                                        : Icons
+                                                            .monetization_on_outlined,
+                                                  ),
+                                                  SizedBox(width: 16),
+                                                  Text(
+                                                    model.listPayments.keys
+                                                        .elementAt(model
+                                                                .currentCart
+                                                                .payment -
+                                                            1),
+                                                    style: Get.theme.textTheme
+                                                        .headline3,
+                                                    textAlign: TextAlign.center,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Expanded(
+                                              flex: 1,
+                                              child: Icon(
+                                                  Icons.keyboard_arrow_up,
+                                                  size: 30,
+                                                  color: Colors.black),
+                                            ),
+                                          ],
+                                        ))),
+                              ),
+                              Expanded(
+                                flex: 1,
+                                child: Container(
+                                    // child: TextButton(
+                                    //     onPressed: () {
+                                    //       Get.toNamed(RouteHandler.VOUCHER);
+                                    //     },
+                                    //     child: Text(
+                                    //       "THÊM VOUCHER",
+                                    //       style: Get.theme.textTheme.headline2,
+                                    //       textAlign: TextAlign.center,
+                                    //     )),
+                                    ),
+                              ),
                             ],
                           ),
                         ),
                         Container(
-                          padding: EdgeInsets.all(8),
+                          padding: EdgeInsets.only(left: 8, right: 8),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Container(
-                                alignment: Alignment.centerLeft,
-                                width: Get.width * 0.3,
-                                child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text("Tổng cộng", style: kTextSecondary),
-                                    SizedBox(height: 6),
-                                    Text(
+                              Expanded(
+                                flex: 3,
+                                child: Container(
+                                  alignment: Alignment.centerLeft,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Tổng cộng",
+                                        style: kTextSecondary,
+                                      ),
+                                      SizedBox(height: 6),
+                                      Text(
                                         orderViewModel.status ==
                                                 ViewStatus.Loading
                                             ? "..."
@@ -1001,43 +935,47 @@ class _OrderScreenState extends State<OrderScreen> {
                                                 ? formatPrice(orderViewModel
                                                     .orderAmount.finalAmount)
                                                 : "${formatBean(orderViewModel.orderAmount.finalAmount)} xu",
-                                        style: Get.theme.textTheme.headline3),
-                                  ],
+                                        style: Get.theme.textTheme.headline3,
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
-                              FlatButton(
-                                onPressed: () async {
-                                  if (model.currentCart.payment != null &&
-                                      location != null &&
-                                      model.status != ViewStatus.Loading &&
-                                      isMenuAvailable) {
-                                    await model.orderCart();
-                                  }
-                                  // pr.hide();
-                                  // showStateDialog();
-                                },
-                                minWidth: Get.width * 0.5,
-                                height: 50,
-                                padding: EdgeInsets.only(
-                                  left: 8.0,
-                                  right: 8.0,
+                              Expanded(
+                                flex: 5,
+                                child: FlatButton(
+                                  onPressed: () async {
+                                    if (model.currentCart.payment != null &&
+                                        location != null &&
+                                        model.status != ViewStatus.Loading &&
+                                        isMenuAvailable) {
+                                      await model.orderCart();
+                                    }
+                                    // pr.hide();
+                                    // showStateDialog();
+                                  },
+                                  height: 50,
+                                  padding: EdgeInsets.only(
+                                    left: 8.0,
+                                    right: 8.0,
+                                  ),
+                                  textColor: Colors.white,
+                                  color: isMenuAvailable
+                                      ? kPrimary
+                                      : kBackgroundGrey[3],
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(8))),
+                                  child: Text(
+                                      isMenuAvailable
+                                          ? "Chốt đơn 👌"
+                                          : "Khung giờ đã kết thúc",
+                                      style: Get.theme.textTheme.headline3
+                                          .copyWith(
+                                              color: isMenuAvailable
+                                                  ? Colors.white
+                                                  : kGreyTitle)),
                                 ),
-                                textColor: Colors.white,
-                                color: isMenuAvailable
-                                    ? kPrimary
-                                    : kBackgroundGrey[3],
-                                shape: RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(8))),
-                                child: Text(
-                                    isMenuAvailable
-                                        ? "Chốt đơn 👌"
-                                        : "Khung giờ đã kết thúc",
-                                    style: Get.theme.textTheme.headline3
-                                        .copyWith(
-                                            color: isMenuAvailable
-                                                ? Colors.white
-                                                : kGreyTitle)),
                               ),
                             ],
                           ),
