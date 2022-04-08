@@ -17,26 +17,27 @@ class Cart {
   int payment;
   List<SupplierNoteDTO> notes;
   // User info
+  String cardNumber;
 
   // _vouchers
   List<VoucherDTO> _vouchers;
 
-  Cart.get({this.items, this.payment, this.notes});
+  Cart.get({this.items, this.payment, this.notes, this.cardNumber});
 
   Cart() {
-    items = List();
-    _vouchers = List();
+    items = [];
+    _vouchers = [];
   }
 
   List<VoucherDTO> get vouchers {
     if (_vouchers == null) {
-      _vouchers = List();
+      _vouchers = [];
     }
     return _vouchers;
   }
 
   factory Cart.fromJson(dynamic json) {
-    List<CartItem> list = new List();
+    List<CartItem> list = [];
     if (json["items"] != null) {
       var itemJson = json["items"] as List;
       list = itemJson.map((e) => CartItem.fromJson(e)).toList();
@@ -50,12 +51,16 @@ class Cart {
   }
 
   void addVoucher(VoucherDTO voucher) {
-    final existedVoucher = _vouchers.firstWhere(
+    final existedVoucher = _vouchers?.firstWhere(
         (e) => e.voucherCode == voucher.voucherCode,
         orElse: () => null);
     if (existedVoucher == null) {
-      _vouchers.add(voucher);
+      vouchers?.add(voucher);
     }
+  }
+
+  void removeOnlyVoucher() {
+    vouchers?.clear();
   }
 
   void removeVoucher(VoucherDTO voucher) {
@@ -63,8 +68,12 @@ class Cart {
         (e) => e.voucherCode == voucher.voucherCode,
         orElse: () => null);
     if (existedVoucher != null) {
-      _vouchers.remove(existedVoucher);
+      vouchers?.remove(existedVoucher);
     }
+  }
+
+  void addCardNumber(String cardNumberInput) {
+    cardNumber = cardNumberInput;
   }
 
   Map<String, dynamic> toJson() {
@@ -91,6 +100,7 @@ class Cart {
       "vouchers": _vouchers != null
           ? _vouchers?.map((voucher) => voucher.voucherCode)?.toList()
           : null,
+      "card_number": cardNumber
     };
     logger.i("Order: " + map.toString());
     return map;

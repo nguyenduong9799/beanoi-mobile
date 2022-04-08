@@ -1,4 +1,4 @@
-import 'package:animated_text_kit/animated_text_kit.dart';
+import "package:collection/collection.dart";
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -6,7 +6,6 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:scoped_model/scoped_model.dart';
-import "package:collection/collection.dart";
 import 'package:unidelivery_mobile/Accessories/index.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Enums/index.dart';

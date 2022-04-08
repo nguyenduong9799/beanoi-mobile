@@ -77,8 +77,8 @@ class _HomeCategorySectionState extends State<HomeCategorySection> {
                     padding: EdgeInsets.all(8),
                     width: Get.width,
                     child: Wrap(
-                      alignment: WrapAlignment.spaceBetween,
-                      spacing: 8,
+                      alignment: WrapAlignment.start,
+                      spacing: 14,
                       children: categories
                           .map((category) => buildCategoryItem(category))
                           .toList(),

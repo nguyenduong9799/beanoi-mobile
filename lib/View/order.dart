@@ -707,79 +707,87 @@ class _OrderScreenState extends State<OrderScreen> {
                 shrinkWrap: true,
                 children: [
                   Container(
-                    padding: EdgeInsets.all(8),
+                    padding: EdgeInsets.fromLTRB(8, 8, 8, 4),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Container(
-                          alignment: Alignment.centerLeft,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text("Tổng cộng", style: kTextSecondary),
-                              SizedBox(height: 6),
-                              Text(
-                                '...',
-                                style: Get.theme.textTheme.headline1
-                                    .copyWith(color: Colors.black),
-                              )
-                            ],
+                        Expanded(
+                          flex: 4,
+                          child: Container(
+                            alignment: Alignment.centerLeft,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text("Tổng cộng", style: kTextSecondary),
+                                SizedBox(height: 8),
+                                Text(
+                                  '...',
+                                  style: Get.theme.textTheme.headline1
+                                      .copyWith(color: Colors.black),
+                                )
+                              ],
+                            ),
                           ),
                         ),
-                        FlatButton(
-                          onPressed: () {},
-                          minWidth: Get.width * 0.5,
-                          height: 50,
-                          padding: EdgeInsets.only(
-                            left: 8.0,
-                            right: 8.0,
-                          ),
-                          textColor: Colors.white,
-                          color: kBackgroundGrey[4],
-                          shape: RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(8))),
-                          child: Container(
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                AnimatedTextKit(
-                                  animatedTexts: [
-                                    FadeAnimatedText(
-                                      'Đợi tý nha',
-                                      textStyle: Get.theme.textTheme.headline4
-                                          .copyWith(color: Colors.white),
-                                      textAlign: TextAlign.center,
-                                      // speed: Duration(milliseconds: 300),
-                                    ),
-                                    FadeAnimatedText(
-                                      '🚀',
-                                      textStyle: Get.theme.textTheme.headline1,
-                                      textAlign: TextAlign.center,
-                                      // speed: Duration(milliseconds: 300),
-                                    ),
-                                    FadeAnimatedText(
-                                      '🛵',
-                                      textStyle: Get.theme.textTheme.headline1,
-                                      textAlign: TextAlign.center,
-                                      // speed: Duration(milliseconds: 300),
-                                    ),
-                                    FadeAnimatedText(
-                                      '💻',
-                                      textStyle: Get.theme.textTheme.headline1,
-                                      textAlign: TextAlign.center,
-                                      // speed: Duration(milliseconds: 300),
-                                    ),
-                                  ],
-                                  isRepeatingAnimation: true,
-                                  repeatForever: true,
-                                  onTap: () {
-                                    print("Tap Event");
-                                  },
-                                ),
-                              ],
+                        Expanded(
+                          flex: 5,
+                          child: FlatButton(
+                            onPressed: () {},
+                            height: 50,
+                            padding: EdgeInsets.only(
+                              left: 8.0,
+                              right: 8.0,
+                            ),
+                            textColor: Colors.white,
+                            color: kBackgroundGrey[4],
+                            shape: RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(8))),
+                            child: Container(
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  AnimatedTextKit(
+                                    animatedTexts: [
+                                      FadeAnimatedText(
+                                        'Đợi tý nha',
+                                        textStyle: Get.theme.textTheme.headline4
+                                            .copyWith(color: Colors.white),
+                                        textAlign: TextAlign.center,
+                                        // speed: Duration(milliseconds: 300),
+                                      ),
+                                      FadeAnimatedText(
+                                        '🚀',
+                                        textStyle:
+                                            Get.theme.textTheme.headline1,
+                                        textAlign: TextAlign.center,
+                                        // speed: Duration(milliseconds: 300),
+                                      ),
+                                      FadeAnimatedText(
+                                        '🛵',
+                                        textStyle:
+                                            Get.theme.textTheme.headline1,
+                                        textAlign: TextAlign.center,
+                                        // speed: Duration(milliseconds: 300),
+                                      ),
+                                      FadeAnimatedText(
+                                        '💻',
+                                        textStyle:
+                                            Get.theme.textTheme.headline1,
+                                        textAlign: TextAlign.center,
+                                        // speed: Duration(milliseconds: 300),
+                                      ),
+                                    ],
+                                    isRepeatingAnimation: true,
+                                    repeatForever: true,
+                                    onTap: () {
+                                      print("Tap Event");
+                                    },
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
@@ -828,7 +836,7 @@ class _OrderScreenState extends State<OrderScreen> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Expanded(
-                                flex: 1,
+                                flex: 4,
                                 child: Container(
                                     child: TextButton(
                                         onPressed: () async {
@@ -851,7 +859,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                               CrossAxisAlignment.center,
                                           children: [
                                             Expanded(
-                                              flex: 2,
+                                              flex: 3,
                                               child: Row(
                                                 mainAxisAlignment:
                                                     MainAxisAlignment.start,
@@ -863,6 +871,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                                             .money_bill_alt
                                                         : Icons
                                                             .monetization_on_outlined,
+                                                    size: 22,
                                                   ),
                                                   SizedBox(width: 16),
                                                   Text(
@@ -882,37 +891,42 @@ class _OrderScreenState extends State<OrderScreen> {
                                               flex: 1,
                                               child: Icon(
                                                   Icons.keyboard_arrow_up,
-                                                  size: 30,
+                                                  size: 28,
                                                   color: Colors.black),
                                             ),
                                           ],
                                         ))),
                               ),
                               Expanded(
-                                flex: 1,
+                                flex: 5,
                                 child: Container(
-                                    // child: TextButton(
-                                    //     onPressed: () {
-                                    //       Get.toNamed(RouteHandler.VOUCHER);
-                                    //     },
-                                    //     child: Text(
-                                    //       "THÊM VOUCHER",
-                                    //       style: Get.theme.textTheme.headline2,
-                                    //       textAlign: TextAlign.center,
-                                    //     )),
-                                    ),
+                                  child: TextButton(
+                                      onPressed: () {
+                                        // Get.toNamed(RouteHandler.VOUCHER);
+                                        inputVoucherDialog(model);
+                                      },
+                                      child: Text(
+                                        model.currentCart?.vouchers.isEmpty
+                                            ? "THÊM VOUCHER"
+                                            : model.currentCart?.vouchers[0]
+                                                .voucherCode,
+                                        style: Get.theme.textTheme.headline2,
+                                        textAlign: TextAlign.center,
+                                      )),
+                                ),
                               ),
                             ],
                           ),
                         ),
                         Container(
-                          padding: EdgeInsets.only(left: 8, right: 8),
+                          padding:
+                              EdgeInsets.only(left: 8, right: 8, bottom: 4),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Expanded(
-                                flex: 3,
+                                flex: 4,
                                 child: Container(
                                   alignment: Alignment.centerLeft,
                                   child: Column(
@@ -924,7 +938,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                         "Tổng cộng",
                                         style: kTextSecondary,
                                       ),
-                                      SizedBox(height: 6),
+                                      SizedBox(height: 8),
                                       Text(
                                         orderViewModel.status ==
                                                 ViewStatus.Loading
@@ -935,7 +949,8 @@ class _OrderScreenState extends State<OrderScreen> {
                                                 ? formatPrice(orderViewModel
                                                     .orderAmount.finalAmount)
                                                 : "${formatBean(orderViewModel.orderAmount.finalAmount)} xu",
-                                        style: Get.theme.textTheme.headline3,
+                                        style: Get.theme.textTheme.headline3
+                                            .copyWith(fontSize: 18),
                                       ),
                                     ],
                                   ),
@@ -1102,6 +1117,165 @@ class _OrderScreenState extends State<OrderScreen> {
               otherAmount: amountObj,
             ))
         .toList();
+  }
+
+  void inputVoucherDialog(OrderViewModel model) async {
+    hideDialog();
+    TextEditingController cardNumberController = TextEditingController();
+    TextEditingController voucherCodeController = TextEditingController();
+    await Get.dialog(
+      Dialog(
+        backgroundColor: Colors.white,
+        elevation: 8.0,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(16.0))),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Flexible(
+                      child: Text(
+                        "Nhập Voucher",
+                        style: Get.theme.textTheme.headline3,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        AntDesign.closecircleo,
+                        color: Colors.red,
+                      ),
+                      onPressed: () {
+                        cardNumberController.clear();
+                        voucherCodeController.clear();
+                        hideDialog();
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                          border: Border.all(color: kPrimary)),
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
+                        child: TextFormField(
+                          controller: cardNumberController,
+                          decoration: InputDecoration(
+                              hintText: 'Nhập mã hội viên',
+                              border: InputBorder.none,
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  Icons.clear,
+                                  size: 16,
+                                  color: Colors.grey,
+                                ),
+                                onPressed: () {
+                                  cardNumberController.clear();
+                                },
+                              )),
+                          style: Get.theme.textTheme.headline2
+                              .copyWith(color: Colors.black),
+                          keyboardType: TextInputType.multiline,
+                          maxLines: 1,
+                          autofocus: true,
+                          onFieldSubmitted: (value) {
+                            cardNumberController.text = value;
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                          border: Border.all(color: kPrimary)),
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
+                        child: TextFormField(
+                          controller: voucherCodeController,
+                          decoration: InputDecoration(
+                              hintText: 'Nhập mã voucher',
+                              border: InputBorder.none,
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  Icons.clear,
+                                  size: 16,
+                                  color: Colors.grey,
+                                ),
+                                onPressed: () {
+                                  voucherCodeController.clear();
+                                },
+                              )),
+                          style: Get.theme.textTheme.headline2
+                              .copyWith(color: Colors.black),
+                          keyboardType: TextInputType.multiline,
+                          maxLines: 1,
+                          autofocus: true,
+                          onFieldSubmitted: (value) {
+                            voucherCodeController.text = value;
+                          },
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+              SizedBox(
+                height: 8,
+              ),
+              Container(
+                width: double.infinity,
+                child: FlatButton(
+                  color: kPrimary,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                          bottomRight: Radius.circular(16),
+                          bottomLeft: Radius.circular(16))),
+                  onPressed: () async {
+                    VoucherDTO newVoucher = VoucherDTO(
+                        voucherName: "BEAN khao phí vận chuyển",
+                        voucherCode: voucherCodeController.text,
+                        promotionId: "p1",
+                        promotionName: "Test Promotion",
+                        imgUrl: "test");
+                    model.currentCart.addCardNumber(cardNumberController.text);
+                    model.selectVoucher(newVoucher);
+
+                    // model.currentCart
+                    //     .addVoucherCode(voucherCodeController.text);
+                    // model.currentCart.addCardNumber(cardNumberController.text);
+                    // await model.prepareOrder();
+                    hideDialog();
+                  },
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 16, bottom: 16),
+                    child: Text(
+                      "Gửi",
+                      style: Get.theme.textTheme.headline3
+                          .copyWith(color: Colors.white),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      barrierDismissible: true,
+    );
   }
 }
 

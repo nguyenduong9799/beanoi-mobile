@@ -28,9 +28,34 @@ class OrderViewModel extends BaseModel {
   }
 
   Future<void> getVouchers() async {
-    final voucherList = await promoDao.getPromotions();
+    // final voucherList = await promoDao.getPromotions();
+    final voucherList = [
+      VoucherDTO(
+          voucherName: "BEAN khao phí vận chuyển",
+          voucherCode: "v1",
+          promotionId: "p1",
+          promotionName: "Test Promotion",
+          imgUrl: "test"),
+      VoucherDTO(
+          voucherName: "Thanh toán xu giảm 15 %",
+          voucherCode: "v2",
+          promotionId: "p2",
+          promotionName: "Test Promotion",
+          imgUrl: "test"),
+      VoucherDTO(
+          voucherName: "Thanh toán xu giảm 20 %",
+          voucherCode: "v3",
+          promotionId: "p2",
+          promotionName: "Test Promotion",
+          imgUrl: "test"),
+      VoucherDTO(
+          voucherName: "Thanh toán xu giảm 30 %",
+          voucherCode: "v4",
+          promotionId: "p2",
+          promotionName: "Test Promotion",
+          imgUrl: "test"),
+    ];
     vouchers = voucherList;
-    notifyListeners();
   }
 
   Future<void> prepareOrder() async {
@@ -59,15 +84,19 @@ class OrderViewModel extends BaseModel {
       await Future.delayed(Duration(milliseconds: 500));
       hideDialog();
       setState(ViewStatus.Completed);
-    } on DioError catch (e, stacktra) {
-      print(stacktra.toString());
+    } on DioError catch (e, stackTrace) {
+      print(stackTrace.toString());
       if (e.response.statusCode == 400) {
+        if (e.response.data["error"] != null) {
+          currentCart.removeOnlyVoucher();
+          await showErrorDialog(
+              errorTitle: e.response.data["error"]["message"]);
+          setState(ViewStatus.Completed);
+        }
         String errorMsg = e.response.data["message"];
-        errorMessage = errorMsg;
         if (e.response.data['data'] != null) {
           orderAmount = OrderAmountDTO.fromJson(e.response.data['data']);
         }
-
         setState(ViewStatus.Completed);
       } else {
         bool result = await showErrorDialog();
@@ -80,18 +109,20 @@ class OrderViewModel extends BaseModel {
     }
   }
 
-  Future<void> selectVoucher(VoucherDTO voucher) {
+  Future<void> selectVoucher(VoucherDTO voucher) async {
     // add voucher to cart
     currentCart.addVoucher(voucher);
     // call prepare
-    prepareOrder();
+    await prepareOrder();
+    // Get.back();
   }
 
-  Future<void> unselectVoucher(VoucherDTO voucher) {
+  Future<void> unselectVoucher(VoucherDTO voucher) async {
     // add voucher to cart
     currentCart.removeVoucher(voucher);
     // call prepare
-    prepareOrder();
+    await prepareOrder();
+    // Get.back();
   }
 
   Future<void> updateQuantity(CartItem item) async {

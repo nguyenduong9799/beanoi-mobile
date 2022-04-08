@@ -10,6 +10,7 @@ import 'package:unidelivery_mobile/View/index.dart';
 import 'package:unidelivery_mobile/View/referral.dart';
 import 'package:unidelivery_mobile/View/transaction.dart';
 import 'package:unidelivery_mobile/View/transactionDetail.dart';
+import 'package:unidelivery_mobile/View/voucher.dart';
 import 'package:unidelivery_mobile/setup.dart';
 
 void main() async {
@@ -108,8 +109,7 @@ class MyApp extends StatelessWidget {
                 settings: settings);
           case RouteHandler.SIGN_UP_REFERRAL:
             return CupertinoPageRoute<bool>(
-                builder: (context) => ReferralScreen(),
-                settings: settings);
+                builder: (context) => ReferralScreen(), settings: settings);
           case RouteHandler.UPDATE:
             return CupertinoPageRoute<bool>(
                 builder: (context) => Update(
@@ -137,6 +137,12 @@ class MyApp extends StatelessWidget {
             return SlideBottomRoute(
               page: TransactionDetailScreen(transaction: settings.arguments),
             );
+          case RouteHandler.VOUCHER:
+            return CupertinoPageRoute<bool>(
+                builder: (context) => VouchersListPage(
+                      params: settings.arguments,
+                    ),
+                settings: settings);
           default:
             return CupertinoPageRoute(
                 builder: (context) => NotFoundScreen(), settings: settings);

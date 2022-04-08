@@ -39,8 +39,8 @@ class VoucherDTO {
   @override
   String toString() {
     // TODO: implement toString
-    final promoCode = voucherCode?.split('-')[0];
-    final voucherCodeStr = voucherCode?.split('-')[1];
+    final promoCode = voucherCode;
+    final voucherCodeStr = voucherCode;
     return {
       "promotionCode": promoCode,
       "voucherCode": voucherCodeStr,

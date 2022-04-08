@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -8,7 +9,7 @@ import 'package:unidelivery_mobile/Enums/index.dart';
 import 'package:unidelivery_mobile/Model/DAO/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/Utils/index.dart';
-import 'package:collection/collection.dart';
+
 import 'index.dart';
 
 class RootViewModel extends BaseModel {
@@ -32,6 +33,7 @@ class RootViewModel extends BaseModel {
     await Get.find<OrderHistoryViewModel>().getNewOrder();
     await Get.find<GiftViewModel>().getNearlyGiftExchange();
     await Get.find<GiftViewModel>().getGifts();
+    await Get.find<OrderViewModel>().getVouchers();
   }
 
   Future getStores() async {
