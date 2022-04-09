@@ -448,12 +448,10 @@ class _OrderScreenState extends State<OrderScreen> {
               flex: 3,
               child: Container(
                 padding: const EdgeInsets.all(8),
-                child: RichText(
-                  text: TextSpan(
-                      text: "Nhận đơn tại:",
-                      style: Get.theme.textTheme.headline5
-                          .copyWith(color: kPrimary),
-                      children: []),
+                child: Text(
+                  "Nhận đơn tại:",
+                  style:
+                      Get.theme.textTheme.headline5.copyWith(color: kPrimary),
                 ),
               ),
             ),
@@ -828,7 +826,7 @@ class _OrderScreenState extends State<OrderScreen> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Expanded(
-                                flex: 1,
+                                flex: 4,
                                 child: Container(
                                     child: TextButton(
                                         onPressed: () async {
@@ -850,46 +848,37 @@ class _OrderScreenState extends State<OrderScreen> {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.center,
                                           children: [
-                                            Expanded(
-                                              flex: 2,
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                children: [
-                                                  Icon(
-                                                    model.currentCart.payment ==
-                                                            PaymentTypeEnum.Cash
-                                                        ? FontAwesome5
-                                                            .money_bill_alt
-                                                        : Icons
-                                                            .monetization_on_outlined,
-                                                  ),
-                                                  SizedBox(width: 16),
-                                                  Text(
-                                                    model.listPayments.keys
-                                                        .elementAt(model
-                                                                .currentCart
-                                                                .payment -
-                                                            1),
-                                                    style: Get.theme.textTheme
-                                                        .headline3,
-                                                    textAlign: TextAlign.center,
-                                                  ),
-                                                ],
-                                              ),
+                                            Icon(
+                                              model.currentCart.payment ==
+                                                      PaymentTypeEnum.Cash
+                                                  ? FontAwesome5.money_bill_alt
+                                                  : Icons
+                                                      .monetization_on_outlined,
                                             ),
+                                            SizedBox(width: 12),
                                             Expanded(
                                               flex: 1,
-                                              child: Icon(
-                                                  Icons.keyboard_arrow_up,
-                                                  size: 30,
-                                                  color: Colors.black),
+                                              child: Text(
+                                                model.listPayments.keys
+                                                    .elementAt(model.currentCart
+                                                            .payment -
+                                                        1),
+                                                style: Get
+                                                    .theme.textTheme.headline3,
+                                                textAlign: TextAlign.left,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
+                                            Icon(
+                                              Icons.keyboard_arrow_up,
+                                              size: 30,
+                                              color: Colors.black,
                                             ),
                                           ],
                                         ))),
                               ),
                               Expanded(
-                                flex: 1,
+                                flex: 5,
                                 child: Container(
                                     // child: TextButton(
                                     //     onPressed: () {
@@ -906,13 +895,14 @@ class _OrderScreenState extends State<OrderScreen> {
                           ),
                         ),
                         Container(
-                          padding: EdgeInsets.only(left: 8, right: 8),
+                          padding:
+                              EdgeInsets.only(left: 8, right: 8, bottom: 4),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Expanded(
-                                flex: 3,
+                                flex: 4,
                                 child: Container(
                                   alignment: Alignment.centerLeft,
                                   child: Column(
