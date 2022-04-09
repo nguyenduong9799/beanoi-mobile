@@ -12,7 +12,7 @@ class OtherAmountWidget extends StatelessWidget {
     formatter.minimumFractionDigits = 0;
     formatter.maximumFractionDigits = 2;
     return Padding(
-      padding: const EdgeInsets.only(top: 5, bottom: 5),
+      padding: const EdgeInsets.only(top: 8),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
