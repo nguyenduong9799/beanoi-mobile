@@ -19,12 +19,15 @@ class OrderViewModel extends BaseModel {
   OrderDAO dao;
   PromotionDAO promoDao;
   Cart currentCart;
+  CollectionDAO _collectionDAO;
+  List<CollectionDTO> upSaleCollections;
 
   String errorMessage = null;
 
   OrderViewModel() {
     dao = new OrderDAO();
     promoDao = new PromotionDAO();
+    _collectionDAO = CollectionDAO();
   }
 
   Future<void> getVouchers() async {
@@ -274,5 +277,32 @@ class OrderViewModel extends BaseModel {
       setCart(currentCart);
     }
     notifyListeners();
+  }
+
+  Future<void> getUpSaleCollections() async {
+    try {
+      setState(ViewStatus.Loading);
+      RootViewModel root = Get.find<RootViewModel>();
+      var currentStore = root.currentStore;
+      if (root.status == ViewStatus.Error) {
+        setState(ViewStatus.Error);
+        return;
+      }
+      if (currentStore.selectedTimeSlot == null) {
+        upSaleCollections = null;
+        setState(ViewStatus.Completed);
+        return;
+      }
+      upSaleCollections = await _collectionDAO
+          .getCollections(currentStore.selectedTimeSlot, params: {
+        "show-on-home": true,
+        "type": CollectionTypeEnum.Suggestion
+      });
+      await Future.delayed(Duration(microseconds: 500));
+      setState(ViewStatus.Completed);
+    } catch (e) {
+      upSaleCollections = null;
+      setState(ViewStatus.Completed);
+    }
   }
 }

@@ -9,6 +9,7 @@ import 'package:shimmer/shimmer.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import "package:collection/collection.dart";
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:unidelivery_mobile/Accessories/UpSaleCollection.dart';
 import 'package:unidelivery_mobile/Accessories/index.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Enums/index.dart';
@@ -102,6 +103,12 @@ class _OrderScreenState extends State<OrderScreen> {
                                 color: kBackgroundGrey[2],
                               )),
                           Container(child: layoutOrder(model.currentCart)),
+                          SizedBox(
+                              height: 8,
+                              child: Container(
+                                color: kBackgroundGrey[2],
+                              )),
+                          UpSaleCollection(),
                           SizedBox(
                               height: 8,
                               child: Container(

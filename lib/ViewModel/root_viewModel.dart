@@ -313,6 +313,38 @@ class RootViewModel extends BaseModel {
     }
   }
 
+  Future<void> addUpsaleProductToCart(ProductDTO product,
+      {showOnHome = true, fetchDetail = false}) async {
+    Get.put<bool>(
+      showOnHome,
+      tag: "showOnHome",
+    );
+    if (product.type != ProductType.SINGLE_PRODUCT &&
+        product.type != ProductType.GIFT_PRODUCT) {
+      openProductDetail(product, fetchDetail: true);
+    } else
+      try {
+        if (fetchDetail) {
+          showLoadingDialog();
+          CampusDTO store = await getStore();
+          product = await _productDAO.getProductDetail(
+              product.id, store.id, store.selectedTimeSlot);
+        }
+        ProductDetailViewModel detail = new ProductDetailViewModel(product);
+        detail.addProductToCart();
+
+        hideSnackbar();
+        hideDialog();
+        await Get.delete<bool>(
+          tag: "showOnHome",
+        );
+        notifyListeners();
+      } catch (e) {
+        await showErrorDialog(errorTitle: "Không tìm thấy sản phẩm");
+        hideDialog();
+      }
+  }
+
   Future<void> clearCart() async {
     await deleteCart();
     notifyListeners();
