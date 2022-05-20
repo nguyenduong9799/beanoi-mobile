@@ -19,8 +19,6 @@ import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Enums/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
-import 'package:url_launcher/url_launcher.dart';
-// import 'package:url_launcher/url_launcher.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -175,6 +173,8 @@ class _HomeScreenState extends State<HomeScreen> {
       // buildLinkBtns(),
       HomeCategorySection(),
       SizedBox(height: 8),
+      buildVoucherSection(),
+      SizedBox(height: 8),
       buildGiftCanExchangeSection(),
       SizedBox(height: 8),
       HomeCollection(),
@@ -279,6 +279,29 @@ class _HomeScreenState extends State<HomeScreen> {
         },
       ),
     );
+  }
+
+  Widget buildVoucherSection() {
+    return Section(
+        child: Container(
+      height: 30,
+      child: TouchOpacity(
+          onTap: () {
+            Get.toNamed(RouteHandler.VOUCHER);
+          },
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Icon(Icons.wallet_giftcard_outlined, color: kPrimary),
+              Text(
+                "Bạn có 20 mã giảm giá vẫy gọi nè",
+                style: kTitleTextStyle.copyWith(color: kPrimary),
+              ),
+              Icon(Icons.arrow_forward_ios_outlined, color: kPrimary)
+            ],
+          )),
+    ));
   }
 
   Widget buildGiftCanExchangeSection() {
@@ -578,8 +601,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     margin: EdgeInsets.only(bottom: 8),
                     child: Swiper(
                         onTap: (index) async {
-                          await launch(
-                              "https://www.youtube.com/embed/wu32Wj_Uix4");
+                          // await launch(
+                          //     "https://www.youtube.com/embed/wu32Wj_Uix4");
                         },
                         autoplay: model.blogs.length > 1 ? true : false,
                         autoplayDelay: 5000,
