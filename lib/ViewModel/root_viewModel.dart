@@ -32,6 +32,7 @@ class RootViewModel extends BaseModel {
     await Get.find<OrderHistoryViewModel>().getNewOrder();
     await Get.find<GiftViewModel>().getNearlyGiftExchange();
     await Get.find<GiftViewModel>().getGifts();
+    await Get.find<OrderViewModel>().getUpSellCollections();
   }
 
   Future getStores() async {
@@ -273,7 +274,7 @@ class RootViewModel extends BaseModel {
       }
       bool result =
           await Get.toNamed(RouteHandler.PRODUCT_DETAIL, arguments: product);
-      hideSnackbar();
+      // hideSnackbar();
       hideDialog();
       await Get.delete<bool>(
         tag: "showOnHome",
@@ -313,7 +314,7 @@ class RootViewModel extends BaseModel {
     }
   }
 
-  Future<void> addUpsaleProductToCart(ProductDTO product,
+  Future<void> addUpSellProductToCart(ProductDTO product,
       {showOnHome = true, fetchDetail = false}) async {
     Get.put<bool>(
       showOnHome,
@@ -321,8 +322,9 @@ class RootViewModel extends BaseModel {
     );
     if (product.type != ProductType.SINGLE_PRODUCT &&
         product.type != ProductType.GIFT_PRODUCT) {
-      openProductDetail(product, fetchDetail: true);
-    } else
+      await openProductDetail(product, fetchDetail: true);
+      await Get.toNamed(RouteHandler.ORDER);
+    } else {
       try {
         if (fetchDetail) {
           showLoadingDialog();
@@ -331,18 +333,20 @@ class RootViewModel extends BaseModel {
               product.id, store.id, store.selectedTimeSlot);
         }
         ProductDetailViewModel detail = new ProductDetailViewModel(product);
-        detail.addProductToCart();
-
+        await detail.addProductToCart(backToHome: false);
         hideSnackbar();
         hideDialog();
+
         await Get.delete<bool>(
           tag: "showOnHome",
         );
+
         notifyListeners();
       } catch (e) {
         await showErrorDialog(errorTitle: "Không tìm thấy sản phẩm");
         hideDialog();
       }
+    }
   }
 
   Future<void> clearCart() async {

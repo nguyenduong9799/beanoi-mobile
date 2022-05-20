@@ -20,7 +20,8 @@ class OrderViewModel extends BaseModel {
   PromotionDAO promoDao;
   Cart currentCart;
   CollectionDAO _collectionDAO;
-  List<CollectionDTO> upSaleCollections;
+  List<CollectionDTO> upSellCollections;
+  bool loadingUpsell;
 
   String errorMessage = null;
 
@@ -28,6 +29,7 @@ class OrderViewModel extends BaseModel {
     dao = new OrderDAO();
     promoDao = new PromotionDAO();
     _collectionDAO = CollectionDAO();
+    loadingUpsell = false;
   }
 
   Future<void> getVouchers() async {
@@ -47,16 +49,20 @@ class OrderViewModel extends BaseModel {
         campusDTO = root.currentStore;
       }
 
-      if (currentCart == null) {
-        currentCart = await getCart();
-      }
-
+      currentCart = await getCart();
       if (listPayments == null) {
         listPayments = await dao.getPayments();
+      }
+      if (currentCart.payment == null) {
         if (listPayments.values.contains(1)) {
           currentCart.payment = PaymentTypeEnum.Cash;
         }
       }
+
+      // if (currentCart == null) {
+      //   currentCart = await getCart();
+      // }
+
       orderAmount = await dao.prepareOrder(campusDTO.id, currentCart);
       errorMessage = null;
       await Future.delayed(Duration(milliseconds: 500));
@@ -279,7 +285,7 @@ class OrderViewModel extends BaseModel {
     notifyListeners();
   }
 
-  Future<void> getUpSaleCollections() async {
+  Future<void> getUpSellCollections() async {
     try {
       setState(ViewStatus.Loading);
       RootViewModel root = Get.find<RootViewModel>();
@@ -289,11 +295,11 @@ class OrderViewModel extends BaseModel {
         return;
       }
       if (currentStore.selectedTimeSlot == null) {
-        upSaleCollections = null;
+        upSellCollections = null;
         setState(ViewStatus.Completed);
         return;
       }
-      upSaleCollections = await _collectionDAO
+      upSellCollections = await _collectionDAO
           .getCollections(currentStore.selectedTimeSlot, params: {
         "show-on-home": true,
         "type": CollectionTypeEnum.Suggestion
@@ -301,7 +307,7 @@ class OrderViewModel extends BaseModel {
       await Future.delayed(Duration(microseconds: 500));
       setState(ViewStatus.Completed);
     } catch (e) {
-      upSaleCollections = null;
+      upSellCollections = null;
       setState(ViewStatus.Completed);
     }
   }

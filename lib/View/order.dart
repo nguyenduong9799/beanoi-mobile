@@ -9,7 +9,7 @@ import 'package:shimmer/shimmer.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import "package:collection/collection.dart";
 import 'package:animated_text_kit/animated_text_kit.dart';
-import 'package:unidelivery_mobile/Accessories/UpSaleCollection.dart';
+import 'package:unidelivery_mobile/Accessories/UpSellCollection.dart';
 import 'package:unidelivery_mobile/Accessories/index.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Enums/index.dart';
@@ -37,7 +37,7 @@ class _OrderScreenState extends State<OrderScreen> {
         viewportBoundaryGetter: () =>
             Rect.fromLTRB(0, 0, 0, MediaQuery.of(context).padding.bottom),
         axis: scrollDirection);
-    orderViewModel = OrderViewModel();
+    orderViewModel = Get.find<OrderViewModel>();
     prepareCart();
   }
 
@@ -108,7 +108,7 @@ class _OrderScreenState extends State<OrderScreen> {
                               child: Container(
                                 color: kBackgroundGrey[2],
                               )),
-                          UpSaleCollection(),
+                          UpSellCollection(),
                           SizedBox(
                               height: 8,
                               child: Container(
@@ -663,9 +663,7 @@ class _OrderScreenState extends State<OrderScreen> {
               children: [
                 Container(
                   decoration: BoxDecoration(
-                    color: model.currentCart.payment != null
-                        ? kBackgroundGrey[0]
-                        : Colors.yellow[100],
+                    color: kBackgroundGrey[0],
                   ),
                   padding: const EdgeInsets.only(left: 8, right: 8, top: 8),
                   child: RichText(
@@ -812,214 +810,354 @@ class _OrderScreenState extends State<OrderScreen> {
               errorMsg = "Vui lòng chọn phương thức thanh toán 💰";
             }
             return Container(
-              padding: const EdgeInsets.only(left: 8, right: 8),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey,
-                    offset: Offset(0.0, 1.0), //(x,y)
-                    blurRadius: 6.0,
-                  ),
-                ],
-              ),
-              child: errorMsg == null
-                  ? ListView(
-                      shrinkWrap: true,
-                      children: [
-                        Container(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Expanded(
-                                flex: 4,
-                                child: Container(
-                                    child: TextButton(
-                                        onPressed: () async {
-                                          Get.bottomSheet(
-                                            selectPaymentMethods(),
-                                            backgroundColor: Colors.white,
-                                            elevation: 0,
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                            ),
-                                          );
-                                          // pr.hide();
-                                          // showStateDialog();
-                                        },
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            Icon(
-                                              model.currentCart.payment ==
-                                                      PaymentTypeEnum.Cash
-                                                  ? FontAwesome5.money_bill_alt
-                                                  : Icons
-                                                      .monetization_on_outlined,
-                                            ),
-                                            SizedBox(width: 12),
-                                            Expanded(
-                                              flex: 1,
-                                              child: Text(
-                                                model.listPayments.keys
-                                                    .elementAt(model.currentCart
-                                                            .payment -
-                                                        1),
-                                                style: Get
-                                                    .theme.textTheme.headline3,
-                                                textAlign: TextAlign.left,
-                                                overflow: TextOverflow.ellipsis,
-                                              ),
-                                            ),
-                                            Icon(
-                                              Icons.keyboard_arrow_up,
-                                              size: 30,
-                                              color: Colors.black,
-                                            ),
-                                          ],
-                                        ))),
-                              ),
-                              Expanded(
-                                flex: 5,
-                                child: Container(
-                                    // child: TextButton(
-                                    //     onPressed: () {
-                                    //       Get.toNamed(RouteHandler.VOUCHER);
-                                    //     },
-                                    //     child: Text(
-                                    //       "THÊM VOUCHER",
-                                    //       style: Get.theme.textTheme.headline2,
-                                    //       textAlign: TextAlign.center,
-                                    //     )),
-                                    ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          padding:
-                              EdgeInsets.only(left: 8, right: 8, bottom: 4),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Expanded(
-                                flex: 4,
-                                child: Container(
-                                  alignment: Alignment.centerLeft,
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "Tổng cộng",
-                                        style: kTextSecondary,
-                                      ),
-                                      SizedBox(height: 6),
-                                      Text(
-                                        orderViewModel.status ==
-                                                ViewStatus.Loading
-                                            ? "..."
-                                            : orderViewModel
-                                                        .currentCart.payment ==
-                                                    PaymentTypeEnum.Cash
-                                                ? formatPrice(orderViewModel
-                                                    .orderAmount.finalAmount)
-                                                : "${formatBean(orderViewModel.orderAmount.finalAmount)} xu",
-                                        style: Get.theme.textTheme.headline3,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                flex: 5,
-                                child: FlatButton(
-                                  onPressed: () async {
-                                    if (model.currentCart.payment != null &&
-                                        location != null &&
-                                        model.status != ViewStatus.Loading &&
-                                        isMenuAvailable) {
-                                      await model.orderCart();
-                                    }
-                                    // pr.hide();
-                                    // showStateDialog();
-                                  },
-                                  height: 50,
-                                  padding: EdgeInsets.only(
-                                    left: 8.0,
-                                    right: 8.0,
-                                  ),
-                                  textColor: Colors.white,
-                                  color: isMenuAvailable
-                                      ? kPrimary
-                                      : kBackgroundGrey[3],
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(8))),
-                                  child: Text(
-                                      isMenuAvailable
-                                          ? "Chốt đơn 👌"
-                                          : "Khung giờ đã kết thúc",
-                                      style: Get.theme.textTheme.headline3
-                                          .copyWith(
-                                              color: isMenuAvailable
-                                                  ? Colors.white
-                                                  : kGreyTitle)),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    )
-                  : Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ListView(
+                padding: const EdgeInsets.only(left: 8, right: 8),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey,
+                      offset: Offset(0.0, 1.0), //(x,y)
+                      blurRadius: 6.0,
+                    ),
+                  ],
+                ),
+                child: errorMsg == null
+                    ? ListView(
                         shrinkWrap: true,
                         children: [
-                          FlatButton(
-                            onPressed: () async {
-                              print('Scroll');
-                              await controller.scrollToIndex(
-                                1,
-                                preferPosition: AutoScrollPosition.begin,
-                              );
-                            },
-                            padding: EdgeInsets.only(right: 8.0, left: 8.0),
-                            textColor: Colors.white,
-                            color: kBackgroundGrey[4],
-                            shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(8))),
-                            child: Column(
+                          Container(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                SizedBox(
-                                  height: 16,
+                                Expanded(
+                                  flex: 4,
+                                  child: Container(
+                                      child: TextButton(
+                                          onPressed: () async {
+                                            Get.bottomSheet(
+                                              selectPaymentMethods(),
+                                              backgroundColor: Colors.white,
+                                              elevation: 0,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                            );
+                                            // pr.hide();
+                                            // showStateDialog();
+                                          },
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              Icon(
+                                                model.currentCart.payment ==
+                                                        PaymentTypeEnum.Cash
+                                                    ? FontAwesome5
+                                                        .money_bill_alt
+                                                    : Icons
+                                                        .monetization_on_outlined,
+                                              ),
+                                              SizedBox(width: 12),
+                                              Expanded(
+                                                flex: 1,
+                                                child: Text(
+                                                  model.listPayments.keys
+                                                      .elementAt(model
+                                                              .currentCart
+                                                              .payment -
+                                                          1),
+                                                  style: Get.theme.textTheme
+                                                      .headline3,
+                                                  textAlign: TextAlign.left,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                              ),
+                                              Icon(
+                                                Icons.keyboard_arrow_up,
+                                                size: 30,
+                                                color: Colors.black,
+                                              ),
+                                            ],
+                                          ))),
                                 ),
-                                RichText(
-                                  text: TextSpan(
-                                      text: errorMsg,
-                                      style: Get.theme.textTheme.headline3
-                                          .copyWith(color: Colors.white),
-                                      children: []),
+                                Expanded(
+                                  flex: 5,
+                                  child: Container(
+                                      // child: TextButton(
+                                      //     onPressed: () {
+                                      //       Get.toNamed(RouteHandler.VOUCHER);
+                                      //     },
+                                      //     child: Text(
+                                      //       "THÊM VOUCHER",
+                                      //       style: Get.theme.textTheme.headline2,
+                                      //       textAlign: TextAlign.center,
+                                      //     )),
+                                      ),
                                 ),
-                                SizedBox(
-                                  height: 16,
-                                )
+                              ],
+                            ),
+                          ),
+                          Container(
+                            padding:
+                                EdgeInsets.only(left: 8, right: 8, bottom: 4),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Expanded(
+                                  flex: 4,
+                                  child: Container(
+                                    alignment: Alignment.centerLeft,
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "Tổng cộng",
+                                          style: kTextSecondary,
+                                        ),
+                                        SizedBox(height: 6),
+                                        Text(
+                                          orderViewModel.status ==
+                                                  ViewStatus.Loading
+                                              ? "..."
+                                              : orderViewModel.currentCart
+                                                          .payment ==
+                                                      PaymentTypeEnum.Cash
+                                                  ? formatPrice(orderViewModel
+                                                      .orderAmount.finalAmount)
+                                                  : "${formatBean(orderViewModel.orderAmount.finalAmount)} xu",
+                                          style: Get.theme.textTheme.headline3,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 5,
+                                  child: FlatButton(
+                                    onPressed: () async {
+                                      if (model.currentCart.payment != null &&
+                                          location != null &&
+                                          model.status != ViewStatus.Loading &&
+                                          isMenuAvailable) {
+                                        await model.orderCart();
+                                      }
+                                      // pr.hide();
+                                      // showStateDialog();
+                                    },
+                                    height: 50,
+                                    padding: EdgeInsets.only(
+                                      left: 8.0,
+                                      right: 8.0,
+                                    ),
+                                    textColor: Colors.white,
+                                    color: isMenuAvailable
+                                        ? kPrimary
+                                        : kBackgroundGrey[3],
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(8))),
+                                    child: Text(
+                                        isMenuAvailable
+                                            ? "Chốt đơn 👌"
+                                            : "Khung giờ đã kết thúc",
+                                        style: Get.theme.textTheme.headline3
+                                            .copyWith(
+                                                color: isMenuAvailable
+                                                    ? Colors.white
+                                                    : kGreyTitle)),
+                                  ),
+                                ),
                               ],
                             ),
                           ),
                         ],
-                      ),
-                    ),
-            );
+                      )
+                    // : Padding(
+                    //     padding: const EdgeInsets.all(8.0),
+                    //     child: ListView(
+                    //       shrinkWrap: true,
+                    //       children: [
+                    //         FlatButton(
+                    //           onPressed: () async {
+                    //             print('Scroll');
+                    //             await controller.scrollToIndex(
+                    //               1,
+                    //               preferPosition: AutoScrollPosition.begin,
+                    //             );
+                    //           },
+                    //           padding: EdgeInsets.only(right: 8.0, left: 8.0),
+                    //           textColor: Colors.white,
+                    //           color: kBackgroundGrey[4],
+                    //           shape: RoundedRectangleBorder(
+                    //               borderRadius:
+                    //                   BorderRadius.all(Radius.circular(8))),
+                    //           child: Column(
+                    //             children: [
+                    //               SizedBox(
+                    //                 height: 16,
+                    //               ),
+                    //               RichText(
+                    //                 text: TextSpan(
+                    //                     text: errorMsg,
+                    //                     style: Get.theme.textTheme.headline3
+                    //                         .copyWith(color: Colors.white),
+                    //                     children: []),
+                    //               ),
+                    //               SizedBox(
+                    //                 height: 16,
+                    //               )
+                    //             ],
+                    //           ),
+                    //         ),
+                    //       ],
+                    //     ),
+                    //   ),
+                    : ListView(
+                        shrinkWrap: true,
+                        children: [
+                          Container(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Expanded(
+                                  flex: 4,
+                                  child: Container(
+                                      child: TextButton(
+                                          onPressed: () async {
+                                            Get.bottomSheet(
+                                              selectPaymentMethods(),
+                                              backgroundColor: Colors.white,
+                                              elevation: 0,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                            );
+                                            // pr.hide();
+                                            // showStateDialog();
+                                          },
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              Icon(
+                                                model.currentCart.payment ==
+                                                        PaymentTypeEnum.Cash
+                                                    ? FontAwesome5
+                                                        .money_bill_alt
+                                                    : Icons
+                                                        .monetization_on_outlined,
+                                              ),
+                                              SizedBox(width: 12),
+                                              Expanded(
+                                                flex: 1,
+                                                child: Text(
+                                                  "...",
+                                                  style: Get.theme.textTheme
+                                                      .headline3,
+                                                  textAlign: TextAlign.left,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                              ),
+                                              Icon(
+                                                Icons.keyboard_arrow_up,
+                                                size: 30,
+                                                color: Colors.black,
+                                              ),
+                                            ],
+                                          ))),
+                                ),
+                                Expanded(
+                                  flex: 5,
+                                  child: Container(
+                                      // child: TextButton(
+                                      //     onPressed: () {
+                                      //       Get.toNamed(RouteHandler.VOUCHER);
+                                      //     },
+                                      //     child: Text(
+                                      //       "THÊM VOUCHER",
+                                      //       style: Get.theme.textTheme.headline2,
+                                      //       textAlign: TextAlign.center,
+                                      //     )),
+                                      ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            padding:
+                                EdgeInsets.only(left: 8, right: 8, bottom: 4),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Expanded(
+                                  flex: 4,
+                                  child: Container(
+                                    alignment: Alignment.centerLeft,
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "Tổng cộng",
+                                          style: kTextSecondary,
+                                        ),
+                                        SizedBox(height: 6),
+                                        Text(
+                                          "...",
+                                          style: Get.theme.textTheme.headline3,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 5,
+                                  child: FlatButton(
+                                    onPressed: () async {
+                                      // pr.hide();
+                                      // showStateDialog();
+                                    },
+                                    height: 50,
+                                    padding: EdgeInsets.only(
+                                      left: 8.0,
+                                      right: 8.0,
+                                    ),
+                                    textColor: Colors.white,
+                                    color: kBackgroundGrey[4],
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(8))),
+                                    child: Text(
+                                        "Vui lòng chọn phương thức thanh toán 💰",
+                                        style: Get.theme.textTheme.headline3
+                                            .copyWith(
+                                                color: isMenuAvailable
+                                                    ? Colors.white
+                                                    : kGreyTitle)),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ));
           default:
             return SizedBox.shrink();
         }
