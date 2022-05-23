@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Accessories/index.dart';
+import 'package:unidelivery_mobile/Accessories/voucher/voucher_card.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Enums/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
@@ -28,7 +29,8 @@ class _VouchersListPageState extends State<VouchersListPage> {
         title: "Danh sách mã giảm giá",
       ),
       body: Container(
-        color: Colors.grey,
+        padding: EdgeInsets.only(top: 8),
+        color: Colors.white,
         child: Column(
           children: [
             // _buildFilter(),
@@ -70,6 +72,9 @@ class _VouchersListPageState extends State<VouchersListPage> {
                     child: Text(
                       "Bạn đã xem hết rồi đấy 🐱‍👓",
                       textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 16,
+                      ),
                     ),
                   );
                 }
@@ -84,6 +89,8 @@ class _VouchersListPageState extends State<VouchersListPage> {
   }
 
   Widget voucherCard(VoucherDTO voucher, OrderViewModel model) {
+    const Color primaryColor = Color(0xffcbf3f0);
+    const Color secondaryColor = Color(0xff368f8b);
     bool isApplied = false;
     if (model.currentCart?.vouchers == null) {
       isApplied = false;
@@ -92,102 +99,209 @@ class _VouchersListPageState extends State<VouchersListPage> {
       isApplied =
           vouchersInCart.any((e) => e.voucherCode == voucher.voucherCode);
     }
-
     return Container(
-      padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Expanded(
-            flex: 8,
-            child: Container(
-                height: 70,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(12),
-                      bottomRight: Radius.circular(12),
-                      topLeft: Radius.circular(8),
-                      bottomLeft: Radius.circular(8)),
-                  color: isApplied ? kPrimary.withOpacity(0.4) : Colors.white,
-                ),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 10,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(8),
-                            bottomLeft: Radius.circular(8),
+      padding: EdgeInsets.all(8),
+      child: InkWell(
+        onTap: () {
+          if (isApplied) {
+            model.unselectVoucher(voucher);
+          } else {
+            model.selectVoucher(voucher);
+          }
+        },
+        child: VoucherCard(
+          height: 110,
+          backgroundColor: primaryColor,
+          clockwise: true,
+          curvePosition: 130,
+          curveRadius: 30,
+          curveAxis: Axis.vertical,
+          borderRadius: 10,
+          firstChild: Container(
+            decoration: const BoxDecoration(
+              color: secondaryColor,
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          '23%',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
                           ),
-                          color: kPrimary),
-                    ),
-                    Container(
-                      padding: EdgeInsets.all(8),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            voucher.voucherName,
-                            style: Get.theme.textTheme.headline3
-                                .copyWith(color: Colors.black),
-                          ),
-                          SizedBox(height: 4),
-                          Text("Text",
-                              style: Get.theme.textTheme.headline2.copyWith(
-                                color: Colors.black,
-                              )),
-                        ],
-                      ),
-                    )
-                  ],
-                )),
-          ),
-          Divider(thickness: 2),
-          Expanded(
-            flex: 2,
-            child: Container(
-              height: 70,
-              width: Get.width * 0.2,
-              // color: Colors.grey[300],
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(12),
-                  bottomLeft: Radius.circular(12),
-                  topRight: Radius.circular(8),
-                  bottomRight: Radius.circular(8),
-                ),
-                color: isApplied ? kPrimary.withOpacity(0.4) : Colors.white,
-              ),
-              child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap: () {
-                    if (isApplied) {
-                      model.unselectVoucher(voucher);
-                    } else {
-                      model.selectVoucher(voucher);
-                    }
-                  },
-                  child: Container(
-                    height: 72,
-                    child: Center(
-                      child: Text(
-                        isApplied ? 'Hủy' : 'Chọn',
-                        style: Get.theme.textTheme.headline3.copyWith(
-                          color: isApplied ? Colors.black : kPrimary,
                         ),
+                        Text(
+                          'OFF',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Divider(color: Colors.white54, height: 0),
+                Expanded(
+                  child: Center(
+                    child: Text(
+                      voucher.promotionName.toUpperCase(),
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
                 ),
-              ),
+              ],
             ),
           ),
-        ],
+          secondChild: Container(
+            width: double.maxFinite,
+            padding: EdgeInsets.all(12),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  voucher.voucherName,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: secondaryColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Spacer(),
+                Text(
+                  voucher.voucherCode,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black54,
+                  ),
+                ),
+                Spacer(),
+                Text(
+                  'Valid Till - 30 Jan 2022',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.black45,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
+
+    // return Container(
+    //   padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
+    //   child: Row(
+    //     crossAxisAlignment: CrossAxisAlignment.start,
+    //     mainAxisAlignment: MainAxisAlignment.start,
+    //     children: [
+    //       Expanded(
+    //         flex: 8,
+    //         child: Container(
+    //             height: 70,
+    //             decoration: BoxDecoration(
+    //               borderRadius: BorderRadius.only(
+    //                   topRight: Radius.circular(12),
+    //                   bottomRight: Radius.circular(12),
+    //                   topLeft: Radius.circular(8),
+    //                   bottomLeft: Radius.circular(8)),
+    //               color: isApplied ? kPrimary.withOpacity(0.4) : Colors.white,
+    //             ),
+    //             child: Row(
+    //               children: [
+    //                 Container(
+    //                   width: 10,
+    //                   decoration: BoxDecoration(
+    //                       borderRadius: BorderRadius.only(
+    //                         topLeft: Radius.circular(8),
+    //                         bottomLeft: Radius.circular(8),
+    //                       ),
+    //                       color: kPrimary),
+    //                 ),
+    //                 Container(
+    //                   padding: EdgeInsets.all(8),
+    //                   child: Column(
+    //                     mainAxisAlignment: MainAxisAlignment.center,
+    //                     crossAxisAlignment: CrossAxisAlignment.center,
+    //                     children: [
+    //                       Text(
+    //                         voucher.voucherName,
+    //                         style: Get.theme.textTheme.headline3
+    //                             .copyWith(color: Colors.black),
+    //                       ),
+    //                       SizedBox(height: 4),
+    //                       Text("Text",
+    //                           style: Get.theme.textTheme.headline2.copyWith(
+    //                             color: Colors.black,
+    //                           )),
+    //                     ],
+    //                   ),
+    //                 )
+    //               ],
+    //             )),
+    //       ),
+    //       Divider(thickness: 2),
+    //       Expanded(
+    //         flex: 2,
+    //         child: Container(
+    //           height: 70,
+    //           width: Get.width * 0.2,
+    //           // color: Colors.grey[300],
+    //           decoration: BoxDecoration(
+    //             borderRadius: BorderRadius.only(
+    //               topLeft: Radius.circular(12),
+    //               bottomLeft: Radius.circular(12),
+    //               topRight: Radius.circular(8),
+    //               bottomRight: Radius.circular(8),
+    //             ),
+    //             color: isApplied ? kPrimary.withOpacity(0.4) : Colors.white,
+    //           ),
+    //           child: Material(
+    //             color: Colors.transparent,
+    //             child: InkWell(
+    //               onTap: () {
+    //                 if (isApplied) {
+    //                   model.unselectVoucher(voucher);
+    //                 } else {
+    //                   model.selectVoucher(voucher);
+    //                 }
+    //               },
+    //               child: Container(
+    //                 height: 72,
+    //                 child: Center(
+    //                   child: Text(
+    //                     isApplied ? 'Hủy' : 'Chọn',
+    //                     style: Get.theme.textTheme.headline3.copyWith(
+    //                       color: isApplied ? Colors.black : kPrimary,
+    //                     ),
+    //                   ),
+    //                 ),
+    //               ),
+    //             ),
+    //           ),
+    //         ),
+    //       ),
+    //     ],
+    //   ),
+    // );
   }
 
   Widget _buildLoading() {

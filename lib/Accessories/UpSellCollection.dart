@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Accessories/CacheImage.dart';
 import 'package:unidelivery_mobile/Accessories/shimmer_block.dart';
-import 'package:unidelivery_mobile/Accessories/touchopacity.dart';
 import 'package:unidelivery_mobile/Constraints/constraints.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Enums/index.dart';
@@ -39,7 +38,7 @@ class _UpSellCollectionState extends State<UpSellCollection> {
           var collections = model.upSellCollections;
           if (collections == null || collections?.length == 0)
             return SizedBox();
-          if (model.status == ViewStatus.Loading ||
+          if (model.status == ViewStatus.LoadingUpsell ||
               collections == null ||
               collections?.length == 0) {
             return Container(
@@ -161,9 +160,9 @@ class _UpSellCollectionState extends State<UpSellCollection> {
         color: Colors.transparent,
         child: InkWell(
           onTap: () async {
-            RootViewModel root = Get.find<RootViewModel>();
-            await root.addUpSellProductToCart(product,
+            await Get.find<RootViewModel>().addUpSellProductToCart(product,
                 fetchDetail: true, showOnHome: true);
+            await Get.find<OrderViewModel>().prepareOrder();
           },
           child: Container(
             height: 60,

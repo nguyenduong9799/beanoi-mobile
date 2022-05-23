@@ -61,6 +61,7 @@ class _OrderScreenState extends State<OrderScreen> {
             : ScopedModelDescendant<OrderViewModel>(
                 builder:
                     (BuildContext context, Widget child, OrderViewModel model) {
+                  if (model.currentCart == null) return SizedBox.shrink();
                   ViewStatus status = model.status;
                   switch (status) {
                     case ViewStatus.Error:
@@ -896,16 +897,17 @@ class _OrderScreenState extends State<OrderScreen> {
                                 Expanded(
                                   flex: 5,
                                   child: Container(
-                                      // child: TextButton(
-                                      //     onPressed: () {
-                                      //       Get.toNamed(RouteHandler.VOUCHER);
-                                      //     },
-                                      //     child: Text(
-                                      //       "THÊM VOUCHER",
-                                      //       style: Get.theme.textTheme.headline2,
-                                      //       textAlign: TextAlign.center,
-                                      //     )),
-                                      ),
+                                    child: TextButton(
+                                        onPressed: () {
+                                          // Get.toNamed(RouteHandler.VOUCHER);
+                                        },
+                                        child: Text(
+                                          "THÊM VOUCHER",
+                                          // style: Get.theme.textTheme.headline2,
+                                          style: TextStyle(color: Colors.white),
+                                          textAlign: TextAlign.center,
+                                        )),
+                                  ),
                                 ),
                               ],
                             ),
@@ -1091,16 +1093,17 @@ class _OrderScreenState extends State<OrderScreen> {
                                 Expanded(
                                   flex: 5,
                                   child: Container(
-                                      // child: TextButton(
-                                      //     onPressed: () {
-                                      //       Get.toNamed(RouteHandler.VOUCHER);
-                                      //     },
-                                      //     child: Text(
-                                      //       "THÊM VOUCHER",
-                                      //       style: Get.theme.textTheme.headline2,
-                                      //       textAlign: TextAlign.center,
-                                      //     )),
-                                      ),
+                                    child: TextButton(
+                                        onPressed: () {
+                                          // Get.toNamed(RouteHandler.VOUCHER);
+                                        },
+                                        child: Text(
+                                          "THÊM VOUCHER",
+                                          // style: Get.theme.textTheme.headline2,
+                                          style: TextStyle(color: Colors.white),
+                                          textAlign: TextAlign.center,
+                                        )),
+                                  ),
                                 ),
                               ],
                             ),

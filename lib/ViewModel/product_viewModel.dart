@@ -273,8 +273,8 @@ class ProductDetailViewModel extends BaseModel {
         .logChangeCart(item.master, item.quantity, true);
     hideDialog();
     if (backToHome) {
+      Get.find<OrderViewModel>().prepareOrder();
       Get.back(result: true);
-      // Get.find<OrderViewModel>().prepareOrder();
     } else {
       Get.find<OrderViewModel>().prepareOrder();
     }

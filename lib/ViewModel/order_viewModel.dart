@@ -33,7 +33,52 @@ class OrderViewModel extends BaseModel {
   }
 
   Future<void> getVouchers() async {
-    final voucherList = await promoDao.getPromotions();
+    final voucherList = [
+      VoucherDTO(
+          voucherName: "BEAN khao phí vận chuyển",
+          voucherCode: "BEANOI1234",
+          promotionId: "p1",
+          promotionName: "Hè đến rồi",
+          imgUrl: "test"),
+      VoucherDTO(
+          voucherName: "Thanh toán xu giảm 15 %",
+          voucherCode: "BEANOI1234",
+          promotionId: "p2",
+          promotionName: "Hè đến rồi",
+          imgUrl: "test"),
+      VoucherDTO(
+          voucherName: "Thanh toán xu giảm 20 %",
+          voucherCode: "BEANOI1234",
+          promotionId: "p2",
+          promotionName: "Hè đến rồi",
+          imgUrl: "test"),
+      VoucherDTO(
+          voucherName: "Thanh toán xu giảm 30 %",
+          voucherCode: "BEANOI1234",
+          promotionId: "p2",
+          promotionName: "Hè đến rồi",
+          imgUrl: "test"),
+      VoucherDTO(
+          voucherName: "Thanh toán xu giảm 30 %",
+          voucherCode: "BEANOI1234",
+          promotionId: "p2",
+          promotionName: "Hè đến rồi",
+          imgUrl: "test"),
+      VoucherDTO(
+          voucherName: "Thanh toán xu giảm 30 %",
+          voucherCode: "BEANOI1234",
+          promotionId: "p2",
+          promotionName: "Hè đến rồi",
+          imgUrl: "test"),
+      VoucherDTO(
+          voucherName: "Thanh toán xu giảm 30 %",
+          voucherCode: "BEANOI1234",
+          promotionId: "p2",
+          promotionName: "Hè đến rồi",
+          imgUrl: "test"),
+    ];
+    // vouchers = voucherList;
+    // final voucherList = await promoDao.getPromotions();
     vouchers = voucherList;
     notifyListeners();
   }
@@ -196,8 +241,8 @@ class OrderViewModel extends BaseModel {
     if (result) {
       await AnalyticsService.getInstance()
           .logChangeCart(item.master, item.quantity, false);
-      hideDialog();
       Get.back(result: false);
+      await prepareOrder();
     } else {
       currentCart = await getCart();
       await prepareOrder();
@@ -287,7 +332,7 @@ class OrderViewModel extends BaseModel {
 
   Future<void> getUpSellCollections() async {
     try {
-      setState(ViewStatus.Loading);
+      setState(ViewStatus.LoadingUpsell);
       RootViewModel root = Get.find<RootViewModel>();
       var currentStore = root.currentStore;
       if (root.status == ViewStatus.Error) {
