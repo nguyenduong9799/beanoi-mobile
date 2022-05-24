@@ -207,6 +207,7 @@ class OrderViewModel extends BaseModel {
           RouteHandler.ORDER_HISTORY_DETAIL,
           arguments: result.order,
         );
+        prepareOrder();
         // Get.back(result: true);
       } else {
         hideDialog();

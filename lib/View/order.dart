@@ -1,14 +1,11 @@
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:expandable/expandable.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
+import "package:collection/collection.dart";
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:shimmer/shimmer.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
-import "package:collection/collection.dart";
-import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:unidelivery_mobile/Accessories/UpSellCollection.dart';
 import 'package:unidelivery_mobile/Accessories/index.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
@@ -16,7 +13,6 @@ import 'package:unidelivery_mobile/Enums/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/Utils/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
-import 'package:webview_flutter/platform_interface.dart';
 
 import 'index.dart';
 
@@ -116,13 +112,6 @@ class _OrderScreenState extends State<OrderScreen> {
                                 color: kBackgroundGrey[2],
                               )),
                           layoutSubtotal(),
-                          // SizedBox(
-                          //     height: 8,
-                          //     child: Container(
-                          //       color: kBackgroundGrey[2],
-                          //     )),
-                          // selectPaymentMethods(),
-                          // SizedBox(height: 16),
                         ],
                       );
 
@@ -711,7 +700,65 @@ class _OrderScreenState extends State<OrderScreen> {
                 shrinkWrap: true,
                 children: [
                   Container(
-                    padding: EdgeInsets.fromLTRB(8, 8, 8, 4),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          flex: 4,
+                          child: Container(
+                              child: TextButton(
+                                  onPressed: () async {},
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        model.currentCart.payment ==
+                                                PaymentTypeEnum.Cash
+                                            ? FontAwesome5.money_bill_alt
+                                            : Icons.monetization_on_outlined,
+                                      ),
+                                      SizedBox(width: 12),
+                                      Expanded(
+                                        flex: 1,
+                                        child: Text(
+                                          model.listPayments.keys.elementAt(
+                                              model.currentCart.payment - 1),
+                                          style: Get.theme.textTheme.headline3,
+                                          textAlign: TextAlign.left,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                      Icon(
+                                        Icons.keyboard_arrow_up,
+                                        size: 30,
+                                        color: Colors.black,
+                                      ),
+                                    ],
+                                  ))),
+                        ),
+                        Expanded(
+                          flex: 5,
+                          child: Container(
+                            child: TextButton(
+                                onPressed: () {
+                                  // Get.toNamed(RouteHandler.VOUCHER);
+                                },
+                                child: Text(
+                                  "THÊM VOUCHER",
+                                  // style: Get.theme.textTheme.headline2,
+                                  style: TextStyle(color: Colors.white),
+                                  textAlign: TextAlign.center,
+                                )),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    padding: EdgeInsets.fromLTRB(8, 0, 8, 4),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -724,7 +771,7 @@ class _OrderScreenState extends State<OrderScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text("Tổng cộng", style: kTextSecondary),
-                                SizedBox(height: 8),
+                                SizedBox(height: 6),
                                 Text(
                                   '...',
                                   style: Get.theme.textTheme.headline1
@@ -759,27 +806,6 @@ class _OrderScreenState extends State<OrderScreen> {
                                         'Đợi tý nha',
                                         textStyle: Get.theme.textTheme.headline4
                                             .copyWith(color: Colors.white),
-                                        textAlign: TextAlign.center,
-                                        // speed: Duration(milliseconds: 300),
-                                      ),
-                                      FadeAnimatedText(
-                                        '🚀',
-                                        textStyle:
-                                            Get.theme.textTheme.headline1,
-                                        textAlign: TextAlign.center,
-                                        // speed: Duration(milliseconds: 300),
-                                      ),
-                                      FadeAnimatedText(
-                                        '🛵',
-                                        textStyle:
-                                            Get.theme.textTheme.headline1,
-                                        textAlign: TextAlign.center,
-                                        // speed: Duration(milliseconds: 300),
-                                      ),
-                                      FadeAnimatedText(
-                                        '💻',
-                                        textStyle:
-                                            Get.theme.textTheme.headline1,
                                         textAlign: TextAlign.center,
                                         // speed: Duration(milliseconds: 300),
                                       ),
@@ -991,46 +1017,6 @@ class _OrderScreenState extends State<OrderScreen> {
                           ),
                         ],
                       )
-                    // : Padding(
-                    //     padding: const EdgeInsets.all(8.0),
-                    //     child: ListView(
-                    //       shrinkWrap: true,
-                    //       children: [
-                    //         FlatButton(
-                    //           onPressed: () async {
-                    //             print('Scroll');
-                    //             await controller.scrollToIndex(
-                    //               1,
-                    //               preferPosition: AutoScrollPosition.begin,
-                    //             );
-                    //           },
-                    //           padding: EdgeInsets.only(right: 8.0, left: 8.0),
-                    //           textColor: Colors.white,
-                    //           color: kBackgroundGrey[4],
-                    //           shape: RoundedRectangleBorder(
-                    //               borderRadius:
-                    //                   BorderRadius.all(Radius.circular(8))),
-                    //           child: Column(
-                    //             children: [
-                    //               SizedBox(
-                    //                 height: 16,
-                    //               ),
-                    //               RichText(
-                    //                 text: TextSpan(
-                    //                     text: errorMsg,
-                    //                     style: Get.theme.textTheme.headline3
-                    //                         .copyWith(color: Colors.white),
-                    //                     children: []),
-                    //               ),
-                    //               SizedBox(
-                    //                 height: 16,
-                    //               )
-                    //             ],
-                    //           ),
-                    //         ),
-                    //       ],
-                    //     ),
-                    //   ),
                     : ListView(
                         shrinkWrap: true,
                         children: [
