@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get.dart';
+import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/Services/push_notification_service.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
 import 'package:unidelivery_mobile/ViewModel/product_filter_viewModel.dart';
@@ -24,4 +25,5 @@ void createRouteBindings() async {
   Get.put(TransactionViewModel());
   Get.put(BlogsViewModel());
   Get.put(GiftViewModel());
+  Get.put(OrderViewModel());
 }

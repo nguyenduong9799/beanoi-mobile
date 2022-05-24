@@ -19,75 +19,141 @@ class CartButton extends StatefulWidget {
 
 class _CartButtonState extends State<CartButton> {
   @override
+  // Widget build(BuildContext context) {
+  //   return ScopedModel(
+  //     model: Get.find<RootViewModel>(),
+  //     child: ScopedModelDescendant<RootViewModel>(
+  //         builder: (context, child, model) {
+  //       if (model.status == ViewStatus.Loading) {
+  //         return SizedBox.shrink();
+  //       }
+  //       return FutureBuilder(
+  //           future: model.cart,
+  //           builder: (context, snapshot) {
+  //             Cart cart = snapshot.data;
+  //             if (cart == null) return SizedBox.shrink();
+  //             int quantity = cart?.itemQuantity();
+  //             return Container(
+  //               margin: EdgeInsets.only(bottom: 40),
+  //               child: FloatingActionButton(
+  //                 backgroundColor: Colors.transparent,
+  //                 elevation: 4,
+  //                 heroTag: CART_TAG,
+  //                 shape: RoundedRectangleBorder(
+  //                   borderRadius: BorderRadius.circular(8.0),
+  //                   // side: BorderSide(color: Colors.red),
+  //                 ),
+  //                 onPressed: () async {
+  //                   await model.openCart(widget.isMart);
+  //                 },
+  //                 child: Stack(
+  //                   clipBehavior: Clip.none,
+  //                   children: [
+  //                     Container(
+  //                       width: 56,
+  //                       height: 56,
+  //                       decoration: BoxDecoration(
+  //                         color: Colors.white,
+  //                         borderRadius: BorderRadius.circular(4),
+  //                       ),
+  //                       child: Icon(
+  //                         AntDesign.shoppingcart,
+  //                         color: kPrimary,
+  //                       ),
+  //                     ),
+  //                     Positioned(
+  //                       top: -10,
+  //                       left: 32,
+  //                       child: AnimatedContainer(
+  //                         duration: Duration(microseconds: 300),
+  //                         width: 24,
+  //                         height: 24,
+  //                         decoration: BoxDecoration(
+  //                           borderRadius: BorderRadius.circular(16),
+  //                           color: Colors.red,
+  //                           //border: Border.all(color: Colors.grey),
+  //                         ),
+  //                         child: Center(
+  //                           child: Text(
+  //                             quantity.toString(),
+  //                             style: Get.theme.textTheme.headline3
+  //                                 .copyWith(color: Colors.white),
+  //                           ),
+  //                         ),
+  //                       ),
+  //                     )
+  //                   ],
+  //                 ),
+  //               ),
+  //             );
+  //           });
+  //     }),
+  //   );
+  // }
+
   Widget build(BuildContext context) {
     return ScopedModel(
-      model: Get.find<RootViewModel>(),
-      child: ScopedModelDescendant<RootViewModel>(
-          builder: (context, child, model) {
-        if (model.status == ViewStatus.Loading) {
-          return SizedBox.shrink();
-        }
-        return FutureBuilder(
-            future: model.cart,
-            builder: (context, snapshot) {
-              Cart cart = snapshot.data;
-              if (cart == null) return SizedBox.shrink();
-              int quantity = cart?.itemQuantity();
-              return Container(
-                margin: EdgeInsets.only(bottom: 40),
-                child: FloatingActionButton(
-                  backgroundColor: Colors.transparent,
-                  elevation: 4,
-                  heroTag: CART_TAG,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                    // side: BorderSide(color: Colors.red),
+        model: Get.find<OrderViewModel>(),
+        child: ScopedModelDescendant<OrderViewModel>(
+            builder: (context, child, model) {
+          if (model.status == ViewStatus.Loading) {
+            return SizedBox.shrink();
+          }
+          if (model.currentCart == null) return SizedBox.shrink();
+          int quantity = model.currentCart?.itemQuantity();
+          return Container(
+            margin: EdgeInsets.only(bottom: 40),
+            child: FloatingActionButton(
+              backgroundColor: Colors.transparent,
+              elevation: 4,
+              heroTag: CART_TAG,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.0),
+                // side: BorderSide(color: Colors.red),
+              ),
+              onPressed: () async {
+                await Get.toNamed(RouteHandler.ORDER);
+              },
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Container(
+                    width: 56,
+                    height: 56,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Icon(
+                      AntDesign.shoppingcart,
+                      color: kPrimary,
+                    ),
                   ),
-                  onPressed: () async {
-                    await model.openCart(widget.isMart);
-                  },
-                  child: Stack(
-                    clipBehavior: Clip.none,
-                    children: [
-                      Container(
-                        width: 56,
-                        height: 56,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: Icon(
-                          AntDesign.shoppingcart,
-                          color: kPrimary,
+                  Positioned(
+                    top: -10,
+                    left: 32,
+                    child: AnimatedContainer(
+                      duration: Duration(microseconds: 300),
+                      width: 24,
+                      height: 24,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16),
+                        color: Colors.red,
+                        //border: Border.all(color: Colors.grey),
+                      ),
+                      child: Center(
+                        child: Text(
+                          quantity.toString(),
+                          style: Get.theme.textTheme.headline3
+                              .copyWith(color: Colors.white),
                         ),
                       ),
-                      Positioned(
-                        top: -10,
-                        left: 32,
-                        child: AnimatedContainer(
-                          duration: Duration(microseconds: 300),
-                          width: 24,
-                          height: 24,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(16),
-                            color: Colors.red,
-                            //border: Border.all(color: Colors.grey),
-                          ),
-                          child: Center(
-                            child: Text(
-                              quantity.toString(),
-                              style: Get.theme.textTheme.headline3
-                                  .copyWith(color: Colors.white),
-                            ),
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              );
-            });
-      }),
-    );
+                    ),
+                  )
+                ],
+              ),
+            ),
+          );
+        }));
   }
 }

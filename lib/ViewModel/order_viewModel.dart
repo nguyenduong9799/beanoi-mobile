@@ -19,16 +19,66 @@ class OrderViewModel extends BaseModel {
   OrderDAO dao;
   PromotionDAO promoDao;
   Cart currentCart;
+  CollectionDAO _collectionDAO;
+  List<CollectionDTO> upSellCollections;
+  bool loadingUpsell;
 
   String errorMessage = null;
 
   OrderViewModel() {
     dao = new OrderDAO();
     promoDao = new PromotionDAO();
+    _collectionDAO = CollectionDAO();
+    loadingUpsell = false;
   }
 
   Future<void> getVouchers() async {
-    final voucherList = await promoDao.getPromotions();
+    final voucherList = [
+      VoucherDTO(
+          voucherName: "BEAN khao phí vận chuyển",
+          voucherCode: "BEANOI1234",
+          promotionId: "p1",
+          promotionName: "Hè đến rồi",
+          imgUrl: "test"),
+      VoucherDTO(
+          voucherName: "Thanh toán xu giảm 15 %",
+          voucherCode: "BEANOI1234",
+          promotionId: "p2",
+          promotionName: "Hè đến rồi",
+          imgUrl: "test"),
+      VoucherDTO(
+          voucherName: "Thanh toán xu giảm 20 %",
+          voucherCode: "BEANOI1234",
+          promotionId: "p2",
+          promotionName: "Hè đến rồi",
+          imgUrl: "test"),
+      VoucherDTO(
+          voucherName: "Thanh toán xu giảm 30 %",
+          voucherCode: "BEANOI1234",
+          promotionId: "p2",
+          promotionName: "Hè đến rồi",
+          imgUrl: "test"),
+      VoucherDTO(
+          voucherName: "Thanh toán xu giảm 30 %",
+          voucherCode: "BEANOI1234",
+          promotionId: "p2",
+          promotionName: "Hè đến rồi",
+          imgUrl: "test"),
+      VoucherDTO(
+          voucherName: "Thanh toán xu giảm 30 %",
+          voucherCode: "BEANOI1234",
+          promotionId: "p2",
+          promotionName: "Hè đến rồi",
+          imgUrl: "test"),
+      VoucherDTO(
+          voucherName: "Thanh toán xu giảm 30 %",
+          voucherCode: "BEANOI1234",
+          promotionId: "p2",
+          promotionName: "Hè đến rồi",
+          imgUrl: "test"),
+    ];
+    // vouchers = voucherList;
+    // final voucherList = await promoDao.getPromotions();
     vouchers = voucherList;
     notifyListeners();
   }
@@ -44,16 +94,16 @@ class OrderViewModel extends BaseModel {
         campusDTO = root.currentStore;
       }
 
-      if (currentCart == null) {
-        currentCart = await getCart();
-      }
-
+      currentCart = await getCart();
       if (listPayments == null) {
         listPayments = await dao.getPayments();
+      }
+      if (currentCart.payment == null) {
         if (listPayments.values.contains(1)) {
           currentCart.payment = PaymentTypeEnum.Cash;
         }
       }
+
       orderAmount = await dao.prepareOrder(campusDTO.id, currentCart);
       errorMessage = null;
       await Future.delayed(Duration(milliseconds: 500));
@@ -153,6 +203,7 @@ class OrderViewModel extends BaseModel {
           RouteHandler.ORDER_HISTORY_DETAIL,
           arguments: result.order,
         );
+        prepareOrder();
         // Get.back(result: true);
       } else {
         hideDialog();
@@ -187,8 +238,8 @@ class OrderViewModel extends BaseModel {
     if (result) {
       await AnalyticsService.getInstance()
           .logChangeCart(item.master, item.quantity, false);
-      hideDialog();
       Get.back(result: false);
+      await prepareOrder();
     } else {
       currentCart = await getCart();
       await prepareOrder();
@@ -206,45 +257,6 @@ class OrderViewModel extends BaseModel {
     campusDTO = root.currentStore;
     setState(ViewStatus.Completed);
   }
-
-  // Future<void> processChangeLocation() async {
-  //   tmpLocation = location;
-  //   notifyListeners();
-  //   await changeLocationDialog(this);
-  // }
-
-  // void selectReceiveTime(String value){
-  //   isChangeTime = true;
-  //   receiveTime = value;
-  //   notifyListeners();
-  // }
-
-  // void confirmReceiveTime(){
-  //   isChangeTime = false;
-  //   notifyListeners();
-  // }
-
-  // void selectLocation(int id) {
-  //   campusDTO.locations.forEach((element) {
-  //     if (element.id == id) {
-  //       tmpLocation = element;
-  //     }
-  //   });
-  //   notifyListeners();
-  // }
-
-  // Future<void> confirmLocation() async {
-  //   campusDTO.locations.forEach((element) {
-  //     if (element.id == tmpLocation.id) {
-  //       element.isSelected = true;
-  //     } else {
-  //       element.isSelected = false;
-  //     }
-  //   });
-  //   await setStore(campusDTO);
-  //   location = tmpLocation;
-  //   notifyListeners();
-  // }
 
   Future<void> addSupplierNote(int id) async {
     SupplierNoteDTO supplierNote = currentCart.notes?.firstWhere(
@@ -274,5 +286,32 @@ class OrderViewModel extends BaseModel {
       setCart(currentCart);
     }
     notifyListeners();
+  }
+
+  Future<void> getUpSellCollections() async {
+    try {
+      loadingUpsell = true;
+      RootViewModel root = Get.find<RootViewModel>();
+      var currentStore = root.currentStore;
+      if (root.status == ViewStatus.Error) {
+        setState(ViewStatus.Error);
+        return;
+      }
+      if (currentStore.selectedTimeSlot == null) {
+        upSellCollections = null;
+        setState(ViewStatus.Completed);
+        return;
+      }
+      upSellCollections = await _collectionDAO
+          .getCollections(currentStore.selectedTimeSlot, params: {
+        "show-on-home": true,
+        "type": CollectionTypeEnum.Suggestion
+      });
+      await Future.delayed(Duration(microseconds: 500));
+      loadingUpsell = false;
+    } catch (e) {
+      upSellCollections = null;
+      loadingUpsell = false;
+    }
   }
 }

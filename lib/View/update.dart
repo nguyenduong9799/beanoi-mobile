@@ -93,9 +93,11 @@ class _UpdateState extends State<Update> {
                               FormItem("Email", "vd: abc@gmail.com", "email"),
                               FormItem(
                                 "Ngày sinh",
-                                "01/01/2020",
+                                "01/01/2000",
                                 "birthdate",
                                 keyboardType: "datetime",
+                                fromYear: DateTime(1950),
+                                toYear: DateTime(2010),
                               ),
                               FormItem(
                                 "Giới tính",

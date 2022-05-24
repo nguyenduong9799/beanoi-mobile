@@ -215,7 +215,7 @@ class ProductDetailViewModel extends BaseModel {
     notifyListeners();
   }
 
-  Future<void> addProductToCart() async {
+  Future<void> addProductToCart({bool backToHome = true}) async {
     showLoadingDialog();
     bool showOnHome = Get.find<bool>(tag: "showOnHome");
     List<ProductDTO> listChoices = [];
@@ -272,6 +272,11 @@ class ProductDetailViewModel extends BaseModel {
     await AnalyticsService.getInstance()
         .logChangeCart(item.master, item.quantity, true);
     hideDialog();
-    Get.back(result: true);
+    if (backToHome) {
+      Get.find<OrderViewModel>().prepareOrder();
+      Get.back(result: true);
+    } else {
+      Get.find<OrderViewModel>().prepareOrder();
+    }
   }
 }

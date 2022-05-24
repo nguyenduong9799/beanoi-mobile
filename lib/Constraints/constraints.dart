@@ -93,6 +93,7 @@ const int DEFAULT_SIZE = 50;
 const phoneReg = r'^(0|\+)([0-9])+$';
 
 class ProductType {
+  static const int SINGLE_PRODUCT = 0;
   static const int EXTRA_PRODUCT = 5;
   static const int MASTER_PRODUCT = 6;
   static const int DETAIL_PRODUCT = 7;
@@ -110,4 +111,10 @@ class PaymentTypeEnum {
   static const int Cash = 1;
   static const int CreditPayment = 2; //tra bang xu
   static const int Momo = 3;
+}
+
+class CollectionTypeEnum {
+  static const int Default = 0;
+  static const int BestSeller = 1; //tra bang xu
+  static const int Suggestion = 2;
 }

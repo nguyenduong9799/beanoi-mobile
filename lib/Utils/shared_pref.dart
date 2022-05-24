@@ -28,7 +28,7 @@ Future<String> getFCMToken() async {
 Future<bool> setToken(String value) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   String expireDate = DateFormat("yyyy-MM-dd hh:mm:ss")
-      .format(DateTime.now().add(Duration(days: 7)));
+      .format(DateTime.now().add(Duration(days: 30)));
   prefs.setString('expireDate', expireDate.toString());
   return prefs.setString('token', value);
 }

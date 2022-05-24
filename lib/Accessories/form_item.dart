@@ -10,18 +10,19 @@ class FormItem extends StatelessWidget {
   final String formName;
   final String keyboardType;
   final bool isReadOnly;
+  final DateTime fromYear;
+  final DateTime toYear;
 
   final List<Map<String, dynamic>> radioGroup;
 
-  const FormItem(
-    this.label,
-    this.hintText,
-    this.formName, {
-    Key key,
-    this.keyboardType,
-    this.radioGroup,
-    this.isReadOnly = false,
-  }) : super(key: key);
+  FormItem(this.label, this.hintText, this.formName,
+      {Key key,
+      this.keyboardType,
+      this.radioGroup,
+      this.isReadOnly = false,
+      this.fromYear,
+      this.toYear})
+      : super(key: key);
 
   Widget _getFormItemType(FormGroup form) {
     final formControl = form.control(formName);
@@ -48,8 +49,8 @@ class FormItem extends StatelessWidget {
         );
       case "datetime":
         return ReactiveDatePicker(
-          firstDate: DateTime(1900),
-          lastDate: DateTime(2030),
+          firstDate: fromYear == null ? DateTime(1900) : fromYear,
+          lastDate: toYear == null ? DateTime(2021) : toYear,
           formControlName: formName,
           builder: (BuildContext context, ReactiveDatePickerDelegate picker,
               Widget child) {
