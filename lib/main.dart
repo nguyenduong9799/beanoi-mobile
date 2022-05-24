@@ -139,10 +139,7 @@ class MyApp extends StatelessWidget {
             );
           case RouteHandler.VOUCHER:
             return CupertinoPageRoute<bool>(
-                builder: (context) => VouchersListPage(
-                      params: settings.arguments,
-                    ),
-                settings: settings);
+                builder: (context) => VouchersListPage(), settings: settings);
           default:
             return CupertinoPageRoute(
                 builder: (context) => NotFoundScreen(), settings: settings);

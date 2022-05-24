@@ -9,8 +9,7 @@ import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/ViewModel/order_viewModel.dart';
 
 class VouchersListPage extends StatefulWidget {
-  final Map<String, dynamic> params;
-  VouchersListPage({Key key, this.params = const {}}) : super(key: key);
+  VouchersListPage();
 
   @override
   _VouchersListPageState createState() => _VouchersListPageState();
@@ -206,102 +205,6 @@ class _VouchersListPageState extends State<VouchersListPage> {
         ),
       ),
     );
-
-    // return Container(
-    //   padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
-    //   child: Row(
-    //     crossAxisAlignment: CrossAxisAlignment.start,
-    //     mainAxisAlignment: MainAxisAlignment.start,
-    //     children: [
-    //       Expanded(
-    //         flex: 8,
-    //         child: Container(
-    //             height: 70,
-    //             decoration: BoxDecoration(
-    //               borderRadius: BorderRadius.only(
-    //                   topRight: Radius.circular(12),
-    //                   bottomRight: Radius.circular(12),
-    //                   topLeft: Radius.circular(8),
-    //                   bottomLeft: Radius.circular(8)),
-    //               color: isApplied ? kPrimary.withOpacity(0.4) : Colors.white,
-    //             ),
-    //             child: Row(
-    //               children: [
-    //                 Container(
-    //                   width: 10,
-    //                   decoration: BoxDecoration(
-    //                       borderRadius: BorderRadius.only(
-    //                         topLeft: Radius.circular(8),
-    //                         bottomLeft: Radius.circular(8),
-    //                       ),
-    //                       color: kPrimary),
-    //                 ),
-    //                 Container(
-    //                   padding: EdgeInsets.all(8),
-    //                   child: Column(
-    //                     mainAxisAlignment: MainAxisAlignment.center,
-    //                     crossAxisAlignment: CrossAxisAlignment.center,
-    //                     children: [
-    //                       Text(
-    //                         voucher.voucherName,
-    //                         style: Get.theme.textTheme.headline3
-    //                             .copyWith(color: Colors.black),
-    //                       ),
-    //                       SizedBox(height: 4),
-    //                       Text("Text",
-    //                           style: Get.theme.textTheme.headline2.copyWith(
-    //                             color: Colors.black,
-    //                           )),
-    //                     ],
-    //                   ),
-    //                 )
-    //               ],
-    //             )),
-    //       ),
-    //       Divider(thickness: 2),
-    //       Expanded(
-    //         flex: 2,
-    //         child: Container(
-    //           height: 70,
-    //           width: Get.width * 0.2,
-    //           // color: Colors.grey[300],
-    //           decoration: BoxDecoration(
-    //             borderRadius: BorderRadius.only(
-    //               topLeft: Radius.circular(12),
-    //               bottomLeft: Radius.circular(12),
-    //               topRight: Radius.circular(8),
-    //               bottomRight: Radius.circular(8),
-    //             ),
-    //             color: isApplied ? kPrimary.withOpacity(0.4) : Colors.white,
-    //           ),
-    //           child: Material(
-    //             color: Colors.transparent,
-    //             child: InkWell(
-    //               onTap: () {
-    //                 if (isApplied) {
-    //                   model.unselectVoucher(voucher);
-    //                 } else {
-    //                   model.selectVoucher(voucher);
-    //                 }
-    //               },
-    //               child: Container(
-    //                 height: 72,
-    //                 child: Center(
-    //                   child: Text(
-    //                     isApplied ? 'Hủy' : 'Chọn',
-    //                     style: Get.theme.textTheme.headline3.copyWith(
-    //                       color: isApplied ? Colors.black : kPrimary,
-    //                     ),
-    //                   ),
-    //                 ),
-    //               ),
-    //             ),
-    //           ),
-    //         ),
-    //       ),
-    //     ],
-    //   ),
-    // );
   }
 
   Widget _buildLoading() {

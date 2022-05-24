@@ -38,7 +38,7 @@ class _UpSellCollectionState extends State<UpSellCollection> {
           var collections = model.upSellCollections;
           if (collections == null || collections?.length == 0)
             return SizedBox();
-          if (model.status == ViewStatus.LoadingUpsell ||
+          if (model.loadingUpsell == true ||
               collections == null ||
               collections?.length == 0) {
             return Container(

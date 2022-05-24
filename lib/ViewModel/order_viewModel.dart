@@ -104,10 +104,6 @@ class OrderViewModel extends BaseModel {
         }
       }
 
-      // if (currentCart == null) {
-      //   currentCart = await getCart();
-      // }
-
       orderAmount = await dao.prepareOrder(campusDTO.id, currentCart);
       errorMessage = null;
       await Future.delayed(Duration(milliseconds: 500));
@@ -262,45 +258,6 @@ class OrderViewModel extends BaseModel {
     setState(ViewStatus.Completed);
   }
 
-  // Future<void> processChangeLocation() async {
-  //   tmpLocation = location;
-  //   notifyListeners();
-  //   await changeLocationDialog(this);
-  // }
-
-  // void selectReceiveTime(String value){
-  //   isChangeTime = true;
-  //   receiveTime = value;
-  //   notifyListeners();
-  // }
-
-  // void confirmReceiveTime(){
-  //   isChangeTime = false;
-  //   notifyListeners();
-  // }
-
-  // void selectLocation(int id) {
-  //   campusDTO.locations.forEach((element) {
-  //     if (element.id == id) {
-  //       tmpLocation = element;
-  //     }
-  //   });
-  //   notifyListeners();
-  // }
-
-  // Future<void> confirmLocation() async {
-  //   campusDTO.locations.forEach((element) {
-  //     if (element.id == tmpLocation.id) {
-  //       element.isSelected = true;
-  //     } else {
-  //       element.isSelected = false;
-  //     }
-  //   });
-  //   await setStore(campusDTO);
-  //   location = tmpLocation;
-  //   notifyListeners();
-  // }
-
   Future<void> addSupplierNote(int id) async {
     SupplierNoteDTO supplierNote = currentCart.notes?.firstWhere(
       (element) => element.supplierId == id,
@@ -333,7 +290,7 @@ class OrderViewModel extends BaseModel {
 
   Future<void> getUpSellCollections() async {
     try {
-      setState(ViewStatus.LoadingUpsell);
+      loadingUpsell = true;
       RootViewModel root = Get.find<RootViewModel>();
       var currentStore = root.currentStore;
       if (root.status == ViewStatus.Error) {
@@ -351,10 +308,10 @@ class OrderViewModel extends BaseModel {
         "type": CollectionTypeEnum.Suggestion
       });
       await Future.delayed(Duration(microseconds: 500));
-      setState(ViewStatus.Completed);
+      loadingUpsell = false;
     } catch (e) {
       upSellCollections = null;
-      setState(ViewStatus.Completed);
+      loadingUpsell = false;
     }
   }
 }
