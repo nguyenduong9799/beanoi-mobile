@@ -221,7 +221,9 @@ class _UpSellCollectionState extends State<UpSellCollection> {
                                 //   borderRadius: BorderRadius.circular(16),
                                 // ),
                                 child: Text(
-                                  formatPrice(product.price),
+                                  product.type != ProductType.MASTER_PRODUCT
+                                      ? '${formatPrice(product.price)}'
+                                      : 'từ ${formatPriceWithoutUnit(product.minPrice ?? product.price)} đ',
                                   style: TextStyle(
                                       color: Colors.black, fontSize: 12),
                                 ),

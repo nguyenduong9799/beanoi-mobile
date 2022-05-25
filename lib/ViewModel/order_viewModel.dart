@@ -304,7 +304,7 @@ class OrderViewModel extends BaseModel {
       }
       upSellCollections = await _collectionDAO
           .getCollections(currentStore.selectedTimeSlot, params: {
-        "show-on-home": true,
+        "show-on-home": false,
         "type": CollectionTypeEnum.Suggestion
       });
       await Future.delayed(Duration(microseconds: 500));
