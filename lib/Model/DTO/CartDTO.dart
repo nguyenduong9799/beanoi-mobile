@@ -24,19 +24,19 @@ class Cart {
   Cart.get({this.items, this.payment, this.notes});
 
   Cart() {
-    items = List();
-    _vouchers = List();
+    items = [];
+    _vouchers = [];
   }
 
   List<VoucherDTO> get vouchers {
     if (_vouchers == null) {
-      _vouchers = List();
+      _vouchers = [];
     }
     return _vouchers;
   }
 
   factory Cart.fromJson(dynamic json) {
-    List<CartItem> list = new List();
+    List<CartItem> list = [];
     if (json["items"] != null) {
       var itemJson = json["items"] as List;
       list = itemJson.map((e) => CartItem.fromJson(e)).toList();
@@ -50,11 +50,11 @@ class Cart {
   }
 
   void addVoucher(VoucherDTO voucher) {
-    final existedVoucher = _vouchers.firstWhere(
+    final existedVoucher = _vouchers?.firstWhere(
         (e) => e.voucherCode == voucher.voucherCode,
         orElse: () => null);
     if (existedVoucher == null) {
-      _vouchers.add(voucher);
+      vouchers?.add(voucher);
     }
   }
 
@@ -63,7 +63,7 @@ class Cart {
         (e) => e.voucherCode == voucher.voucherCode,
         orElse: () => null);
     if (existedVoucher != null) {
-      _vouchers.remove(existedVoucher);
+      vouchers?.remove(existedVoucher);
     }
   }
 

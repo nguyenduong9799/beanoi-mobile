@@ -35,49 +35,70 @@ class OrderViewModel extends BaseModel {
   Future<void> getVouchers() async {
     final voucherList = [
       VoucherDTO(
-          voucherName: "BEAN khao phí vận chuyển",
-          voucherCode: "BEANOI1234",
-          promotionId: "p1",
-          promotionName: "Hè đến rồi",
-          imgUrl: "test"),
+          promotionId: "cfc3bac5-cf91-4fe9-a4a6-fa145beeb038",
+          promotionTierId: "6c7ad765-f537-4249-a6c4-27c9c5b7d98c",
+          promotionName: "Giam 50%",
+          promotionCode: "GIAMGIA50",
+          actionName: "Giam 50%",
+          voucherName: "Giam Gia 50%",
+          imgUrl: "",
+          voucherCode: "GIAMGIA500-163I2"),
       VoucherDTO(
-          voucherName: "Thanh toán xu giảm 15 %",
-          voucherCode: "BEANOI1234",
-          promotionId: "p2",
-          promotionName: "Hè đến rồi",
-          imgUrl: "test"),
+          promotionId: "cfc3bac5-cf91-4fe9-a4a6-fa145beeb038",
+          promotionTierId: "6c7ad765-f537-4249-a6c4-27c9c5b7d98c",
+          promotionName: "Giam 50%",
+          promotionCode: "GIAMGIA50",
+          actionName: "Giam 50%",
+          voucherName: "Giam Gia 50%",
+          imgUrl: "",
+          voucherCode: "GIAMGIA500-163I2"),
       VoucherDTO(
-          voucherName: "Thanh toán xu giảm 20 %",
-          voucherCode: "BEANOI1234",
-          promotionId: "p2",
-          promotionName: "Hè đến rồi",
-          imgUrl: "test"),
+          promotionId: "cfc3bac5-cf91-4fe9-a4a6-fa145beeb038",
+          promotionTierId: "6c7ad765-f537-4249-a6c4-27c9c5b7d98c",
+          promotionName: "Giam 50%",
+          promotionCode: "GIAMGIA50",
+          actionName: "Giam 50%",
+          voucherName: "Giam Gia 50%",
+          imgUrl: "",
+          voucherCode: "GIAMGIA500-163I2"),
       VoucherDTO(
-          voucherName: "Thanh toán xu giảm 30 %",
-          voucherCode: "BEANOI1234",
-          promotionId: "p2",
-          promotionName: "Hè đến rồi",
-          imgUrl: "test"),
+          promotionId: "cfc3bac5-cf91-4fe9-a4a6-fa145beeb038",
+          promotionTierId: "6c7ad765-f537-4249-a6c4-27c9c5b7d98c",
+          promotionName: "Giam 50%",
+          promotionCode: "GIAMGIA50",
+          actionName: "Giam 50%",
+          voucherName: "Giam Gia 50%",
+          imgUrl: "",
+          voucherCode: "GIAMGIA500-163I2"),
       VoucherDTO(
-          voucherName: "Thanh toán xu giảm 30 %",
-          voucherCode: "BEANOI1234",
-          promotionId: "p2",
-          promotionName: "Hè đến rồi",
-          imgUrl: "test"),
+          promotionId: "cfc3bac5-cf91-4fe9-a4a6-fa145beeb038",
+          promotionTierId: "6c7ad765-f537-4249-a6c4-27c9c5b7d98c",
+          promotionName: "Giam 50%",
+          promotionCode: "GIAMGIA50",
+          actionName: "Giam 50%",
+          voucherName: "Giam Gia 50%",
+          imgUrl: "",
+          voucherCode: "GIAMGIA500-163I2"),
       VoucherDTO(
-          voucherName: "Thanh toán xu giảm 30 %",
-          voucherCode: "BEANOI1234",
-          promotionId: "p2",
-          promotionName: "Hè đến rồi",
-          imgUrl: "test"),
+          promotionId: "cfc3bac5-cf91-4fe9-a4a6-fa145beeb038",
+          promotionTierId: "6c7ad765-f537-4249-a6c4-27c9c5b7d98c",
+          promotionName: "Giam 50%",
+          promotionCode: "GIAMGIA50",
+          actionName: "Giam 50%",
+          voucherName: "Giam Gia 50%",
+          imgUrl: "",
+          voucherCode: "GIAMGIA500-163I2"),
       VoucherDTO(
-          voucherName: "Thanh toán xu giảm 30 %",
-          voucherCode: "BEANOI1234",
-          promotionId: "p2",
-          promotionName: "Hè đến rồi",
-          imgUrl: "test"),
+          promotionId: "cfc3bac5-cf91-4fe9-a4a6-fa145beeb038",
+          promotionTierId: "6c7ad765-f537-4249-a6c4-27c9c5b7d98c",
+          promotionName: "Giam 50%",
+          promotionCode: "GIAMGIA50",
+          actionName: "Giam 50%",
+          voucherName: "Giam Gia 50%",
+          imgUrl: "",
+          voucherCode: "GIAMGIA500-163I2"),
     ];
-    // vouchers = voucherList;
+
     // final voucherList = await promoDao.getPromotions();
     vouchers = voucherList;
     notifyListeners();
@@ -130,14 +151,14 @@ class OrderViewModel extends BaseModel {
     }
   }
 
-  Future<void> selectVoucher(VoucherDTO voucher) {
+  Future<void> selectVoucher(VoucherDTO voucher) async {
     // add voucher to cart
     currentCart.addVoucher(voucher);
     // call prepare
-    prepareOrder();
+    await prepareOrder();
   }
 
-  Future<void> unselectVoucher(VoucherDTO voucher) {
+  Future<void> unselectVoucher(VoucherDTO voucher) async {
     // add voucher to cart
     currentCart.removeVoucher(voucher);
     // call prepare

@@ -9,14 +9,20 @@
 
 class VoucherDTO {
   final String promotionId;
+  final String promotionTierId;
   final String promotionName;
+  final String promotionCode;
+  final String actionName;
   final String voucherName;
   final String imgUrl;
   final String voucherCode;
 
   VoucherDTO(
       {this.promotionId,
+      this.promotionTierId,
       this.promotionName,
+      this.promotionCode,
+      this.actionName,
       this.voucherName,
       this.imgUrl,
       this.voucherCode});
@@ -24,7 +30,10 @@ class VoucherDTO {
   factory VoucherDTO.fromJson(dynamic json) {
     return VoucherDTO(
       promotionId: json['promotion_id'],
+      promotionTierId: json['promotion_tier_id'],
       promotionName: json['promotion_name'],
+      promotionCode: json['promotion_code'],
+      actionName: json['action_name'],
       voucherName: json['voucher_name'],
       imgUrl: json['img_url'],
       voucherCode: json['voucher_code'],

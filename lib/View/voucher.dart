@@ -100,106 +100,108 @@ class _VouchersListPageState extends State<VouchersListPage> {
     }
     return Container(
       padding: EdgeInsets.all(8),
-      child: InkWell(
-        onTap: () {
-          if (isApplied) {
-            model.unselectVoucher(voucher);
-          } else {
-            model.selectVoucher(voucher);
-          }
-        },
-        child: VoucherCard(
-          height: 110,
-          backgroundColor: primaryColor,
-          clockwise: true,
-          curvePosition: 130,
-          curveRadius: 30,
-          curveAxis: Axis.vertical,
-          borderRadius: 10,
-          firstChild: Container(
-            decoration: const BoxDecoration(
-              color: secondaryColor,
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          '23%',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
+      child: Material(
+        child: InkWell(
+          onTap: () {
+            if (isApplied) {
+              model.unselectVoucher(voucher);
+            } else {
+              model.selectVoucher(voucher);
+            }
+          },
+          child: VoucherCard(
+            height: 110,
+            backgroundColor: primaryColor,
+            clockwise: true,
+            curvePosition: 120,
+            curveRadius: 30,
+            curveAxis: Axis.vertical,
+            borderRadius: 10,
+            firstChild: Container(
+              decoration: const BoxDecoration(
+                color: secondaryColor,
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            voucher.actionName,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                        Text(
-                          'OFF',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Divider(color: Colors.white54, height: 0),
-                Expanded(
-                  child: Center(
-                    child: Text(
-                      voucher.promotionName.toUpperCase(),
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
+                          // Text(
+                          //   'OFF',
+                          //   style: TextStyle(
+                          //     color: Colors.white,
+                          //     fontSize: 12,
+                          //     fontWeight: FontWeight.bold,
+                          //   ),
+                          // ),
+                        ],
                       ),
                     ),
                   ),
-                ),
-              ],
+                  Divider(color: Colors.white54, height: 0),
+                  Expanded(
+                    child: Center(
+                      child: Text(
+                        voucher.promotionName.toUpperCase(),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          secondChild: Container(
-            width: double.maxFinite,
-            padding: EdgeInsets.all(12),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(
-                  voucher.voucherName,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: secondaryColor,
-                    fontWeight: FontWeight.bold,
+            secondChild: Container(
+              width: double.maxFinite,
+              padding: EdgeInsets.all(12),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    voucher.voucherName,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: secondaryColor,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                Spacer(),
-                Text(
-                  voucher.voucherCode,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black54,
+                  Spacer(),
+                  Text(
+                    voucher.voucherCode,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black54,
+                    ),
                   ),
-                ),
-                Spacer(),
-                Text(
-                  'Valid Till - 30 Jan 2022',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.black45,
+                  Spacer(),
+                  Text(
+                    'Valid Till - 30 Jan 2022',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.black45,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
