@@ -45,6 +45,21 @@ class VoucherDTO {
     return list.map((map) => VoucherDTO.fromJson(map)).toList();
   }
 
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> voucherJson = {
+      'promotion_id': promotionId,
+      'promotion_tier_id': promotionTierId,
+      'promotion_name': promotionName,
+      'promotion_code': promotionCode,
+      'action_name': actionName,
+      'voucher_name': voucherName,
+      'img_url': imgUrl,
+      'voucher_code': voucherCode,
+    };
+
+    return voucherJson;
+  }
+
   @override
   String toString() {
     // TODO: implement toString

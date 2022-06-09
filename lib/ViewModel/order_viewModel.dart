@@ -33,73 +33,7 @@ class OrderViewModel extends BaseModel {
   }
 
   Future<void> getVouchers() async {
-    final voucherList = [
-      VoucherDTO(
-          promotionId: "cfc3bac5-cf91-4fe9-a4a6-fa145beeb038",
-          promotionTierId: "6c7ad765-f537-4249-a6c4-27c9c5b7d98c",
-          promotionName: "Giam 50%",
-          promotionCode: "GIAMGIA50",
-          actionName: "Giam 50%",
-          voucherName: "Giam Gia 50%",
-          imgUrl: "",
-          voucherCode: "GIAMGIA500-163I2"),
-      VoucherDTO(
-          promotionId: "cfc3bac5-cf91-4fe9-a4a6-fa145beeb038",
-          promotionTierId: "6c7ad765-f537-4249-a6c4-27c9c5b7d98c",
-          promotionName: "Giam 50%",
-          promotionCode: "GIAMGIA50",
-          actionName: "Giam 50%",
-          voucherName: "Giam Gia 50%",
-          imgUrl: "",
-          voucherCode: "GIAMGIA500-163I2"),
-      VoucherDTO(
-          promotionId: "cfc3bac5-cf91-4fe9-a4a6-fa145beeb038",
-          promotionTierId: "6c7ad765-f537-4249-a6c4-27c9c5b7d98c",
-          promotionName: "Giam 50%",
-          promotionCode: "GIAMGIA50",
-          actionName: "Giam 50%",
-          voucherName: "Giam Gia 50%",
-          imgUrl: "",
-          voucherCode: "GIAMGIA500-163I2"),
-      VoucherDTO(
-          promotionId: "cfc3bac5-cf91-4fe9-a4a6-fa145beeb038",
-          promotionTierId: "6c7ad765-f537-4249-a6c4-27c9c5b7d98c",
-          promotionName: "Giam 50%",
-          promotionCode: "GIAMGIA50",
-          actionName: "Giam 50%",
-          voucherName: "Giam Gia 50%",
-          imgUrl: "",
-          voucherCode: "GIAMGIA500-163I2"),
-      VoucherDTO(
-          promotionId: "cfc3bac5-cf91-4fe9-a4a6-fa145beeb038",
-          promotionTierId: "6c7ad765-f537-4249-a6c4-27c9c5b7d98c",
-          promotionName: "Giam 50%",
-          promotionCode: "GIAMGIA50",
-          actionName: "Giam 50%",
-          voucherName: "Giam Gia 50%",
-          imgUrl: "",
-          voucherCode: "GIAMGIA500-163I2"),
-      VoucherDTO(
-          promotionId: "cfc3bac5-cf91-4fe9-a4a6-fa145beeb038",
-          promotionTierId: "6c7ad765-f537-4249-a6c4-27c9c5b7d98c",
-          promotionName: "Giam 50%",
-          promotionCode: "GIAMGIA50",
-          actionName: "Giam 50%",
-          voucherName: "Giam Gia 50%",
-          imgUrl: "",
-          voucherCode: "GIAMGIA500-163I2"),
-      VoucherDTO(
-          promotionId: "cfc3bac5-cf91-4fe9-a4a6-fa145beeb038",
-          promotionTierId: "6c7ad765-f537-4249-a6c4-27c9c5b7d98c",
-          promotionName: "Giam 50%",
-          promotionCode: "GIAMGIA50",
-          actionName: "Giam 50%",
-          voucherName: "Giam Gia 50%",
-          imgUrl: "",
-          voucherCode: "GIAMGIA500-163I2"),
-    ];
-
-    // final voucherList = await promoDao.getPromotions();
+    final voucherList = await promoDao.getPromotions();
     vouchers = voucherList;
     notifyListeners();
   }
@@ -154,6 +88,7 @@ class OrderViewModel extends BaseModel {
   Future<void> selectVoucher(VoucherDTO voucher) async {
     // add voucher to cart
     currentCart.addVoucher(voucher);
+    setCart(currentCart);
     // call prepare
     await prepareOrder();
   }

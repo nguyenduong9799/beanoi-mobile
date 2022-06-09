@@ -19,21 +19,21 @@ class Cart {
   // User info
 
   // _vouchers
-  List<VoucherDTO> _vouchers;
+  List<VoucherDTO> vouchers;
 
-  Cart.get({this.items, this.payment, this.notes});
+  Cart.get({this.items, this.payment, this.notes, this.vouchers});
 
   Cart() {
     items = [];
-    _vouchers = [];
+    vouchers = [];
   }
 
-  List<VoucherDTO> get vouchers {
-    if (_vouchers == null) {
-      _vouchers = [];
-    }
-    return _vouchers;
-  }
+  // List<VoucherDTO> get vouchers {
+  //   if (_vouchers == null) {
+  //     _vouchers = [];
+  //   }
+  //   return _vouchers;
+  // }
 
   factory Cart.fromJson(dynamic json) {
     List<CartItem> list = [];
@@ -46,11 +46,14 @@ class Cart {
         payment: json['payment'],
         notes: (json['supplier_notes'] as List)
             ?.map((e) => SupplierNoteDTO.fromJson(e))
+            ?.toList(),
+        vouchers: (json['vouchers'] as List)
+            ?.map((e) => VoucherDTO.fromJson(e))
             ?.toList());
   }
 
   void addVoucher(VoucherDTO voucher) {
-    final existedVoucher = _vouchers?.firstWhere(
+    final existedVoucher = vouchers?.firstWhere(
         (e) => e.voucherCode == voucher.voucherCode,
         orElse: () => null);
     if (existedVoucher == null) {
@@ -59,7 +62,7 @@ class Cart {
   }
 
   void removeVoucher(VoucherDTO voucher) {
-    final existedVoucher = _vouchers.firstWhere(
+    final existedVoucher = vouchers.firstWhere(
         (e) => e.voucherCode == voucher.voucherCode,
         orElse: () => null);
     if (existedVoucher != null) {
@@ -73,7 +76,10 @@ class Cart {
       "items": listCartItem,
       "payment": payment,
       "supplier_notes":
-          notes != null ? notes.map((e) => e.toJson())?.toList() : []
+          notes != null ? notes.map((e) => e.toJson())?.toList() : [],
+      "vouchers": vouchers != null
+          ? vouchers?.map((voucher) => voucher.toJson())?.toList()
+          : null,
     };
   }
 
@@ -88,8 +94,8 @@ class Cart {
       "products_list": listCartItem,
       "supplier_notes":
           notes != null ? notes.map((e) => e.toJson())?.toList() : [],
-      "vouchers": _vouchers != null
-          ? _vouchers?.map((voucher) => voucher.voucherCode)?.toList()
+      "vouchers": vouchers != null
+          ? vouchers?.map((voucher) => voucher.voucherCode)?.toList()
           : null,
     };
     logger.i("Order: " + map.toString());

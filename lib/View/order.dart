@@ -926,12 +926,11 @@ class _OrderScreenState extends State<OrderScreen> {
                                   child: Container(
                                     child: TextButton(
                                         onPressed: () {
-                                          // Get.toNamed(RouteHandler.VOUCHER);
+                                          Get.toNamed(RouteHandler.VOUCHER);
                                         },
                                         child: Text(
                                           "THÊM VOUCHER",
-                                          // style: Get.theme.textTheme.headline2,
-                                          style: TextStyle(color: Colors.white),
+                                          style: Get.theme.textTheme.headline2,
                                           textAlign: TextAlign.center,
                                         )),
                                   ),
