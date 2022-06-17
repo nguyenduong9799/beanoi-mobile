@@ -16,16 +16,21 @@ class VoucherDTO {
   final String voucherName;
   final String imgUrl;
   final String voucherCode;
+  final String startDate;
+  final String endDate;
 
-  VoucherDTO(
-      {this.promotionId,
-      this.promotionTierId,
-      this.promotionName,
-      this.promotionCode,
-      this.actionName,
-      this.voucherName,
-      this.imgUrl,
-      this.voucherCode});
+  VoucherDTO({
+    this.promotionId,
+    this.promotionTierId,
+    this.promotionName,
+    this.promotionCode,
+    this.actionName,
+    this.voucherName,
+    this.imgUrl,
+    this.voucherCode,
+    this.startDate,
+    this.endDate,
+  });
 
   factory VoucherDTO.fromJson(dynamic json) {
     return VoucherDTO(
@@ -37,6 +42,8 @@ class VoucherDTO {
       voucherName: json['voucher_name'],
       imgUrl: json['img_url'],
       voucherCode: json['voucher_code'],
+      startDate: json['start_date'],
+      endDate: json['end_date'],
     );
   }
 
@@ -55,6 +62,8 @@ class VoucherDTO {
       'voucher_name': voucherName,
       'img_url': imgUrl,
       'voucher_code': voucherCode,
+      'start_date': startDate,
+      'end_date': endDate,
     };
 
     return voucherJson;

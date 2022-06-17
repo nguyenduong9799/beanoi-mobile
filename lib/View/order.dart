@@ -744,15 +744,27 @@ class _OrderScreenState extends State<OrderScreen> {
                           flex: 5,
                           child: Container(
                             child: TextButton(
-                                onPressed: () {
-                                  // Get.toNamed(RouteHandler.VOUCHER);
-                                },
-                                child: Text(
-                                  "THÊM VOUCHER",
-                                  // style: Get.theme.textTheme.headline2,
-                                  style: TextStyle(color: Colors.white),
-                                  textAlign: TextAlign.center,
-                                )),
+                              onPressed: () {
+                                Get.toNamed(RouteHandler.VOUCHER);
+                              },
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  // Icon(Icons.wallet_giftcard_outlined),
+                                  Expanded(
+                                    flex: 1,
+                                    child: Text(
+                                      'Thêm Voucher',
+                                      style: Get.theme.textTheme.headline3,
+                                      textAlign: TextAlign.center,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  SizedBox(width: 12),
+                                ],
+                              ),
+                            ),
                           ),
                         ),
                       ],
@@ -925,14 +937,31 @@ class _OrderScreenState extends State<OrderScreen> {
                                   flex: 5,
                                   child: Container(
                                     child: TextButton(
-                                        onPressed: () {
-                                          Get.toNamed(RouteHandler.VOUCHER);
-                                        },
-                                        child: Text(
-                                          "THÊM VOUCHER",
-                                          style: Get.theme.textTheme.headline2,
-                                          textAlign: TextAlign.center,
-                                        )),
+                                      onPressed: () {
+                                        Get.toNamed(RouteHandler.VOUCHER);
+                                      },
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          // Icon(Icons.wallet_giftcard_outlined),
+                                          // SizedBox(width: 12),
+                                          Expanded(
+                                            flex: 1,
+                                            child: Text(
+                                              'Thêm Voucher',
+                                              style:
+                                                  Get.theme.textTheme.headline3,
+                                              textAlign: TextAlign.center,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                          SizedBox(width: 12),
+                                        ],
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ],
@@ -1080,15 +1109,31 @@ class _OrderScreenState extends State<OrderScreen> {
                                   flex: 5,
                                   child: Container(
                                     child: TextButton(
-                                        onPressed: () {
-                                          // Get.toNamed(RouteHandler.VOUCHER);
-                                        },
-                                        child: Text(
-                                          "THÊM VOUCHER",
-                                          // style: Get.theme.textTheme.headline2,
-                                          style: TextStyle(color: Colors.white),
-                                          textAlign: TextAlign.center,
-                                        )),
+                                      onPressed: () {
+                                        Get.toNamed(RouteHandler.VOUCHER);
+                                      },
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          // Icon(Icons.wallet_giftcard_outlined),
+
+                                          Expanded(
+                                            flex: 1,
+                                            child: Text(
+                                              'Thêm Voucher',
+                                              style:
+                                                  Get.theme.textTheme.headline3,
+                                              textAlign: TextAlign.center,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                          SizedBox(width: 12),
+                                        ],
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ],

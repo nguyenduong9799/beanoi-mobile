@@ -53,21 +53,17 @@ class Cart {
   }
 
   void addVoucher(VoucherDTO voucher) {
-    final existedVoucher = vouchers?.firstWhere(
-        (e) => e.voucherCode == voucher.voucherCode,
-        orElse: () => null);
-    if (existedVoucher == null) {
+    if (vouchers != null) {
+      vouchers?.clear();
       vouchers?.add(voucher);
+    } else {
+      vouchers?.add(voucher);
+      // print(vouchers);
     }
   }
 
-  void removeVoucher(VoucherDTO voucher) {
-    final existedVoucher = vouchers.firstWhere(
-        (e) => e.voucherCode == voucher.voucherCode,
-        orElse: () => null);
-    if (existedVoucher != null) {
-      vouchers?.remove(existedVoucher);
-    }
+  void removeVoucher() {
+    vouchers?.clear();
   }
 
   Map<String, dynamic> toJson() {

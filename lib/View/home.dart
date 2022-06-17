@@ -173,7 +173,7 @@ class _HomeScreenState extends State<HomeScreen> {
       // buildLinkBtns(),
       HomeCategorySection(),
       SizedBox(height: 8),
-      buildVoucherSection(),
+      // buildVoucherSection(),
       SizedBox(height: 8),
       buildGiftCanExchangeSection(),
       SizedBox(height: 8),

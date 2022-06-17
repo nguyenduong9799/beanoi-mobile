@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Accessories/index.dart';
 import 'package:unidelivery_mobile/Accessories/voucher/voucher_card.dart';
@@ -88,120 +89,134 @@ class _VouchersListPageState extends State<VouchersListPage> {
   }
 
   Widget voucherCard(VoucherDTO voucher, OrderViewModel model) {
-    const Color primaryColor = Color(0xffcbf3f0);
-    const Color secondaryColor = Color(0xff368f8b);
+    const Color primaryColor = Color(0xfff2f6f8);
+    const Color secondaryColor = Color(0xFF4fba6f);
+    const Color thirdColor = Color(0xffe0e0e0);
+    const Color fourthColor = Color(0xffbdbdbd);
+
     bool isApplied = false;
-    if (model.currentCart?.vouchers == null) {
+    final vouchersInCart = model.currentCart?.vouchers;
+
+    if (vouchersInCart == null) {
       isApplied = false;
     } else {
-      final vouchersInCart = model.currentCart?.vouchers;
-      isApplied =
-          vouchersInCart.any((e) => e.voucherCode == voucher.voucherCode);
+      if (vouchersInCart.length != 0) {
+        isApplied = vouchersInCart[0].voucherCode == voucher.voucherCode;
+      }
     }
+    final DateTime now = DateTime.parse(voucher.startDate);
+    final DateFormat dateFormat = DateFormat('dd-MM-yyyy');
+    final String formatted = dateFormat.format(now);
+
     return Container(
       padding: EdgeInsets.all(8),
-      child: Material(
-        child: InkWell(
-          onTap: () {
-            if (isApplied) {
-              model.unselectVoucher(voucher);
-            } else {
-              model.selectVoucher(voucher);
-            }
-          },
-          child: VoucherCard(
-            height: 110,
-            backgroundColor: primaryColor,
-            clockwise: true,
-            curvePosition: 120,
-            curveRadius: 30,
-            curveAxis: Axis.vertical,
-            borderRadius: 10,
-            firstChild: Container(
-              decoration: const BoxDecoration(
-                color: secondaryColor,
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: Center(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            voucher.actionName,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
+      child: InkWell(
+        onTap: () {
+          if (isApplied) {
+            model.unselectVoucher(voucher);
+          } else {
+            model.selectVoucher(voucher);
+          }
+          Get.back();
+        },
+        child: VoucherCard(
+          height: 110,
+          backgroundColor: isApplied ? thirdColor : primaryColor,
+          clockwise: true,
+          curvePosition: 130,
+          curveRadius: 30,
+          curveAxis: Axis.vertical,
+          borderRadius: 10,
+          firstChild: Container(
+            color: isApplied ? fourthColor : secondaryColor,
+            // decoration: const BoxDecoration(
+            //   color: secondaryColor,
+            // ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          voucher.actionName,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: isApplied ? Colors.black54 : Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
                           ),
-                          // Text(
-                          //   'OFF',
-                          //   style: TextStyle(
-                          //     color: Colors.white,
-                          //     fontSize: 12,
-                          //     fontWeight: FontWeight.bold,
-                          //   ),
-                          // ),
-                        ],
-                      ),
+                        ),
+                        // Text(
+                        //   'OFF',
+                        //   style: TextStyle(
+                        //     color: Colors.white,
+                        //     fontSize: 12,
+                        //     fontWeight: FontWeight.bold,
+                        //   ),
+                        // ),
+                      ],
                     ),
                   ),
-                  Divider(color: Colors.white54, height: 0),
-                  Expanded(
-                    child: Center(
+                ),
+                Divider(color: Colors.white54, height: 0),
+                Expanded(
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(2, 0, 2, 0),
                       child: Text(
                         voucher.promotionName.toUpperCase(),
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          color: Colors.white,
+                          color: isApplied ? Colors.black54 : Colors.white,
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-            secondChild: Container(
-              width: double.maxFinite,
-              padding: EdgeInsets.all(12),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    voucher.voucherName,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: secondaryColor,
-                      fontWeight: FontWeight.bold,
-                    ),
+          ),
+          secondChild: Container(
+            width: double.maxFinite,
+            padding: EdgeInsets.all(12),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  voucher.voucherName,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: isApplied ? Colors.black54 : secondaryColor,
+                    fontWeight: FontWeight.bold,
                   ),
-                  Spacer(),
-                  Text(
-                    voucher.voucherCode,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black54,
-                    ),
+                ),
+                Spacer(),
+                Text(
+                  voucher.voucherCode,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black54,
                   ),
-                  Spacer(),
-                  Text(
-                    'Valid Till - 30 Jan 2022',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.black45,
-                    ),
+                ),
+                Spacer(),
+                Text(
+                  'Valid until ' + formatted,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.black45,
+                    // fontWeight: isApplied ? FontWeight.bold : FontWeight.normal,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),

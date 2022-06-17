@@ -124,10 +124,13 @@ Future<bool> showErrorDialog(
                 },
               ),
             ),
-            Text(
-              errorTitle,
-              textAlign: TextAlign.center,
-              style: Get.theme.textTheme.headline2,
+            Padding(
+              padding: const EdgeInsets.fromLTRB(1, 0, 1, 0),
+              child: Text(
+                errorTitle,
+                textAlign: TextAlign.center,
+                style: Get.theme.textTheme.headline2,
+              ),
             ),
             SizedBox(
               height: 8,

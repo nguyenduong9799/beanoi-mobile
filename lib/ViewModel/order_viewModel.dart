@@ -74,6 +74,15 @@ class OrderViewModel extends BaseModel {
         }
 
         setState(ViewStatus.Completed);
+      } else if (e.response.statusCode == 404) {
+        if (e.response.data["error"] != null) {
+          currentCart.removeVoucher();
+          setCart(currentCart);
+          orderAmount = await dao.prepareOrder(campusDTO.id, currentCart);
+          setState(ViewStatus.Completed);
+          await showErrorDialog(
+              errorTitle: e.response.data["error"]["message"]);
+        }
       } else {
         bool result = await showErrorDialog();
         if (result) {
@@ -88,16 +97,17 @@ class OrderViewModel extends BaseModel {
   Future<void> selectVoucher(VoucherDTO voucher) async {
     // add voucher to cart
     currentCart.addVoucher(voucher);
-    setCart(currentCart);
+    await setCart(currentCart);
     // call prepare
     await prepareOrder();
   }
 
   Future<void> unselectVoucher(VoucherDTO voucher) async {
     // add voucher to cart
-    currentCart.removeVoucher(voucher);
+    currentCart.removeVoucher();
+    await setCart(currentCart);
     // call prepare
-    prepareOrder();
+    await prepareOrder();
   }
 
   Future<void> updateQuantity(CartItem item) async {
