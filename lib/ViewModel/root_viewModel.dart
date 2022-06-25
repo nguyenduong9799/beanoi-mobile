@@ -34,7 +34,6 @@ class RootViewModel extends BaseModel {
     await Get.find<GiftViewModel>().getNearlyGiftExchange();
     await Get.find<GiftViewModel>().getGifts();
     await Get.find<OrderViewModel>().getUpSellCollections();
-    await Get.find<OrderViewModel>().getVouchers();
   }
 
   Future getStores() async {

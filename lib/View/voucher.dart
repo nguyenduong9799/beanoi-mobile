@@ -22,6 +22,7 @@ class _VouchersListPageState extends State<VouchersListPage> {
   // VoucherDTO chosenVoucher;
   @override
   void initState() {
+    Get.find<OrderViewModel>().getVouchers();
     super.initState();
   }
 
@@ -53,10 +54,10 @@ class _VouchersListPageState extends State<VouchersListPage> {
             return _buildLoading();
           }
 
-          if (model.status == ViewStatus.Error) {
+          if (model.status == ViewStatus.Error || model.vouchers == null) {
             return Flexible(
               child: Center(
-                child: Text(model.msg ?? "Có gì đó sai sai",
+                child: Text(model.msg ?? "Hiện tại không có voucher khả dụng",
                     style: kTitleTextStyle.copyWith(
                       color: Colors.red,
                     )),
