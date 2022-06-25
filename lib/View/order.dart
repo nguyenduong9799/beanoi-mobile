@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
+import 'package:unidelivery_mobile/Accessories/slide_fade_animation.dart';
 import 'package:unidelivery_mobile/Accessories/UpSellCollection.dart';
 import 'package:unidelivery_mobile/Accessories/index.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
@@ -17,6 +18,8 @@ import 'package:unidelivery_mobile/ViewModel/index.dart';
 import 'index.dart';
 
 class OrderScreen extends StatefulWidget {
+  OrderScreen({Key key}) : super(key: key);
+
   @override
   _OrderScreenState createState() => _OrderScreenState();
 }
@@ -26,6 +29,7 @@ class _OrderScreenState extends State<OrderScreen> {
   AutoScrollController controller;
   final scrollDirection = Axis.vertical;
   bool onInit = true;
+
   @override
   void initState() {
     super.initState();
@@ -681,6 +685,12 @@ class _OrderScreenState extends State<OrderScreen> {
   Widget bottomBar() {
     return ScopedModelDescendant<OrderViewModel>(
       builder: (context, child, model) {
+        bool isErrorVoucher = false;
+        if (orderViewModel.listError.isEmpty) {
+          isErrorVoucher = false;
+        } else {
+          isErrorVoucher = true;
+        }
         if (model.currentCart == null) return SizedBox.shrink();
         ViewStatus status = model.status;
         switch (status) {
@@ -751,17 +761,31 @@ class _OrderScreenState extends State<OrderScreen> {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  // Icon(Icons.wallet_giftcard_outlined),
+                                  // SizedBox(width: 8),
+                                  model.currentCart.vouchers.isEmpty
+                                      ? Icon(Icons.wallet_giftcard_outlined)
+                                      : SizedBox(
+                                          width: 0,
+                                        ),
                                   Expanded(
                                     flex: 1,
                                     child: Text(
-                                      'Thêm Voucher',
-                                      style: Get.theme.textTheme.headline3,
+                                      model.currentCart.vouchers.isEmpty
+                                          ? "Thêm Voucher"
+                                          : model.currentCart.vouchers[0]
+                                              .voucherName
+                                              .toUpperCase(),
+                                      style: model.currentCart.vouchers.isEmpty
+                                          ? Get.theme.textTheme.headline3
+                                          : TextStyle(
+                                              color: Colors.green,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 16),
                                       textAlign: TextAlign.center,
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                   ),
-                                  SizedBox(width: 12),
+                                  SizedBox(width: 18)
                                 ],
                               ),
                             ),
@@ -873,6 +897,61 @@ class _OrderScreenState extends State<OrderScreen> {
                     ? ListView(
                         shrinkWrap: true,
                         children: [
+                          orderViewModel.listError.isEmpty
+                              ? SizedBox(width: 0)
+                              : SlideFadeTransition(
+                                  delayStart: Duration(milliseconds: 600),
+                                  child: Center(
+                                    child: Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          8, 10, 8, 10),
+                                      child: Container(
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            Expanded(
+                                              flex: 4,
+                                              child: Container(
+                                                child: Center(
+                                                  child: RichText(
+                                                    textAlign: TextAlign.center,
+                                                    text: TextSpan(
+                                                      children: [
+                                                        WidgetSpan(
+                                                            alignment:
+                                                                PlaceholderAlignment
+                                                                    .bottom,
+                                                            child: Icon(
+                                                              Icons.warning,
+                                                              color: Colors.red,
+                                                              size: 16,
+                                                            )),
+                                                        TextSpan(
+                                                            text: orderViewModel
+                                                                .listError[0])
+                                                      ],
+                                                      style: Get.theme.textTheme
+                                                          .headline5
+                                                          .copyWith(
+                                                              color:
+                                                                  Colors.red),
+                                                    ),
+                                                    // orderViewModel.listError[0],
+                                                    // style: TextStyle(
+                                                    //     color: Colors.red),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
                           Container(
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
@@ -946,19 +1025,35 @@ class _OrderScreenState extends State<OrderScreen> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.center,
                                         children: [
-                                          // Icon(Icons.wallet_giftcard_outlined),
-                                          // SizedBox(width: 12),
+                                          // SizedBox(width: 8),
+                                          model.currentCart.vouchers.isEmpty
+                                              ? Icon(Icons
+                                                  .wallet_giftcard_outlined)
+                                              : SizedBox(
+                                                  width: 0,
+                                                ),
                                           Expanded(
                                             flex: 1,
                                             child: Text(
-                                              'Thêm Voucher',
-                                              style:
-                                                  Get.theme.textTheme.headline3,
+                                              model.currentCart.vouchers.isEmpty
+                                                  ? "Thêm Voucher"
+                                                  : model.currentCart
+                                                      .vouchers[0].voucherName
+                                                      .toUpperCase(),
+                                              style: model.currentCart.vouchers
+                                                      .isEmpty
+                                                  ? Get
+                                                      .theme.textTheme.headline3
+                                                  : TextStyle(
+                                                      color: Colors.green,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 16),
                                               textAlign: TextAlign.center,
                                               overflow: TextOverflow.ellipsis,
                                             ),
                                           ),
-                                          SizedBox(width: 12),
+                                          SizedBox(width: 18)
                                         ],
                                       ),
                                     ),
@@ -1118,19 +1213,35 @@ class _OrderScreenState extends State<OrderScreen> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.center,
                                         children: [
-                                          // Icon(Icons.wallet_giftcard_outlined),
-
+                                          // SizedBox(width: 8),
+                                          model.currentCart.vouchers.isEmpty
+                                              ? Icon(Icons
+                                                  .wallet_giftcard_outlined)
+                                              : SizedBox(
+                                                  width: 0,
+                                                ),
                                           Expanded(
                                             flex: 1,
                                             child: Text(
-                                              'Thêm Voucher',
-                                              style:
-                                                  Get.theme.textTheme.headline3,
+                                              model.currentCart.vouchers.isEmpty
+                                                  ? "Thêm Voucher"
+                                                  : model.currentCart
+                                                      .vouchers[0].voucherName
+                                                      .toUpperCase(),
+                                              style: model.currentCart.vouchers
+                                                      .isEmpty
+                                                  ? Get
+                                                      .theme.textTheme.headline3
+                                                  : TextStyle(
+                                                      color: Colors.green,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 16),
                                               textAlign: TextAlign.center,
                                               overflow: TextOverflow.ellipsis,
                                             ),
                                           ),
-                                          SizedBox(width: 12),
+                                          SizedBox(width: 18)
                                         ],
                                       ),
                                     ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:unidelivery_mobile/Accessories/slide_fade_animation.dart';
 
 class OtherAmountWidget extends StatelessWidget {
   final otherAmount;
@@ -11,28 +12,31 @@ class OtherAmountWidget extends StatelessWidget {
     NumberFormat formatter = NumberFormat();
     formatter.minimumFractionDigits = 0;
     formatter.maximumFractionDigits = 2;
-    return Padding(
-      padding: const EdgeInsets.only(top: 8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text("${otherAmount.name}"),
-          RichText(
-            text: new TextSpan(
-              text: '',
-              children: <TextSpan>[
-                new TextSpan(
-                  text:
-                      "${formatter.format(otherAmount.amount)} ${otherAmount.unit}",
-                  style: otherAmount.amount >= 0
-                      ? Get.theme.textTheme.headline4
-                          .copyWith(color: Colors.grey)
-                      : Get.theme.textTheme.headline4,
-                ),
-              ],
+    return SlideFadeTransition(
+      delayStart: Duration(milliseconds: 600),
+      child: Padding(
+        padding: const EdgeInsets.only(top: 8),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text("${otherAmount.name}"),
+            RichText(
+              text: new TextSpan(
+                text: '',
+                children: <TextSpan>[
+                  new TextSpan(
+                    text:
+                        "${formatter.format(otherAmount.amount)} ${otherAmount.unit}",
+                    style: otherAmount.amount >= 0
+                        ? Get.theme.textTheme.headline4
+                            .copyWith(color: Colors.grey)
+                        : Get.theme.textTheme.headline4,
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

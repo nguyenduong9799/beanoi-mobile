@@ -86,7 +86,12 @@ class VoucherCard extends StatelessWidget {
       child: Container(
         width: width,
         height: height,
-        decoration: decoration ?? BoxDecoration(color: backgroundColor),
+        decoration: decoration ??
+            BoxDecoration(
+              color: backgroundColor,
+              // borderRadius: BorderRadius.circular(borderRadius),
+              // border: Border.all(color: Colors.green),
+            ),
         child: curveAxis == Axis.horizontal
             ? Column(children: children)
             : Row(children: children),

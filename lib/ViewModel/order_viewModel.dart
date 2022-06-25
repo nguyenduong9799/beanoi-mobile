@@ -1,5 +1,9 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:unidelivery_mobile/Accessories/index.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Enums/index.dart';
@@ -24,6 +28,8 @@ class OrderViewModel extends BaseModel {
   bool loadingUpsell;
 
   String errorMessage = null;
+
+  List<String> listError = <String>[];
 
   OrderViewModel() {
     dao = new OrderDAO();
@@ -58,7 +64,18 @@ class OrderViewModel extends BaseModel {
           currentCart.payment = PaymentTypeEnum.Cash;
         }
       }
-
+      // if (currentCart.vouchers != null) {
+      //   setState(ViewStatus.Completed);
+      //   Get.rawSnackbar(
+      //       // overlayColor: Colors.black,
+      //       messageText: Container(child: CircularProgressIndicator()),
+      //       duration: Duration(seconds: 2),
+      //       snackPosition: SnackPosition.BOTTOM,
+      //       margin: EdgeInsets.only(left: 8, right: 8, bottom: 32),
+      //       borderRadius: 8,
+      //       backgroundColor: Colors.white);
+      // }
+      listError.clear();
       orderAmount = await dao.prepareOrder(campusDTO.id, currentCart);
       errorMessage = null;
       await Future.delayed(Duration(milliseconds: 500));
@@ -76,12 +93,30 @@ class OrderViewModel extends BaseModel {
         setState(ViewStatus.Completed);
       } else if (e.response.statusCode == 404) {
         if (e.response.data["error"] != null) {
+          String voucherError;
           currentCart.removeVoucher();
           setCart(currentCart);
           orderAmount = await dao.prepareOrder(campusDTO.id, currentCart);
           setState(ViewStatus.Completed);
-          await showErrorDialog(
-              errorTitle: e.response.data["error"]["message"]);
+          // await showErrorDialog(
+          //     errorTitle: e.response.data["error"]["message"]);
+
+          // Get.rawSnackbar(
+          //     messageText: Container(
+          //       child: Text(
+          //         e.response.data["error"]["message"],
+          //         style: TextStyle(color: Colors.black, fontSize: 16),
+          //       ),
+          //     ),
+          //     duration: Duration(days: 365),
+          //     snackPosition: SnackPosition.BOTTOM,
+          //     margin: EdgeInsets.only(bottom: 103),
+          //     borderRadius: 8,
+          //     backgroundColor: Colors.white);
+          voucherError = e.response.data["error"]["message"];
+          listError.add(voucherError);
+          // errorVoucher.add(e.response.data["error"]["message"]);
+          print(listError[0]);
         }
       } else {
         bool result = await showErrorDialog();

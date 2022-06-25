@@ -134,8 +134,10 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                             children: [
                               Text(" Giờ nhận đơn: ",
                                   style: Get.theme.textTheme.headline4),
-                              Text(formatTime(orderDetail.arriveTime),
-                                  style: Get.theme.textTheme.headline4),
+                              orderDetail.arriveTime != null
+                                  ? Text(formatTime(orderDetail.arriveTime),
+                                      style: Get.theme.textTheme.headline4)
+                                  : Text('19 : 00'),
                             ],
                           )
                         ],

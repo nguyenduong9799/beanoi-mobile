@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -7,6 +8,7 @@ import 'package:unidelivery_mobile/Accessories/voucher/voucher_card.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Enums/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
+import 'package:unidelivery_mobile/View/index.dart';
 import 'package:unidelivery_mobile/ViewModel/order_viewModel.dart';
 
 class VouchersListPage extends StatefulWidget {
@@ -17,6 +19,7 @@ class VouchersListPage extends StatefulWidget {
 }
 
 class _VouchersListPageState extends State<VouchersListPage> {
+  // VoucherDTO chosenVoucher;
   @override
   void initState() {
     super.initState();
@@ -91,12 +94,13 @@ class _VouchersListPageState extends State<VouchersListPage> {
   Widget voucherCard(VoucherDTO voucher, OrderViewModel model) {
     const Color primaryColor = Color(0xfff2f6f8);
     const Color secondaryColor = Color(0xFF4fba6f);
-    const Color thirdColor = Color(0xffe0e0e0);
-    const Color fourthColor = Color(0xffbdbdbd);
+    const Color firstColor = Color(0xFF2E7D32);
+    const Color secondColor = Color(0xffE0E0E0);
 
+    bool visibleText = false;
     bool isApplied = false;
-    final vouchersInCart = model.currentCart?.vouchers;
 
+    final vouchersInCart = model.currentCart?.vouchers;
     if (vouchersInCart == null) {
       isApplied = false;
     } else {
@@ -104,9 +108,6 @@ class _VouchersListPageState extends State<VouchersListPage> {
         isApplied = vouchersInCart[0].voucherCode == voucher.voucherCode;
       }
     }
-    final DateTime now = DateTime.parse(voucher.startDate);
-    final DateFormat dateFormat = DateFormat('dd-MM-yyyy');
-    final String formatted = dateFormat.format(now);
 
     return Container(
       padding: EdgeInsets.all(8),
@@ -121,17 +122,17 @@ class _VouchersListPageState extends State<VouchersListPage> {
         },
         child: VoucherCard(
           height: 110,
-          backgroundColor: isApplied ? thirdColor : primaryColor,
+          backgroundColor: isApplied ? secondColor : primaryColor,
           clockwise: true,
           curvePosition: 130,
           curveRadius: 30,
           curveAxis: Axis.vertical,
           borderRadius: 10,
           firstChild: Container(
-            color: isApplied ? fourthColor : secondaryColor,
-            // decoration: const BoxDecoration(
-            //   color: secondaryColor,
-            // ),
+            // color: isApplied ? thirdColor : secondaryColor,
+            decoration: BoxDecoration(
+              color: isApplied ? firstColor : secondaryColor,
+            ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -144,35 +145,40 @@ class _VouchersListPageState extends State<VouchersListPage> {
                           voucher.actionName,
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            color: isApplied ? Colors.black54 : Colors.white,
+                            // color: isApplied ? Colors.black54 : Colors.white,
+                            color: Colors.white,
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        // Text(
-                        //   'OFF',
-                        //   style: TextStyle(
-                        //     color: Colors.white,
-                        //     fontSize: 12,
-                        //     fontWeight: FontWeight.bold,
-                        //   ),
-                        // ),
                       ],
                     ),
                   ),
                 ),
                 Divider(color: Colors.white54, height: 0),
                 Expanded(
-                  child: Center(
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(2, 0, 2, 0),
-                      child: Text(
-                        voucher.promotionName.toUpperCase(),
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: isApplied ? Colors.black54 : Colors.white,
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
+                  child: InkWell(
+                    onTap: () {
+                      if (isApplied) {
+                        model.unselectVoucher(voucher);
+                      } else {
+                        model.selectVoucher(voucher);
+                      }
+                      Get.back();
+                    },
+                    child: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(2, 0, 2, 0),
+                        child: Text(
+                          // voucher.promotionName.toUpperCase(),
+                          'CHỌN',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            // color: isApplied ? Colors.black54 : Colors.white,
+                            color: Colors.white,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),
@@ -190,16 +196,33 @@ class _VouchersListPageState extends State<VouchersListPage> {
               children: [
                 Text(
                   voucher.voucherName,
+                  maxLines: 1,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 18,
-                    color: isApplied ? Colors.black54 : secondaryColor,
+                    // color: isApplied ? Colors.black54 : secondaryColor,
+                    color: isApplied ? firstColor : secondaryColor,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 Spacer(),
+                Visibility(
+                  visible: visibleText,
+                  child: Text(
+                    voucher.voucherCode,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black54,
+                    ),
+                  ),
+                ),
                 Text(
-                  voucher.voucherCode,
+                  //
+
+                  voucher.description,
+                  maxLines: 2,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 12,
@@ -209,7 +232,9 @@ class _VouchersListPageState extends State<VouchersListPage> {
                 ),
                 Spacer(),
                 Text(
-                  'Valid until ' + formatted,
+                  'HSD: ' +
+                      DateFormat('dd-MM-yyyy')
+                          .format(DateTime.parse(voucher.startDate)),
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.black45,

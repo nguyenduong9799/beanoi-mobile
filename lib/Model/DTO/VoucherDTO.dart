@@ -18,6 +18,7 @@ class VoucherDTO {
   final String voucherCode;
   final String startDate;
   final String endDate;
+  final String description;
 
   VoucherDTO({
     this.promotionId,
@@ -30,6 +31,7 @@ class VoucherDTO {
     this.voucherCode,
     this.startDate,
     this.endDate,
+    this.description,
   });
 
   factory VoucherDTO.fromJson(dynamic json) {
@@ -44,6 +46,7 @@ class VoucherDTO {
       voucherCode: json['voucher_code'],
       startDate: json['start_date'],
       endDate: json['end_date'],
+      description: json['description'],
     );
   }
 
@@ -64,6 +67,7 @@ class VoucherDTO {
       'voucher_code': voucherCode,
       'start_date': startDate,
       'end_date': endDate,
+      'description': description,
     };
 
     return voucherJson;
