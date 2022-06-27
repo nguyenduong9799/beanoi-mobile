@@ -685,12 +685,6 @@ class _OrderScreenState extends State<OrderScreen> {
   Widget bottomBar() {
     return ScopedModelDescendant<OrderViewModel>(
       builder: (context, child, model) {
-        bool isErrorVoucher = false;
-        if (orderViewModel.listError.isEmpty) {
-          isErrorVoucher = false;
-        } else {
-          isErrorVoucher = true;
-        }
         if (model.currentCart == null) return SizedBox.shrink();
         ViewStatus status = model.status;
         switch (status) {
@@ -710,6 +704,56 @@ class _OrderScreenState extends State<OrderScreen> {
               child: ListView(
                 shrinkWrap: true,
                 children: [
+                  orderViewModel.listError.isEmpty
+                      ? SizedBox(width: 0)
+                      : SlideFadeTransition(
+                          delayStart: Duration(milliseconds: 600),
+                          child: Center(
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(8, 10, 8, 10),
+                              child: Container(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Expanded(
+                                      flex: 4,
+                                      child: Container(
+                                        child: Center(
+                                          child: RichText(
+                                            textAlign: TextAlign.center,
+                                            text: TextSpan(
+                                              children: [
+                                                WidgetSpan(
+                                                    alignment:
+                                                        PlaceholderAlignment
+                                                            .bottom,
+                                                    child: Icon(
+                                                      Icons.warning,
+                                                      color: Colors.red,
+                                                      size: 16,
+                                                    )),
+                                                TextSpan(
+                                                    text: orderViewModel
+                                                        .listError[0])
+                                              ],
+                                              style: Get
+                                                  .theme.textTheme.headline5
+                                                  .copyWith(color: Colors.red),
+                                            ),
+                                            // orderViewModel.listError[0],
+                                            // style: TextStyle(
+                                            //     color: Colors.red),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
                   Container(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -1144,6 +1188,61 @@ class _OrderScreenState extends State<OrderScreen> {
                     : ListView(
                         shrinkWrap: true,
                         children: [
+                          orderViewModel.listError.isEmpty
+                              ? SizedBox(width: 0)
+                              : SlideFadeTransition(
+                                  delayStart: Duration(milliseconds: 600),
+                                  child: Center(
+                                    child: Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          8, 10, 8, 10),
+                                      child: Container(
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            Expanded(
+                                              flex: 4,
+                                              child: Container(
+                                                child: Center(
+                                                  child: RichText(
+                                                    textAlign: TextAlign.center,
+                                                    text: TextSpan(
+                                                      children: [
+                                                        WidgetSpan(
+                                                            alignment:
+                                                                PlaceholderAlignment
+                                                                    .bottom,
+                                                            child: Icon(
+                                                              Icons.warning,
+                                                              color: Colors.red,
+                                                              size: 16,
+                                                            )),
+                                                        TextSpan(
+                                                            text: orderViewModel
+                                                                .listError[0])
+                                                      ],
+                                                      style: Get.theme.textTheme
+                                                          .headline5
+                                                          .copyWith(
+                                                              color:
+                                                                  Colors.red),
+                                                    ),
+                                                    // orderViewModel.listError[0],
+                                                    // style: TextStyle(
+                                                    //     color: Colors.red),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
                           Container(
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,

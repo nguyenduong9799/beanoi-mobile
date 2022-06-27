@@ -115,8 +115,6 @@ class OrderViewModel extends BaseModel {
           //     backgroundColor: Colors.white);
           voucherError = e.response.data["error"]["message"];
           listError.add(voucherError);
-          // errorVoucher.add(e.response.data["error"]["message"]);
-          print(listError[0]);
         }
       } else {
         bool result = await showErrorDialog();

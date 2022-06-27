@@ -13,7 +13,7 @@ class OtherAmountWidget extends StatelessWidget {
     formatter.minimumFractionDigits = 0;
     formatter.maximumFractionDigits = 2;
     return SlideFadeTransition(
-      delayStart: Duration(milliseconds: 600),
+      delayStart: Duration(milliseconds: 300),
       child: Padding(
         padding: const EdgeInsets.only(top: 8),
         child: Row(

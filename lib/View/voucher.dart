@@ -232,16 +232,24 @@ class _VouchersListPageState extends State<VouchersListPage> {
                   ),
                 ),
                 Spacer(),
-                Text(
-                  'HSD: ' +
-                      DateFormat('dd-MM-yyyy')
-                          .format(DateTime.parse(voucher.startDate)),
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.black45,
-                    // fontWeight: isApplied ? FontWeight.bold : FontWeight.normal,
-                  ),
-                ),
+                voucher.endDate == null
+                    ? Text(
+                        'HSD: unlimited days',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.black45,
+                        ),
+                      )
+                    : Text(
+                        'HSD: ' +
+                            DateFormat('dd-MM-yyyy')
+                                .format(DateTime.parse(voucher.endDate)),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.black45,
+                          // fontWeight: isApplied ? FontWeight.bold : FontWeight.normal,
+                        ),
+                      ),
               ],
             ),
           ),
