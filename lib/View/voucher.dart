@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -8,7 +7,6 @@ import 'package:unidelivery_mobile/Accessories/voucher/voucher_card.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Enums/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
-import 'package:unidelivery_mobile/View/index.dart';
 import 'package:unidelivery_mobile/ViewModel/order_viewModel.dart';
 
 class VouchersListPage extends StatefulWidget {
@@ -19,7 +17,6 @@ class VouchersListPage extends StatefulWidget {
 }
 
 class _VouchersListPageState extends State<VouchersListPage> {
-  // VoucherDTO chosenVoucher;
   @override
   void initState() {
     Get.find<OrderViewModel>().getVouchers();
