@@ -1397,7 +1397,8 @@ class _OrderScreenState extends State<OrderScreen> {
                                         borderRadius: BorderRadius.all(
                                             Radius.circular(8))),
                                     child: Text(
-                                        "Vui lòng chọn phương thức thanh toán 💰",
+                                        // "Vui lòng chọn phương thức thanh toán 💰",
+                                        errorMsg,
                                         style: Get.theme.textTheme.headline3
                                             .copyWith(
                                                 color: isMenuAvailable

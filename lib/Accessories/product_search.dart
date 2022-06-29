@@ -61,13 +61,11 @@ class ProductSearchItem extends StatelessWidget {
                           maxLines: 2,
                           style: kSubtitleTextStyle.copyWith(fontSize: 18),
                         ),
-                        Flexible(
-                          child: Text(
-                            product.description ?? '',
-                            style: kDescriptionTextStyle,
-                            textAlign: TextAlign.left,
-                            overflow: TextOverflow.ellipsis,
-                          ),
+                        Text(
+                          product.description ?? '',
+                          style: kDescriptionTextStyle,
+                          textAlign: TextAlign.left,
+                          overflow: TextOverflow.ellipsis,
                         ),
                         Expanded(
                           child: Row(
