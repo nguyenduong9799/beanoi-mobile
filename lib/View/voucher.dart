@@ -17,6 +17,12 @@ class VouchersListPage extends StatefulWidget {
 }
 
 class _VouchersListPageState extends State<VouchersListPage> {
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
+      new GlobalKey<RefreshIndicatorState>();
+  Future<void> _refresh() async {
+    Get.find<OrderViewModel>().getVouchers();
+  }
+
   @override
   void initState() {
     Get.find<OrderViewModel>().getVouchers();
@@ -32,11 +38,15 @@ class _VouchersListPageState extends State<VouchersListPage> {
       body: Container(
         padding: EdgeInsets.only(top: 8),
         color: Colors.white,
-        child: Column(
-          children: [
-            // _buildFilter(),
-            _buildListVoucher(),
-          ],
+        child: RefreshIndicator(
+          key: _refreshIndicatorKey,
+          onRefresh: _refresh,
+          child: Column(
+            children: [
+              // _buildFilter(),
+              _buildListVoucher(),
+            ],
+          ),
         ),
       ),
     );
@@ -57,6 +67,16 @@ class _VouchersListPageState extends State<VouchersListPage> {
                 child: Text(model.msg ?? "Hiện tại không có voucher khả dụng",
                     style: kTitleTextStyle.copyWith(
                       color: Colors.red,
+                    )),
+              ),
+            );
+          }
+          if (model.vouchers.isEmpty) {
+            return Flexible(
+              child: Center(
+                child: Text("Hiện tại không có voucher khả dụng",
+                    style: kTitleTextStyle.copyWith(
+                      color: kPrimary,
                     )),
               ),
             );
@@ -169,7 +189,7 @@ class _VouchersListPageState extends State<VouchersListPage> {
                         padding: const EdgeInsets.fromLTRB(2, 0, 2, 0),
                         child: Text(
                           // voucher.promotionName.toUpperCase(),
-                          'CHỌN',
+                          isApplied ? 'HỦY CHỌN' : 'CHỌN',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             // color: isApplied ? Colors.black54 : Colors.white,
