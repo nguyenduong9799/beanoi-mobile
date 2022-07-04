@@ -516,6 +516,7 @@ Future<String> inputDialog(String title, String buttonTitle,
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Container(
+                // height: 10,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(8)),
                     border: Border.all(color: kPrimary)),

@@ -66,7 +66,7 @@ class _VouchersListPageState extends State<VouchersListPage> {
               child: Center(
                 child: Text(model.msg ?? "Hiện tại không có voucher khả dụng",
                     style: kTitleTextStyle.copyWith(
-                      color: Colors.red,
+                      color: kPrimary,
                     )),
               ),
             );

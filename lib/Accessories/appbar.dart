@@ -3,6 +3,7 @@ import 'package:flutter/painting.dart';
 import 'package:get/get.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:unidelivery_mobile/Accessories/dialog.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Enums/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
@@ -49,6 +50,68 @@ class _AppBarSate extends State<DefaultAppBar> {
               ),
             ),
       title: Text(widget.title, style: Get.theme.textTheme.headline2),
+    );
+  }
+}
+
+class VoucherAppBar extends StatefulWidget implements PreferredSizeWidget {
+  final String title;
+  Widget backButton;
+  VoucherAppBar({Key key, @required this.title, this.backButton})
+      : super(key: key);
+
+  @override
+  Size get preferredSize => Size.fromHeight(56);
+
+  @override
+  _VoucherAppBarState createState() {
+    return new _VoucherAppBarState();
+  }
+}
+
+class _VoucherAppBarState extends State<VoucherAppBar> {
+  Icon actionIcon = Icon(Icons.search);
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      backgroundColor: Colors.white,
+      elevation: 2.0,
+      centerTitle: true,
+      leading: widget.backButton != null
+          ? widget.backButton
+          : Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(32),
+              ),
+              child: Material(
+                color: Colors.white,
+                child: InkWell(
+                  onTap: () {
+                    Get.back();
+                  },
+                  child:
+                      Icon(Icons.arrow_back_ios, size: 20, color: Colors.black),
+                ),
+              ),
+            ),
+      title: Text(widget.title, style: Get.theme.textTheme.headline2),
+      // iconTheme: Icons.plus_one,
+      actions: <Widget>[
+        InkWell(
+          onTap: () {
+            inputDialog('Thêm Mã Khuyến Mãi', 'Xác nhận');
+          },
+          borderRadius: BorderRadius.circular(25),
+          child: Container(
+            padding: EdgeInsets.all(15),
+            child: Icon(
+              Icons.wallet_giftcard_outlined,
+              color: kPrimary,
+            ),
+          ),
+        )
+      ],
     );
   }
 }

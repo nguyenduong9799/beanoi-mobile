@@ -707,7 +707,7 @@ class _OrderScreenState extends State<OrderScreen> {
                   orderViewModel.listError.isEmpty
                       ? SizedBox(width: 0)
                       : SlideFadeTransition(
-                          delayStart: Duration(milliseconds: 600),
+                          delayStart: Duration(milliseconds: 200),
                           child: Center(
                             child: Padding(
                               padding: const EdgeInsets.fromLTRB(8, 10, 8, 10),
@@ -944,7 +944,7 @@ class _OrderScreenState extends State<OrderScreen> {
                           orderViewModel.listError.isEmpty
                               ? SizedBox(width: 0)
                               : SlideFadeTransition(
-                                  delayStart: Duration(milliseconds: 600),
+                                  delayStart: Duration(milliseconds: 200),
                                   child: Center(
                                     child: Padding(
                                       padding: const EdgeInsets.fromLTRB(
@@ -1191,7 +1191,7 @@ class _OrderScreenState extends State<OrderScreen> {
                           orderViewModel.listError.isEmpty
                               ? SizedBox(width: 0)
                               : SlideFadeTransition(
-                                  delayStart: Duration(milliseconds: 600),
+                                  delayStart: Duration(milliseconds: 200),
                                   child: Center(
                                     child: Padding(
                                       padding: const EdgeInsets.fromLTRB(
@@ -1486,8 +1486,13 @@ class _OrderScreenState extends State<OrderScreen> {
     if (otherAmounts == null) return [SizedBox.shrink()];
     otherAmounts.sort((a, b) => b.amount.compareTo(a.amount));
     return otherAmounts
-        .map((amountObj) => OtherAmountWidget(
-              otherAmount: amountObj,
+        .map((amountObj) => SlideFadeTransition(
+              // direction: Direction.horizontal,
+              offset: -1,
+              delayStart: Duration(milliseconds: 20),
+              child: OtherAmountWidget(
+                otherAmount: amountObj,
+              ),
             ))
         .toList();
   }
