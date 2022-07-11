@@ -32,7 +32,7 @@ class _VouchersListPageState extends State<VouchersListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: DefaultAppBar(
+      appBar: VoucherAppBar(
         title: "Danh sách mã giảm giá",
       ),
       body: Container(

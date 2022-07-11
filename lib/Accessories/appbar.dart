@@ -100,7 +100,11 @@ class _VoucherAppBarState extends State<VoucherAppBar> {
       actions: <Widget>[
         InkWell(
           onTap: () {
-            inputDialog('Thêm Mã Khuyến Mãi', 'Xác nhận');
+            inputDialog(
+              'Thêm Mã Khuyến Mãi',
+              'Xác nhận',
+              maxLines: 1,
+            );
           },
           borderRadius: BorderRadius.circular(25),
           child: Container(
