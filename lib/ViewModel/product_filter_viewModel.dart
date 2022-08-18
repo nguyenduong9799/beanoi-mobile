@@ -1,9 +1,11 @@
+import 'package:get/get.dart';
 import 'package:unidelivery_mobile/Enums/index.dart';
 import 'package:unidelivery_mobile/Model/DAO/CategoryDAO.dart';
 import 'package:unidelivery_mobile/Model/DAO/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/Utils/index.dart';
 import 'package:unidelivery_mobile/ViewModel/base_model.dart';
+import 'package:unidelivery_mobile/ViewModel/root_viewModel.dart';
 
 class ProductFilterViewModel extends BaseModel {
   List<ProductDTO> listProducts;
@@ -41,6 +43,8 @@ class ProductFilterViewModel extends BaseModel {
   }
 
   Future getProductsWithFilter() async {
+    RootViewModel root = Get.find<RootViewModel>();
+    MenuDTO currentMenu = root.selectedMenu;
     try {
       print("Filter param");
       print(params);
@@ -48,7 +52,7 @@ class ProductFilterViewModel extends BaseModel {
       CampusDTO currentStore = await getStore();
       var products = await _productDAO.getAllProductOfStore(
         currentStore.id,
-        currentStore.selectedTimeSlot,
+        currentMenu.menuId,
         params: this.params,
       );
       listProducts = products;

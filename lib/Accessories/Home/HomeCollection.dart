@@ -14,6 +14,8 @@ import 'package:unidelivery_mobile/Utils/format_price.dart';
 import 'package:unidelivery_mobile/ViewModel/home_viewModel.dart';
 import 'package:unidelivery_mobile/ViewModel/root_viewModel.dart';
 
+import '../dialog.dart';
+
 class HomeCollection extends StatefulWidget {
   const HomeCollection({
     Key key,
@@ -67,8 +69,14 @@ class _HomeCollectionState extends State<HomeCollection> {
   Widget buildHomeCollection(CollectionDTO collection) {
     return TouchOpacity(
       onTap: () {
-        Get.toNamed(RouteHandler.PRODUCT_FILTER_LIST,
-            arguments: {"collection-id": collection.id});
+        RootViewModel root = Get.find<RootViewModel>();
+        if (!root.isCurrentMenuAvailable()) {
+          showStatusDialog("assets/images/global_error.png", "Opps",
+              "Hiện tại khung giờ bạn chọn đã chốt đơn. Bạn vui lòng xem khung giờ khác nhé 😓 ");
+        } else {
+          Get.toNamed(RouteHandler.PRODUCT_FILTER_LIST,
+              arguments: {"collection-id": collection.id});
+        }
       },
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -95,7 +103,9 @@ class _HomeCollectionState extends State<HomeCollection> {
               ),
               Text(
                 'Xem tất cả',
-                style: TextStyle(color: kPrimary),
+                style: Get.find<RootViewModel>().isCurrentMenuAvailable()
+                    ? TextStyle(color: kPrimary)
+                    : TextStyle(color: Colors.grey),
               )
             ],
           ),
@@ -113,8 +123,16 @@ class _HomeCollectionState extends State<HomeCollection> {
                   child: TouchOpacity(
                     onTap: () {
                       RootViewModel root = Get.find<RootViewModel>();
-                      if (product.type == ProductType.MASTER_PRODUCT) {}
-                      root.openProductDetail(product, fetchDetail: true);
+                      // var firstTimeSlot = root.currentStore.timeSlots?.first;
+                      if (!root.isCurrentMenuAvailable()) {
+                        showStatusDialog(
+                            "assets/images/global_error.png",
+                            "Opps",
+                            "Hiện tại khung giờ bạn chọn đã chốt đơn. Bạn vui lòng xem khung giờ khác nhé 😓 ");
+                      } else {
+                        if (product.type == ProductType.MASTER_PRODUCT) {}
+                        root.openProductDetail(product, fetchDetail: true);
+                      }
                     },
                     child: buildProductInCollection(product),
                   ),
@@ -138,8 +156,16 @@ class _HomeCollectionState extends State<HomeCollection> {
           Container(
             width: kWitdthItem,
             height: kWitdthItem,
-            child: CacheImage(
-              imageUrl: product.imageURL,
+            child: ColorFiltered(
+              colorFilter: ColorFilter.mode(
+                Get.find<RootViewModel>().isCurrentMenuAvailable()
+                    ? Colors.transparent
+                    : Colors.grey,
+                BlendMode.saturation,
+              ),
+              child: CacheImage(
+                imageUrl: product.imageURL,
+              ),
             ),
           ),
 
@@ -148,9 +174,13 @@ class _HomeCollectionState extends State<HomeCollection> {
             product.type != ProductType.MASTER_PRODUCT
                 ? '${formatPriceWithoutUnit(product.price)} đ'
                 : 'từ ${formatPriceWithoutUnit(product.minPrice ?? product.price)} đ',
-            style: Get.theme.textTheme.headline5.copyWith(
-              color: kBestSellerColor,
-            ),
+            style: Get.find<RootViewModel>().isCurrentMenuAvailable()
+                ? Get.theme.textTheme.headline5.copyWith(
+                    color: kBestSellerColor,
+                  )
+                : Get.theme.textTheme.headline5.copyWith(
+                    color: Colors.grey,
+                  ),
           ),
           SizedBox(height: 4),
           Container(

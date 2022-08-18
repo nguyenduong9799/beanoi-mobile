@@ -178,6 +178,23 @@ Future<CampusDTO> getStore() async {
   return null;
 }
 
+Future<void> setMenus(MenuDTO dto) async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  if (dto != null) {
+    print(dto.toJson().toString());
+    prefs.setString('MENUS', jsonEncode(dto?.toJson()));
+  }
+}
+
+Future<MenuDTO> getMenus() async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  String encodedCart = prefs.getString('MENUS');
+  if (encodedCart != null) {
+    return MenuDTO.fromJson(jsonDecode(encodedCart));
+  }
+  return null;
+}
+
 Future<void> removeALL() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   await prefs.clear();

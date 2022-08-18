@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Enums/index.dart';
+import 'package:unidelivery_mobile/Model/DTO/MenuDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/Utils/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
@@ -310,23 +311,25 @@ class _FixedAppBarState extends State<FixedAppBar> {
                     //   width: 4,
                     // ),
                     itemBuilder: (context, index) {
-                      DateTime arrive = DateFormat("HH:mm:ss")
-                          .parse(model.currentStore.timeSlots[index].arrive);
-                      DateTime arriveRangeFrom = arrive;
-                      DateTime arriveRangeTo =
-                          arrive.add(Duration(minutes: 30));
-                      if (model.currentStore.timeSlots[index].arriveRange
-                              .length ==
-                          2) {
-                        arriveRangeFrom = DateFormat("HH:mm:ss").parse(
-                            model.currentStore.timeSlots[index].arriveRange[0]);
-                        arriveRangeTo = DateFormat("HH:mm:ss").parse(
-                            model.currentStore.timeSlots[index].arriveRange[1]);
-                      }
+                      // DateTime timeFromTo = DateFormat("HH:mm:ss").parse(
+                      //     model.listMenu[index].timeSlots[index].arriveFrom);
+                      // DateTime arriveFrom = timeFromTo;
+                      // DateTime arrive = DateFormat("HH:mm:ss")
+                      //     .parse(model.currentStore.timeSlots[index].arrive);
+                      // DateTime arriveRangeFrom = arrive;
+                      // DateTime arriveRangeTo =
+                      //     arrive.add(Duration(minutes: 30));
+                      // if (model.currentStore.timeSlots[index].arriveRange
+                      //         .length ==
+                      //     2) {
+                      //   arriveRangeFrom = DateFormat("HH:mm:ss").parse(
+                      //       model.currentStore.timeSlots[index].arriveRange[0]);
+                      //   arriveRangeTo = DateFormat("HH:mm:ss").parse(
+                      //       model.currentStore.timeSlots[index].arriveRange[1]);
+                      // }
 
-                      bool isSelect =
-                          model.currentStore.selectedTimeSlot.arrive ==
-                              model.currentStore.timeSlots[index].arrive;
+                      bool isSelect = model.selectedMenu.menuId ==
+                          model.listMenu[index].menuId;
                       return AnimatedContainer(
                         padding: EdgeInsets.only(left: 8, right: 8),
                         margin: EdgeInsets.only(right: 8),
@@ -338,14 +341,15 @@ class _FixedAppBarState extends State<FixedAppBar> {
                         duration: Duration(milliseconds: 300),
                         child: InkWell(
                           onTap: () async {
-                            if (model.currentStore.selectedTimeSlot != null) {
-                              model.confirmTimeSlot(
-                                  model.currentStore.timeSlots[index]);
+                            if (model.selectedMenu != null) {
+                              model.confirmMenu(model.listMenu[index]);
                             }
                           },
                           child: Center(
                             child: Text(
-                                "${DateFormat("HH:mm").format(arriveRangeFrom)} - ${DateFormat("HH:mm").format(arriveRangeTo)}",
+                                // "${DateFormat("HH:mm").format(arriveRangeFrom)} - ${DateFormat("HH:mm").format(arriveRangeTo)}",
+                                model.listMenu[index].menuName,
+                                // model.currentMenu.menuName,
                                 style: isSelect
                                     ? Get.theme.textTheme.headline5
                                         .copyWith(color: Colors.white)
@@ -454,11 +458,11 @@ class _FixedAppBarState extends State<FixedAppBar> {
           ),
         );
       }
-      TimeSlot selectedTimeSlot = model.currentStore?.selectedTimeSlot;
-      if (selectedTimeSlot == null) {
+      MenuDTO currentMenu = model.selectedMenu;
+      if (currentMenu == null) {
         return SizedBox();
       }
-      String currentTimeSlot = selectedTimeSlot?.to;
+      String currentTimeSlot = currentMenu.timeFromTo[1];
       var beanTime = new DateTime(
         currentDate.year,
         currentDate.month,
@@ -468,11 +472,11 @@ class _FixedAppBarState extends State<FixedAppBar> {
       );
 
       int differentTime = beanTime.difference(currentDate).inMilliseconds;
-      bool isAvailableMenu = selectedTimeSlot.available;
-      TimeSlot nextTimeSlot = model.currentStore.timeSlots
-          ?.firstWhere((time) => time.available, orElse: () => null);
 
-      DateTime arrive = DateFormat("HH:mm:ss").parse(selectedTimeSlot.arrive);
+      MenuDTO nextMenu = model.listMenu
+          ?.firstWhere((item) => item.isAvailable, orElse: () => null);
+
+      DateTime arrive = DateFormat("HH:mm:ss").parse(currentMenu.timeFromTo[1]);
       return ValueListenableBuilder<double>(
         valueListenable: this.widget.notifier,
         builder: (context, value, child) {
@@ -490,7 +494,7 @@ class _FixedAppBarState extends State<FixedAppBar> {
               height: 48,
               child: Align(
                 alignment: Alignment.centerLeft,
-                child: isAvailableMenu
+                child: model.isMenuAvailable(currentMenu)
                     ? Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -522,7 +526,7 @@ class _FixedAppBarState extends State<FixedAppBar> {
                           Expanded(
                             // width: Get.width * 0.7,
                             child: Text(
-                              nextTimeSlot != null
+                              nextMenu != null
                                   ? "Khung giờ đã đóng bạn vui lòng xem chuyến hàng kế tiếp nha 😉."
                                   : "Hiện tại các khung giờ đều đã đóng. Hẹn gặp bạn hôm sau nhé 😥.",
                               style: kTitleTextStyle.copyWith(
@@ -530,18 +534,17 @@ class _FixedAppBarState extends State<FixedAppBar> {
                                 fontSize: 12,
                                 fontWeight: FontWeight.w100,
                               ),
-                              textAlign: nextTimeSlot != null
+                              textAlign: nextMenu != null
                                   ? TextAlign.left
                                   : TextAlign.center,
                             ),
                           ),
                           SizedBox(width: 8),
-                          nextTimeSlot != null
+                          nextMenu != null
                               ? InkWell(
                                   onTap: () {
-                                    if (model.currentStore.selectedTimeSlot !=
-                                        null) {
-                                      model.confirmTimeSlot(nextTimeSlot);
+                                    if (model.selectedMenu != null) {
+                                      model.confirmMenu(nextMenu);
                                     }
                                   },
                                   child: Text(

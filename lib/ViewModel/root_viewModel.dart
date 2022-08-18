@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -6,7 +8,9 @@ import 'package:unidelivery_mobile/Accessories/index.dart';
 import 'package:unidelivery_mobile/Bussiness/BussinessHandler.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Enums/index.dart';
+import 'package:unidelivery_mobile/Model/DAO/MenuDAO.dart';
 import 'package:unidelivery_mobile/Model/DAO/index.dart';
+import 'package:unidelivery_mobile/Model/DTO/MenuDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/Utils/index.dart';
 
@@ -16,8 +20,10 @@ class RootViewModel extends BaseModel {
   String version;
   bool changeAddress = false;
   CampusDTO currentStore;
+  MenuDTO selectedMenu;
+  List<MenuDTO> listMenu;
+  List<CampusDTO> listStore;
   List<CampusDTO> campuses;
-
   ProductDAO _productDAO;
 
   RootViewModel() {
@@ -113,13 +119,13 @@ class RootViewModel extends BaseModel {
     }
   }
 
-  Future<void> confirmTimeSlot(TimeSlot timeSlot) async {
-    if (timeSlot.menuId != currentStore.selectedTimeSlot.menuId) {
-      if (!timeSlot.available) {
+  Future<void> confirmMenu(MenuDTO menu) async {
+    if (menu.menuId != selectedMenu.menuId) {
+      if (!menu.isAvailable) {
         showStatusDialog(
             "assets/images/global_error.png",
             "Khung giờ đã qua rồi",
-            "Hiện tại khung giờ này đã đóng vào lúc ${timeSlot.to}, bạn hãy xem khung giờ khác nhé 😃.");
+            "Hiện tại khung giờ này đã đóng vào lúc ${menu.timeFromTo[1]}, bạn hãy xem khung giờ khác nhé 😃.");
         return;
       }
       int option = 1;
@@ -132,7 +138,7 @@ class RootViewModel extends BaseModel {
 
       if (option == 1) {
         showLoadingDialog();
-        currentStore.selectedTimeSlot = timeSlot;
+        selectedMenu = menu;
         await deleteCart();
         await setStore(currentStore);
         Get.find<RootViewModel>().startUp();
@@ -145,26 +151,29 @@ class RootViewModel extends BaseModel {
     try {
       setState(ViewStatus.Loading);
       StoreDAO _storeDAO = new StoreDAO();
+      MenuDAO _menuDAO = new MenuDAO();
       Function eq = const ListEquality().equals;
-      List<CampusDTO> listStore;
-      currentStore = await getStore();
 
+      currentStore = await getStore();
       if (currentStore == null) {
         listStore = await _storeDAO.getStores(id: UNIBEAN_STORE);
+        listMenu = await _menuDAO.getMenus(areaID: UNIBEAN_STORE);
         currentStore = BussinessHandler.setSelectedTime(listStore[0]);
       } else {
+        listMenu = await _menuDAO.getMenus(areaID: currentStore.id);
         listStore = await _storeDAO.getStores(id: currentStore.id);
         currentStore.timeSlots = listStore[0].timeSlots;
         bool found = false;
-        currentStore.timeSlots.forEach((element) {
-          if (currentStore.selectedTimeSlot == null) {
+        if (selectedMenu == null) {
+          selectedMenu = listMenu[0];
+        }
+        listMenu.forEach((element) {
+          if (selectedMenu == null) {
             return;
           }
-          if (element.menuId == currentStore.selectedTimeSlot.menuId &&
-              element.from == currentStore.selectedTimeSlot.from &&
-              element.to == currentStore.selectedTimeSlot.to &&
-              element.arrive == currentStore.selectedTimeSlot.arrive) {
-            currentStore.selectedTimeSlot.available = element.available;
+          if (element.menuId == selectedMenu.menuId &&
+              element.timeFromTo == selectedMenu.timeFromTo) {
+            selectedMenu.isAvailable = element.isAvailable;
             found = true;
           }
         });
@@ -180,7 +189,7 @@ class RootViewModel extends BaseModel {
           }
         } else {
           final currentDate = DateTime.now();
-          String currentTimeSlot = currentStore.selectedTimeSlot.to;
+          String currentTimeSlot = selectedMenu.timeFromTo[1];
           var beanTime = new DateTime(
             currentDate.year,
             currentDate.month,
@@ -190,11 +199,9 @@ class RootViewModel extends BaseModel {
           );
           int differentTime = beanTime.difference(currentDate).inMilliseconds;
           if (differentTime <= 0) {
-            DateTime arrive = DateFormat("HH:mm:ss")
-                .parse(currentStore.selectedTimeSlot.arrive);
             int option = await showOptionDialog(
                 "Khung giờ cho ${currentStore.name} đã kết thúc \n "
-                "Đã hết giờ chốt đơn cho khung giờ \n ${DateFormat("HH:mm").format(arrive)} - ${DateFormat("HH:mm").format(arrive.add(Duration(minutes: 30)))}.",
+                "Đã hết giờ chốt đơn cho khung giờ \n ${selectedMenu.menuName}.",
                 firstOption: "Chọn khu vực",
                 secondOption: "Đóng");
             if (option == 0) {
@@ -271,7 +278,7 @@ class RootViewModel extends BaseModel {
         showLoadingDialog();
         CampusDTO store = await getStore();
         product = await _productDAO.getProductDetail(
-            product.id, store.id, store.selectedTimeSlot);
+            product.id, store.id, selectedMenu.menuId);
       }
       bool result =
           await Get.toNamed(RouteHandler.PRODUCT_DETAIL, arguments: product);
@@ -331,7 +338,7 @@ class RootViewModel extends BaseModel {
           showLoadingDialog();
           CampusDTO store = await getStore();
           product = await _productDAO.getProductDetail(
-              product.id, store.id, store.selectedTimeSlot);
+              product.id, store.id, selectedMenu.menuId);
         }
         ProductDetailViewModel detail = new ProductDetailViewModel(product);
         await detail.addProductToCart(backToHome: false);
@@ -375,7 +382,37 @@ class RootViewModel extends BaseModel {
     notifyListeners();
   }
 
-  bool get isCurrentMenuAvailable {
-    return currentStore?.selectedTimeSlot?.available ?? false;
+  bool isCurrentMenuAvailable() {
+    final currentDate = DateTime.now();
+    String currentTimeSlot = selectedMenu.timeFromTo[1];
+    var beanTime = new DateTime(
+      currentDate.year,
+      currentDate.month,
+      currentDate.day,
+      double.parse(currentTimeSlot.split(':')[0]).round(),
+      double.parse(currentTimeSlot.split(':')[1]).round(),
+    );
+    int differentTime = beanTime.difference(currentDate).inMilliseconds;
+    if (differentTime <= 0) {
+      return false;
+    } else
+      return true;
+  }
+
+  bool isMenuAvailable(MenuDTO currentMenu) {
+    final currentDate = DateTime.now();
+    String currentTimeSlot = currentMenu.timeFromTo[1];
+    var beanTime = new DateTime(
+      currentDate.year,
+      currentDate.month,
+      currentDate.day,
+      double.parse(currentTimeSlot.split(':')[0]).round(),
+      double.parse(currentTimeSlot.split(':')[1]).round(),
+    );
+    int differentTime = beanTime.difference(currentDate).inMilliseconds;
+    if (differentTime <= 0) {
+      return false;
+    } else
+      return true;
   }
 }

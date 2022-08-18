@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -26,7 +28,6 @@ class OrderViewModel extends BaseModel {
   CollectionDAO _collectionDAO;
   List<CollectionDTO> upSellCollections;
   bool loadingUpsell;
-
   String errorMessage = null;
 
   List<String> listError = <String>[];
@@ -64,21 +65,19 @@ class OrderViewModel extends BaseModel {
           currentCart.payment = PaymentTypeEnum.Cash;
         }
       }
-      // if (currentCart.vouchers != null) {
-      //   setState(ViewStatus.Completed);
-      //   Get.rawSnackbar(
-      //       // overlayColor: Colors.black,
-      //       messageText: Container(child: CircularProgressIndicator()),
-      //       duration: Duration(seconds: 2),
-      //       snackPosition: SnackPosition.BOTTOM,
-      //       margin: EdgeInsets.only(left: 8, right: 8, bottom: 32),
-      //       borderRadius: 8,
-      //       backgroundColor: Colors.white);
-      // }
+      if (currentCart.timeSlotId == null) {
+        List<TimeSlots> timeSlot =
+            Get.find<RootViewModel>().selectedMenu.timeSlots;
+        final thisDate = DateTime.now();
+        var time = '${thisDate.hour}:${thisDate.minute}';
+        var currentCheckOut = timeSlot.forEach((element) {
+          return element.checkoutTime;
+        });
+        currentCart.timeSlotId = timeSlot[timeSlot.length - 1].id;
+      }
       listError.clear();
       orderAmount = await dao.prepareOrder(campusDTO.id, currentCart);
       errorMessage = null;
-      await Future.delayed(Duration(milliseconds: 500));
       hideDialog();
       setState(ViewStatus.Completed);
     } on DioError catch (e, stacktra) {
@@ -257,6 +256,15 @@ class OrderViewModel extends BaseModel {
     setState(ViewStatus.Completed);
   }
 
+  Future<void> changeTime(TimeSlots option) async {
+    showLoadingDialog();
+    currentCart.timeSlotId = option.id;
+
+    await setCart(currentCart);
+    await prepareOrder();
+    hideDialog();
+  }
+
   Future<void> addSupplierNote(int id) async {
     SupplierNoteDTO supplierNote = currentCart.notes?.firstWhere(
       (element) => element.supplierId == id,
@@ -292,6 +300,7 @@ class OrderViewModel extends BaseModel {
       loadingUpsell = true;
       RootViewModel root = Get.find<RootViewModel>();
       var currentStore = root.currentStore;
+      var currentMenu = root.selectedMenu;
       if (root.status == ViewStatus.Error) {
         setState(ViewStatus.Error);
         return;
@@ -302,7 +311,7 @@ class OrderViewModel extends BaseModel {
         return;
       }
       upSellCollections = await _collectionDAO
-          .getCollections(currentStore.selectedTimeSlot, params: {
+          .getCollections(currentMenu.menuId, params: {
         "show-on-home": false,
         "type": CollectionTypeEnum.Suggestion
       });

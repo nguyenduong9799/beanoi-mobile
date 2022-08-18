@@ -32,10 +32,9 @@ class StoreDAO extends BaseDAO {
     return null;
   }
 
-  Future<List<SupplierDTO>> getSuppliers(int storeId, TimeSlot time_slot,
+  Future<List<SupplierDTO>> getSuppliers(int storeId, int menuID,
       {int page, int size}) async {
-    final res = await request.get(
-        'stores/$storeId/suppliers?time-slot=${time_slot.from.toString()}&time-slot=${time_slot.to.toString()}',
+    final res = await request.get('stores/$storeId/suppliers?menu-id=${menuID}',
         queryParameters: {"size": size ?? DEFAULT_SIZE, "page": page ?? 1});
     var jsonList = res.data["data"] as List;
     //metaDataDTO = MetaDataDTO.fromJson(res.data["metadata"]);

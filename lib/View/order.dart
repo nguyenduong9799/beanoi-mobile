@@ -1,5 +1,6 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
 import "package:collection/collection.dart";
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
@@ -9,6 +10,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:unidelivery_mobile/Accessories/slide_fade_animation.dart';
 import 'package:unidelivery_mobile/Accessories/UpSellCollection.dart';
 import 'package:unidelivery_mobile/Accessories/index.dart';
+import 'package:unidelivery_mobile/Accessories/time_picker.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Enums/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
@@ -29,6 +31,7 @@ class _OrderScreenState extends State<OrderScreen> {
   AutoScrollController controller;
   final scrollDirection = Axis.vertical;
   bool onInit = true;
+  int index = 0;
 
   @override
   void initState() {
@@ -38,6 +41,11 @@ class _OrderScreenState extends State<OrderScreen> {
             Rect.fromLTRB(0, 0, 0, MediaQuery.of(context).padding.bottom),
         axis: scrollDirection);
     orderViewModel = Get.find<OrderViewModel>();
+    int timeSlotId = Get.find<OrderViewModel>().currentCart.timeSlotId;
+    index = Get.find<RootViewModel>()
+        .selectedMenu
+        .timeSlots
+        .indexWhere((element) => element.id == timeSlotId);
     prepareCart();
   }
 
@@ -182,6 +190,76 @@ class _OrderScreenState extends State<OrderScreen> {
       ),
     );
   }
+
+  Widget layoutTimeAddress(CampusDTO campus) {}
+
+  Widget buildCustomPicker(List<TimeSlots> timeSlot) => Container(
+        height: 300,
+        decoration: BoxDecoration(
+          color: kBackgroundGrey[3],
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(8),
+            topRight: Radius.circular(8),
+          ),
+        ),
+        padding: EdgeInsets.only(top: 8),
+        child: Column(
+          children: [
+            Padding(
+              padding: EdgeInsets.all(8),
+              child: Text(
+                'Chọn khung giờ giao hàng',
+                style: Get.theme.textTheme.headline1,
+              ),
+            ),
+            Expanded(
+              child: Container(
+                color: Colors.white,
+                child: SizedBox(
+                  height: 180,
+                  child: CupertinoPicker(
+                    scrollController:
+                        FixedExtentScrollController(initialItem: index),
+                    // useMagnifier: true,
+                    // magnification: 1.2,
+                    itemExtent: 64,
+                    diameterRatio: 0.7,
+                    // looping: true,
+                    onSelectedItemChanged: (index) =>
+                        setState(() => this.index = index),
+                    selectionOverlay: CupertinoPickerDefaultSelectionOverlay(
+                      background: Colors.black.withOpacity(0.12),
+                    ),
+                    children: Utils.modelBuilder<TimeSlots>(
+                      timeSlot,
+                      (index, value) {
+                        String s = value.arriveTime;
+                        int idx = s.indexOf(';');
+                        List currentTime = [
+                          s.substring(0, idx).trim(),
+                          s.substring(idx + 1).trim()
+                        ];
+                        final isSelected = this.index == index;
+                        final color = isSelected ? kPrimary : Colors.black;
+
+                        return Center(
+                          child: Text(
+                            "${currentTime[0]} - ${currentTime[1]}",
+                            style: TextStyle(
+                                color: color,
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
 
   Widget layoutOrder(Cart cart) {
     Map<int, List<CartItem>> map =
@@ -516,7 +594,19 @@ class _OrderScreenState extends State<OrderScreen> {
   }
 
   Widget timeRecieve(CampusDTO dto) {
-    DateTime arrive = DateFormat("HH:mm:ss").parse(dto.selectedTimeSlot.arrive);
+    RootViewModel root = Get.find<RootViewModel>();
+    OrderViewModel orderViewModel = Get.find<OrderViewModel>();
+    MenuDTO currentMenu = root.selectedMenu;
+    List<TimeSlots> listTimeSlot = currentMenu.timeSlots;
+    TimeSlots currentTime = listTimeSlot.firstWhere(
+        (element) => element.id == orderViewModel.currentCart.timeSlotId);
+    String s = currentTime.arriveTime;
+    int idx = s.indexOf(";");
+    List currentTimeSlot = [
+      s.substring(0, idx).trim(),
+      s.substring(idx + 1).trim()
+    ];
+    final currentDate = DateTime.now();
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Row(
@@ -530,9 +620,20 @@ class _OrderScreenState extends State<OrderScreen> {
           ),
           Expanded(
             flex: 7,
-            child: Text(
-              "${DateFormat("HH:mm").format(arrive)} - ${DateFormat("HH:mm").format(arrive.add(Duration(minutes: 30)))}",
-              style: Get.theme.textTheme.headline4,
+            child: InkWell(
+              onTap: () => Utils.showSheet(
+                context,
+                child: buildCustomPicker(listTimeSlot),
+                onClicked: () async {
+                  TimeSlots value = listTimeSlot[index];
+                  await Get.find<OrderViewModel>().changeTime(value);
+                  Get.back();
+                },
+              ),
+              child: Text(
+                "${currentTimeSlot[0]} - ${currentTimeSlot[1]}",
+                style: Get.theme.textTheme.headline4,
+              ),
             ),
           ),
         ],

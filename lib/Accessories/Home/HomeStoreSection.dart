@@ -21,7 +21,8 @@ class HomeStoreSection extends StatelessWidget {
     return ScopedModelDescendant<HomeViewModel>(
       builder: (context, child, model) {
         ViewStatus status = model.status;
-        bool isMenuAvailable = Get.find<RootViewModel>().isCurrentMenuAvailable;
+        bool isMenuAvailable =
+            Get.find<RootViewModel>().isCurrentMenuAvailable();
         switch (status) {
           case ViewStatus.Error:
             return Column(

@@ -31,6 +31,7 @@ class HomeViewModel extends BaseModel {
       setState(ViewStatus.Loading);
       RootViewModel root = Get.find<RootViewModel>();
       CampusDTO currentStore = root.currentStore;
+      MenuDTO currentMenu = root.selectedMenu;
       if (root.status == ViewStatus.Error) {
         setState(ViewStatus.Error);
         return;
@@ -41,8 +42,8 @@ class HomeViewModel extends BaseModel {
         return;
       }
 
-      suppliers = await _storeDAO.getSuppliers(
-          currentStore.id, currentStore.selectedTimeSlot);
+      suppliers =
+          await _storeDAO.getSuppliers(currentStore.id, currentMenu.menuId);
       if (blogs == null) {
         blogs = await _storeDAO.getBlogs(currentStore.id);
       }
@@ -57,7 +58,7 @@ class HomeViewModel extends BaseModel {
 
   Future<void> selectSupplier(SupplierDTO dto) async {
     RootViewModel root = Get.find<RootViewModel>();
-    if (!root.isCurrentMenuAvailable) {
+    if (!root.isCurrentMenuAvailable()) {
       showStatusDialog("assets/images/global_error.png", "Opps",
           "Hiện tại khung giờ bạn chọn đã chốt đơn. Bạn vui lòng xem khung giờ khác nhé 😓.");
     } else if (dto.available) {
@@ -71,12 +72,13 @@ class HomeViewModel extends BaseModel {
   Future<void> getListProductInHomeCollection() async {
     RootViewModel root = Get.find<RootViewModel>();
     CampusDTO currentStore = root.currentStore;
+    MenuDTO currentMenu = root.selectedMenu;
     int storeId = currentStore.id;
     int supplierId = 1;
     try {
       setState(ViewStatus.Loading);
       var homeCollections = await _collectionDAO.getCollectionsOfSupplier(
-          storeId, supplierId, currentStore.selectedTimeSlot);
+          storeId, supplierId, currentMenu.menuId);
 
       // get list products of collection
       setState(ViewStatus.Completed);
@@ -93,6 +95,7 @@ class HomeViewModel extends BaseModel {
       setState(ViewStatus.Loading);
       RootViewModel root = Get.find<RootViewModel>();
       var currentStore = root.currentStore;
+      var currentMenu = root.selectedMenu;
       if (root.status == ViewStatus.Error) {
         setState(ViewStatus.Error);
         return;
@@ -117,9 +120,8 @@ class HomeViewModel extends BaseModel {
         setState(ViewStatus.Completed);
         return;
       }
-      homeCollections = await _collectionDAO.getCollections(
-          currentStore.selectedTimeSlot,
-          params: {"show-on-home": true});
+      homeCollections = await _collectionDAO
+          .getCollections(currentMenu.menuId, params: {"show-on-home": true});
       await Future.delayed(Duration(microseconds: 500));
       setState(ViewStatus.Completed);
     } catch (e) {

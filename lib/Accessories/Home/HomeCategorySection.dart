@@ -103,7 +103,7 @@ class _HomeCategorySectionState extends State<HomeCategorySection> {
             color: Colors.white,
             child: TouchOpacity(
               onTap: () {
-                if (!root.isCurrentMenuAvailable) {
+                if (!root.isCurrentMenuAvailable()) {
                   showStatusDialog("assets/images/global_error.png", "Opps",
                       "Hiện tại khung giờ bạn chọn đã chốt đơn. ${firstTimeSlot != null ? 'Bạn hãy quay lại vào lúc ${firstTimeSlot.arrive} hôm sau nhé.' : 'Bạn vui lòng xem khung giờ khác nhé 😓.'} ");
                 } else {
@@ -122,7 +122,7 @@ class _HomeCategorySectionState extends State<HomeCategorySection> {
                           BoxDecoration(borderRadius: BorderRadius.circular(8)),
                       child: ColorFiltered(
                         colorFilter: ColorFilter.mode(
-                          root.isCurrentMenuAvailable
+                          root.isCurrentMenuAvailable()
                               ? Colors.transparent
                               : Colors.grey,
                           BlendMode.saturation,

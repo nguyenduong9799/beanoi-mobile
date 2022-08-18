@@ -1,3 +1,4 @@
+import 'package:unidelivery_mobile/Model/DTO/MenuDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 
 class BussinessHandler {
@@ -37,4 +38,15 @@ class BussinessHandler {
     }
     return campus;
   }
+
+  // static MenuDTO setSelectedMenus(MenuDTO menu) {
+  //   menu = null;
+  //   if(menu.timeFromTo != null && menu.timeFromTo.isNotEmpty){
+  //     for(int i = 0; i < menu.timeFromTo.length; i++){
+  //       if(menu.isAvailable){
+  //         menu.selectedMenuTimeSlots = menu.
+  //       }
+  //     }
+  //   }
+  // }
 }

@@ -13,3 +13,4 @@ export 'SupplierNoteDTO.dart';
 export 'VoucherDTO.dart';
 export 'CategoryDTO.dart';
 export 'TransactionDTO.dart';
+export 'MenuDTO.dart';

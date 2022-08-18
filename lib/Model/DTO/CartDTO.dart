@@ -15,13 +15,15 @@ final logger = Logger(
 class Cart {
   List<CartItem> items;
   int payment;
+  int timeSlotId;
   List<SupplierNoteDTO> notes;
   // User info
 
   // _vouchers
   List<VoucherDTO> vouchers;
 
-  Cart.get({this.items, this.payment, this.notes, this.vouchers});
+  Cart.get(
+      {this.items, this.payment, this.notes, this.vouchers, this.timeSlotId});
 
   Cart() {
     items = [];
@@ -44,6 +46,7 @@ class Cart {
     return Cart.get(
         items: list,
         payment: json['payment'],
+        timeSlotId: json['timeslot_id'],
         notes: (json['supplier_notes'] as List)
             ?.map((e) => SupplierNoteDTO.fromJson(e))
             ?.toList(),
@@ -71,6 +74,7 @@ class Cart {
     return {
       "items": listCartItem,
       "payment": payment,
+      "timeslot_id": timeSlotId,
       "supplier_notes":
           notes != null ? notes.map((e) => e.toJson())?.toList() : [],
       "vouchers": vouchers != null
@@ -87,6 +91,7 @@ class Cart {
 
     Map<String, dynamic> map = {
       "payment": payment,
+      "timeslot_id": timeSlotId,
       "products_list": listCartItem,
       "supplier_notes":
           notes != null ? notes.map((e) => e.toJson())?.toList() : [],
