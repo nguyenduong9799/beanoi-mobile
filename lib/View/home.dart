@@ -367,7 +367,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 borderRadius: BorderRadius.circular((8)),
                               ),
                               child: Stack(
-                                overflow: Overflow.visible,
+                                clipBehavior: Clip.none,
                                 children: [
                                   FractionallySizedBox(
                                     widthFactor: userBean / gift.price > 1

@@ -194,9 +194,9 @@ class _OrderScreenState extends State<OrderScreen> {
   Widget layoutTimeAddress(CampusDTO campus) {}
 
   Widget buildCustomPicker(List<TimeSlots> timeSlot) => Container(
-        height: 300,
+        height: 240,
         decoration: BoxDecoration(
-          color: kBackgroundGrey[3],
+          color: kPrimary,
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(8),
             topRight: Radius.circular(8),
@@ -209,7 +209,8 @@ class _OrderScreenState extends State<OrderScreen> {
               padding: EdgeInsets.all(8),
               child: Text(
                 'Chọn khung giờ giao hàng',
-                style: Get.theme.textTheme.headline1,
+                style: Get.theme.textTheme.headline2
+                    .copyWith(color: Colors.white, fontWeight: FontWeight.bold),
               ),
             ),
             Expanded(
@@ -247,7 +248,7 @@ class _OrderScreenState extends State<OrderScreen> {
                             "${currentTime[0]} - ${currentTime[1]}",
                             style: TextStyle(
                                 color: color,
-                                fontSize: 24,
+                                fontSize: 20,
                                 fontWeight: FontWeight.bold),
                           ),
                         );
@@ -597,7 +598,7 @@ class _OrderScreenState extends State<OrderScreen> {
     RootViewModel root = Get.find<RootViewModel>();
     OrderViewModel orderViewModel = Get.find<OrderViewModel>();
     MenuDTO currentMenu = root.selectedMenu;
-    List<TimeSlots> listTimeSlot = currentMenu.timeSlots;
+    List<TimeSlots> listTimeSlot = orderViewModel.listAvailableTimeSlots;
     TimeSlots currentTime = listTimeSlot.firstWhere(
         (element) => element.id == orderViewModel.currentCart.timeSlotId);
     String s = currentTime.arriveTime;
@@ -615,7 +616,7 @@ class _OrderScreenState extends State<OrderScreen> {
         children: [
           Expanded(
             flex: 3,
-            child: Text("Thời gian: ",
+            child: Text("Nhận đơn lúc: ",
                 style: Get.theme.textTheme.headline5.copyWith(color: kPrimary)),
           ),
           Expanded(
@@ -630,9 +631,20 @@ class _OrderScreenState extends State<OrderScreen> {
                   Get.back();
                 },
               ),
-              child: Text(
-                "${currentTimeSlot[0]} - ${currentTimeSlot[1]}",
-                style: Get.theme.textTheme.headline4,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    "${currentTimeSlot[0]} - ${currentTimeSlot[1]}",
+                    style: Get.theme.textTheme.headline4,
+                  ),
+                  Icon(
+                    Icons.navigate_next,
+                    color: Colors.orange,
+                    size: 24,
+                  )
+                ],
               ),
             ),
           ),

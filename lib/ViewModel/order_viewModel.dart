@@ -29,6 +29,7 @@ class OrderViewModel extends BaseModel {
   List<CollectionDTO> upSellCollections;
   bool loadingUpsell;
   String errorMessage = null;
+  List<TimeSlots> listAvailableTimeSlots;
 
   List<String> listError = <String>[];
 
@@ -66,14 +67,23 @@ class OrderViewModel extends BaseModel {
         }
       }
       if (currentCart.timeSlotId == null) {
-        List<TimeSlots> timeSlot =
-            Get.find<RootViewModel>().selectedMenu.timeSlots;
-        final thisDate = DateTime.now();
-        var time = '${thisDate.hour}:${thisDate.minute}';
-        var currentCheckOut = timeSlot.forEach((element) {
-          return element.checkoutTime;
+        listAvailableTimeSlots = Get.find<RootViewModel>()
+            .selectedMenu
+            .timeSlots
+            .where((element) => isTimeSlotAvailable(element.checkoutTime))
+            .toList();
+        // print(listAvailableTimeSlots);
+        // List<TimeSlots> timeSlot =
+        //     Get.find<RootViewModel>().selectedMenu.timeSlots;
+        // final thisDate = DateTime.now();
+        // var time = '${thisDate.hour}:${thisDate.minute}';
+        // var currentCheckOut = timeSlot.forEach((element) {
+        //   return element.checkoutTime;
+        // });
+        listAvailableTimeSlots.forEach((element) {
+          print(element.checkoutTime);
         });
-        currentCart.timeSlotId = timeSlot[timeSlot.length - 1].id;
+        currentCart.timeSlotId = listAvailableTimeSlots[0].id;
       }
       listError.clear();
       orderAmount = await dao.prepareOrder(campusDTO.id, currentCart);
@@ -321,5 +331,21 @@ class OrderViewModel extends BaseModel {
       upSellCollections = null;
       loadingUpsell = false;
     }
+  }
+
+  bool isTimeSlotAvailable(String currentCheckoutTime) {
+    final currentDate = DateTime.now();
+    var checkoutTime = new DateTime(
+      currentDate.year,
+      currentDate.month,
+      currentDate.day,
+      double.parse(currentCheckoutTime.split(':')[0]).round(),
+      double.parse(currentCheckoutTime.split(':')[1]).round(),
+    );
+    int differentTime = checkoutTime.difference(currentDate).inMilliseconds;
+    if (differentTime <= 0) {
+      return false;
+    } else
+      return true;
   }
 }
