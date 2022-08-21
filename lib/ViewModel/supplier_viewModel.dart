@@ -57,8 +57,9 @@ class SupplierViewModel extends BaseModel {
       if (collections != null && collections.isNotEmpty) {
         collections.forEach((element) {
           element.products = products
-              .where(
-                  (product) => product.collections.any((e) => e == element.id))
+              .where((product) => product.collections != null
+                  ? product.collections.any((e) => e == element.id)
+                  : false)
               .toList();
         });
       }

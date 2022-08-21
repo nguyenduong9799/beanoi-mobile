@@ -234,18 +234,15 @@ class _OrderScreenState extends State<OrderScreen> {
                     children: Utils.modelBuilder<TimeSlots>(
                       timeSlot,
                       (index, value) {
-                        String s = value.arriveTime;
-                        int idx = s.indexOf(';');
-                        List currentTime = [
-                          s.substring(0, idx).trim(),
-                          s.substring(idx + 1).trim()
-                        ];
+                        String currentTime =
+                            value.arriveTime.replaceAll(';', ' - ');
+
                         final isSelected = this.index == index;
                         final color = isSelected ? kPrimary : Colors.black;
 
                         return Center(
                           child: Text(
-                            "${currentTime[0]} - ${currentTime[1]}",
+                            "$currentTime",
                             style: TextStyle(
                                 color: color,
                                 fontSize: 20,
@@ -597,17 +594,10 @@ class _OrderScreenState extends State<OrderScreen> {
   Widget timeRecieve(CampusDTO dto) {
     RootViewModel root = Get.find<RootViewModel>();
     OrderViewModel orderViewModel = Get.find<OrderViewModel>();
-    MenuDTO currentMenu = root.selectedMenu;
     List<TimeSlots> listTimeSlot = orderViewModel.listAvailableTimeSlots;
     TimeSlots currentTime = listTimeSlot.firstWhere(
         (element) => element.id == orderViewModel.currentCart.timeSlotId);
-    String s = currentTime.arriveTime;
-    int idx = s.indexOf(";");
-    List currentTimeSlot = [
-      s.substring(0, idx).trim(),
-      s.substring(idx + 1).trim()
-    ];
-    final currentDate = DateTime.now();
+    String currentTimeSlot = currentTime.arriveTime.replaceAll(';', ' - ');
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Row(
@@ -636,14 +626,12 @@ class _OrderScreenState extends State<OrderScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    "${currentTimeSlot[0]} - ${currentTimeSlot[1]}",
+                    "$currentTimeSlot",
                     style: Get.theme.textTheme.headline4,
                   ),
-                  Icon(
-                    Icons.navigate_next,
-                    color: Colors.orange,
-                    size: 24,
-                  )
+                  Text("Chọn giờ khác ",
+                      style: Get.theme.textTheme.headline4
+                          .copyWith(color: kPrimary))
                 ],
               ),
             ),

@@ -63,8 +63,8 @@ class Utils {
           ],
           cancelButton: CupertinoActionSheetAction(
             child: Text(
-              'Done',
-              style: Get.theme.textTheme.headline1,
+              'Chọn',
+              style: Get.theme.textTheme.headline2,
             ),
             onPressed: onClicked,
           ),

@@ -98,14 +98,14 @@ class _HomeCategorySectionState extends State<HomeCategorySection> {
       model: Get.find<RootViewModel>(),
       child: ScopedModelDescendant(
         builder: (BuildContext context, Widget child, RootViewModel root) {
-          var firstTimeSlot = root.currentStore.timeSlots?.first;
+          var menu = root.selectedMenu.menuName;
           return Material(
             color: Colors.white,
             child: TouchOpacity(
               onTap: () {
                 if (!root.isCurrentMenuAvailable()) {
                   showStatusDialog("assets/images/global_error.png", "Opps",
-                      "Hiện tại khung giờ bạn chọn đã chốt đơn. ${firstTimeSlot != null ? 'Bạn hãy quay lại vào lúc ${firstTimeSlot.arrive} hôm sau nhé.' : 'Bạn vui lòng xem khung giờ khác nhé 😓.'} ");
+                      "Hiện tại khung giờ bạn chọn đã chốt đơn.Bạn vui lòng xem khung giờ khác nhé 😓. ");
                 } else {
                   Get.toNamed(RouteHandler.PRODUCT_FILTER_LIST,
                       arguments: {"category-id": category.id});

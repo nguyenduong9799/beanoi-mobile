@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_countdown_timer/index.dart';
@@ -285,7 +287,7 @@ class _FixedAppBarState extends State<FixedAppBar> {
                 children: [
                   Text.rich(
                     TextSpan(
-                      text: "Giờ giao hàng ",
+                      text: "Khung giờ đặt đơn",
                       style: Get.theme.textTheme.headline5,
                       children: [
                         // WidgetSpan(
@@ -360,7 +362,7 @@ class _FixedAppBarState extends State<FixedAppBar> {
                     },
                     shrinkWrap: true,
                     scrollDirection: Axis.horizontal,
-                    itemCount: model.currentStore.timeSlots.length,
+                    itemCount: model.listMenu.length,
                   )),
               SizedBox(height: 8),
             ],
@@ -500,7 +502,7 @@ class _FixedAppBarState extends State<FixedAppBar> {
                         children: [
                             Text.rich(
                               TextSpan(
-                                text: "Chốt đơn: ",
+                                text: "Kết thúc : ",
                                 style: Get.theme.textTheme.headline5,
                                 children: [
                                   TextSpan(
@@ -527,7 +529,7 @@ class _FixedAppBarState extends State<FixedAppBar> {
                             // width: Get.width * 0.7,
                             child: Text(
                               nextMenu != null
-                                  ? "Khung giờ đã đóng bạn vui lòng xem chuyến hàng kế tiếp nha 😉."
+                                  ? "Khung giờ hiện tại đã đóng, bạn vui lòng xem khung giờ kế tiếp nha 😉."
                                   : "Hiện tại các khung giờ đều đã đóng. Hẹn gặp bạn hôm sau nhé 😥.",
                               style: kTitleTextStyle.copyWith(
                                 color: Colors.black87,
@@ -540,20 +542,20 @@ class _FixedAppBarState extends State<FixedAppBar> {
                             ),
                           ),
                           SizedBox(width: 8),
-                          nextMenu != null
-                              ? InkWell(
-                                  onTap: () {
-                                    if (model.selectedMenu != null) {
-                                      model.confirmMenu(nextMenu);
-                                    }
-                                  },
-                                  child: Text(
-                                    "Xem ngay",
-                                    style: TextStyle(
-                                        color: kPrimary, fontSize: 12),
-                                  ),
-                                )
-                              : SizedBox(),
+                          // nextMenu != null
+                          //     ? InkWell(
+                          //         onTap: () {
+                          //           if (model.selectedMenu != null) {
+                          //             model.confirmMenu(nextMenu);
+                          //           }
+                          //         },
+                          //         child: Text(
+                          //           "Xem ngay",
+                          //           style: TextStyle(
+                          //               color: kPrimary, fontSize: 12),
+                          //         ),
+                          //       )
+                          //     : SizedBox(),
                         ],
                       ),
               ),
@@ -606,7 +608,7 @@ class _BeanTimeCountdownState extends State<BeanTimeCountdown> {
               await showStatusDialog(
                 "assets/images/global_error.png",
                 "Khung giờ đã kết thúc",
-                "Đã hết giờ chốt đơn cho khung giờ ${DateFormat("HH:mm").format(widget.arriveTime)} - ${DateFormat("HH:mm").format(widget.arriveTime.add(Duration(minutes: 30)))}. \n Hẹn gặp bạn ở khung giờ khác nhé 😢.",
+                "Đã hết giờ chốt đơn cho khung giờ hiện tại. \n Hẹn gặp bạn ở khung giờ khác nhé 😢.",
               );
               // remove cart
               await model.clearCart();

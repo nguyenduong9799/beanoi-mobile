@@ -162,21 +162,27 @@ class RootViewModel extends BaseModel {
       } else {
         listMenu = await _menuDAO.getMenus(areaID: currentStore.id);
         listStore = await _storeDAO.getStores(id: currentStore.id);
-        currentStore.timeSlots = listStore[0].timeSlots;
         bool found = false;
         if (selectedMenu == null) {
           selectedMenu = listMenu[0];
+          for (MenuDTO element in listMenu) {
+            if (isMenuAvailable(element)) {
+              selectedMenu = element;
+              found = true;
+              break;
+            }
+          }
         }
-        listMenu.forEach((element) {
-          if (selectedMenu == null) {
-            return;
-          }
-          if (element.menuId == selectedMenu.menuId &&
-              element.timeFromTo == selectedMenu.timeFromTo) {
-            selectedMenu.isAvailable = element.isAvailable;
-            found = true;
-          }
-        });
+        // listMenu.forEach((element) {
+        //   if (selectedMenu == null) {
+        //     return;
+        //   }
+        //   if (element.menuId == selectedMenu.menuId &&
+        //       element.timeFromTo == selectedMenu.timeFromTo) {
+        //     selectedMenu.isAvailable = element.isAvailable;
+        //     found = true;
+        //   }
+        // });
         if (found == false) {
           currentStore = BussinessHandler.setSelectedTime(currentStore);
           Cart cart = await getCart();

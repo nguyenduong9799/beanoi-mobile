@@ -94,19 +94,18 @@ class HomeViewModel extends BaseModel {
     try {
       setState(ViewStatus.Loading);
       RootViewModel root = Get.find<RootViewModel>();
-      var currentStore = root.currentStore;
       var currentMenu = root.selectedMenu;
       if (root.status == ViewStatus.Error) {
         setState(ViewStatus.Error);
         return;
       }
-      if (currentStore.selectedTimeSlot == null) {
+      if (currentMenu == null) {
         homeCollections = null;
         setState(ViewStatus.Completed);
         return;
       }
       final currentDate = DateTime.now();
-      String currentTimeSlot = currentStore.selectedTimeSlot.to;
+      String currentTimeSlot = currentMenu.timeFromTo[1];
       var beanTime = new DateTime(
         currentDate.year,
         currentDate.month,
