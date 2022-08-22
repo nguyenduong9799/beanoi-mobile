@@ -38,6 +38,7 @@ class OrderViewModel extends BaseModel {
     promoDao = new PromotionDAO();
     _collectionDAO = CollectionDAO();
     loadingUpsell = false;
+    listAvailableTimeSlots = [];
   }
 
   Future<void> getVouchers() async {
@@ -67,9 +68,9 @@ class OrderViewModel extends BaseModel {
         }
       }
       if (currentCart.timeSlotId == null) {
-        listAvailableTimeSlots = Get.find<RootViewModel>()
-            .selectedMenu
-            .timeSlots
+        List<TimeSlots> listTimeSlots =
+            Get.find<RootViewModel>().selectedMenu.timeSlots;
+        listAvailableTimeSlots = listTimeSlots
             .where((element) => isTimeSlotAvailable(element.checkoutTime))
             .toList();
         // print(listAvailableTimeSlots);
@@ -80,10 +81,11 @@ class OrderViewModel extends BaseModel {
         // var currentCheckOut = timeSlot.forEach((element) {
         //   return element.checkoutTime;
         // });
-        listAvailableTimeSlots.forEach((element) {
-          print(element.checkoutTime);
-        });
-        currentCart.timeSlotId = listAvailableTimeSlots[0].id;
+        if (listAvailableTimeSlots == null || listAvailableTimeSlots.isEmpty) {
+          currentCart.timeSlotId = listTimeSlots[listTimeSlots.length - 1].id;
+        } else {
+          currentCart.timeSlotId = listAvailableTimeSlots[0].id;
+        }
       }
       listError.clear();
       orderAmount = await dao.prepareOrder(campusDTO.id, currentCart);

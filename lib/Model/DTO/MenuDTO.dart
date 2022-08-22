@@ -8,6 +8,7 @@ class MenuDTO {
   List<int> dayFilter;
   int dayFilterDb;
   String menuName;
+  int type;
 
   MenuDTO(
       {this.menuId,
@@ -18,7 +19,8 @@ class MenuDTO {
       this.timeToDb,
       this.dayFilter,
       this.dayFilterDb,
-      this.menuName});
+      this.menuName,
+      this.type});
 
   MenuDTO.fromJson(Map<String, dynamic> json) {
     menuId = json['menu_id'];
@@ -30,16 +32,12 @@ class MenuDTO {
         timeSlots.add(new TimeSlots.fromJson(v));
       });
     }
-    // if (json['selected_time_slot'] != null) {
-    //   MenuDTO menuDTO = MenuDTO();
-    //   menuDTO.selectedMenuTimeSlots =
-    //       TimeSlots.fromJson(json['selected_time_slot']);
-    // }
     timeFromDb = json['time_from_db'];
     timeToDb = json['time_to_db'];
     dayFilter = json['day_filter'].cast<int>();
     dayFilterDb = json['day_filter_db'];
     menuName = json['menu_name'];
+    type = json['type'];
   }
 
   Map<String, dynamic> toJson() {
@@ -50,12 +48,12 @@ class MenuDTO {
     if (this.timeSlots != null) {
       data['time_slots'] = this.timeSlots.map((v) => v.toJson()).toList();
     }
-    // data['selected_time_slot'] = selectedMenuTimeSlots?.toJson();
     data['time_from_db'] = this.timeFromDb;
     data['time_to_db'] = this.timeToDb;
     data['day_filter'] = this.dayFilter;
     data['day_filter_db'] = this.dayFilterDb;
     data['menu_name'] = this.menuName;
+    data['type'] = this.type;
     return data;
   }
 }
@@ -64,13 +62,25 @@ class TimeSlots {
   int id;
   String arriveTime;
   String checkoutTime;
+  int menuId;
+  bool isAvailable;
+  bool isActive;
 
-  TimeSlots({this.id, this.arriveTime, this.checkoutTime});
+  TimeSlots(
+      {this.id,
+      this.arriveTime,
+      this.checkoutTime,
+      this.menuId,
+      this.isAvailable,
+      this.isActive});
 
   TimeSlots.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     arriveTime = json['arrive_time'];
     checkoutTime = json['checkout_time'];
+    menuId = json['menu_id'];
+    isAvailable = json['is_available'];
+    isActive = json['is_active'];
   }
 
   Map<String, dynamic> toJson() {
@@ -78,6 +88,9 @@ class TimeSlots {
     data['id'] = this.id;
     data['arrive_time'] = this.arriveTime;
     data['checkout_time'] = this.checkoutTime;
+    data['menu_id'] = this.menuId;
+    data['is_available'] = this.isAvailable;
+    data['is_active'] = this.isActive;
     return data;
   }
 }

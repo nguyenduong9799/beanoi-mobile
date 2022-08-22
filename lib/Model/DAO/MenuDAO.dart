@@ -8,7 +8,7 @@ import 'index.dart';
 
 class MenuDAO extends BaseDAO {
   Future<List<MenuDTO>> getMenus({int areaID}) async {
-    final res = await request.get('areas/$areaID/menus');
+    final res = await request.get('areas/$areaID/menus?type=1');
     var jsonList = res.data["data"] as List;
     //metaDataDTO = MetaDataDTO.fromJson(res.data["metadata"]);
     if (jsonList != null) {

@@ -348,10 +348,7 @@ class _FixedAppBarState extends State<FixedAppBar> {
                             }
                           },
                           child: Center(
-                            child: Text(
-                                // "${DateFormat("HH:mm").format(arriveRangeFrom)} - ${DateFormat("HH:mm").format(arriveRangeTo)}",
-                                model.listMenu[index].menuName,
-                                // model.currentMenu.menuName,
+                            child: Text(model.listMenu[index].menuName,
                                 style: isSelect
                                     ? Get.theme.textTheme.headline5
                                         .copyWith(color: Colors.white)

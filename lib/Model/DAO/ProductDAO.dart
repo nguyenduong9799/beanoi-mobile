@@ -48,15 +48,21 @@ class ProductDAO extends BaseDAO {
     Map<String, dynamic> params = const {},
   }) async {
     Response res = await request.get(
-      'stores/$storeId/gifts?menu-id=${menuId}',
+      // 'stores/$storeId/gifts?menu-id=${menuId}',
+      'areas/${storeId}/menus/${menuId}/products',
       queryParameters: {"page": page ?? 1, "size": size ?? DEFAULT_SIZE}
         ..addAll(params),
     );
 
     //final res = await Dio().get("http://api.dominos.reso.vn/api/v1/products");
-    final products = ProductDTO.fromList(res.data["data"]);
-    metaDataDTO = MetaDataDTO.fromJson(res.data["metadata"]);
-    return products;
+    var jsonList = res.data["data"] as List;
+    //metaDataDTO = MetaDataDTO.fromJson(res.data["metadata"]);
+    if (jsonList != null) {
+      List<ProductDTO> list =
+          jsonList.map((e) => ProductDTO.fromJson(e)).toList();
+      return list;
+    }
+    return null;
   }
 
   Future<List<ProductDTO>> getAllProductOfStore(int storeId, int menuID,
@@ -96,6 +102,26 @@ class ProductDAO extends BaseDAO {
     return products;
   }
 
+  Future<List<MenuDTO>> getListGiftMenus(
+    int areaID, {
+    int page,
+    int size,
+    int type,
+    Map<String, dynamic> params = const {},
+  }) async {
+    final res = await request.get(
+      'areas/$areaID/menus?type=2',
+      queryParameters: {"page": page ?? 1, "size": size ?? DEFAULT_SIZE}
+        ..addAll(params),
+    );
+    var jsonList = res.data["data"] as List;
+    //metaDataDTO = MetaDataDTO.fromJson(res.data["metadata"]);
+    if (jsonList != null) {
+      List<MenuDTO> list = jsonList.map((e) => MenuDTO.fromJson(e)).toList();
+      return list;
+    }
+    return null;
+  }
   // Future<List<ProductDTO>> getExtraProducts(
   //     int cat_id, String sup_id, int store_id) async {
   //   print("Category id: " + cat_id.toString());

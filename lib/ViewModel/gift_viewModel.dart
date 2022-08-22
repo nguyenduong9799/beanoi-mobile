@@ -14,6 +14,7 @@ class GiftViewModel extends BaseModel {
   ScrollController giftScrollController;
   CampusDTO currentStore;
   MenuDTO currentMenu;
+  List<MenuDTO> listGiftMenu;
   ProductDTO nearlyGift;
 
   GiftViewModel() {
@@ -36,7 +37,7 @@ class GiftViewModel extends BaseModel {
       setState(ViewStatus.Loading);
       RootViewModel root = Get.find<RootViewModel>();
       currentStore = root.currentStore;
-      currentMenu = root.selectedMenu;
+      listGiftMenu = await _productDAO.getListGiftMenus(currentStore.id);
       if (root.status == ViewStatus.Error) {
         setState(ViewStatus.Error);
         return;
@@ -46,7 +47,8 @@ class GiftViewModel extends BaseModel {
         setState(ViewStatus.Completed);
         return;
       }
-      gifts = await _productDAO.getGifts(currentStore.id, currentMenu.menuId);
+      gifts =
+          await _productDAO.getGifts(currentStore.id, listGiftMenu[0].menuId);
       await Future.delayed(Duration(microseconds: 500));
       // check truong hop product tra ve rong (do khong co menu nao trong TG do)
       setState(ViewStatus.Completed);
@@ -59,7 +61,8 @@ class GiftViewModel extends BaseModel {
   Future<void> getMoreGifts() async {
     try {
       setState(ViewStatus.LoadMore);
-      gifts += await _productDAO.getGifts(currentStore.id, currentMenu.menuId,
+      gifts += await _productDAO.getGifts(
+          currentStore.id, listGiftMenu[0].menuId,
           page: _productDAO.metaDataDTO.page + 1);
 
       await Future.delayed(Duration(milliseconds: 1000));
@@ -82,7 +85,7 @@ class GiftViewModel extends BaseModel {
       setState(ViewStatus.Loading);
       var nearLyGifts = await _productDAO.getGifts(
         currentStore.id,
-        currentMenu.menuId,
+        listGiftMenu[0].menuId,
         params: {"sortBy": "price asc"},
       );
 

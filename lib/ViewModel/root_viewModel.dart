@@ -121,7 +121,7 @@ class RootViewModel extends BaseModel {
 
   Future<void> confirmMenu(MenuDTO menu) async {
     if (menu.menuId != selectedMenu.menuId) {
-      if (!menu.isAvailable) {
+      if (!isMenuAvailable(menu)) {
         showStatusDialog(
             "assets/images/global_error.png",
             "Khung giờ đã qua rồi",

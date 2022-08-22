@@ -225,7 +225,6 @@ class _OrderScreenState extends State<OrderScreen> {
                     // magnification: 1.2,
                     itemExtent: 64,
                     diameterRatio: 0.7,
-                    // looping: true,
                     onSelectedItemChanged: (index) =>
                         setState(() => this.index = index),
                     selectionOverlay: CupertinoPickerDefaultSelectionOverlay(
@@ -594,8 +593,9 @@ class _OrderScreenState extends State<OrderScreen> {
   Widget timeRecieve(CampusDTO dto) {
     RootViewModel root = Get.find<RootViewModel>();
     OrderViewModel orderViewModel = Get.find<OrderViewModel>();
-    List<TimeSlots> listTimeSlot = orderViewModel.listAvailableTimeSlots;
-    TimeSlots currentTime = listTimeSlot.firstWhere(
+    List<TimeSlots> listTimeSlotAvailable =
+        orderViewModel.listAvailableTimeSlots;
+    TimeSlots currentTime = listTimeSlotAvailable.firstWhere(
         (element) => element.id == orderViewModel.currentCart.timeSlotId);
     String currentTimeSlot = currentTime.arriveTime.replaceAll(';', ' - ');
     return Padding(
@@ -614,9 +614,9 @@ class _OrderScreenState extends State<OrderScreen> {
             child: InkWell(
               onTap: () => Utils.showSheet(
                 context,
-                child: buildCustomPicker(listTimeSlot),
+                child: buildCustomPicker(listTimeSlotAvailable),
                 onClicked: () async {
-                  TimeSlots value = listTimeSlot[index];
+                  TimeSlots value = listTimeSlotAvailable[index];
                   await Get.find<OrderViewModel>().changeTime(value);
                   Get.back();
                 },
