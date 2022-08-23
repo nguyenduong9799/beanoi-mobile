@@ -25,9 +25,11 @@ class RootViewModel extends BaseModel {
   List<CampusDTO> listStore;
   List<CampusDTO> campuses;
   ProductDAO _productDAO;
+  List<TimeSlots> listAvailableTimeSlots;
 
   RootViewModel() {
     _productDAO = ProductDAO();
+    listAvailableTimeSlots = [];
   }
 
   Future startUp() async {
@@ -76,7 +78,7 @@ class RootViewModel extends BaseModel {
 
         if (option == 1 || cart == null) {
           showLoadingDialog();
-          await deleteCart();
+          Get.find<OrderViewModel>().removeCart();
           currentStore = campus;
           setSelectedLocation(currentStore, location, destination);
           await setStore(currentStore);
@@ -139,7 +141,7 @@ class RootViewModel extends BaseModel {
       if (option == 1) {
         showLoadingDialog();
         selectedMenu = menu;
-        await deleteCart();
+        Get.find<OrderViewModel>().removeCart();
         await setStore(currentStore);
         Get.find<RootViewModel>().startUp();
         hideDialog();
@@ -173,16 +175,15 @@ class RootViewModel extends BaseModel {
             }
           }
         }
-        // listMenu.forEach((element) {
-        //   if (selectedMenu == null) {
-        //     return;
-        //   }
-        //   if (element.menuId == selectedMenu.menuId &&
-        //       element.timeFromTo == selectedMenu.timeFromTo) {
-        //     selectedMenu.isAvailable = element.isAvailable;
-        //     found = true;
-        //   }
-        // });
+
+        listAvailableTimeSlots = selectedMenu.timeSlots
+            .where((element) =>
+                isTimeSlotAvailable(element.checkoutTime) &&
+                element.isActive &&
+                element.isAvailable)
+            .toList();
+        printInfo(
+            info: "listAvailableTimeSlots: ${listAvailableTimeSlots.length}");
         if (found == false) {
           currentStore = BussinessHandler.setSelectedTime(currentStore);
           Cart cart = await getCart();
@@ -191,7 +192,7 @@ class RootViewModel extends BaseModel {
                 "assets/images/global_error.png",
                 "Khung giờ đã thay đổi",
                 "Các sản phẩm trong giỏ hàng đã bị xóa, còn nhiều món ngon đang chờ bạn nhé");
-            await deleteCart();
+            Get.find<OrderViewModel>().removeCart();
           }
         } else {
           final currentDate = DateTime.now();
@@ -214,7 +215,7 @@ class RootViewModel extends BaseModel {
               await changeCampusDialog(Get.find<RootViewModel>());
             }
             // remove cart
-            await deleteCart();
+            Get.find<OrderViewModel>().removeCart();
           }
         }
       }
@@ -364,7 +365,7 @@ class RootViewModel extends BaseModel {
   }
 
   Future<void> clearCart() async {
-    await deleteCart();
+    Get.find<OrderViewModel>().removeCart();
     notifyListeners();
   }
 
@@ -417,6 +418,22 @@ class RootViewModel extends BaseModel {
     );
     int differentTime = beanTime.difference(currentDate).inMilliseconds;
     if (differentTime <= 0) {
+      return false;
+    } else
+      return true;
+  }
+
+  bool isTimeSlotAvailable(String currentCheckoutTime) {
+    final currentDate = DateTime.now();
+    var checkoutTime = new DateTime(
+      currentDate.year,
+      currentDate.month,
+      currentDate.day,
+      double.parse(currentCheckoutTime.split(':')[0]).round(),
+      double.parse(currentCheckoutTime.split(':')[1]).round(),
+    );
+    int differentTime = checkoutTime.difference(currentDate).inMilliseconds;
+    if (differentTime < 0) {
       return false;
     } else
       return true;

@@ -27,7 +27,7 @@ class OrderScreen extends StatefulWidget {
 }
 
 class _OrderScreenState extends State<OrderScreen> {
-  OrderViewModel orderViewModel;
+  OrderViewModel orderViewModel = Get.find<OrderViewModel>();
   AutoScrollController controller;
   final scrollDirection = Axis.vertical;
   bool onInit = true;
@@ -36,15 +36,15 @@ class _OrderScreenState extends State<OrderScreen> {
   @override
   void initState() {
     super.initState();
+    prepareCart();
     controller = AutoScrollController(
         viewportBoundaryGetter: () =>
             Rect.fromLTRB(0, 0, 0, MediaQuery.of(context).padding.bottom),
         axis: scrollDirection);
-    orderViewModel = Get.find<OrderViewModel>();
-    int timeSlotId = Get.find<OrderViewModel>().currentCart.timeSlotId;
-    index = orderViewModel.listAvailableTimeSlots
+    int timeSlotId = orderViewModel.currentCart.timeSlotId;
+    index = Get.find<RootViewModel>()
+        .listAvailableTimeSlots
         .indexWhere((element) => element.id == timeSlotId);
-    prepareCart();
   }
 
   void prepareCart() async {
@@ -588,8 +588,7 @@ class _OrderScreenState extends State<OrderScreen> {
 
   Widget timeRecieve(OrderViewModel model) {
     RootViewModel root = Get.find<RootViewModel>();
-    // OrderViewModel orderViewModel = Get.find<OrderViewModel>();
-    List<TimeSlots> listTimeSlotAvailable = model.listAvailableTimeSlots;
+    List<TimeSlots> listTimeSlotAvailable = root.listAvailableTimeSlots;
     TimeSlots currentTime = listTimeSlotAvailable.firstWhere(
         (element) => element.id == orderViewModel.currentCart.timeSlotId);
     String currentTimeSlot = currentTime.arriveTime.replaceAll(';', ' - ');

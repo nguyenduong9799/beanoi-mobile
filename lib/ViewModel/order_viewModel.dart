@@ -29,7 +29,6 @@ class OrderViewModel extends BaseModel {
   List<CollectionDTO> upSellCollections;
   bool loadingUpsell;
   String errorMessage = null;
-  List<TimeSlots> listAvailableTimeSlots;
 
   List<String> listError = <String>[];
 
@@ -38,7 +37,7 @@ class OrderViewModel extends BaseModel {
     promoDao = new PromotionDAO();
     _collectionDAO = CollectionDAO();
     loadingUpsell = false;
-    listAvailableTimeSlots = [];
+    currentCart = null;
   }
 
   Future<void> getVouchers() async {
@@ -67,18 +66,10 @@ class OrderViewModel extends BaseModel {
           currentCart.payment = PaymentTypeEnum.Cash;
         }
       }
-      if (currentCart.timeSlotId == null) {
-        List<TimeSlots> listTimeSlots =
-            Get.find<RootViewModel>().selectedMenu.timeSlots;
-        listAvailableTimeSlots = listTimeSlots
-            .where((element) => isTimeSlotAvailable(element.checkoutTime))
-            .toList();
-        if (listAvailableTimeSlots == null || listAvailableTimeSlots.isEmpty) {
-          currentCart.timeSlotId = listTimeSlots[listTimeSlots.length - 1].id;
-        } else {
-          currentCart.timeSlotId = listAvailableTimeSlots[0].id;
-        }
-      }
+
+      currentCart.timeSlotId =
+          Get.find<RootViewModel>().listAvailableTimeSlots[0].id;
+
       listError.clear();
       orderAmount = await dao.prepareOrder(campusDTO.id, currentCart);
       errorMessage = null;
@@ -196,7 +187,7 @@ class OrderViewModel extends BaseModel {
       OrderStatus result = await dao.createOrders(destination.id, currentCart);
       await Get.find<AccountViewModel>().fetchUser();
       if (result.statusCode == 200) {
-        await deleteCart();
+        await removeCart();
         hideDialog();
         await showStatusDialog(
             "assets/images/global_sucsess.png", result?.code, result?.message);
@@ -327,19 +318,9 @@ class OrderViewModel extends BaseModel {
     }
   }
 
-  bool isTimeSlotAvailable(String currentCheckoutTime) {
-    final currentDate = DateTime.now();
-    var checkoutTime = new DateTime(
-      currentDate.year,
-      currentDate.month,
-      currentDate.day,
-      double.parse(currentCheckoutTime.split(':')[0]).round(),
-      double.parse(currentCheckoutTime.split(':')[1]).round(),
-    );
-    int differentTime = checkoutTime.difference(currentDate).inMilliseconds;
-    if (differentTime < 0) {
-      return false;
-    } else
-      return true;
+  Future<void> removeCart() async {
+    await deleteCart();
+    currentCart = null;
+    notifyListeners();
   }
 }
