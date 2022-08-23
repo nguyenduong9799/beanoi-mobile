@@ -42,9 +42,7 @@ class _OrderScreenState extends State<OrderScreen> {
         axis: scrollDirection);
     orderViewModel = Get.find<OrderViewModel>();
     int timeSlotId = Get.find<OrderViewModel>().currentCart.timeSlotId;
-    index = Get.find<RootViewModel>()
-        .selectedMenu
-        .timeSlots
+    index = orderViewModel.listAvailableTimeSlots
         .indexWhere((element) => element.id == timeSlotId);
     prepareCart();
   }
@@ -103,7 +101,7 @@ class _OrderScreenState extends State<OrderScreen> {
                             key: ValueKey(1),
                             controller: controller,
                             highlightColor: Colors.black.withOpacity(0.1),
-                            child: timeRecieve(model.campusDTO),
+                            child: timeRecieve(model),
                           ),
                           // Container(child: buildBeanReward()),
                           SizedBox(
@@ -190,8 +188,6 @@ class _OrderScreenState extends State<OrderScreen> {
       ),
     );
   }
-
-  Widget layoutTimeAddress(CampusDTO campus) {}
 
   Widget buildCustomPicker(List<TimeSlots> timeSlot) => Container(
         height: 240,
@@ -590,11 +586,10 @@ class _OrderScreenState extends State<OrderScreen> {
     );
   }
 
-  Widget timeRecieve(CampusDTO dto) {
+  Widget timeRecieve(OrderViewModel model) {
     RootViewModel root = Get.find<RootViewModel>();
-    OrderViewModel orderViewModel = Get.find<OrderViewModel>();
-    List<TimeSlots> listTimeSlotAvailable =
-        orderViewModel.listAvailableTimeSlots;
+    // OrderViewModel orderViewModel = Get.find<OrderViewModel>();
+    List<TimeSlots> listTimeSlotAvailable = model.listAvailableTimeSlots;
     TimeSlots currentTime = listTimeSlotAvailable.firstWhere(
         (element) => element.id == orderViewModel.currentCart.timeSlotId);
     String currentTimeSlot = currentTime.arriveTime.replaceAll(';', ' - ');

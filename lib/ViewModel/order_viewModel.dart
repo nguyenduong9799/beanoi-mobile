@@ -73,14 +73,6 @@ class OrderViewModel extends BaseModel {
         listAvailableTimeSlots = listTimeSlots
             .where((element) => isTimeSlotAvailable(element.checkoutTime))
             .toList();
-        // print(listAvailableTimeSlots);
-        // List<TimeSlots> timeSlot =
-        //     Get.find<RootViewModel>().selectedMenu.timeSlots;
-        // final thisDate = DateTime.now();
-        // var time = '${thisDate.hour}:${thisDate.minute}';
-        // var currentCheckOut = timeSlot.forEach((element) {
-        //   return element.checkoutTime;
-        // });
         if (listAvailableTimeSlots == null || listAvailableTimeSlots.isEmpty) {
           currentCart.timeSlotId = listTimeSlots[listTimeSlots.length - 1].id;
         } else {
@@ -345,7 +337,7 @@ class OrderViewModel extends BaseModel {
       double.parse(currentCheckoutTime.split(':')[1]).round(),
     );
     int differentTime = checkoutTime.difference(currentDate).inMilliseconds;
-    if (differentTime <= 0) {
+    if (differentTime < 0) {
       return false;
     } else
       return true;
