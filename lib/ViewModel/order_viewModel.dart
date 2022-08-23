@@ -66,9 +66,10 @@ class OrderViewModel extends BaseModel {
           currentCart.payment = PaymentTypeEnum.Cash;
         }
       }
-
-      currentCart.timeSlotId =
-          Get.find<RootViewModel>().listAvailableTimeSlots[0].id;
+      if (currentCart.timeSlotId == null) {
+        currentCart.timeSlotId =
+            Get.find<RootViewModel>().listAvailableTimeSlots[0].id;
+      }
 
       listError.clear();
       orderAmount = await dao.prepareOrder(campusDTO.id, currentCart);
