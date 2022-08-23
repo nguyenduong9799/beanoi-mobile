@@ -137,15 +137,14 @@ class RootViewModel extends BaseModel {
         option = await showOptionDialog(
             "Bạn có chắc không? Đổi khung giờ rồi là giỏ hàng bị xóa đó!!");
       }
-
       if (option == 1) {
         showLoadingDialog();
         selectedMenu = menu;
         Get.find<OrderViewModel>().removeCart();
         await setStore(currentStore);
         Get.find<RootViewModel>().startUp();
-        hideDialog();
       }
+      hideDialog();
     }
   }
 

@@ -67,70 +67,72 @@ class _OrderScreenState extends State<OrderScreen> {
             : ScopedModelDescendant<OrderViewModel>(
                 builder:
                     (BuildContext context, Widget child, OrderViewModel model) {
-                  if (model.currentCart == null) return SizedBox.shrink();
-                  ViewStatus status = model.status;
-                  switch (status) {
-                    case ViewStatus.Error:
-                      return ListView(
-                        children: [
-                          Center(
-                            child: Text(
-                              "Có gì đó sai sai..\n Vui lòng thử lại.",
+                  if (model.currentCart != null) {
+                    ViewStatus status = model.status;
+                    switch (status) {
+                      case ViewStatus.Error:
+                        return ListView(
+                          children: [
+                            Center(
+                              child: Text(
+                                "Có gì đó sai sai..\n Vui lòng thử lại.",
+                              ),
                             ),
-                          ),
-                          SizedBox(height: 8),
-                          Image.asset(
-                            'assets/images/global_error.png',
-                            fit: BoxFit.contain,
-                          ),
-                        ],
-                      );
-                    case ViewStatus.Loading:
-                    case ViewStatus.Completed:
-                      return ListView(
-                        children: [
-                          Hero(
-                            tag: CART_TAG,
-                            child: Container(
-                                margin: const EdgeInsets.only(top: 8),
-                                child: layoutAddress(model.campusDTO)),
-                          ),
+                            SizedBox(height: 8),
+                            Image.asset(
+                              'assets/images/global_error.png',
+                              fit: BoxFit.contain,
+                            ),
+                          ],
+                        );
+                      case ViewStatus.Loading:
+                      case ViewStatus.Completed:
+                        return ListView(
+                          children: [
+                            Hero(
+                              tag: CART_TAG,
+                              child: Container(
+                                  margin: const EdgeInsets.only(top: 8),
+                                  child: layoutAddress(model.campusDTO)),
+                            ),
 
-                          AutoScrollTag(
-                            index: 1,
-                            key: ValueKey(1),
-                            controller: controller,
-                            highlightColor: Colors.black.withOpacity(0.1),
-                            child: timeRecieve(model),
-                          ),
-                          // Container(child: buildBeanReward()),
-                          SizedBox(
-                              height: 8,
-                              child: Container(
-                                color: kBackgroundGrey[2],
-                              )),
-                          Container(child: layoutOrder(model.currentCart)),
-                          SizedBox(
-                              height: 8,
-                              child: Container(
-                                color: kBackgroundGrey[2],
-                              )),
-                          UpSellCollection(),
-                          SizedBox(
-                              height: 8,
-                              child: Container(
-                                color: kBackgroundGrey[2],
-                              )),
-                          layoutSubtotal(),
-                        ],
-                      );
+                            AutoScrollTag(
+                              index: 1,
+                              key: ValueKey(1),
+                              controller: controller,
+                              highlightColor: Colors.black.withOpacity(0.1),
+                              child: timeRecieve(model),
+                            ),
+                            // Container(child: buildBeanReward()),
+                            SizedBox(
+                                height: 8,
+                                child: Container(
+                                  color: kBackgroundGrey[2],
+                                )),
+                            Container(child: layoutOrder(model.currentCart)),
+                            SizedBox(
+                                height: 8,
+                                child: Container(
+                                  color: kBackgroundGrey[2],
+                                )),
+                            UpSellCollection(),
+                            SizedBox(
+                                height: 8,
+                                child: Container(
+                                  color: kBackgroundGrey[2],
+                                )),
+                            layoutSubtotal(),
+                          ],
+                        );
 
-                    default:
-                      return Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: LoadingScreen(),
-                      );
-                  }
+                      default:
+                        return Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: LoadingScreen(),
+                        );
+                    }
+                  } else
+                    return SizedBox.shrink();
                 },
               ),
       ),
