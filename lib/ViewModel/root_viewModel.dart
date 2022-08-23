@@ -30,6 +30,7 @@ class RootViewModel extends BaseModel {
   RootViewModel() {
     _productDAO = ProductDAO();
     listAvailableTimeSlots = [];
+    selectedMenu = null;
   }
 
   Future startUp() async {
@@ -175,7 +176,9 @@ class RootViewModel extends BaseModel {
             }
           }
         }
-
+        if (selectedMenu != null && !found) {
+          found = true;
+        }
         listAvailableTimeSlots = selectedMenu.timeSlots
             .where((element) =>
                 isTimeSlotAvailable(element.checkoutTime) &&

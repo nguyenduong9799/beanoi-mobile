@@ -48,21 +48,16 @@ class ProductDAO extends BaseDAO {
     Map<String, dynamic> params = const {},
   }) async {
     Response res = await request.get(
-      // 'stores/$storeId/gifts?menu-id=${menuId}',
-      'areas/${storeId}/menus/${menuId}/products',
+      'stores/$storeId/gifts?menu-id=${menuId}',
+      // 'areas/${storeId}/menus/${menuId}/products',
       queryParameters: {"page": page ?? 1, "size": size ?? DEFAULT_SIZE}
         ..addAll(params),
     );
 
     //final res = await Dio().get("http://api.dominos.reso.vn/api/v1/products");
-    var jsonList = res.data["data"] as List;
-    //metaDataDTO = MetaDataDTO.fromJson(res.data["metadata"]);
-    if (jsonList != null) {
-      List<ProductDTO> list =
-          jsonList.map((e) => ProductDTO.fromJson(e)).toList();
-      return list;
-    }
-    return null;
+    final products = ProductDTO.fromList(res.data["data"]);
+    metaDataDTO = MetaDataDTO.fromJson(res.data["metadata"]);
+    return products;
   }
 
   Future<List<ProductDTO>> getAllProductOfStore(int storeId, int menuID,

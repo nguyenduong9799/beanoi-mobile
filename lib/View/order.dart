@@ -205,8 +205,10 @@ class _OrderScreenState extends State<OrderScreen> {
               padding: EdgeInsets.all(8),
               child: Text(
                 'Chọn khung giờ giao hàng',
-                style: Get.theme.textTheme.headline2
-                    .copyWith(color: Colors.white, fontWeight: FontWeight.bold),
+                style: Get.theme.textTheme.headline2.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
             Expanded(
