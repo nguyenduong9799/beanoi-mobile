@@ -74,7 +74,7 @@ class _StorePromotionState extends State<StorePromotion> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  widget.dto.name,
+                                  widget.dto.name ?? "",
                                   style: Get.theme.textTheme.headline3
                                       .copyWith(color: Colors.white),
                                   overflow: TextOverflow.ellipsis,
@@ -84,7 +84,7 @@ class _StorePromotionState extends State<StorePromotion> {
                                   height: 8,
                                 ),
                                 Text(
-                                  widget.dto.supplierName,
+                                  widget.dto.supplierName ?? "",
                                   style: Get.theme.textTheme.headline3
                                       .copyWith(color: Colors.white),
                                   overflow: TextOverflow.ellipsis,
@@ -106,7 +106,7 @@ class _StorePromotionState extends State<StorePromotion> {
                           children: [
                             RichText(
                               text: TextSpan(
-                                  text: formatBean(widget.dto.price),
+                                  text: formatBean(widget.dto.price ?? 0),
                                   style: Get.theme.textTheme.headline3
                                       .copyWith(color: Colors.white),
                                   children: [

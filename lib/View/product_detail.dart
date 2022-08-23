@@ -127,7 +127,11 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                       child: RichText(
                           textAlign: TextAlign.end,
                           text: TextSpan(
-                              text: "+ " + widget.dto.bean.toString() + " ",
+                              text: "+ " +
+                                  (widget.dto.bean != null
+                                      ? widget.dto.bean.toString()
+                                      : "0") +
+                                  " ",
                               style: Get.theme.textTheme.headline3
                                   .copyWith(color: Colors.orange),
                               children: [
@@ -366,7 +370,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                             widget.dto.type != ProductType.GIFT_PRODUCT
                                 ? Flexible(
                                     child: Text(
-                                      formatPrice(model.total),
+                                      formatPrice(model.total) ?? "",
                                       style: Get.theme.textTheme.headline3
                                           .copyWith(color: Colors.white),
                                     ),
