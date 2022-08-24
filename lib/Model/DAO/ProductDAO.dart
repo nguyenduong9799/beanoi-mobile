@@ -97,25 +97,27 @@ class ProductDAO extends BaseDAO {
     return products;
   }
 
-  Future<List<MenuDTO>> getListGiftMenus(
+  Future<List<ProductDTO>> getListGiftMenus(
     int areaID, {
     int page,
     int size,
     int type,
     Map<String, dynamic> params = const {},
   }) async {
-    final res = await request.get(
-      'areas/$areaID/menus?type=2',
-      queryParameters: {"page": page ?? 1, "size": size ?? DEFAULT_SIZE}
-        ..addAll(params),
-    );
-    var jsonList = res.data["data"] as List;
-    //metaDataDTO = MetaDataDTO.fromJson(res.data["metadata"]);
-    if (jsonList != null) {
-      List<MenuDTO> list = jsonList.map((e) => MenuDTO.fromJson(e)).toList();
-      return list;
-    }
-    return null;
+    // final res = await request.get(
+    //   'stores/$areaID/gifts?menu-id=${}',
+    //   queryParameters: {"page": page ?? 1, "size": size ?? DEFAULT_SIZE}
+    //     ..addAll(params),
+    // );
+    // var jsonList = res.data["data"] as List;
+    // //metaDataDTO = MetaDataDTO.fromJson(res.data["metadata"]);
+    // if (jsonList != null) {
+    //   final products = ProductDTO.fromList(res.data["data"]);
+    // metaDataDTO = MetaDataDTO.fromJson(res.data["metadata"]);
+    final products = null;
+    return products;
+    // }
+    // return null;
   }
   // Future<List<ProductDTO>> getExtraProducts(
   //     int cat_id, String sup_id, int store_id) async {

@@ -45,6 +45,13 @@ class RootViewModel extends BaseModel {
     await Get.find<OrderViewModel>().getUpSellCollections();
   }
 
+  Future refreshMenu() async {
+    await Get.find<RootViewModel>().fetchStore();
+    await Get.find<HomeViewModel>().getSuppliers();
+    await Get.find<HomeViewModel>().getCollections();
+    await Get.find<OrderViewModel>().getUpSellCollections();
+  }
+
   Future getStores() async {
     setState(ViewStatus.Loading);
     StoreDAO dao = new StoreDAO();
@@ -62,8 +69,6 @@ class RootViewModel extends BaseModel {
     }
     setState(ViewStatus.Completed);
   }
-
-  getAllCampusesLocation() {}
 
   Future<void> setLocation(DestinationDTO destination, LocationDTO location,
       CampusDTO campus) async {
@@ -132,20 +137,22 @@ class RootViewModel extends BaseModel {
         return;
       }
       int option = 1;
-      showLoadingDialog();
-      Cart cart = await getCart();
+      // showLoadingDialog();
+      // Cart cart = await getCart();
+      Cart cart = Get.find<OrderViewModel>().currentCart;
       if (cart != null) {
         option = await showOptionDialog(
             "Bạn có chắc không? Đổi khung giờ rồi là giỏ hàng bị xóa đó!!");
       }
       if (option == 1) {
-        showLoadingDialog();
+        // showLoadingDialog();
         selectedMenu = menu;
-        Get.find<OrderViewModel>().removeCart();
+        await Get.find<OrderViewModel>().removeCart();
         await setStore(currentStore);
-        Get.find<RootViewModel>().startUp();
+        await refreshMenu();
+        // hideDialog();
       }
-      hideDialog();
+      // hideDialog();
     }
   }
 
@@ -160,10 +167,11 @@ class RootViewModel extends BaseModel {
       if (currentStore == null) {
         listStore = await _storeDAO.getStores(id: UNIBEAN_STORE);
         listMenu = await _menuDAO.getMenus(areaID: UNIBEAN_STORE);
-        currentStore = BussinessHandler.setSelectedTime(listStore[0]);
+        currentStore = listStore[0];
       } else {
-        listMenu = await _menuDAO.getMenus(areaID: currentStore.id);
-        listStore = await _storeDAO.getStores(id: currentStore.id);
+        if (listMenu == null) {
+          listMenu = await _menuDAO.getMenus(areaID: currentStore.id);
+        }
         bool found = false;
         if (selectedMenu == null) {
           selectedMenu = listMenu[0];
@@ -187,7 +195,6 @@ class RootViewModel extends BaseModel {
         printInfo(
             info: "listAvailableTimeSlots: ${listAvailableTimeSlots.length}");
         if (found == false) {
-          currentStore = BussinessHandler.setSelectedTime(currentStore);
           Cart cart = await getCart();
           if (cart != null) {
             await showStatusDialog(
@@ -197,17 +204,7 @@ class RootViewModel extends BaseModel {
             Get.find<OrderViewModel>().removeCart();
           }
         } else {
-          final currentDate = DateTime.now();
-          String currentTimeSlot = selectedMenu.timeFromTo[1];
-          var beanTime = new DateTime(
-            currentDate.year,
-            currentDate.month,
-            currentDate.day,
-            double.parse(currentTimeSlot.split(':')[0]).round(),
-            double.parse(currentTimeSlot.split(':')[1]).round(),
-          );
-          int differentTime = beanTime.difference(currentDate).inMilliseconds;
-          if (differentTime <= 0) {
+          if (!isCurrentMenuAvailable()) {
             int option = await showOptionDialog(
                 "Khung giờ cho ${currentStore.name} đã kết thúc \n "
                 "Đã hết giờ chốt đơn cho khung giờ \n ${selectedMenu.menuName}.",

@@ -14,7 +14,7 @@ class HomeViewModel extends BaseModel {
   ProductDAO _productDAO;
 
   List<SupplierDTO> suppliers;
-  List<BlogDTO> blogs;
+  // List<BlogDTO> blogs;
   List<CollectionDTO> homeCollections;
 
   Map<int, ProductDTO> prodInCollections;
@@ -36,7 +36,7 @@ class HomeViewModel extends BaseModel {
         setState(ViewStatus.Error);
         return;
       }
-      if (currentStore.selectedTimeSlot == null) {
+      if (currentMenu == null) {
         suppliers = null;
         setState(ViewStatus.Completed);
         return;
@@ -44,9 +44,9 @@ class HomeViewModel extends BaseModel {
 
       suppliers =
           await _storeDAO.getSuppliers(currentStore.id, currentMenu.menuId);
-      if (blogs == null) {
-        blogs = await _storeDAO.getBlogs(currentStore.id);
-      }
+      // if (blogs == null) {
+      //   blogs = await _storeDAO.getBlogs(currentStore.id);
+      // }
       await Future.delayed(Duration(microseconds: 500));
       // check truong hop product tra ve rong (do khong co menu nao trong TG do)
       setState(ViewStatus.Completed);
@@ -114,7 +114,7 @@ class HomeViewModel extends BaseModel {
         double.parse(currentTimeSlot.split(':')[1]).round(),
       );
       int differentTime = beanTime.difference(currentDate).inMilliseconds;
-      if (differentTime <= 0) {
+      if (!root.isCurrentMenuAvailable()) {
         homeCollections = null;
         setState(ViewStatus.Completed);
         return;

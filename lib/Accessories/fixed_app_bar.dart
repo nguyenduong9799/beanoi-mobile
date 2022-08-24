@@ -352,7 +352,7 @@ class _FixedAppBarState extends State<FixedAppBar> {
                                 style: isSelect
                                     ? Get.theme.textTheme.headline5
                                         .copyWith(color: Colors.white)
-                                    : Get.theme.textTheme.headline6),
+                                    : Get.theme.textTheme.headline5),
                           ),
                         ),
                       );
@@ -440,6 +440,7 @@ class _FixedAppBarState extends State<FixedAppBar> {
   Widget _buildTimeAlert() {
     return ScopedModelDescendant<RootViewModel>(
         builder: (context, child, model) {
+      MenuDTO currentMenu = model.selectedMenu;
       final currentDate = DateTime.now();
       final status = model.status;
       if (status == ViewStatus.Loading) {
@@ -457,7 +458,6 @@ class _FixedAppBarState extends State<FixedAppBar> {
           ),
         );
       }
-      MenuDTO currentMenu = model.selectedMenu;
       if (currentMenu == null) {
         return SizedBox();
       }
@@ -472,8 +472,8 @@ class _FixedAppBarState extends State<FixedAppBar> {
 
       int differentTime = beanTime.difference(currentDate).inMilliseconds;
 
-      MenuDTO nextMenu = model.listMenu
-          ?.firstWhere((item) => item.isAvailable, orElse: () => null);
+      // MenuDTO nextMenu = model.listMenu
+      //     ?.firstWhere((item) => item.isAvailable, orElse: () => null);
 
       DateTime arrive = DateFormat("HH:mm:ss").parse(currentMenu.timeFromTo[1]);
       return ValueListenableBuilder<double>(
@@ -493,7 +493,7 @@ class _FixedAppBarState extends State<FixedAppBar> {
               height: 48,
               child: Align(
                 alignment: Alignment.centerLeft,
-                child: model.isMenuAvailable(currentMenu)
+                child: model.isCurrentMenuAvailable()
                     ? Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -525,18 +525,13 @@ class _FixedAppBarState extends State<FixedAppBar> {
                           Expanded(
                             // width: Get.width * 0.7,
                             child: Text(
-                              nextMenu != null
-                                  ? "Khung giờ hiện tại đã đóng, bạn vui lòng xem khung giờ kế tiếp nha 😉."
-                                  : "Hiện tại các khung giờ đều đã đóng. Hẹn gặp bạn hôm sau nhé 😥.",
-                              style: kTitleTextStyle.copyWith(
-                                color: Colors.black87,
-                                fontSize: 12,
-                                fontWeight: FontWeight.w100,
-                              ),
-                              textAlign: nextMenu != null
-                                  ? TextAlign.left
-                                  : TextAlign.center,
-                            ),
+                                "Khung giờ hiện tại đã đóng, bạn vui lòng xem khung giờ kế tiếp nha 😉.",
+                                style: kTitleTextStyle.copyWith(
+                                  color: Colors.black87,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w100,
+                                ),
+                                textAlign: TextAlign.left),
                           ),
                           SizedBox(width: 8),
                           // nextMenu != null

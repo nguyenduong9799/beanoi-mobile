@@ -24,7 +24,7 @@ class HomeCollectionViewModel extends BaseModel {
         setState(ViewStatus.Error);
         return;
       }
-      if (currentStore.selectedTimeSlot == null) {
+      if (currentMenu == null) {
         homeCollections = null;
         setState(ViewStatus.Completed);
         return;

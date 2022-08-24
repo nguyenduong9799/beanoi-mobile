@@ -25,7 +25,13 @@ class MenuDTO {
   MenuDTO.fromJson(Map<String, dynamic> json) {
     menuId = json['menu_id'];
     isAvailable = json['is_available'];
-    timeFromTo = json['time_from_to'].cast<String>();
+    // timeFromTo = json['time_from_to'].cast<String>();
+    if (json['time_from_to'] != null) {
+      timeFromTo = [];
+      json['time_from_to'].forEach((v) {
+        timeFromTo.add(v);
+      });
+    }
     if (json['time_slots'] != null) {
       timeSlots = <TimeSlots>[];
       json['time_slots'].forEach((v) {
@@ -34,7 +40,13 @@ class MenuDTO {
     }
     timeFromDb = json['time_from_db'];
     timeToDb = json['time_to_db'];
-    dayFilter = json['day_filter'].cast<int>();
+    // dayFilter = json['day_filter'].cast<int>();
+    if (json['day_filter'] != null) {
+      dayFilter = [];
+      json['day_filter'].forEach((v) {
+        dayFilter.add(v);
+      });
+    }
     dayFilterDb = json['day_filter_db'];
     menuName = json['menu_name'];
     type = json['type'];

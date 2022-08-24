@@ -38,12 +38,12 @@ class GiftViewModel extends BaseModel {
       RootViewModel root = Get.find<RootViewModel>();
       currentMenu = root.selectedMenu;
       currentStore = root.currentStore;
-      listGiftMenu = await _productDAO.getListGiftMenus(currentStore.id);
+      gifts = await _productDAO.getListGiftMenus(currentStore.id);
       if (root.status == ViewStatus.Error) {
         setState(ViewStatus.Error);
         return;
       }
-      if (currentStore.selectedTimeSlot == null) {
+      if (currentMenu == null) {
         gifts = null;
         setState(ViewStatus.Completed);
         return;
@@ -62,7 +62,7 @@ class GiftViewModel extends BaseModel {
   Future<void> getMoreGifts() async {
     RootViewModel root = Get.find<RootViewModel>();
     currentMenu = root.selectedMenu;
-    listGiftMenu = await _productDAO.getListGiftMenus(currentStore.id);
+    gifts = await _productDAO.getListGiftMenus(currentStore.id);
     try {
       setState(ViewStatus.LoadMore);
       gifts += await _productDAO.getGifts(
@@ -85,7 +85,7 @@ class GiftViewModel extends BaseModel {
     RootViewModel root = Get.find<RootViewModel>();
     CampusDTO currentStore = root.currentStore;
     currentMenu = root.selectedMenu;
-    listGiftMenu = await _productDAO.getListGiftMenus(currentStore.id);
+    gifts = await _productDAO.getListGiftMenus(currentStore.id);
 
     try {
       setState(ViewStatus.Loading);

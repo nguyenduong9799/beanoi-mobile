@@ -23,21 +23,21 @@ class BussinessHandler {
     return total;
   }
 
-  static CampusDTO setSelectedTime(CampusDTO campus) {
-    campus.selectedTimeSlot = null;
-    if (campus.timeSlots != null && campus.timeSlots.isNotEmpty) {
-      for (int i = 0; i < campus.timeSlots.length; i++) {
-        if (campus.timeSlots[i].available) {
-          campus.selectedTimeSlot = campus.timeSlots[i];
-          break;
-        }
-      }
-      if (campus.selectedTimeSlot == null) {
-        campus.selectedTimeSlot = campus.timeSlots[campus.timeSlots.length - 1];
-      }
-    }
-    return campus;
-  }
+  // static CampusDTO setSelectedTime(CampusDTO campus) {
+  //   campus.selectedTimeSlot = null;
+  //   if (campus.timeSlots != null && campus.timeSlots.isNotEmpty) {
+  //     for (int i = 0; i < campus.timeSlots.length; i++) {
+  //       if (campus.timeSlots[i].available) {
+  //         campus.selectedTimeSlot = campus.timeSlots[i];
+  //         break;
+  //       }
+  //     }
+  //     if (campus.selectedTimeSlot == null) {
+  //       campus.selectedTimeSlot = campus.timeSlots[campus.timeSlots.length - 1];
+  //     }
+  //   }
+  //   return campus;
+  // }
 
   // static MenuDTO setSelectedMenus(MenuDTO menu) {
   //   menu = null;

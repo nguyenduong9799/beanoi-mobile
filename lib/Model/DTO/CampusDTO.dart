@@ -2,8 +2,8 @@ import 'index.dart';
 
 class CampusDTO extends StoreDTO {
   List<LocationDTO> locations;
-  List<TimeSlot> timeSlots;
-  TimeSlot selectedTimeSlot;
+  // List<TimeSlot> timeSlots;
+  // TimeSlot selectedTimeSlot;
 
   CampusDTO({
     int id,
@@ -21,17 +21,17 @@ class CampusDTO extends StoreDTO {
       campusDTO.locations = list.map((e) => LocationDTO.fromJson(e)).toList();
     }
 
-    if (json['time_slots'] != null) {
-      var list = json['time_slots'] as List;
-      campusDTO.timeSlots = list.map((e) {
-        return TimeSlot.fromJson(e);
-      }).toList();
-    }
+    // if (json['time_slots'] != null) {
+    //   var list = json['time_slots'] as List;
+    //   campusDTO.timeSlots = list.map((e) {
+    //     return TimeSlot.fromJson(e);
+    //   }).toList();
+    // }
 
-    if (json['selected_time_slot'] != null) {
-      campusDTO.selectedTimeSlot =
-          TimeSlot.fromJson(json['selected_time_slot']);
-    }
+    // if (json['selected_time_slot'] != null) {
+    //   campusDTO.selectedTimeSlot =
+    //       TimeSlot.fromJson(json['selected_time_slot']);
+    // }
 
     return campusDTO;
   }
@@ -44,8 +44,8 @@ class CampusDTO extends StoreDTO {
       "name": name,
       "locations": locations.map((e) => e.toJson()).toList(),
       "is_available": available,
-      "time_slots": timeSlots.map((e) => e.toJson()).toList(),
-      "selected_time_slot": selectedTimeSlot?.toJson()
+      // "time_slots": timeSlots.map((e) => e.toJson()).toList(),
+      // "selected_time_slot": selectedTimeSlot?.toJson()
     };
   }
 }
@@ -124,10 +124,18 @@ class TimeSlot {
   List<dynamic> arriveRange;
   bool available;
 
-  TimeSlot({this.menuId, this.from, this.to, this.available, this.arrive, this.arriveRange = const []});
+  TimeSlot(
+      {this.menuId,
+      this.from,
+      this.to,
+      this.available,
+      this.arrive,
+      this.arriveRange = const []});
 
   factory TimeSlot.fromJson(dynamic json) {
-    var arriveRange = json['arrive_time_range'] != "null" ? json['arrive_time_range'] : ["00:00:00","03:00:00"];
+    var arriveRange = json['arrive_time_range'] != "null"
+        ? json['arrive_time_range']
+        : ["00:00:00", "03:00:00"];
     print(json);
     var timeSlot = TimeSlot(
         menuId: json['menu_id'],

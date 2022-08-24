@@ -295,13 +295,13 @@ class OrderViewModel extends BaseModel {
     try {
       loadingUpsell = true;
       RootViewModel root = Get.find<RootViewModel>();
-      var currentStore = root.currentStore;
+      // var currentStore = root.currentStore;
       var currentMenu = root.selectedMenu;
       if (root.status == ViewStatus.Error) {
         setState(ViewStatus.Error);
         return;
       }
-      if (currentStore.selectedTimeSlot == null) {
+      if (currentMenu == null) {
         upSellCollections = null;
         setState(ViewStatus.Completed);
         return;

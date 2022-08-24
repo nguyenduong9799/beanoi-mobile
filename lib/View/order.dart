@@ -1013,10 +1013,8 @@ class _OrderScreenState extends State<OrderScreen> {
               orElse: () => null,
             );
             String errorMsg = null;
-            var isMenuAvailable = Get.find<RootViewModel>()
-                .currentStore
-                .selectedTimeSlot
-                .available;
+            var isMenuAvailable =
+                Get.find<RootViewModel>().isCurrentMenuAvailable();
             if (model.errorMessage != null) {
               errorMsg = model.errorMessage;
             } else if (location == null) {
