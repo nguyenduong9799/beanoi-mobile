@@ -178,7 +178,7 @@ Future<CampusDTO> getStore() async {
   return null;
 }
 
-Future<void> setMenus(MenuDTO dto) async {
+Future<void> setMenu(MenuDTO dto) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   if (dto != null) {
     print(dto.toJson().toString());

@@ -87,13 +87,17 @@ class RootViewModel extends BaseModel {
           Get.find<OrderViewModel>().removeCart();
           currentStore = campus;
           setSelectedLocation(currentStore, location, destination);
+
           await setStore(currentStore);
+          await getListMenu();
+
           notifyListeners();
           hideDialog();
           startUp();
         }
       } else {
         setSelectedLocation(currentStore, location, destination);
+        await getListMenu();
         await setStore(currentStore);
         notifyListeners();
       }
@@ -102,6 +106,12 @@ class RootViewModel extends BaseModel {
           "Cửa hàng đang tạm đóng 😓");
     }
     Get.back();
+  }
+
+  Future<void> getListMenu() async {
+    currentStore = await getStore();
+    MenuDAO _menuDAO = new MenuDAO();
+    listMenu = await _menuDAO.getMenus(areaID: currentStore.id);
   }
 
   Future<void> processChangeLocation() async {
@@ -147,6 +157,7 @@ class RootViewModel extends BaseModel {
       if (option == 1) {
         // showLoadingDialog();
         selectedMenu = menu;
+        await setMenu(selectedMenu);
         await Get.find<OrderViewModel>().removeCart();
         await setStore(currentStore);
         await refreshMenu();
@@ -170,14 +181,19 @@ class RootViewModel extends BaseModel {
         currentStore = listStore[0];
       } else {
         if (listMenu == null) {
-          listMenu = await _menuDAO.getMenus(areaID: currentStore.id);
+          await getListMenu();
         }
         bool found = false;
+        if (selectedMenu == null) {
+          selectedMenu = await getMenus();
+        }
+
         if (selectedMenu == null) {
           selectedMenu = listMenu[0];
           for (MenuDTO element in listMenu) {
             if (isMenuAvailable(element)) {
               selectedMenu = element;
+              setMenu(selectedMenu);
               found = true;
               break;
             }
