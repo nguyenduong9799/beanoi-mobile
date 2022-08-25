@@ -97,25 +97,25 @@ class _VoucherAppBarState extends State<VoucherAppBar> {
             ),
       title: Text(widget.title, style: Get.theme.textTheme.headline2),
       // iconTheme: Icons.plus_one,
-      actions: <Widget>[
-        InkWell(
-          onTap: () {
-            inputDialog(
-              'Thêm Mã Khuyến Mãi',
-              'Xác nhận',
-              maxLines: 1,
-            );
-          },
-          borderRadius: BorderRadius.circular(25),
-          child: Container(
-            padding: EdgeInsets.all(15),
-            child: Icon(
-              Icons.wallet_giftcard_outlined,
-              color: kPrimary,
-            ),
-          ),
-        )
-      ],
+      // actions: <Widget>[
+      //   InkWell(
+      //     onTap: () {
+      //       inputDialog(
+      //         'Thêm Mã Khuyến Mãi',
+      //         'Xác nhận',
+      //         maxLines: 1,
+      //       );
+      //     },
+      //     borderRadius: BorderRadius.circular(25),
+      //     child: Container(
+      //       padding: EdgeInsets.all(15),
+      //       child: Icon(
+      //         Icons.wallet_giftcard_outlined,
+      //         color: kPrimary,
+      //       ),
+      //     ),
+      //   )
+      // ],
     );
   }
 }

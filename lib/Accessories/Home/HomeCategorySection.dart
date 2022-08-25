@@ -112,12 +112,13 @@ class _HomeCategorySectionState extends State<HomeCategorySection> {
                 }
               },
               child: Container(
+                padding: EdgeInsets.all(3),
                 width: Get.width / 4 - 20,
                 child: Column(
                   children: [
                     Container(
-                      width: Get.width / 4 - 30,
-                      height: Get.width / 4 - 30,
+                      width: Get.width / 4 - 40,
+                      height: Get.width / 4 - 40,
                       decoration:
                           BoxDecoration(borderRadius: BorderRadius.circular(8)),
                       child: ColorFiltered(

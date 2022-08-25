@@ -76,9 +76,9 @@ class VoucherCard extends StatelessWidget {
 
     return ClipPath(
       clipper: VoucherClipper(
-        borderRadius: borderRadius,
-        curveRadius: curveRadius,
-        curvePosition: curvePosition,
+        borderRadius: 5,
+        curveRadius: 10,
+        curvePosition: 140,
         curveAxis: curveAxis,
         direction: Directionality.of(context),
         clockwise: clockwise,

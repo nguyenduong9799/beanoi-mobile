@@ -17,8 +17,8 @@ import 'package:unidelivery_mobile/Utils/index.dart';
 import 'index.dart';
 
 class OrderViewModel extends BaseModel {
-  List<VoucherDTO> vouchers;
-
+  List<VoucherDTO> currentVouchers;
+  List<VoucherDTO> fetchedVouchers = [];
   OrderAmountDTO orderAmount;
   Map<String, dynamic> listPayments;
   CampusDTO campusDTO;
@@ -38,11 +38,24 @@ class OrderViewModel extends BaseModel {
     _collectionDAO = CollectionDAO();
     loadingUpsell = false;
     currentCart = null;
+    // filterListVouchers = [];
   }
+  void showFilteredVoucher() {}
 
   Future<void> getVouchers() async {
-    final voucherList = await promoDao.getPromotions();
-    vouchers = voucherList;
+    fetchedVouchers = await promoDao.getPromotions();
+    currentVouchers = fetchedVouchers;
+    notifyListeners();
+  }
+
+  void getFilterVoucher(String search) {
+    List<VoucherDTO> filterListVouchers = [];
+    filterListVouchers = fetchedVouchers
+        .where((voucher) => voucher.voucherCode.contains(search))
+        .toList();
+    if (search != null) {}
+    if (search == null) currentVouchers = fetchedVouchers;
+    currentVouchers = filterListVouchers;
     notifyListeners();
   }
 
