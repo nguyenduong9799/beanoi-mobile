@@ -34,7 +34,7 @@ class RootViewModel extends BaseModel {
   }
 
   Future startUp() async {
-    await Get.find<RootViewModel>().fetchStore();
+    await fetchStore();
     await Get.find<HomeViewModel>().getSuppliers();
     await Get.find<BlogsViewModel>().getBlogs();
     await Get.find<BlogsViewModel>().getDialogBlog();
@@ -89,7 +89,7 @@ class RootViewModel extends BaseModel {
           setSelectedLocation(currentStore, location, destination);
 
           await setStore(currentStore);
-          await getListMenu();
+          await getListMenu(currentStore);
 
           notifyListeners();
           hideDialog();
@@ -97,8 +97,8 @@ class RootViewModel extends BaseModel {
         }
       } else {
         setSelectedLocation(currentStore, location, destination);
-        await getListMenu();
         await setStore(currentStore);
+        await getListMenu(currentStore);
         notifyListeners();
       }
     } else {
@@ -108,10 +108,50 @@ class RootViewModel extends BaseModel {
     Get.back();
   }
 
-  Future<void> getListMenu() async {
-    currentStore = await getStore();
+  Future<void> getListMenu(CampusDTO currentStore) async {
     MenuDAO _menuDAO = new MenuDAO();
     listMenu = await _menuDAO.getMenus(areaID: currentStore.id);
+    selectedMenu = listMenu[0];
+    bool found = false;
+
+    for (MenuDTO element in listMenu) {
+      if (isMenuAvailable(element)) {
+        selectedMenu = element;
+        // setMenu(selectedMenu);
+        found = true;
+        break;
+      }
+    }
+    listAvailableTimeSlots = selectedMenu.timeSlots
+        .where((element) =>
+            isTimeSlotAvailable(element.checkoutTime) &&
+            element.isActive &&
+            element.isAvailable)
+        .toList();
+    printInfo(info: "listAvailableTimeSlots: ${listAvailableTimeSlots.length}");
+    if (found == false) {
+      Cart cart = await getCart();
+      if (cart != null) {
+        await showStatusDialog(
+            "assets/images/global_error.png",
+            "Khung giờ đã thay đổi",
+            "Các sản phẩm trong giỏ hàng đã bị xóa, còn nhiều món ngon đang chờ bạn nhé");
+        Get.find<OrderViewModel>().removeCart();
+      }
+    } else {
+      if (!isCurrentMenuAvailable()) {
+        int option = await showOptionDialog(
+            "Khung giờ cho ${currentStore.name} đã kết thúc \n "
+            "Đã hết giờ chốt đơn cho khung giờ \n ${selectedMenu.menuName}.",
+            firstOption: "Chọn khu vực",
+            secondOption: "Đóng");
+        if (option == 0) {
+          await changeCampusDialog(Get.find<RootViewModel>());
+        }
+        // remove cart
+        Get.find<OrderViewModel>().removeCart();
+      }
+    }
   }
 
   Future<void> processChangeLocation() async {
@@ -157,7 +197,7 @@ class RootViewModel extends BaseModel {
       if (option == 1) {
         // showLoadingDialog();
         selectedMenu = menu;
-        await setMenu(selectedMenu);
+        // await setMenu(selectedMenu);
         await Get.find<OrderViewModel>().removeCart();
         await setStore(currentStore);
         await refreshMenu();
@@ -177,39 +217,34 @@ class RootViewModel extends BaseModel {
       currentStore = await getStore();
       if (currentStore == null) {
         listStore = await _storeDAO.getStores(id: UNIBEAN_STORE);
-        listMenu = await _menuDAO.getMenus(areaID: UNIBEAN_STORE);
+        // listMenu = await _menuDAO.getMenus(areaID: UNIBEAN_STORE);
         currentStore = listStore[0];
+        await getListMenu(currentStore);
       } else {
         if (listMenu == null) {
-          await getListMenu();
+          await getListMenu(currentStore);
         }
         bool found = false;
-        if (selectedMenu == null) {
-          selectedMenu = await getMenus();
-        }
 
         if (selectedMenu == null) {
           selectedMenu = listMenu[0];
           for (MenuDTO element in listMenu) {
             if (isMenuAvailable(element)) {
               selectedMenu = element;
-              setMenu(selectedMenu);
+              // setMenu(selectedMenu);
               found = true;
               break;
             }
           }
         }
         if (selectedMenu != null && !found) {
-          found = true;
+          listAvailableTimeSlots = selectedMenu.timeSlots
+              .where((element) =>
+                  isTimeSlotAvailable(element.checkoutTime) &&
+                  element.isActive &&
+                  element.isAvailable)
+              .toList();
         }
-        listAvailableTimeSlots = selectedMenu.timeSlots
-            .where((element) =>
-                isTimeSlotAvailable(element.checkoutTime) &&
-                element.isActive &&
-                element.isAvailable)
-            .toList();
-        printInfo(
-            info: "listAvailableTimeSlots: ${listAvailableTimeSlots.length}");
         if (found == false) {
           Cart cart = await getCart();
           if (cart != null) {
