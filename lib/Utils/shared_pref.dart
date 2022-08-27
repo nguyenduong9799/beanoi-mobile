@@ -186,7 +186,7 @@ Future<void> setMenu(MenuDTO dto) async {
   }
 }
 
-Future<MenuDTO> getMenus() async {
+Future<MenuDTO> getMenu() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   String encodedCart = prefs.getString('MENUS');
   if (encodedCart != null) {
