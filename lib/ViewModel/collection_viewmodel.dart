@@ -19,18 +19,18 @@ class HomeCollectionViewModel extends BaseModel {
       setState(ViewStatus.Loading);
       RootViewModel root = Get.find<RootViewModel>();
       var currentStore = root.currentStore;
+      MenuDTO currentMenu = root.selectedMenu;
       if (root.status == ViewStatus.Error) {
         setState(ViewStatus.Error);
         return;
       }
-      if (currentStore.selectedTimeSlot == null) {
+      if (currentMenu == null) {
         homeCollections = null;
         setState(ViewStatus.Completed);
         return;
       }
-      homeCollections = await _collectionDAO.getCollections(
-          currentStore.selectedTimeSlot,
-          params: {"show-on-home": true});
+      homeCollections = await _collectionDAO
+          .getCollections(currentMenu.menuId, params: {"show-on-home": true});
       await Future.delayed(Duration(microseconds: 500));
       setState(ViewStatus.Completed);
     } catch (e) {

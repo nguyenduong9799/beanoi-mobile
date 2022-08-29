@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_countdown_timer/index.dart';
@@ -6,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Enums/index.dart';
+import 'package:unidelivery_mobile/Model/DTO/MenuDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/Utils/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
@@ -284,7 +287,7 @@ class _FixedAppBarState extends State<FixedAppBar> {
                 children: [
                   Text.rich(
                     TextSpan(
-                      text: "Giờ giao hàng ",
+                      text: "Khung giờ đặt đơn",
                       style: Get.theme.textTheme.headline5,
                       children: [
                         // WidgetSpan(
@@ -310,23 +313,25 @@ class _FixedAppBarState extends State<FixedAppBar> {
                     //   width: 4,
                     // ),
                     itemBuilder: (context, index) {
-                      DateTime arrive = DateFormat("HH:mm:ss")
-                          .parse(model.currentStore.timeSlots[index].arrive);
-                      DateTime arriveRangeFrom = arrive;
-                      DateTime arriveRangeTo =
-                          arrive.add(Duration(minutes: 30));
-                      if (model.currentStore.timeSlots[index].arriveRange
-                              .length ==
-                          2) {
-                        arriveRangeFrom = DateFormat("HH:mm:ss").parse(
-                            model.currentStore.timeSlots[index].arriveRange[0]);
-                        arriveRangeTo = DateFormat("HH:mm:ss").parse(
-                            model.currentStore.timeSlots[index].arriveRange[1]);
-                      }
+                      // DateTime timeFromTo = DateFormat("HH:mm:ss").parse(
+                      //     model.listMenu[index].timeSlots[index].arriveFrom);
+                      // DateTime arriveFrom = timeFromTo;
+                      // DateTime arrive = DateFormat("HH:mm:ss")
+                      //     .parse(model.currentStore.timeSlots[index].arrive);
+                      // DateTime arriveRangeFrom = arrive;
+                      // DateTime arriveRangeTo =
+                      //     arrive.add(Duration(minutes: 30));
+                      // if (model.currentStore.timeSlots[index].arriveRange
+                      //         .length ==
+                      //     2) {
+                      //   arriveRangeFrom = DateFormat("HH:mm:ss").parse(
+                      //       model.currentStore.timeSlots[index].arriveRange[0]);
+                      //   arriveRangeTo = DateFormat("HH:mm:ss").parse(
+                      //       model.currentStore.timeSlots[index].arriveRange[1]);
+                      // }
 
-                      bool isSelect =
-                          model.currentStore.selectedTimeSlot.arrive ==
-                              model.currentStore.timeSlots[index].arrive;
+                      bool isSelect = model.selectedMenu.menuId ==
+                          model.listMenu[index].menuId;
                       return AnimatedContainer(
                         padding: EdgeInsets.only(left: 8, right: 8),
                         margin: EdgeInsets.only(right: 8),
@@ -338,25 +343,23 @@ class _FixedAppBarState extends State<FixedAppBar> {
                         duration: Duration(milliseconds: 300),
                         child: InkWell(
                           onTap: () async {
-                            if (model.currentStore.selectedTimeSlot != null) {
-                              model.confirmTimeSlot(
-                                  model.currentStore.timeSlots[index]);
+                            if (model.selectedMenu != null) {
+                              model.confirmMenu(model.listMenu[index]);
                             }
                           },
                           child: Center(
-                            child: Text(
-                                "${DateFormat("HH:mm").format(arriveRangeFrom)} - ${DateFormat("HH:mm").format(arriveRangeTo)}",
+                            child: Text(model.listMenu[index].menuName,
                                 style: isSelect
                                     ? Get.theme.textTheme.headline5
                                         .copyWith(color: Colors.white)
-                                    : Get.theme.textTheme.headline6),
+                                    : Get.theme.textTheme.headline5),
                           ),
                         ),
                       );
                     },
                     shrinkWrap: true,
                     scrollDirection: Axis.horizontal,
-                    itemCount: model.currentStore.timeSlots.length,
+                    itemCount: model.listMenu.length,
                   )),
               SizedBox(height: 8),
             ],
@@ -437,6 +440,7 @@ class _FixedAppBarState extends State<FixedAppBar> {
   Widget _buildTimeAlert() {
     return ScopedModelDescendant<RootViewModel>(
         builder: (context, child, model) {
+      MenuDTO currentMenu = model.selectedMenu;
       final currentDate = DateTime.now();
       final status = model.status;
       if (status == ViewStatus.Loading) {
@@ -454,11 +458,10 @@ class _FixedAppBarState extends State<FixedAppBar> {
           ),
         );
       }
-      TimeSlot selectedTimeSlot = model.currentStore?.selectedTimeSlot;
-      if (selectedTimeSlot == null) {
+      if (currentMenu == null) {
         return SizedBox();
       }
-      String currentTimeSlot = selectedTimeSlot?.to;
+      String currentTimeSlot = currentMenu.timeFromTo[1];
       var beanTime = new DateTime(
         currentDate.year,
         currentDate.month,
@@ -468,11 +471,11 @@ class _FixedAppBarState extends State<FixedAppBar> {
       );
 
       int differentTime = beanTime.difference(currentDate).inMilliseconds;
-      bool isAvailableMenu = selectedTimeSlot.available;
-      TimeSlot nextTimeSlot = model.currentStore.timeSlots
-          ?.firstWhere((time) => time.available, orElse: () => null);
 
-      DateTime arrive = DateFormat("HH:mm:ss").parse(selectedTimeSlot.arrive);
+      // MenuDTO nextMenu = model.listMenu
+      //     ?.firstWhere((item) => item.isAvailable, orElse: () => null);
+
+      DateTime arrive = DateFormat("HH:mm:ss").parse(currentMenu.timeFromTo[1]);
       return ValueListenableBuilder<double>(
         valueListenable: this.widget.notifier,
         builder: (context, value, child) {
@@ -490,13 +493,13 @@ class _FixedAppBarState extends State<FixedAppBar> {
               height: 48,
               child: Align(
                 alignment: Alignment.centerLeft,
-                child: isAvailableMenu
+                child: model.isCurrentMenuAvailable()
                     ? Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                             Text.rich(
                               TextSpan(
-                                text: "Chốt đơn: ",
+                                text: "Kết thúc : ",
                                 style: Get.theme.textTheme.headline5,
                                 children: [
                                   TextSpan(
@@ -522,35 +525,29 @@ class _FixedAppBarState extends State<FixedAppBar> {
                           Expanded(
                             // width: Get.width * 0.7,
                             child: Text(
-                              nextTimeSlot != null
-                                  ? "Khung giờ đã đóng bạn vui lòng xem chuyến hàng kế tiếp nha 😉."
-                                  : "Hiện tại các khung giờ đều đã đóng. Hẹn gặp bạn hôm sau nhé 😥.",
-                              style: kTitleTextStyle.copyWith(
-                                color: Colors.black87,
-                                fontSize: 12,
-                                fontWeight: FontWeight.w100,
-                              ),
-                              textAlign: nextTimeSlot != null
-                                  ? TextAlign.left
-                                  : TextAlign.center,
-                            ),
+                                "Khung giờ hiện tại đã đóng, bạn vui lòng xem khung giờ kế tiếp nha 😉.",
+                                style: kTitleTextStyle.copyWith(
+                                  color: Colors.black87,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w100,
+                                ),
+                                textAlign: TextAlign.left),
                           ),
                           SizedBox(width: 8),
-                          nextTimeSlot != null
-                              ? InkWell(
-                                  onTap: () {
-                                    if (model.currentStore.selectedTimeSlot !=
-                                        null) {
-                                      model.confirmTimeSlot(nextTimeSlot);
-                                    }
-                                  },
-                                  child: Text(
-                                    "Xem ngay",
-                                    style: TextStyle(
-                                        color: kPrimary, fontSize: 12),
-                                  ),
-                                )
-                              : SizedBox(),
+                          // nextMenu != null
+                          //     ? InkWell(
+                          //         onTap: () {
+                          //           if (model.selectedMenu != null) {
+                          //             model.confirmMenu(nextMenu);
+                          //           }
+                          //         },
+                          //         child: Text(
+                          //           "Xem ngay",
+                          //           style: TextStyle(
+                          //               color: kPrimary, fontSize: 12),
+                          //         ),
+                          //       )
+                          //     : SizedBox(),
                         ],
                       ),
               ),
@@ -603,7 +600,7 @@ class _BeanTimeCountdownState extends State<BeanTimeCountdown> {
               await showStatusDialog(
                 "assets/images/global_error.png",
                 "Khung giờ đã kết thúc",
-                "Đã hết giờ chốt đơn cho khung giờ ${DateFormat("HH:mm").format(widget.arriveTime)} - ${DateFormat("HH:mm").format(widget.arriveTime.add(Duration(minutes: 30)))}. \n Hẹn gặp bạn ở khung giờ khác nhé 😢.",
+                "Đã hết giờ chốt đơn cho khung giờ hiện tại. \n Hẹn gặp bạn ở khung giờ khác nhé 😢.",
               );
               // remove cart
               await model.clearCart();

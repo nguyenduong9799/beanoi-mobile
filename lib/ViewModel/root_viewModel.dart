@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -6,7 +8,9 @@ import 'package:unidelivery_mobile/Accessories/index.dart';
 import 'package:unidelivery_mobile/Bussiness/BussinessHandler.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Enums/index.dart';
+import 'package:unidelivery_mobile/Model/DAO/MenuDAO.dart';
 import 'package:unidelivery_mobile/Model/DAO/index.dart';
+import 'package:unidelivery_mobile/Model/DTO/MenuDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/Utils/index.dart';
 
@@ -16,16 +20,21 @@ class RootViewModel extends BaseModel {
   String version;
   bool changeAddress = false;
   CampusDTO currentStore;
+  MenuDTO selectedMenu;
+  List<MenuDTO> listMenu;
+  List<CampusDTO> listStore;
   List<CampusDTO> campuses;
-
   ProductDAO _productDAO;
+  List<TimeSlots> listAvailableTimeSlots;
 
   RootViewModel() {
     _productDAO = ProductDAO();
+    listAvailableTimeSlots = [];
+    selectedMenu = null;
   }
 
   Future startUp() async {
-    await Get.find<RootViewModel>().fetchStore();
+    await fetchStore();
     await Get.find<HomeViewModel>().getSuppliers();
     await Get.find<BlogsViewModel>().getBlogs();
     await Get.find<BlogsViewModel>().getDialogBlog();
@@ -33,6 +42,13 @@ class RootViewModel extends BaseModel {
     await Get.find<OrderHistoryViewModel>().getNewOrder();
     await Get.find<GiftViewModel>().getNearlyGiftExchange();
     await Get.find<GiftViewModel>().getGifts();
+    await Get.find<OrderViewModel>().getUpSellCollections();
+  }
+
+  Future refreshMenu() async {
+    await Get.find<RootViewModel>().fetchStore();
+    await Get.find<HomeViewModel>().getSuppliers();
+    await Get.find<HomeViewModel>().getCollections();
     await Get.find<OrderViewModel>().getUpSellCollections();
   }
 
@@ -54,13 +70,12 @@ class RootViewModel extends BaseModel {
     setState(ViewStatus.Completed);
   }
 
-  getAllCampusesLocation() {}
-
   Future<void> setLocation(DestinationDTO destination, LocationDTO location,
       CampusDTO campus) async {
     if (campus.available) {
       if (campus.id != currentStore.id) {
-        Cart cart = await getCart();
+        // Cart cart = await getCart();
+        Cart cart = await Get.find<OrderViewModel>().currentCart;
         int option = 1;
 
         if (cart != null) {
@@ -70,10 +85,11 @@ class RootViewModel extends BaseModel {
 
         if (option == 1 || cart == null) {
           showLoadingDialog();
-          await deleteCart();
+          Get.find<OrderViewModel>().removeCart();
           currentStore = campus;
           setSelectedLocation(currentStore, location, destination);
           await setStore(currentStore);
+          await getListMenu(currentStore);
           notifyListeners();
           hideDialog();
           startUp();
@@ -81,6 +97,7 @@ class RootViewModel extends BaseModel {
       } else {
         setSelectedLocation(currentStore, location, destination);
         await setStore(currentStore);
+        await getListMenu(currentStore);
         notifyListeners();
       }
     } else {
@@ -88,6 +105,64 @@ class RootViewModel extends BaseModel {
           "Cửa hàng đang tạm đóng 😓");
     }
     Get.back();
+  }
+
+  Future<void> getListMenu(CampusDTO currentStore) async {
+    MenuDAO _menuDAO = new MenuDAO();
+    listMenu = await _menuDAO.getMenus(areaID: currentStore.id);
+    bool found = false;
+    selectedMenu = await getMenu();
+    print(selectedMenu.menuName);
+    if (selectedMenu == null) {
+      selectedMenu = listMenu[0];
+      for (MenuDTO element in listMenu) {
+        if (isMenuAvailable(element)) {
+          selectedMenu = element;
+          await setMenu(selectedMenu);
+          found = true;
+          break;
+        }
+      }
+      listAvailableTimeSlots = selectedMenu.timeSlots
+          .where((element) =>
+              isTimeSlotAvailable(element.checkoutTime) &&
+              element.isActive &&
+              element.isAvailable)
+          .toList();
+    } else {
+      for (MenuDTO element in listMenu) {
+        if (selectedMenu.menuId == element.menuId) {
+          selectedMenu = element;
+          await setMenu(selectedMenu);
+          listAvailableTimeSlots = selectedMenu.timeSlots
+              .where((element) => isTimeSlotAvailable(element.checkoutTime))
+              .toList();
+          found = true;
+          break;
+        }
+      }
+    }
+    if (found == false) {
+      Cart cart = await getCart();
+      if (cart != null) {
+        await showStatusDialog(
+            "assets/images/global_error.png",
+            "Khung giờ đã thay đổi",
+            "Các sản phẩm trong giỏ hàng đã bị xóa, còn nhiều món ngon đang chờ bạn nhé");
+        Get.find<OrderViewModel>().removeCart();
+      }
+    } else {
+      if (!isCurrentMenuAvailable()) {
+        await showStatusDialog(
+          "assets/images/global_error.png",
+          "Đã hết giờ chốt đơn cho ${selectedMenu.menuName}",
+          "Bạn vui lòng chọn menu khác nhé.",
+        );
+        await fetchStore();
+        // remove cart
+        Get.find<OrderViewModel>().removeCart();
+      }
+    }
   }
 
   Future<void> processChangeLocation() async {
@@ -113,31 +188,33 @@ class RootViewModel extends BaseModel {
     }
   }
 
-  Future<void> confirmTimeSlot(TimeSlot timeSlot) async {
-    if (timeSlot.menuId != currentStore.selectedTimeSlot.menuId) {
-      if (!timeSlot.available) {
+  Future<void> confirmMenu(MenuDTO menu) async {
+    if (menu.menuId != selectedMenu.menuId) {
+      if (!isMenuAvailable(menu)) {
         showStatusDialog(
             "assets/images/global_error.png",
             "Khung giờ đã qua rồi",
-            "Hiện tại khung giờ này đã đóng vào lúc ${timeSlot.to}, bạn hãy xem khung giờ khác nhé 😃.");
+            "Hiện tại khung giờ này đã đóng vào lúc ${menu.timeFromTo[1]}, bạn hãy xem khung giờ khác nhé 😃.");
         return;
       }
       int option = 1;
-      showLoadingDialog();
-      Cart cart = await getCart();
+      // showLoadingDialog();
+      // Cart cart = await getCart();
+      Cart cart = Get.find<OrderViewModel>().currentCart;
       if (cart != null) {
         option = await showOptionDialog(
             "Bạn có chắc không? Đổi khung giờ rồi là giỏ hàng bị xóa đó!!");
       }
-
       if (option == 1) {
-        showLoadingDialog();
-        currentStore.selectedTimeSlot = timeSlot;
-        await deleteCart();
+        // showLoadingDialog();
+        selectedMenu = menu;
+        await setMenu(selectedMenu);
+        await Get.find<OrderViewModel>().removeCart();
         await setStore(currentStore);
-        Get.find<RootViewModel>().startUp();
-        hideDialog();
+        await refreshMenu();
+        // hideDialog();
       }
+      // hideDialog();
     }
   }
 
@@ -145,63 +222,66 @@ class RootViewModel extends BaseModel {
     try {
       setState(ViewStatus.Loading);
       StoreDAO _storeDAO = new StoreDAO();
+      MenuDAO _menuDAO = new MenuDAO();
       Function eq = const ListEquality().equals;
-      List<CampusDTO> listStore;
-      currentStore = await getStore();
 
+      currentStore = await getStore();
       if (currentStore == null) {
         listStore = await _storeDAO.getStores(id: UNIBEAN_STORE);
-        currentStore = BussinessHandler.setSelectedTime(listStore[0]);
+        // listMenu = await _menuDAO.getMenus(areaID: UNIBEAN_STORE);
+        currentStore = listStore[0];
+        await getListMenu(currentStore);
       } else {
-        listStore = await _storeDAO.getStores(id: currentStore.id);
-        currentStore.timeSlots = listStore[0].timeSlots;
-        bool found = false;
-        currentStore.timeSlots.forEach((element) {
-          if (currentStore.selectedTimeSlot == null) {
-            return;
-          }
-          if (element.menuId == currentStore.selectedTimeSlot.menuId &&
-              element.from == currentStore.selectedTimeSlot.from &&
-              element.to == currentStore.selectedTimeSlot.to &&
-              element.arrive == currentStore.selectedTimeSlot.arrive) {
-            currentStore.selectedTimeSlot.available = element.available;
-            found = true;
-          }
-        });
-        if (found == false) {
-          currentStore = BussinessHandler.setSelectedTime(currentStore);
-          Cart cart = await getCart();
-          if (cart != null) {
-            await showStatusDialog(
-                "assets/images/global_error.png",
-                "Khung giờ đã thay đổi",
-                "Các sản phẩm trong giỏ hàng đã bị xóa, còn nhiều món ngon đang chờ bạn nhé");
-            await deleteCart();
-          }
+        if (listMenu == null) {
+          await getListMenu(currentStore);
         } else {
-          final currentDate = DateTime.now();
-          String currentTimeSlot = currentStore.selectedTimeSlot.to;
-          var beanTime = new DateTime(
-            currentDate.year,
-            currentDate.month,
-            currentDate.day,
-            double.parse(currentTimeSlot.split(':')[0]).round(),
-            double.parse(currentTimeSlot.split(':')[1]).round(),
-          );
-          int differentTime = beanTime.difference(currentDate).inMilliseconds;
-          if (differentTime <= 0) {
-            DateTime arrive = DateFormat("HH:mm:ss")
-                .parse(currentStore.selectedTimeSlot.arrive);
-            int option = await showOptionDialog(
-                "Khung giờ cho ${currentStore.name} đã kết thúc \n "
-                "Đã hết giờ chốt đơn cho khung giờ \n ${DateFormat("HH:mm").format(arrive)} - ${DateFormat("HH:mm").format(arrive.add(Duration(minutes: 30)))}.",
-                firstOption: "Chọn khu vực",
-                secondOption: "Đóng");
-            if (option == 0) {
-              await changeCampusDialog(Get.find<RootViewModel>());
+          bool found = false;
+          selectedMenu = await getMenu();
+          print(selectedMenu.menuName);
+          if (selectedMenu == null) {
+            selectedMenu = listMenu[0];
+            for (MenuDTO element in listMenu) {
+              if (isMenuAvailable(element)) {
+                selectedMenu = element;
+                await setMenu(selectedMenu);
+                found = true;
+                break;
+              }
             }
-            // remove cart
-            await deleteCart();
+            listAvailableTimeSlots = selectedMenu.timeSlots
+                .where((element) =>
+                    isTimeSlotAvailable(element.checkoutTime) &&
+                    element.isActive &&
+                    element.isAvailable)
+                .toList();
+          } else {
+            if (isMenuAvailable(selectedMenu)) {
+              found = true;
+            }
+            listAvailableTimeSlots = selectedMenu.timeSlots
+                .where((element) => isTimeSlotAvailable(element.checkoutTime))
+                .toList();
+          }
+          if (found == false) {
+            Cart cart = await getCart();
+            if (cart != null) {
+              await showStatusDialog(
+                  "assets/images/global_error.png",
+                  "Khung giờ đã thay đổi",
+                  "Các sản phẩm trong giỏ hàng đã bị xóa, còn nhiều món ngon đang chờ bạn nhé");
+              Get.find<OrderViewModel>().removeCart();
+            }
+          } else {
+            if (!isCurrentMenuAvailable()) {
+              await showStatusDialog(
+                "assets/images/global_error.png",
+                "Đã hết giờ chốt đơn cho ${selectedMenu.menuName}",
+                "Bạn vui lòng chọn menu khác nhé.",
+              );
+              await fetchStore();
+              // remove cart
+              Get.find<OrderViewModel>().removeCart();
+            }
           }
         }
       }
@@ -271,7 +351,7 @@ class RootViewModel extends BaseModel {
         showLoadingDialog();
         CampusDTO store = await getStore();
         product = await _productDAO.getProductDetail(
-            product.id, store.id, store.selectedTimeSlot);
+            product.id, store.id, selectedMenu.menuId);
       }
       bool result =
           await Get.toNamed(RouteHandler.PRODUCT_DETAIL, arguments: product);
@@ -331,7 +411,7 @@ class RootViewModel extends BaseModel {
           showLoadingDialog();
           CampusDTO store = await getStore();
           product = await _productDAO.getProductDetail(
-              product.id, store.id, store.selectedTimeSlot);
+              product.id, store.id, selectedMenu.menuId);
         }
         ProductDetailViewModel detail = new ProductDetailViewModel(product);
         await detail.addProductToCart(backToHome: false);
@@ -351,7 +431,7 @@ class RootViewModel extends BaseModel {
   }
 
   Future<void> clearCart() async {
-    await deleteCart();
+    Get.find<OrderViewModel>().removeCart();
     notifyListeners();
   }
 
@@ -375,7 +455,53 @@ class RootViewModel extends BaseModel {
     notifyListeners();
   }
 
-  bool get isCurrentMenuAvailable {
-    return currentStore?.selectedTimeSlot?.available ?? false;
+  bool isCurrentMenuAvailable() {
+    final currentDate = DateTime.now();
+    String currentTimeSlot = selectedMenu.timeFromTo[1];
+    var beanTime = new DateTime(
+      currentDate.year,
+      currentDate.month,
+      currentDate.day,
+      double.parse(currentTimeSlot.split(':')[0]).round(),
+      double.parse(currentTimeSlot.split(':')[1]).round(),
+    );
+    int differentTime = beanTime.difference(currentDate).inMilliseconds;
+    if (differentTime <= 0) {
+      return false;
+    } else
+      return true;
+  }
+
+  bool isMenuAvailable(MenuDTO currentMenu) {
+    final currentDate = DateTime.now();
+    String currentTimeSlot = currentMenu.timeFromTo[1];
+    var beanTime = new DateTime(
+      currentDate.year,
+      currentDate.month,
+      currentDate.day,
+      double.parse(currentTimeSlot.split(':')[0]).round(),
+      double.parse(currentTimeSlot.split(':')[1]).round(),
+    );
+    int differentTime = beanTime.difference(currentDate).inMilliseconds;
+    if (differentTime <= 0) {
+      return false;
+    } else
+      return true;
+  }
+
+  bool isTimeSlotAvailable(String currentCheckoutTime) {
+    final currentDate = DateTime.now();
+    var checkoutTime = new DateTime(
+      currentDate.year,
+      currentDate.month,
+      currentDate.day,
+      double.parse(currentCheckoutTime.split(':')[0]).round(),
+      double.parse(currentCheckoutTime.split(':')[1]).round(),
+    );
+    int differentTime = checkoutTime.difference(currentDate).inMilliseconds;
+    if (differentTime < 0) {
+      return false;
+    } else
+      return true;
   }
 }

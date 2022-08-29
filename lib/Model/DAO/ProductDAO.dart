@@ -8,7 +8,7 @@ class ProductDAO extends BaseDAO {
   Future<List<ProductDTO>> getProducts(
     int storeId,
     int supplierId,
-    TimeSlot timeSlot, {
+    int menuId, {
     int page = 1,
     int size = 50,
     int type,
@@ -18,17 +18,18 @@ class ProductDAO extends BaseDAO {
 
     if (type != null) {
       res = await request.get(
-          'stores/$storeId/suppliers/$supplierId/products?fields=ChildProducts&fields=CollectionId&fields=Extras&time-slot=${timeSlot.from.toString()}&time-slot=${timeSlot.to.toString()}',
+          // 'stores/$storeId/suppliers/$supplierId/products?fields=ChildProducts&fields=CollectionId&fields=Extras&menu-id=${menuId}',
+          'stores/${storeId}/suppliers/${supplierId}/products?menu-id=${menuId}',
           queryParameters: {
-            "page": page ?? 1,
-            "product-type-id": type,
+            // "page": page ?? 1,
+            // "product-type-id": type,
             "size": size ?? DEFAULT_SIZE
           }..addAll(params));
     } else {
       res = await request.get(
-        'stores/$storeId/suppliers/$supplierId/products?fields=ChildProducts&fields=CollectionId&fields=Extras&time-slot=${timeSlot.from.toString()}&time-slot=${timeSlot.to.toString()}',
-        queryParameters: {"page": page ?? 1, "size": size ?? DEFAULT_SIZE}
-          ..addAll(params),
+        // 'stores/$storeId/suppliers/$supplierId/products?fields=ChildProducts&fields=CollectionId&fields=Extras&menu-id=${menuId}',
+        'stores/${storeId}/suppliers/${supplierId}/products?menu-id=${menuId}',
+        queryParameters: {"size": size ?? DEFAULT_SIZE}..addAll(params),
       );
     }
 
@@ -40,14 +41,15 @@ class ProductDAO extends BaseDAO {
 
   Future<List<ProductDTO>> getGifts(
     int storeId,
-    TimeSlot timeSlot, {
+    int menuId, {
     int page,
     int size,
     int type,
     Map<String, dynamic> params = const {},
   }) async {
     Response res = await request.get(
-      'stores/$storeId/gifts?time-slot=${timeSlot.from.toString()}&time-slot=${timeSlot.to.toString()}',
+      'stores/$storeId/gifts?menu-id=${menuId}',
+      // 'areas/${storeId}/menus/${menuId}/products',
       queryParameters: {"page": page ?? 1, "size": size ?? DEFAULT_SIZE}
         ..addAll(params),
     );
@@ -58,7 +60,7 @@ class ProductDAO extends BaseDAO {
     return products;
   }
 
-  Future<List<ProductDTO>> getAllProductOfStore(int storeId, TimeSlot timeSlot,
+  Future<List<ProductDTO>> getAllProductOfStore(int storeId, int menuID,
       {int page,
       int size,
       int type,
@@ -66,7 +68,7 @@ class ProductDAO extends BaseDAO {
     final query = convertToQueryParams({
       "page": (page ?? 1).toString(),
       "size": (size ?? DEFAULT_SIZE).toString(),
-      "time-slot": [timeSlot.from.toString(), timeSlot.to.toString()],
+      "menu-id": menuID,
       "fields": ['ChildProducts', 'CollectionId', 'Extras']
     }..addAll(params));
 
@@ -80,10 +82,10 @@ class ProductDAO extends BaseDAO {
     return products;
   }
 
-  Future<ProductDTO> getProductDetail(int id, int storeId, TimeSlot timeSlot) async {
+  Future<ProductDTO> getProductDetail(int id, int storeId, int menuId) async {
     final query = convertToQueryParams({
-      "time-slot": [timeSlot.from.toString(), timeSlot.to.toString()],
-      "store-id" : storeId,
+      "menu-id": menuId,
+      "store-id": storeId,
       "fields": ['ChildProducts', 'CollectionId', 'Extras']
     });
     String queryStr = Uri(
@@ -95,6 +97,28 @@ class ProductDAO extends BaseDAO {
     return products;
   }
 
+  Future<List<ProductDTO>> getListGiftMenus(
+    int areaID, {
+    int page,
+    int size,
+    int type,
+    Map<String, dynamic> params = const {},
+  }) async {
+    // final res = await request.get(
+    //   'stores/$areaID/gifts?menu-id=${}',
+    //   queryParameters: {"page": page ?? 1, "size": size ?? DEFAULT_SIZE}
+    //     ..addAll(params),
+    // );
+    // var jsonList = res.data["data"] as List;
+    // //metaDataDTO = MetaDataDTO.fromJson(res.data["metadata"]);
+    // if (jsonList != null) {
+    //   final products = ProductDTO.fromList(res.data["data"]);
+    // metaDataDTO = MetaDataDTO.fromJson(res.data["metadata"]);
+    final products = null;
+    return products;
+    // }
+    // return null;
+  }
   // Future<List<ProductDTO>> getExtraProducts(
   //     int cat_id, String sup_id, int store_id) async {
   //   print("Category id: " + cat_id.toString());

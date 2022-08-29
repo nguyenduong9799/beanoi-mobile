@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -26,7 +28,6 @@ class OrderViewModel extends BaseModel {
   CollectionDAO _collectionDAO;
   List<CollectionDTO> upSellCollections;
   bool loadingUpsell;
-
   String errorMessage = null;
 
   List<String> listError = <String>[];
@@ -36,6 +37,7 @@ class OrderViewModel extends BaseModel {
     promoDao = new PromotionDAO();
     _collectionDAO = CollectionDAO();
     loadingUpsell = false;
+    currentCart = null;
   }
 
   Future<void> getVouchers() async {
@@ -64,21 +66,14 @@ class OrderViewModel extends BaseModel {
           currentCart.payment = PaymentTypeEnum.Cash;
         }
       }
-      // if (currentCart.vouchers != null) {
-      //   setState(ViewStatus.Completed);
-      //   Get.rawSnackbar(
-      //       // overlayColor: Colors.black,
-      //       messageText: Container(child: CircularProgressIndicator()),
-      //       duration: Duration(seconds: 2),
-      //       snackPosition: SnackPosition.BOTTOM,
-      //       margin: EdgeInsets.only(left: 8, right: 8, bottom: 32),
-      //       borderRadius: 8,
-      //       backgroundColor: Colors.white);
-      // }
+      if (currentCart.timeSlotId == null) {
+        currentCart.timeSlotId =
+            Get.find<RootViewModel>().listAvailableTimeSlots[0].id;
+      }
+
       listError.clear();
       orderAmount = await dao.prepareOrder(campusDTO.id, currentCart);
       errorMessage = null;
-      await Future.delayed(Duration(milliseconds: 500));
       hideDialog();
       setState(ViewStatus.Completed);
     } on DioError catch (e, stacktra) {
@@ -193,7 +188,7 @@ class OrderViewModel extends BaseModel {
       OrderStatus result = await dao.createOrders(destination.id, currentCart);
       await Get.find<AccountViewModel>().fetchUser();
       if (result.statusCode == 200) {
-        await deleteCart();
+        await removeCart();
         hideDialog();
         await showStatusDialog(
             "assets/images/global_sucsess.png", result?.code, result?.message);
@@ -257,6 +252,15 @@ class OrderViewModel extends BaseModel {
     setState(ViewStatus.Completed);
   }
 
+  Future<void> changeTime(TimeSlots option) async {
+    showLoadingDialog();
+    currentCart.timeSlotId = option.id;
+
+    await setCart(currentCart);
+    await prepareOrder();
+    hideDialog();
+  }
+
   Future<void> addSupplierNote(int id) async {
     SupplierNoteDTO supplierNote = currentCart.notes?.firstWhere(
       (element) => element.supplierId == id,
@@ -291,18 +295,19 @@ class OrderViewModel extends BaseModel {
     try {
       loadingUpsell = true;
       RootViewModel root = Get.find<RootViewModel>();
-      var currentStore = root.currentStore;
+      // var currentStore = root.currentStore;
+      var currentMenu = root.selectedMenu;
       if (root.status == ViewStatus.Error) {
         setState(ViewStatus.Error);
         return;
       }
-      if (currentStore.selectedTimeSlot == null) {
+      if (currentMenu == null) {
         upSellCollections = null;
         setState(ViewStatus.Completed);
         return;
       }
       upSellCollections = await _collectionDAO
-          .getCollections(currentStore.selectedTimeSlot, params: {
+          .getCollections(currentMenu.menuId, params: {
         "show-on-home": false,
         "type": CollectionTypeEnum.Suggestion
       });
@@ -312,5 +317,11 @@ class OrderViewModel extends BaseModel {
       upSellCollections = null;
       loadingUpsell = false;
     }
+  }
+
+  Future<void> removeCart() async {
+    await deleteCart();
+    currentCart = null;
+    notifyListeners();
   }
 }

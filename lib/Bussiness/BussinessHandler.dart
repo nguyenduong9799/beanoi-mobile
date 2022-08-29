@@ -1,3 +1,4 @@
+import 'package:unidelivery_mobile/Model/DTO/MenuDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 
 class BussinessHandler {
@@ -22,19 +23,30 @@ class BussinessHandler {
     return total;
   }
 
-  static CampusDTO setSelectedTime(CampusDTO campus) {
-    campus.selectedTimeSlot = null;
-    if (campus.timeSlots != null && campus.timeSlots.isNotEmpty) {
-      for (int i = 0; i < campus.timeSlots.length; i++) {
-        if (campus.timeSlots[i].available) {
-          campus.selectedTimeSlot = campus.timeSlots[i];
-          break;
-        }
-      }
-      if (campus.selectedTimeSlot == null) {
-        campus.selectedTimeSlot = campus.timeSlots[campus.timeSlots.length - 1];
-      }
-    }
-    return campus;
-  }
+  // static CampusDTO setSelectedTime(CampusDTO campus) {
+  //   campus.selectedTimeSlot = null;
+  //   if (campus.timeSlots != null && campus.timeSlots.isNotEmpty) {
+  //     for (int i = 0; i < campus.timeSlots.length; i++) {
+  //       if (campus.timeSlots[i].available) {
+  //         campus.selectedTimeSlot = campus.timeSlots[i];
+  //         break;
+  //       }
+  //     }
+  //     if (campus.selectedTimeSlot == null) {
+  //       campus.selectedTimeSlot = campus.timeSlots[campus.timeSlots.length - 1];
+  //     }
+  //   }
+  //   return campus;
+  // }
+
+  // static MenuDTO setSelectedMenus(MenuDTO menu) {
+  //   menu = null;
+  //   if(menu.timeFromTo != null && menu.timeFromTo.isNotEmpty){
+  //     for(int i = 0; i < menu.timeFromTo.length; i++){
+  //       if(menu.isAvailable){
+  //         menu.selectedMenuTimeSlots = menu.
+  //       }
+  //     }
+  //   }
+  // }
 }

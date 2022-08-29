@@ -1,5 +1,6 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
 import "package:collection/collection.dart";
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
@@ -9,6 +10,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:unidelivery_mobile/Accessories/slide_fade_animation.dart';
 import 'package:unidelivery_mobile/Accessories/UpSellCollection.dart';
 import 'package:unidelivery_mobile/Accessories/index.dart';
+import 'package:unidelivery_mobile/Accessories/time_picker.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Enums/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
@@ -25,20 +27,24 @@ class OrderScreen extends StatefulWidget {
 }
 
 class _OrderScreenState extends State<OrderScreen> {
-  OrderViewModel orderViewModel;
+  OrderViewModel orderViewModel = Get.find<OrderViewModel>();
   AutoScrollController controller;
   final scrollDirection = Axis.vertical;
   bool onInit = true;
+  int index = 0;
 
   @override
   void initState() {
     super.initState();
+    prepareCart();
     controller = AutoScrollController(
         viewportBoundaryGetter: () =>
             Rect.fromLTRB(0, 0, 0, MediaQuery.of(context).padding.bottom),
         axis: scrollDirection);
-    orderViewModel = Get.find<OrderViewModel>();
-    prepareCart();
+    int timeSlotId = orderViewModel.currentCart.timeSlotId;
+    index = Get.find<RootViewModel>()
+        .listAvailableTimeSlots
+        .indexWhere((element) => element.id == timeSlotId);
   }
 
   void prepareCart() async {
@@ -61,70 +67,72 @@ class _OrderScreenState extends State<OrderScreen> {
             : ScopedModelDescendant<OrderViewModel>(
                 builder:
                     (BuildContext context, Widget child, OrderViewModel model) {
-                  if (model.currentCart == null) return SizedBox.shrink();
-                  ViewStatus status = model.status;
-                  switch (status) {
-                    case ViewStatus.Error:
-                      return ListView(
-                        children: [
-                          Center(
-                            child: Text(
-                              "Có gì đó sai sai..\n Vui lòng thử lại.",
+                  if (model.currentCart != null) {
+                    ViewStatus status = model.status;
+                    switch (status) {
+                      case ViewStatus.Error:
+                        return ListView(
+                          children: [
+                            Center(
+                              child: Text(
+                                "Có gì đó sai sai..\n Vui lòng thử lại.",
+                              ),
                             ),
-                          ),
-                          SizedBox(height: 8),
-                          Image.asset(
-                            'assets/images/global_error.png',
-                            fit: BoxFit.contain,
-                          ),
-                        ],
-                      );
-                    case ViewStatus.Loading:
-                    case ViewStatus.Completed:
-                      return ListView(
-                        children: [
-                          Hero(
-                            tag: CART_TAG,
-                            child: Container(
-                                margin: const EdgeInsets.only(top: 8),
-                                child: layoutAddress(model.campusDTO)),
-                          ),
+                            SizedBox(height: 8),
+                            Image.asset(
+                              'assets/images/global_error.png',
+                              fit: BoxFit.contain,
+                            ),
+                          ],
+                        );
+                      case ViewStatus.Loading:
+                      case ViewStatus.Completed:
+                        return ListView(
+                          children: [
+                            Hero(
+                              tag: CART_TAG,
+                              child: Container(
+                                  margin: const EdgeInsets.only(top: 8),
+                                  child: layoutAddress(model.campusDTO)),
+                            ),
 
-                          AutoScrollTag(
-                            index: 1,
-                            key: ValueKey(1),
-                            controller: controller,
-                            highlightColor: Colors.black.withOpacity(0.1),
-                            child: timeRecieve(model.campusDTO),
-                          ),
-                          // Container(child: buildBeanReward()),
-                          SizedBox(
-                              height: 8,
-                              child: Container(
-                                color: kBackgroundGrey[2],
-                              )),
-                          Container(child: layoutOrder(model.currentCart)),
-                          SizedBox(
-                              height: 8,
-                              child: Container(
-                                color: kBackgroundGrey[2],
-                              )),
-                          UpSellCollection(),
-                          SizedBox(
-                              height: 8,
-                              child: Container(
-                                color: kBackgroundGrey[2],
-                              )),
-                          layoutSubtotal(),
-                        ],
-                      );
+                            AutoScrollTag(
+                              index: 1,
+                              key: ValueKey(1),
+                              controller: controller,
+                              highlightColor: Colors.black.withOpacity(0.1),
+                              child: timeRecieve(model),
+                            ),
+                            // Container(child: buildBeanReward()),
+                            SizedBox(
+                                height: 8,
+                                child: Container(
+                                  color: kBackgroundGrey[2],
+                                )),
+                            Container(child: layoutOrder(model.currentCart)),
+                            SizedBox(
+                                height: 8,
+                                child: Container(
+                                  color: kBackgroundGrey[2],
+                                )),
+                            UpSellCollection(),
+                            SizedBox(
+                                height: 8,
+                                child: Container(
+                                  color: kBackgroundGrey[2],
+                                )),
+                            layoutSubtotal(),
+                          ],
+                        );
 
-                    default:
-                      return Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: LoadingScreen(),
-                      );
-                  }
+                      default:
+                        return Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: LoadingScreen(),
+                        );
+                    }
+                  } else
+                    return SizedBox.shrink();
                 },
               ),
       ),
@@ -182,6 +190,73 @@ class _OrderScreenState extends State<OrderScreen> {
       ),
     );
   }
+
+  Widget buildCustomPicker(List<TimeSlots> timeSlot) => Container(
+        height: 240,
+        decoration: BoxDecoration(
+          color: kPrimary,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(8),
+            topRight: Radius.circular(8),
+          ),
+        ),
+        padding: EdgeInsets.only(top: 8),
+        child: Column(
+          children: [
+            Padding(
+              padding: EdgeInsets.all(8),
+              child: Text(
+                'Chọn khung giờ giao hàng',
+                style: Get.theme.textTheme.headline2.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            Expanded(
+              child: Container(
+                color: Colors.white,
+                child: SizedBox(
+                  height: 180,
+                  child: CupertinoPicker(
+                    scrollController:
+                        FixedExtentScrollController(initialItem: index),
+                    // useMagnifier: true,
+                    // magnification: 1.2,
+                    itemExtent: 64,
+                    diameterRatio: 0.7,
+                    onSelectedItemChanged: (index) =>
+                        setState(() => this.index = index),
+                    selectionOverlay: CupertinoPickerDefaultSelectionOverlay(
+                      background: Colors.black.withOpacity(0.12),
+                    ),
+                    children: Utils.modelBuilder<TimeSlots>(
+                      timeSlot,
+                      (index, value) {
+                        String currentTime =
+                            value.arriveTime.replaceAll(';', ' - ');
+
+                        final isSelected = this.index == index;
+                        final color = isSelected ? kPrimary : Colors.black;
+
+                        return Center(
+                          child: Text(
+                            "$currentTime",
+                            style: TextStyle(
+                                color: color,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
 
   Widget layoutOrder(Cart cart) {
     Map<int, List<CartItem>> map =
@@ -515,8 +590,12 @@ class _OrderScreenState extends State<OrderScreen> {
     );
   }
 
-  Widget timeRecieve(CampusDTO dto) {
-    DateTime arrive = DateFormat("HH:mm:ss").parse(dto.selectedTimeSlot.arrive);
+  Widget timeRecieve(OrderViewModel model) {
+    RootViewModel root = Get.find<RootViewModel>();
+    List<TimeSlots> listTimeSlotAvailable = root.listAvailableTimeSlots;
+    TimeSlots currentTime = listTimeSlotAvailable.firstWhere(
+        (element) => element.id == orderViewModel.currentCart.timeSlotId);
+    String currentTimeSlot = currentTime.arriveTime.replaceAll(';', ' - ');
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Row(
@@ -525,14 +604,34 @@ class _OrderScreenState extends State<OrderScreen> {
         children: [
           Expanded(
             flex: 3,
-            child: Text("Thời gian: ",
+            child: Text("Nhận đơn lúc: ",
                 style: Get.theme.textTheme.headline5.copyWith(color: kPrimary)),
           ),
           Expanded(
             flex: 7,
-            child: Text(
-              "${DateFormat("HH:mm").format(arrive)} - ${DateFormat("HH:mm").format(arrive.add(Duration(minutes: 30)))}",
-              style: Get.theme.textTheme.headline4,
+            child: InkWell(
+              onTap: () => Utils.showSheet(
+                context,
+                child: buildCustomPicker(listTimeSlotAvailable),
+                onClicked: () async {
+                  TimeSlots value = listTimeSlotAvailable[index];
+                  await Get.find<OrderViewModel>().changeTime(value);
+                  Get.back();
+                },
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    "$currentTimeSlot",
+                    style: Get.theme.textTheme.headline4,
+                  ),
+                  Text("Chọn giờ khác ",
+                      style: Get.theme.textTheme.headline4
+                          .copyWith(color: kPrimary))
+                ],
+              ),
             ),
           ),
         ],
@@ -707,7 +806,7 @@ class _OrderScreenState extends State<OrderScreen> {
                   orderViewModel.listError.isEmpty
                       ? SizedBox(width: 0)
                       : SlideFadeTransition(
-                          delayStart: Duration(milliseconds: 600),
+                          delayStart: Duration(milliseconds: 200),
                           child: Center(
                             child: Padding(
                               padding: const EdgeInsets.fromLTRB(8, 10, 8, 10),
@@ -914,10 +1013,8 @@ class _OrderScreenState extends State<OrderScreen> {
               orElse: () => null,
             );
             String errorMsg = null;
-            var isMenuAvailable = Get.find<RootViewModel>()
-                .currentStore
-                .selectedTimeSlot
-                .available;
+            var isMenuAvailable =
+                Get.find<RootViewModel>().isCurrentMenuAvailable();
             if (model.errorMessage != null) {
               errorMsg = model.errorMessage;
             } else if (location == null) {
@@ -944,7 +1041,7 @@ class _OrderScreenState extends State<OrderScreen> {
                           orderViewModel.listError.isEmpty
                               ? SizedBox(width: 0)
                               : SlideFadeTransition(
-                                  delayStart: Duration(milliseconds: 600),
+                                  delayStart: Duration(milliseconds: 200),
                                   child: Center(
                                     child: Padding(
                                       padding: const EdgeInsets.fromLTRB(
@@ -1191,7 +1288,7 @@ class _OrderScreenState extends State<OrderScreen> {
                           orderViewModel.listError.isEmpty
                               ? SizedBox(width: 0)
                               : SlideFadeTransition(
-                                  delayStart: Duration(milliseconds: 600),
+                                  delayStart: Duration(milliseconds: 200),
                                   child: Center(
                                     child: Padding(
                                       padding: const EdgeInsets.fromLTRB(
@@ -1486,8 +1583,13 @@ class _OrderScreenState extends State<OrderScreen> {
     if (otherAmounts == null) return [SizedBox.shrink()];
     otherAmounts.sort((a, b) => b.amount.compareTo(a.amount));
     return otherAmounts
-        .map((amountObj) => OtherAmountWidget(
-              otherAmount: amountObj,
+        .map((amountObj) => SlideFadeTransition(
+              // direction: Direction.horizontal,
+              offset: -1,
+              delayStart: Duration(milliseconds: 20),
+              child: OtherAmountWidget(
+                otherAmount: amountObj,
+              ),
             ))
         .toList();
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:unidelivery_mobile/Accessories/index.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Enums/index.dart';
@@ -44,18 +45,21 @@ class SupplierViewModel extends BaseModel {
   }
   // 1. Get ProductList with current Filter
   Future<void> getProducts() async {
+    RootViewModel root = Get.find<RootViewModel>();
+    MenuDTO currentMenu = root.selectedMenu;
     try {
       setState(ViewStatus.Loading);
       CampusDTO store = await getStore();
       collections = await _collectionDAO.getCollectionsOfSupplier(
-          store.id, supplierId, store.selectedTimeSlot);
+          store.id, supplierId, currentMenu.menuId);
       products = await _productDAO.getProducts(
-          store.id, supplierId, store.selectedTimeSlot);
+          store.id, supplierId, currentMenu.menuId);
       if (collections != null && collections.isNotEmpty) {
         collections.forEach((element) {
           element.products = products
-              .where((product) =>
-                  product.collections.any((e) => e == element.id))
+              .where((product) => product.collections != null
+                  ? product.collections.any((e) => e == element.id)
+                  : false)
               .toList();
         });
       }
@@ -83,12 +87,14 @@ class SupplierViewModel extends BaseModel {
   }
 
   Future<void> getGifts() async {
+    RootViewModel root = Get.find<RootViewModel>();
+    MenuDTO currentMenu = root.selectedMenu;
     try {
       isLoadGift = true;
       notifyListeners();
       CampusDTO store = await getStore();
       gifts = await _productDAO.getProducts(
-          store.id, supplierId, store.selectedTimeSlot,
+          store.id, supplierId, currentMenu.menuId,
           type: ProductType.GIFT_PRODUCT);
       await Future.delayed(Duration(microseconds: 500));
       // check truong hop product tra ve rong (do khong co menu nao trong TG do)
@@ -105,12 +111,13 @@ class SupplierViewModel extends BaseModel {
   }
 
   Future<void> getMoreProducts() async {
+    RootViewModel root = Get.find<RootViewModel>();
+    MenuDTO currentMenu = root.selectedMenu;
     try {
       setState(ViewStatus.LoadMore);
       CampusDTO store = await getStore();
-
       products += await _productDAO.getProducts(
-          store.id, supplierId, store.selectedTimeSlot,
+          store.id, supplierId, currentMenu.menuId,
           page: _productDAO.metaDataDTO.page + 1);
 
       if (collections != null && collections.isNotEmpty) {
