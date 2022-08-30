@@ -41,9 +41,10 @@ class OrderViewModel extends BaseModel {
   }
 
   Future<void> getVouchers() async {
+    setState(ViewStatus.Loading);
     final voucherList = await promoDao.getPromotions();
     vouchers = voucherList;
-    notifyListeners();
+    setState(ViewStatus.Completed);
   }
 
   Future<void> prepareOrder() async {
@@ -67,8 +68,12 @@ class OrderViewModel extends BaseModel {
         }
       }
       if (currentCart.timeSlotId == null) {
-        currentCart.timeSlotId =
-            Get.find<RootViewModel>().listAvailableTimeSlots[0].id;
+        if (Get.find<RootViewModel>().listAvailableTimeSlots.isNotEmpty) {
+          currentCart.timeSlotId =
+              Get.find<RootViewModel>().listAvailableTimeSlots[0].id;
+        } else {
+          errorMessage = "Hiện tại đã hết khung giờ giao hàng";
+        }
       }
 
       listError.clear();
