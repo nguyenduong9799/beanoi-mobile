@@ -47,8 +47,9 @@ class _VouchersListPageState extends State<VouchersListPage> {
           onRefresh: _refresh,
           child: Column(
             children: [
-              // _buildSearchVoucher(),
               const SizedBox(height: 16),
+              _buildSearchVoucher(),
+              const SizedBox(height: 8),
               // _buildFilter(),
               _buildListVoucher(),
             ],
@@ -67,8 +68,7 @@ class _VouchersListPageState extends State<VouchersListPage> {
             return _buildLoading();
           }
 
-          if (model.status == ViewStatus.Error ||
-              model.currentVouchers == null) {
+          if (model.status == ViewStatus.Error || model.vouchers == null) {
             return Flexible(
               child: Center(
                 child: Text(model.msg ?? "Hiện tại không có voucher khả dụng",
@@ -78,7 +78,7 @@ class _VouchersListPageState extends State<VouchersListPage> {
               ),
             );
           }
-          if (model.currentVouchers.isEmpty) {
+          if (model.vouchers.isEmpty) {
             return Flexible(
               child: Center(
                 child: Text("Hiện tại không có voucher khả dụng",
@@ -91,10 +91,10 @@ class _VouchersListPageState extends State<VouchersListPage> {
 
           return Flexible(
             child: ListView.separated(
-              itemCount: model.currentVouchers.length + 1,
+              itemCount: model.vouchers.length + 1,
               separatorBuilder: (context, index) => SizedBox(height: 2),
               itemBuilder: (context, index) {
-                if (index == model.currentVouchers.length) {
+                if (index == model.vouchers.length) {
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
@@ -106,7 +106,7 @@ class _VouchersListPageState extends State<VouchersListPage> {
                     ),
                   );
                 }
-                final voucher = model.currentVouchers.elementAt(index);
+                final voucher = model.vouchers.elementAt(index);
                 return Column(
                   children: [
                     Padding(
@@ -362,39 +362,62 @@ class _VouchersListPageState extends State<VouchersListPage> {
             builder: (context, child, model) {
           return Padding(
             padding: const EdgeInsets.only(left: 12, right: 12),
-            child: Column(
+            child: Row(
               children: [
-                Container(
-                  // height: 10,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(8)),
-                      border: Border.all(color: kPrimary)),
+                Flexible(
+                  flex: 3,
+                  child: Container(
+                    // height: 10,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(8)),
+                        border: Border.all(color: kPrimary)),
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
+                      child: TextField(
+                        onChanged: (input) {
+                          // model.getFilterVoucher(input);
+                          // model.showFilteredVoucher();
+                        },
+                        controller: controller,
+                        decoration: InputDecoration(
+                            hintText: 'Nhập mã giảm giá',
+                            border: InputBorder.none,
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                Icons.search,
+                                size: 16,
+                                color: Colors.grey,
+                              ),
+                              onPressed: () {
+                                controller.clear();
+                              },
+                            )),
+                        style: Get.theme.textTheme.headline4
+                            .copyWith(color: Colors.grey),
+                        keyboardType: TextInputType.multiline,
+                        maxLines: 1,
+                        autofocus: true,
+                      ),
+                    ),
+                  ),
+                ),
+                Flexible(
+                  flex: 1,
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
-                    child: TextField(
-                      onChanged: (input) {
-                        model.getFilterVoucher(input);
-                        model.showFilteredVoucher();
-                      },
-                      controller: controller,
-                      decoration: InputDecoration(
-                          hintText: 'Nhập mã giảm giá',
-                          border: InputBorder.none,
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              Icons.search,
-                              size: 16,
-                              color: Colors.grey,
-                            ),
-                            onPressed: () {
-                              controller.clear();
-                            },
-                          )),
-                      style: Get.theme.textTheme.headline4
-                          .copyWith(color: Colors.grey),
-                      keyboardType: TextInputType.multiline,
-                      maxLines: 1,
-                      autofocus: true,
+                    child: Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                          border: Border.all(color: kPrimary)),
+                      child: TextButton(
+                          onPressed: () async {
+                            VoucherDTO inputVoucher =
+                                new VoucherDTO(voucherCode: controller.text);
+                            print(inputVoucher.voucherCode);
+                            await model.selectVoucher(inputVoucher);
+                            Get.back();
+                          },
+                          child: Text('Áp dụng')),
                     ),
                   ),
                 ),
@@ -465,7 +488,7 @@ class _VouchersListPageState extends State<VouchersListPage> {
               ),
             );
           }
-          final currentVouchers = model.currentVouchers;
+          final currentVouchers = model.vouchers;
           if (currentVouchers == null || currentVouchers.isEmpty) {
             return SizedBox();
           }

@@ -129,10 +129,12 @@ class OrderViewModel extends BaseModel {
 
   Future<void> selectVoucher(VoucherDTO voucher) async {
     // add voucher to cart
+    // showLoadingDialog();
     currentCart.addVoucher(voucher);
     await setCart(currentCart);
     // call prepare
     await prepareOrder();
+    // hideDialog();
   }
 
   Future<void> unselectVoucher(VoucherDTO voucher) async {

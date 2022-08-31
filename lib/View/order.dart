@@ -916,7 +916,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                       model.currentCart.vouchers.isEmpty
                                           ? "Thêm Voucher"
                                           : model.currentCart.vouchers[0]
-                                              .voucherName
+                                              .voucherCode
                                               .toUpperCase(),
                                       style: model.currentCart.vouchers.isEmpty
                                           ? Get.theme.textTheme.headline3
@@ -1179,7 +1179,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                               model.currentCart.vouchers.isEmpty
                                                   ? "Thêm Voucher"
                                                   : model.currentCart
-                                                      .vouchers[0].voucherName
+                                                      .vouchers[0].voucherCode
                                                       .toUpperCase(),
                                               style: model.currentCart.vouchers
                                                       .isEmpty
@@ -1422,7 +1422,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                               model.currentCart.vouchers.isEmpty
                                                   ? "Thêm Voucher"
                                                   : model.currentCart
-                                                      .vouchers[0].voucherName
+                                                      .vouchers[0].voucherCode
                                                       .toUpperCase(),
                                               style: model.currentCart.vouchers
                                                       .isEmpty
