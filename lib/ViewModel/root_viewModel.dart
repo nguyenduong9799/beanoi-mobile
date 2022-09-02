@@ -236,7 +236,6 @@ class RootViewModel extends BaseModel {
         } else {
           bool found = false;
           selectedMenu = await getMenu();
-          print(selectedMenu.menuName);
           if (selectedMenu == null) {
             selectedMenu = listMenu[0];
             for (MenuDTO element in listMenu) {
