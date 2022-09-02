@@ -112,7 +112,6 @@ class RootViewModel extends BaseModel {
     listMenu = await _menuDAO.getMenus(areaID: currentStore.id);
     bool found = false;
     selectedMenu = await getMenu();
-    print(selectedMenu.menuName);
     if (selectedMenu == null) {
       selectedMenu = listMenu[0];
       for (MenuDTO element in listMenu) {
@@ -237,7 +236,6 @@ class RootViewModel extends BaseModel {
         } else {
           bool found = false;
           selectedMenu = await getMenu();
-          print(selectedMenu.menuName);
           if (selectedMenu == null) {
             selectedMenu = listMenu[0];
             for (MenuDTO element in listMenu) {

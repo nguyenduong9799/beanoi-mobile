@@ -1,6 +1,9 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:reactive_forms/reactive_forms.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Accessories/index.dart';
 import 'package:unidelivery_mobile/Accessories/voucher/voucher_card.dart';
@@ -27,6 +30,8 @@ class _VouchersListPageState extends State<VouchersListPage> {
   void initState() {
     Get.find<OrderViewModel>().getVouchers();
     super.initState();
+
+    // UPDATE USER INFO INTO FORM
   }
 
   @override
@@ -36,13 +41,15 @@ class _VouchersListPageState extends State<VouchersListPage> {
         title: "Danh sách mã giảm giá",
       ),
       body: Container(
-        padding: EdgeInsets.only(top: 8),
         color: Colors.white,
         child: RefreshIndicator(
           key: _refreshIndicatorKey,
           onRefresh: _refresh,
           child: Column(
             children: [
+              const SizedBox(height: 16),
+              _buildSearchVoucher(),
+              const SizedBox(height: 8),
               // _buildFilter(),
               _buildListVoucher(),
             ],
@@ -100,7 +107,14 @@ class _VouchersListPageState extends State<VouchersListPage> {
                   );
                 }
                 final voucher = model.vouchers.elementAt(index);
-                return voucherCard(voucher, model);
+                return Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
+                      child: voucherCard(voucher, model),
+                    ),
+                  ],
+                );
               },
             ),
           );
@@ -128,7 +142,14 @@ class _VouchersListPageState extends State<VouchersListPage> {
     }
 
     return Container(
-      padding: EdgeInsets.all(8),
+      decoration: isApplied
+          ? BoxDecoration(
+              border: Border.all(color: Colors.grey, width: 1),
+              borderRadius: BorderRadius.circular(3),
+              color: kPrimary,
+            )
+          : null,
+      padding: EdgeInsets.all(2),
       child: InkWell(
         onTap: () {
           if (isApplied) {
@@ -140,106 +161,145 @@ class _VouchersListPageState extends State<VouchersListPage> {
         },
         child: VoucherCard(
           height: 110,
-          backgroundColor: isApplied ? secondColor : primaryColor,
+          backgroundColor: primaryColor,
           clockwise: true,
           curvePosition: 130,
           curveRadius: 30,
           curveAxis: Axis.vertical,
           borderRadius: 10,
           firstChild: Container(
-            // color: isApplied ? thirdColor : secondaryColor,
             decoration: BoxDecoration(
-              color: isApplied ? firstColor : secondaryColor,
+              borderRadius: BorderRadius.circular(4),
+              // color: Colors.grey,
             ),
+            // width: 110,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Expanded(
-                  child: Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          voucher.actionName,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            // color: isApplied ? Colors.black54 : Colors.white,
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Divider(color: Colors.white54, height: 0),
-                Expanded(
-                  child: InkWell(
-                    onTap: () {
-                      if (isApplied) {
-                        model.unselectVoucher(voucher);
-                      } else {
-                        model.selectVoucher(voucher);
-                      }
-                      Get.back();
-                    },
-                    child: Center(
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(2, 0, 2, 0),
-                        child: Text(
-                          // voucher.promotionName.toUpperCase(),
-                          isApplied ? 'HỦY CHỌN' : 'CHỌN',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            // color: isApplied ? Colors.black54 : Colors.white,
-                            color: Colors.white,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
+                AspectRatio(
+                  aspectRatio: 1.5,
+                  child: CacheImage(
+                      imageUrl: voucher.imgUrl != ''
+                          ? voucher.imgUrl
+                          : 'https://static.vecteezy.com/system/resources/previews/000/351/630/original/voucher-vector-icon.jpg'),
                 ),
               ],
             ),
           ),
+          // Container(
+          //   // color: isApplied ? thirdColor : secondaryColor,
+          //   decoration: BoxDecoration(
+          //     color: isApplied ? firstColor : secondaryColor,
+          //   ),
+          //   child: Column(
+          //     mainAxisAlignment: MainAxisAlignment.center,
+          //     children: [
+          //       Expanded(
+          //         child: Center(
+          //           child: Column(
+          //             mainAxisSize: MainAxisSize.min,
+          //             children: [
+          //               Text(
+          //                 voucher.actionName,
+          //                 textAlign: TextAlign.center,
+          //                 style: TextStyle(
+          //                   // color: isApplied ? Colors.black54 : Colors.white,
+          //                   color: Colors.white,
+          //                   fontSize: 16,
+          //                   fontWeight: FontWeight.bold,
+          //                 ),
+          //               ),
+          //             ],
+          //           ),
+          //         ),
+          //       ),
+          //       Divider(color: Colors.white54, height: 0),
+          //       Expanded(
+          //         child: InkWell(
+          //           onTap: () {
+          //             if (isApplied) {
+          //               model.unselectVoucher(voucher);
+          //             } else {
+          //               model.selectVoucher(voucher);
+          //             }
+          //             Get.back();
+          //           },
+          //           child: Center(
+          //             child: Padding(
+          //               padding: const EdgeInsets.fromLTRB(2, 0, 2, 0),
+          //               child: Text(
+          //                 // voucher.promotionName.toUpperCase(),
+          //                 isApplied ? 'HỦY CHỌN' : 'CHỌN',
+          //                 textAlign: TextAlign.center,
+          //                 style: TextStyle(
+          //                   // color: isApplied ? Colors.black54 : Colors.white,
+          //                   color: Colors.white,
+          //                   fontSize: 12,
+          //                   fontWeight: FontWeight.bold,
+          //                 ),
+          //               ),
+          //             ),
+          //           ),
+          //         ),
+          //       ),
+          //     ],
+          //   ),
+          // ),
           secondChild: Container(
             width: double.maxFinite,
-            padding: EdgeInsets.all(12),
+            padding: EdgeInsets.all(8),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey, width: 1),
+                    borderRadius: BorderRadius.circular(3),
+                    color: kPrimary,
+                  ),
+                  child: Text(
+                    //
+                    "Chỉ dành cho bạn",
+                    maxLines: 2,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+                Spacer(),
                 Text(
                   voucher.voucherName,
                   maxLines: 1,
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: 18,
+                    fontSize: 15,
                     // color: isApplied ? Colors.black54 : secondaryColor,
                     color: isApplied ? firstColor : secondaryColor,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 Spacer(),
-                Visibility(
-                  visible: visibleText,
-                  child: Text(
-                    voucher.voucherCode,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black54,
-                    ),
-                  ),
-                ),
+                // Visibility(
+                //   visible: visibleText,
+                //   child: Text(
+                //     voucher.voucherCode,
+                //     textAlign: TextAlign.left,
+                //     style: TextStyle(
+                //       fontSize: 12,
+                //       fontWeight: FontWeight.bold,
+                //       color: Colors.black54,
+                //     ),
+                //   ),
+                // ),
                 Text(
                   //
-
-                  voucher.description,
+                  "-${voucher.description}",
                   maxLines: 2,
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -250,22 +310,41 @@ class _VouchersListPageState extends State<VouchersListPage> {
                 ),
                 Spacer(),
                 voucher.endDate == null
-                    ? Text(
-                        'HSD: unlimited days',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.black45,
-                        ),
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.timer,
+                            size: 16,
+                            color: Colors.grey,
+                          ),
+                          Text(
+                            "Vĩnh viễn",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.black45,
+                            ),
+                          ),
+                        ],
                       )
-                    : Text(
-                        'HSD: ' +
-                            DateFormat('dd-MM-yyyy')
-                                .format(DateTime.parse(voucher.endDate)),
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.black45,
-                          // fontWeight: isApplied ? FontWeight.bold : FontWeight.normal,
-                        ),
+                    : Row(
+                        children: [
+                          Icon(
+                            Icons.timer,
+                            size: 16,
+                            color: Colors.grey,
+                          ),
+                          Text(
+                            ' ' +
+                                DateFormat('dd-MM-yyyy')
+                                    .format(DateTime.parse(voucher.endDate)),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.black45,
+                              // fontWeight: isApplied ? FontWeight.bold : FontWeight.normal,
+                            ),
+                          ),
+                        ],
                       ),
               ],
             ),
@@ -273,6 +352,79 @@ class _VouchersListPageState extends State<VouchersListPage> {
         ),
       ),
     );
+  }
+
+  Widget _buildSearchVoucher() {
+    TextEditingController controller = TextEditingController(text: '');
+    return ScopedModel(
+        model: Get.find<OrderViewModel>(),
+        child: ScopedModelDescendant<OrderViewModel>(
+            builder: (context, child, model) {
+          return Padding(
+            padding: const EdgeInsets.only(left: 12, right: 12),
+            child: Row(
+              children: [
+                Flexible(
+                  flex: 3,
+                  child: Container(
+                    // height: 10,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(8)),
+                        border: Border.all(color: kPrimary)),
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
+                      child: TextField(
+                        onChanged: (input) {
+                          // model.getFilterVoucher(input);
+                          // model.showFilteredVoucher();
+                        },
+                        controller: controller,
+                        decoration: InputDecoration(
+                            hintText: 'Nhập mã giảm giá',
+                            border: InputBorder.none,
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                Icons.search,
+                                size: 16,
+                                color: Colors.grey,
+                              ),
+                              onPressed: () {
+                                controller.clear();
+                              },
+                            )),
+                        style: Get.theme.textTheme.headline4
+                            .copyWith(color: Colors.grey),
+                        keyboardType: TextInputType.multiline,
+                        maxLines: 1,
+                        autofocus: true,
+                      ),
+                    ),
+                  ),
+                ),
+                Flexible(
+                  flex: 1,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                          border: Border.all(color: kPrimary)),
+                      child: TextButton(
+                          onPressed: () async {
+                            VoucherDTO inputVoucher =
+                                new VoucherDTO(voucherCode: controller.text);
+                            print(inputVoucher.voucherCode);
+                            await model.selectVoucher(inputVoucher);
+                            Get.back();
+                          },
+                          child: Text('Áp dụng')),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }));
   }
 
   Widget _buildLoading() {
@@ -336,8 +488,8 @@ class _VouchersListPageState extends State<VouchersListPage> {
               ),
             );
           }
-          final vouchers = model.vouchers;
-          if (vouchers == null || vouchers.isEmpty) {
+          final currentVouchers = model.vouchers;
+          if (currentVouchers == null || currentVouchers.isEmpty) {
             return SizedBox();
           }
           return Container(
@@ -347,12 +499,12 @@ class _VouchersListPageState extends State<VouchersListPage> {
             height: 72,
             child: ListView.builder(
               shrinkWrap: true,
-              itemCount: vouchers.length,
+              itemCount: currentVouchers.length,
               scrollDirection: Axis.horizontal,
               itemBuilder: (context, index) {
-                final voucher = vouchers[index];
-                final vouchersInCart = model.currentCart.vouchers;
-                bool isApplied = vouchersInCart
+                final voucher = currentVouchers[index];
+                final currentVouchersInCart = model.currentCart.vouchers;
+                bool isApplied = currentVouchersInCart
                     .any((e) => e.voucherCode == voucher.voucherCode);
                 return ClipPath(
                   clipper: ShapeBorderClipper(
