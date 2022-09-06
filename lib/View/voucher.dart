@@ -26,6 +26,7 @@ class _VouchersListPageState extends State<VouchersListPage> {
     Get.find<OrderViewModel>().getVouchers();
   }
 
+  bool isErrorInput = false;
   @override
   void initState() {
     Get.find<OrderViewModel>().getVouchers();
@@ -356,6 +357,14 @@ class _VouchersListPageState extends State<VouchersListPage> {
 
   Widget _buildSearchVoucher() {
     TextEditingController controller = TextEditingController(text: '');
+
+    void applyVoucher(OrderViewModel model) async {
+      VoucherDTO inputVoucher = new VoucherDTO(voucherCode: controller.text);
+      print(inputVoucher.voucherCode);
+      await model.selectVoucher(inputVoucher);
+      Get.back();
+    }
+
     return ScopedModel(
         model: Get.find<OrderViewModel>(),
         child: ScopedModelDescendant<OrderViewModel>(
@@ -365,26 +374,25 @@ class _VouchersListPageState extends State<VouchersListPage> {
             child: Row(
               children: [
                 Flexible(
-                  flex: 3,
+                  flex: 7,
                   child: Container(
-                    // height: 10,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(8)),
-                        border: Border.all(color: kPrimary)),
+                        border:
+                            Border.all(color: isErrorInput ? kFail : kPrimary)),
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
                       child: TextField(
-                        onChanged: (input) {
-                          // model.getFilterVoucher(input);
-                          // model.showFilteredVoucher();
-                        },
+                        onChanged: (input) {},
                         controller: controller,
                         decoration: InputDecoration(
-                            hintText: 'Nhập mã giảm giá',
+                            hintText: isErrorInput
+                                ? 'Vui lòng nhập mã'
+                                : 'Nhập mã giảm giá',
                             border: InputBorder.none,
                             suffixIcon: IconButton(
                               icon: Icon(
-                                Icons.search,
+                                Icons.clear,
                                 size: 16,
                                 color: Colors.grey,
                               ),
@@ -402,22 +410,28 @@ class _VouchersListPageState extends State<VouchersListPage> {
                   ),
                 ),
                 Flexible(
-                  flex: 1,
+                  flex: 3,
+                  fit: FlexFit.tight,
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
                     child: Container(
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.all(Radius.circular(8)),
+                          color: kPrimary,
                           border: Border.all(color: kPrimary)),
-                      child: TextButton(
-                          onPressed: () async {
-                            VoucherDTO inputVoucher =
-                                new VoucherDTO(voucherCode: controller.text);
-                            print(inputVoucher.voucherCode);
-                            await model.selectVoucher(inputVoucher);
-                            Get.back();
-                          },
-                          child: Text('Áp dụng')),
+                      child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            primary: kPrimary, // background
+                            onPrimary: Colors.black, // foreground
+                          ),
+                          onPressed: () => controller.text.isNotEmpty
+                              ? applyVoucher(model)
+                              : setState(() {
+                                  isErrorInput = true;
+                                }),
+                          child: Text('Áp dụng',
+                              style: TextStyle(
+                                  color: Colors.white, fontSize: 15))),
                     ),
                   ),
                 ),
