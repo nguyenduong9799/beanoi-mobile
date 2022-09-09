@@ -89,7 +89,7 @@ class RootViewModel extends BaseModel {
           currentStore = campus;
           setSelectedLocation(currentStore, location, destination);
           await setStore(currentStore);
-          await getListMenu(currentStore);
+          await getListMenu(currentStore.id);
           notifyListeners();
           hideDialog();
           startUp();
@@ -97,7 +97,7 @@ class RootViewModel extends BaseModel {
       } else {
         setSelectedLocation(currentStore, location, destination);
         await setStore(currentStore);
-        await getListMenu(currentStore);
+        // await getListMenu(currentStore.id);
         notifyListeners();
       }
     } else {
@@ -107,9 +107,9 @@ class RootViewModel extends BaseModel {
     Get.back();
   }
 
-  Future<void> getListMenu(CampusDTO currentStore) async {
+  Future<void> getListMenu(int storeId) async {
     MenuDAO _menuDAO = new MenuDAO();
-    listMenu = await _menuDAO.getMenus(areaID: currentStore.id);
+    listMenu = await _menuDAO.getMenus(storeId);
     bool found = false;
     selectedMenu = await getMenu();
     if (selectedMenu == null) {
@@ -228,11 +228,11 @@ class RootViewModel extends BaseModel {
       if (currentStore == null) {
         listStore = await _storeDAO.getStores(id: UNIBEAN_STORE);
         // listMenu = await _menuDAO.getMenus(areaID: UNIBEAN_STORE);
+        await getListMenu(UNIBEAN_STORE);
         currentStore = listStore[0];
-        await getListMenu(currentStore);
       } else {
         if (listMenu == null) {
-          await getListMenu(currentStore);
+          await getListMenu(currentStore.id);
         } else {
           bool found = false;
           selectedMenu = await getMenu();
