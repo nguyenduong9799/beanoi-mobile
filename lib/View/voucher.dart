@@ -419,11 +419,7 @@ class _VouchersListPageState extends State<VouchersListPage> {
                           borderRadius: BorderRadius.all(Radius.circular(8)),
                           color: kPrimary,
                           border: Border.all(color: kPrimary)),
-                      child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            primary: kPrimary, // background
-                            onPrimary: Colors.black, // foreground
-                          ),
+                      child: TextButton(
                           onPressed: () => controller.text.isNotEmpty
                               ? applyVoucher(model)
                               : setState(() {

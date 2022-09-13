@@ -14,7 +14,7 @@ class GiftViewModel extends BaseModel {
   ScrollController giftScrollController;
   CampusDTO currentStore;
   MenuDTO currentMenu;
-  List<MenuDTO> listGiftMenu;
+  // List<MenuDTO> listGiftMenu;
   ProductDTO nearlyGift;
 
   GiftViewModel() {
@@ -38,7 +38,7 @@ class GiftViewModel extends BaseModel {
       RootViewModel root = Get.find<RootViewModel>();
       currentMenu = root.selectedMenu;
       currentStore = root.currentStore;
-      gifts = await _productDAO.getListGiftMenus(currentStore.id);
+      gifts = await _productDAO.getGifts(currentStore.id, currentMenu.menuId);
       if (root.status == ViewStatus.Error) {
         setState(ViewStatus.Error);
         return;
@@ -48,8 +48,7 @@ class GiftViewModel extends BaseModel {
         setState(ViewStatus.Completed);
         return;
       }
-      gifts =
-          await _productDAO.getGifts(currentStore.id, listGiftMenu[0].menuId);
+      gifts = await _productDAO.getGifts(currentStore.id, currentMenu.menuId);
       await Future.delayed(Duration(microseconds: 500));
       // check truong hop product tra ve rong (do khong co menu nao trong TG do)
       setState(ViewStatus.Completed);
@@ -62,11 +61,10 @@ class GiftViewModel extends BaseModel {
   Future<void> getMoreGifts() async {
     RootViewModel root = Get.find<RootViewModel>();
     currentMenu = root.selectedMenu;
-    gifts = await _productDAO.getListGiftMenus(currentStore.id);
+    gifts = await _productDAO.getGifts(currentStore.id, currentMenu.menuId);
     try {
       setState(ViewStatus.LoadMore);
-      gifts += await _productDAO.getGifts(
-          currentStore.id, listGiftMenu[0].menuId,
+      gifts += await _productDAO.getGifts(currentStore.id, currentMenu.menuId,
           page: _productDAO.metaDataDTO.page + 1);
 
       await Future.delayed(Duration(milliseconds: 1000));
@@ -85,13 +83,13 @@ class GiftViewModel extends BaseModel {
     RootViewModel root = Get.find<RootViewModel>();
     CampusDTO currentStore = root.currentStore;
     currentMenu = root.selectedMenu;
-    gifts = await _productDAO.getListGiftMenus(currentStore.id);
+    gifts = await _productDAO.getGifts(currentStore.id, currentMenu.menuId);
 
     try {
       setState(ViewStatus.Loading);
       var nearLyGifts = await _productDAO.getGifts(
         currentStore.id,
-        listGiftMenu[0].menuId,
+        currentMenu.menuId,
         params: {"sortBy": "price asc"},
       );
 
