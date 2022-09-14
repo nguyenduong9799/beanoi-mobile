@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:unidelivery_mobile/Constraints/constraints.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/Utils/index.dart';
@@ -48,10 +49,14 @@ class ProductDAO extends BaseDAO {
     Map<String, dynamic> params = const {},
   }) async {
     Response res = await request.get(
-      'stores/$storeId/gifts?menu-id=${menuId}',
+      'stores/$storeId/products',
       // 'areas/${storeId}/menus/${menuId}/products',
-      queryParameters: {"page": page ?? 1, "size": size ?? DEFAULT_SIZE}
-        ..addAll(params),
+      queryParameters: {
+        "page": page ?? 1,
+        "size": size ?? DEFAULT_SIZE,
+        "product-type-id": ProductType.GIFT_PRODUCT,
+        "menu-id": menuId,
+      }..addAll(params),
     );
 
     //final res = await Dio().get("http://api.dominos.reso.vn/api/v1/products");
