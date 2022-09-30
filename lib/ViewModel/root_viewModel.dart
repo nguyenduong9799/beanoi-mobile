@@ -34,7 +34,7 @@ class RootViewModel extends BaseModel {
   }
 
   Future startUp() async {
-    await fetchStore();
+    fetchStore();
     await Get.find<HomeViewModel>().getSuppliers();
     await Get.find<BlogsViewModel>().getBlogs();
     await Get.find<BlogsViewModel>().getDialogBlog();
@@ -46,7 +46,7 @@ class RootViewModel extends BaseModel {
   }
 
   Future refreshMenu() async {
-    await Get.find<RootViewModel>().fetchStore();
+    fetchStore();
     await Get.find<HomeViewModel>().getSuppliers();
     await Get.find<HomeViewModel>().getCollections();
     await Get.find<OrderViewModel>().getUpSellCollections();

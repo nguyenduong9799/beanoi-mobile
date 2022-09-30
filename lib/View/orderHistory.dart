@@ -271,7 +271,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    order.paymentType == PaymentTypeEnum.CreditPayment
+                    order.paymentType == PaymentTypeEnum.BeanCoin
                         ? "${formatBean(order.finalAmount)} xu"
                         : "${formatPrice(order.finalAmount)}",
                     textAlign: TextAlign.right,

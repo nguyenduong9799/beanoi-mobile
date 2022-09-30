@@ -280,7 +280,7 @@ class _GiftAppBarSate extends State<GiftAppBar> {
           text: TextSpan(
               text: "Chào ",
               style:
-                  Get.theme.textTheme.headline4.copyWith(color: Colors.white),
+                  Get.theme.textTheme.headline3.copyWith(color: Colors.white),
               children: <TextSpan>[
                 TextSpan(
                   text: "${user?.name?.toUpperCase() ?? "-"}",
@@ -315,18 +315,18 @@ class _GiftAppBarSate extends State<GiftAppBar> {
           text: TextSpan(
               text: "Bạn có ",
               style:
-                  Get.theme.textTheme.headline6.copyWith(color: Colors.white),
+                  Get.theme.textTheme.headline4.copyWith(color: Colors.white),
               children: [
                 TextSpan(
-                  text: "${user?.balance?.floor() ?? "-"} xu",
-                  style: Get.theme.textTheme.headline5
+                  text: "${user?.balance?.floor() ?? "-"}",
+                  style: Get.theme.textTheme.headline4
                       .copyWith(color: Colors.white),
                 ),
-                TextSpan(text: " và "),
-                TextSpan(
-                  text: "${user?.point?.floor() ?? "-"} ",
-                  style: Get.theme.textTheme.headline5.copyWith(color: kBean),
-                ),
+                // TextSpan(text: " và "),
+                // TextSpan(
+                //   text: "${user?.point?.floor() ?? "-"} ",
+                //   style: Get.theme.textTheme.headline5.copyWith(color: kBean),
+                // ),
                 WidgetSpan(
                     alignment: PlaceholderAlignment.bottom,
                     child: Image(

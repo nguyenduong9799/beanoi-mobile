@@ -254,25 +254,25 @@ class _VouchersListPageState extends State<VouchersListPage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey, width: 1),
-                    borderRadius: BorderRadius.circular(3),
-                    color: kPrimary,
-                  ),
-                  child: Text(
-                    //
-                    "Chỉ dành cho bạn",
-                    maxLines: 2,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
+                // Container(
+                //   width: MediaQuery.of(context).size.width,
+                //   decoration: BoxDecoration(
+                //     border: Border.all(color: Colors.grey, width: 1),
+                //     borderRadius: BorderRadius.circular(3),
+                //     color: kPrimary,
+                //   ),
+                //   child: Text(
+                //     //
+                //     "Chỉ dành cho bạn",
+                //     maxLines: 2,
+                //     textAlign: TextAlign.center,
+                //     style: TextStyle(
+                //       fontSize: 12,
+                //       fontWeight: FontWeight.bold,
+                //       color: Colors.white,
+                //     ),
+                //   ),
+                // ),
                 Spacer(),
                 Text(
                   voucher.voucherName,
@@ -314,10 +314,12 @@ class _VouchersListPageState extends State<VouchersListPage> {
                     ? Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(
-                            Icons.timer,
-                            size: 16,
-                            color: Colors.grey,
+                          Text(
+                            "HSD: ",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.black45,
+                            ),
                           ),
                           Text(
                             "Vĩnh viễn",
@@ -330,10 +332,12 @@ class _VouchersListPageState extends State<VouchersListPage> {
                       )
                     : Row(
                         children: [
-                          Icon(
-                            Icons.timer,
-                            size: 16,
-                            color: Colors.grey,
+                          Text(
+                            "HSD: ",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.black45,
+                            ),
                           ),
                           Text(
                             ' ' +

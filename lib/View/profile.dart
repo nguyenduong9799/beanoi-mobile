@@ -126,23 +126,23 @@ class _UpdateAccountState extends State<ProfileScreen> {
                   SizedBox(
                     height: 4,
                   ),
-                  infoDetail("Số xu: ", color: Colors.grey, list: [
-                    TextSpan(
-                        text:
-                            formatPriceWithoutUnit(model.currentUser.balance) +
-                                " xu",
-                        style: Get.theme.textTheme.headline4)
-                  ]),
-                  SizedBox(
-                    height: 4,
-                  ),
+                  // infoDetail("Số xu: ", color: Colors.grey, list: [
+                  //   TextSpan(
+                  //       text:
+                  //           formatPriceWithoutUnit(model.currentUser.balance) +
+                  //               " xu",
+                  //       style: Get.theme.textTheme.headline4)
+                  // ]),
+                  // SizedBox(
+                  //   height: 4,
+                  // ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      infoDetail("Số bean: ", color: Colors.grey, list: [
+                      infoDetail("Sô bean: ", color: Colors.grey, list: [
                         TextSpan(
-                            text:
-                                formatPriceWithoutUnit(model.currentUser.point),
+                            text: formatPriceWithoutUnit(
+                                model.currentUser.balance),
                             style: Get.theme.textTheme.headline4),
                         WidgetSpan(
                             alignment: PlaceholderAlignment.middle,
@@ -153,6 +153,9 @@ class _UpdateAccountState extends State<ProfileScreen> {
                               height: 20,
                             ))
                       ]),
+                      SizedBox(
+                        height: 4,
+                      ),
                       Padding(
                         padding: EdgeInsets.only(right: 30),
                         child: InkWell(
