@@ -60,7 +60,7 @@ class _FixedAppBarState extends State<FixedAppBar> {
               padding: EdgeInsets.fromLTRB(8, 0, 8, 0),
               child: timeRecieve(),
             ),
-            _buildTimeAlert(),
+            // _buildTimeAlert(),
           ],
         ),
       ),
@@ -244,16 +244,15 @@ class _FixedAppBarState extends State<FixedAppBar> {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    ShimmerBlock(width: 150, height: 32),
-                  ],
-                ),
-                SizedBox(height: 8),
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //   crossAxisAlignment: CrossAxisAlignment.center,
+                //   children: [
+                //     ShimmerBlock(width: 150, height: 28),
+                //   ],
+                // ),
                 Container(
-                  height: 24,
+                  height: 32,
                   width: Get.width,
                   child: ListView.builder(
                     itemBuilder: (context, index) {
@@ -261,8 +260,8 @@ class _FixedAppBarState extends State<FixedAppBar> {
                         padding: const EdgeInsets.only(right: 8.0),
                         child: ShimmerBlock(
                           width: 80,
-                          height: 24,
-                          borderRadius: 16,
+                          height: 32,
+                          borderRadius: 8,
                         ),
                       );
                     },
@@ -279,32 +278,33 @@ class _FixedAppBarState extends State<FixedAppBar> {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text.rich(
-                    TextSpan(
-                      text: "Khung giờ đặt đơn",
-                      style: Get.theme.textTheme.headline5,
-                      children: [
-                        // WidgetSpan(
-                        //   child: MyTooltip(
-                        //     message:
-                        //         "Thời gian bạn muốn nhận đơn của mình. Lưu ý thời gian chốt đơn thường sớm hơn 1 tiếng",
-                        //     child: Icon(Icons.info_outline, size: 16),
-                        //     height: 48,
-                        //   ),
-                        // ),
-                      ],
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ),
-              SizedBox(height: 8),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //   crossAxisAlignment: CrossAxisAlignment.center,
+              //   children: [
+              //     Text.rich(
+              //       TextSpan(
+              //         text: "Khung giờ đặt đơn",
+              //         style: Get.theme.textTheme.headline5,
+              //         children: [
+              //           // WidgetSpan(
+              //           //   child: MyTooltip(
+              //           //     message:
+              //           //         "Thời gian bạn muốn nhận đơn của mình. Lưu ý thời gian chốt đơn thường sớm hơn 1 tiếng",
+              //           //     child: Icon(Icons.info_outline, size: 16),
+              //           //     height: 48,
+              //           //   ),
+              //           // ),
+              //         ],
+              //       ),
+              //       textAlign: TextAlign.center,
+              //     ),
+              //   ],
+              // ),
+              // SizedBox(height: 8),
               Container(
-                  height: 24,
+                  alignment: Alignment.center,
+                  height: 32,
                   width: Get.width,
                   child: ListView.builder(
                     // separatorBuilder: (context, index) => SizedBox(
@@ -334,8 +334,7 @@ class _FixedAppBarState extends State<FixedAppBar> {
                         padding: EdgeInsets.only(left: 8, right: 8),
                         margin: EdgeInsets.only(right: 8),
                         decoration: BoxDecoration(
-                          borderRadius:
-                              BorderRadius.circular(isSelect ? 16 : 0),
+                          borderRadius: BorderRadius.circular(isSelect ? 8 : 0),
                           color: isSelect ? kPrimary : Colors.transparent,
                         ),
                         duration: Duration(milliseconds: 300),
@@ -348,9 +347,9 @@ class _FixedAppBarState extends State<FixedAppBar> {
                           child: Center(
                             child: Text(model.listMenu[index].menuName,
                                 style: isSelect
-                                    ? Get.theme.textTheme.headline5
+                                    ? Get.theme.textTheme.headline4
                                         .copyWith(color: Colors.white)
-                                    : Get.theme.textTheme.headline5),
+                                    : Get.theme.textTheme.headline4),
                           ),
                         ),
                       );
@@ -382,7 +381,7 @@ class _FixedAppBarState extends State<FixedAppBar> {
         if (root.changeAddress) {
           text = "Đang thay đổi...";
         } else if (location != null) {
-          text = destinationDTO.name;
+          text = destinationDTO.name + " - " + location.address;
         } else {
           text = "Chưa chọn";
         }
@@ -396,6 +395,7 @@ class _FixedAppBarState extends State<FixedAppBar> {
             children: [
               Row(
                 children: [
+                  SizedBox(width: 8),
                   ShimmerBlock(width: 64, height: 24),
                   SizedBox(width: 8),
                   ShimmerBlock(width: 150, height: 24),
@@ -407,16 +407,23 @@ class _FixedAppBarState extends State<FixedAppBar> {
 
         return InkWell(
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(
-                "📌 Nơi nhận: ",
-                style:
-                    Get.theme.textTheme.headline6.copyWith(color: Colors.black),
+              Row(
+                children: [
+                  Icon(Icons.location_on, color: Colors.orange[400], size: 20),
+                ],
               ),
+              // Text(
+              //   "📌 Nơi nhận: ",
+              //   style:
+              //       Get.theme.textTheme.headline6.copyWith(color: Colors.black),
+              // ),
               Flexible(
                 child: Text(
                   text,
-                  style: Get.theme.textTheme.headline3,
+                  style: Get.theme.textTheme.headline4,
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
                 ),

@@ -139,7 +139,7 @@ class _UpdateAccountState extends State<ProfileScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      infoDetail("Sô bean: ", color: Colors.grey, list: [
+                      infoDetail("Điểm Bean: ", color: Colors.grey, list: [
                         TextSpan(
                             text: formatPriceWithoutUnit(
                                 model.currentUser.balance),

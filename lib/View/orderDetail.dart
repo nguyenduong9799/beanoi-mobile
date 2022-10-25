@@ -495,9 +495,9 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                         style: Get.theme.textTheme.headline3,
                       ),
                       Text(
-                        orderDetail.paymentType == PaymentTypeEnum.Cash
-                            ? "${formatPrice(orderDetail.finalAmount)}"
-                            : "${formatBean(orderDetail.finalAmount)} xu",
+                        orderDetail.paymentType == PaymentTypeEnum.BeanCoin
+                            ? "${formatBean(orderDetail.finalAmount)} Bean"
+                            : "${formatPrice(orderDetail.finalAmount)}",
                         style: Get.theme.textTheme.headline3,
                       ),
                     ],

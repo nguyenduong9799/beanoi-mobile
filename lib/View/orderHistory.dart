@@ -272,7 +272,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                 children: [
                   Text(
                     order.paymentType == PaymentTypeEnum.BeanCoin
-                        ? "${formatBean(order.finalAmount)} xu"
+                        ? "${formatBean(order.finalAmount)} Bean"
                         : "${formatPrice(order.finalAmount)}",
                     textAlign: TextAlign.right,
                     style: Get.theme.textTheme.headline2,
