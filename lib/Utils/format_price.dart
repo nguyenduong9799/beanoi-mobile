@@ -15,3 +15,9 @@ String formatBean(double price) {
   format.minimumFractionDigits = 0;
   return format.format(price);
 }
+
+String formatBeanCoin(double price) {
+  NumberFormat format = NumberFormat("###0.00");
+  format.minimumFractionDigits = 0;
+  return format.format(price) + " Bean";
+}

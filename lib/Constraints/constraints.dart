@@ -109,12 +109,12 @@ class TransactionStatus {
 
 class PaymentTypeEnum {
   static const int Cash = 1;
-  static const int CreditPayment = 2; //tra bang xu
+  static const int BeanCoin = 2; //tra bang Bean
   static const int Momo = 3;
 }
 
 class CollectionTypeEnum {
   static const int Default = 0;
-  static const int BestSeller = 1; //tra bang xu
+  static const int BestSeller = 1;
   static const int Suggestion = 2;
 }

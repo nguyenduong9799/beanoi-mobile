@@ -1234,7 +1234,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                                       PaymentTypeEnum.Cash
                                                   ? formatPrice(orderViewModel
                                                       .orderAmount.finalAmount)
-                                                  : "${formatBean(orderViewModel.orderAmount.finalAmount)} xu",
+                                                  : "${formatBean(orderViewModel.orderAmount.finalAmount)} Bean",
                                           style: Get.theme.textTheme.headline3,
                                         ),
                                       ],

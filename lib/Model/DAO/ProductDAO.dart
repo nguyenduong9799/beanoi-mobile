@@ -58,11 +58,13 @@ class ProductDAO extends BaseDAO {
         "menu-id": menuId,
       }..addAll(params),
     );
-
-    //final res = await Dio().get("http://api.dominos.reso.vn/api/v1/products");
-    final products = ProductDTO.fromList(res.data["data"]);
-    metaDataDTO = MetaDataDTO.fromJson(res.data["metadata"]);
-    return products;
+    var jsonList = res.data["data"] as List;
+    if (jsonList != null) {
+      final products = ProductDTO.fromList(res.data["data"]);
+      metaDataDTO = MetaDataDTO.fromJson(res.data["metadata"]);
+      return products;
+    }
+    return null;
   }
 
   Future<List<ProductDTO>> getAllProductOfStore(int storeId, int menuID,

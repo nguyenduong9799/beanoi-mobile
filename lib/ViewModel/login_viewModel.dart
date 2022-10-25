@@ -32,6 +32,7 @@ class LoginViewModel extends BaseModel {
       await _analyticsService.logLogin(method);
       // TODO: Thay uid = idToken
       String token = await userCredential.user.getIdToken();
+      print(token);
       final userInfo = await dao.login(token);
       await PushNotificationService.getInstance().init();
 
