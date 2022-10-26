@@ -114,7 +114,10 @@ flutter:
       fonts:
         - asset: assets/fonts/Gotham-Medium.otf
           style: italic
-
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/Inter-Medium.otf
+          style: italic
   # fonts:
   #   - family: Schyler
   #     fonts:

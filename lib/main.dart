@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:unidelivery_mobile/Accessories/index.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Utils/index.dart';
+import 'package:unidelivery_mobile/View/design_screen.dart';
 import 'package:unidelivery_mobile/View/index.dart';
 import 'package:unidelivery_mobile/View/referral.dart';
 import 'package:unidelivery_mobile/View/transaction.dart';
@@ -140,6 +141,9 @@ class MyApp extends StatelessWidget {
           case RouteHandler.VOUCHER:
             return CupertinoPageRoute<bool>(
                 builder: (context) => VouchersListPage(), settings: settings);
+          case RouteHandler.DESIGN:
+            return CupertinoPageRoute<bool>(
+                builder: (context) => DesignScreen(), settings: settings);
           default:
             return CupertinoPageRoute(
                 builder: (context) => NotFoundScreen(), settings: settings);
