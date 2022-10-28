@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:unidelivery_mobile/Constraints/BeanOiTheme/button.dart';
 import 'package:unidelivery_mobile/Constraints/BeanOiTheme/index.dart';
-import 'package:unidelivery_mobile/Constraints/BeanOiTheme/spacing.dart';
-import 'package:unidelivery_mobile/Constraints/BeanOiTheme/typography.dart';
-import 'package:unidelivery_mobile/Widgets/button.dart';
+import 'package:unidelivery_mobile/Widgets/beanoi_button.dart';
 
 class DesignScreen extends StatefulWidget {
   const DesignScreen({Key key}) : super(key: key);
@@ -27,14 +26,14 @@ class _DesignScreenState extends State<DesignScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Padding(
-                  padding: EdgeInsets.only(top: BeanOiSpacing.s),
+                  padding: EdgeInsets.only(top: BeanOiTheme.spacing.s),
                   child: Text(
                     'Typography',
                     style: BeanOiTheme.typography.h1,
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.all(BeanOiSpacing.s),
+                  padding: EdgeInsets.all(BeanOiTheme.spacing.s),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -55,7 +54,7 @@ class _DesignScreenState extends State<DesignScreen> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.all(BeanOiSpacing.s),
+                  padding: EdgeInsets.all(BeanOiTheme.spacing.s),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -76,7 +75,7 @@ class _DesignScreenState extends State<DesignScreen> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.all(BeanOiSpacing.s),
+                  padding: EdgeInsets.all(BeanOiTheme.spacing.s),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -97,7 +96,7 @@ class _DesignScreenState extends State<DesignScreen> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.all(BeanOiSpacing.s),
+                  padding: EdgeInsets.all(BeanOiTheme.spacing.s),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -118,7 +117,7 @@ class _DesignScreenState extends State<DesignScreen> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.all(BeanOiSpacing.s),
+                  padding: EdgeInsets.all(BeanOiTheme.spacing.s),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -139,7 +138,7 @@ class _DesignScreenState extends State<DesignScreen> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.all(BeanOiSpacing.s),
+                  padding: EdgeInsets.all(BeanOiTheme.spacing.s),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -160,7 +159,7 @@ class _DesignScreenState extends State<DesignScreen> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.all(BeanOiSpacing.s),
+                  padding: EdgeInsets.all(BeanOiTheme.spacing.s),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -181,7 +180,7 @@ class _DesignScreenState extends State<DesignScreen> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.all(BeanOiSpacing.s),
+                  padding: EdgeInsets.all(BeanOiTheme.spacing.s),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -201,69 +200,6 @@ class _DesignScreenState extends State<DesignScreen> {
                     ],
                   ),
                 ),
-                Padding(
-                  padding: EdgeInsets.all(BeanOiSpacing.s),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          'Button Large',
-                          style: BeanOiTheme.typography.buttonLg,
-                        ),
-                      ),
-                      Expanded(
-                        child: Text(
-                          'Typography',
-                          textAlign: TextAlign.end,
-                          style: BeanOiTheme.typography.buttonLg,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.all(BeanOiSpacing.s),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          'Button Medium',
-                          style: BeanOiTheme.typography.buttonMd,
-                        ),
-                      ),
-                      Expanded(
-                        child: Text(
-                          'Typography',
-                          textAlign: TextAlign.end,
-                          style: BeanOiTheme.typography.buttonMd,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.all(BeanOiSpacing.s),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          'Button Small',
-                          style: BeanOiTheme.typography.buttonSm,
-                        ),
-                      ),
-                      Expanded(
-                        child: Text(
-                          'Typography',
-                          textAlign: TextAlign.end,
-                          style: BeanOiTheme.typography.buttonSm,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
               ],
             ),
           ),
@@ -271,98 +207,108 @@ class _DesignScreenState extends State<DesignScreen> {
               child: Column(
             children: [
               Padding(
-                padding: EdgeInsets.only(top: BeanOiSpacing.s),
+                padding: EdgeInsets.only(top: BeanOiTheme.spacing.s),
                 child: Text(
                   'Button',
                   style: BeanOiTheme.typography.h1,
                 ),
               ),
               Padding(
-                padding: EdgeInsets.all(BeanOiSpacing.s),
+                padding: EdgeInsets.all(BeanOiTheme.spacing.s),
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Expanded(
-                      flex: 1,
+                    BeanOiButton.outlined(
+                      onPressed: () {},
                       child: Text(
-                        'Button',
-                        style: BeanOiTheme.typography.h2,
+                        'Outlined Sm',
+                        style: BeanOiTheme.typography.buttonOutlinedSm,
                       ),
+                      size: BeanOiButtonSize.small,
                     ),
-                    Expanded(
-                      flex: 3,
-                      child: BeanOiButton.large(
-                        onPressed: () {},
-                        child: Text('Button'),
+                    BeanOiButton.outlined(
+                      onPressed: () {},
+                      child: Text(
+                        'Outlined Md',
+                        style: BeanOiTheme.typography.buttonOutlinedMd,
                       ),
+                      size: BeanOiButtonSize.medium,
+                    ),
+                    BeanOiButton.outlined(
+                      onPressed: () {},
+                      child: Text(
+                        'Outlined Lg',
+                        style: BeanOiTheme.typography.buttonOutlinedLg,
+                      ),
+                      size: BeanOiButtonSize.large,
                     ),
                   ],
                 ),
               ),
               Padding(
-                padding: EdgeInsets.all(BeanOiSpacing.s),
-                child: BeanOiButton.medium(
-                  onPressed: () {},
-                  child: Text('Button'),
+                padding: EdgeInsets.all(BeanOiTheme.spacing.s),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    BeanOiButton.gradient(
+                      onPressed: () {},
+                      child: Text(
+                        'Gradient Sm',
+                        style: BeanOiTheme.typography.buttonSm,
+                      ),
+                      size: BeanOiButtonSize.small,
+                    ),
+                    BeanOiButton.gradient(
+                      onPressed: () {},
+                      child: Text(
+                        'Gradient Md',
+                        style: BeanOiTheme.typography.buttonMd,
+                      ),
+                    ),
+                    BeanOiButton.gradient(
+                      onPressed: () {},
+                      child: Text(
+                        'Gradient Lg',
+                        style: BeanOiTheme.typography.buttonLg,
+                      ),
+                      size: BeanOiButtonSize.large,
+                    ),
+                  ],
                 ),
               ),
               Padding(
-                padding: EdgeInsets.all(BeanOiSpacing.s),
-                child: BeanOiButton.small(
-                  onPressed: () {},
-                  child: Text('Button'),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.all(BeanOiSpacing.s),
-                child: BeanOiButton.outlined(
-                  onPressed: () {},
-                  child: Text('Button'),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.all(BeanOiSpacing.s),
-                child: BeanOiButton.rounded(
-                  onPressed: () {},
-                  child: Text('Button'),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.all(BeanOiSpacing.s),
-                child: BeanOiButton.block(
-                  onPressed: () {},
-                  child: Text('Button'),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.all(BeanOiSpacing.s),
-                child: BeanOiButton.text(
-                  onPressed: () {},
-                  child: Text('Button'),
+                padding: EdgeInsets.all(BeanOiTheme.spacing.s),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    BeanOiButton.solid(
+                      onPressed: () {},
+                      child: Text(
+                        'Solid Sm',
+                        style: BeanOiTheme.typography.buttonSm,
+                      ),
+                      size: BeanOiButtonSize.small,
+                    ),
+                    BeanOiButton.solid(
+                      onPressed: () {},
+                      child: Text(
+                        'Solid Md',
+                        style: BeanOiTheme.typography.buttonMd,
+                      ),
+                    ),
+                    BeanOiButton.solid(
+                      onPressed: () {},
+                      child: Text(
+                        'Solid Lg',
+                        style: BeanOiTheme.typography.buttonLg,
+                      ),
+                      size: BeanOiButtonSize.large,
+                    ),
+                  ],
                 ),
               ),
             ],
           )),
-          Container(
-            height: 100,
-            color: BeanOiTheme.palettes.primary300,
-          ),
-          Container(
-            height: 100,
-            color: BeanOiTheme.palettes.secondary500,
-          ),
-          Container(
-            height: 100,
-            color: BeanOiTheme.palettes.neutral500,
-          ),
-          Container(height: 100, color: BeanOiTheme.palettes.success300),
-          Container(
-            height: 100,
-            color: BeanOiTheme.palettes.error300,
-          ),
-          Container(
-            height: 100,
-            color: BeanOiTheme.palettes.shades200,
-          ),
         ]),
       ),
     );

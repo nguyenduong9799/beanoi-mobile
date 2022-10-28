@@ -12,11 +12,10 @@ class StartUpViewModel extends BaseModel {
   Future handleStartUpLogic() async {
     AccountDAO _accountDAO = AccountDAO();
     await Future.delayed(Duration(seconds: 3));
-    var hasLoggedInUser = await _accountDAO.isUserLoggedIn();
     bool isFirstOnBoard = await getIsFirstOnboard() ?? true;
+    bool hasLoggedInUser = await _accountDAO.isUserLoggedIn();
 
     if (isFirstOnBoard) {
-      await Get.find<RootViewModel>().startUp();
       Get.offAndToNamed(RouteHandler.ONBOARD);
     } else if (hasLoggedInUser) {
       await Get.find<RootViewModel>().startUp();

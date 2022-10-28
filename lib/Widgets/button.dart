@@ -4,16 +4,16 @@
 
 /// Three types of button implemented from Material Button.
 
-/// [FxButtonType.elevated] - gives elevation to the button along with some height and shadow.
-/// [FxButtonType.outlined] - gives outline to the button
-/// [FxButtonType.text] - able to build text button
+/// [BeanOiButtonType.elevated] - gives elevation to the button along with some height and shadow.
+/// [BeanOiButtonType.outlined] - gives outline to the button
+/// [BeanOiButtonType.text] - able to build text button
 
 import 'package:flutter/material.dart';
 
-enum FxButtonType { elevated, outlined, text }
+enum BeanOiButtonType { elevated, outlined, text }
 
 class BeanOiButton extends StatelessWidget {
-  final FxButtonType buttonType;
+  final BeanOiButtonType buttonType;
 
   final ButtonStyle style;
 
@@ -59,7 +59,7 @@ class BeanOiButton extends StatelessWidget {
       this.borderRadiusAll = 0,
       this.msBackgroundColor,
       this.backgroundColor,
-      this.buttonType = FxButtonType.elevated,
+      this.buttonType = BeanOiButtonType.elevated,
       this.style,
       this.msShadowColor,
       this.msSide,
@@ -84,7 +84,7 @@ class BeanOiButton extends StatelessWidget {
       this.borderRadiusAll = 4,
       this.msBackgroundColor,
       this.backgroundColor,
-      this.buttonType = FxButtonType.elevated,
+      this.buttonType = BeanOiButtonType.elevated,
       this.style,
       this.block = false,
       this.msSide,
@@ -109,7 +109,7 @@ class BeanOiButton extends StatelessWidget {
       this.borderRadiusAll = 0,
       this.msBackgroundColor,
       this.backgroundColor,
-      this.buttonType = FxButtonType.elevated,
+      this.buttonType = BeanOiButtonType.elevated,
       this.style,
       this.block = false,
       this.msSide,
@@ -136,7 +136,7 @@ class BeanOiButton extends StatelessWidget {
       this.borderRadiusAll = 0,
       this.msBackgroundColor,
       this.backgroundColor,
-      this.buttonType = FxButtonType.elevated,
+      this.buttonType = BeanOiButtonType.elevated,
       this.style,
       this.msSide,
       this.disabled = false,
@@ -161,7 +161,7 @@ class BeanOiButton extends StatelessWidget {
       this.borderRadiusAll = 0,
       this.msBackgroundColor,
       this.backgroundColor,
-      this.buttonType = FxButtonType.text,
+      this.buttonType = BeanOiButtonType.text,
       this.style,
       this.msSide,
       this.disabled = false,
@@ -186,7 +186,7 @@ class BeanOiButton extends StatelessWidget {
       this.borderRadiusAll = 0,
       this.msBackgroundColor,
       this.backgroundColor,
-      this.buttonType = FxButtonType.elevated,
+      this.buttonType = BeanOiButtonType.elevated,
       this.style,
       this.msSide,
       this.disabled = false,
@@ -210,7 +210,7 @@ class BeanOiButton extends StatelessWidget {
       this.borderRadiusAll = 0,
       this.msBackgroundColor,
       this.backgroundColor,
-      this.buttonType = FxButtonType.outlined,
+      this.buttonType = BeanOiButtonType.outlined,
       this.style,
       this.msSide,
       this.block = false,
@@ -235,7 +235,7 @@ class BeanOiButton extends StatelessWidget {
       this.borderRadiusAll = 0,
       this.msBackgroundColor,
       this.backgroundColor,
-      this.buttonType = FxButtonType.elevated,
+      this.buttonType = BeanOiButtonType.elevated,
       this.style,
       this.disabled = false,
       this.msSide,
@@ -253,7 +253,7 @@ class BeanOiButton extends StatelessWidget {
     Widget button;
     Color bgColor = backgroundColor ?? Theme.of(context).primaryColor;
 
-    if (buttonType == FxButtonType.outlined) {
+    if (buttonType == BeanOiButtonType.outlined) {
       button = OutlinedButton(
         onPressed: onPressed,
         child: child,
@@ -281,7 +281,7 @@ class BeanOiButton extends StatelessWidget {
                       borderRadius: BorderRadius.circular(borderRadiusAll ?? 0),
                     ))),
       );
-    } else if (buttonType == FxButtonType.elevated) {
+    } else if (buttonType == BeanOiButtonType.elevated) {
       button = ElevatedButton(
           style: style ??
               ButtonStyle(
