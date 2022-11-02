@@ -6,6 +6,7 @@ import 'package:shimmer/shimmer.dart';
 import 'package:get/get.dart';
 import 'package:unidelivery_mobile/Accessories/CacheImage.dart';
 import 'package:unidelivery_mobile/Accessories/touchopacity.dart';
+import 'package:unidelivery_mobile/Constraints/BeanOiTheme/index.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Enums/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/CollectionDTO.dart';
@@ -34,7 +35,7 @@ class _HomeCollectionState extends State<HomeCollection> {
     _homeCollectionViewModel.getCollections();
   }
 
-  final double kWitdthItem = 125;
+  final double kWitdthItem = 100;
 
   @override
   Widget build(BuildContext context) {
@@ -54,9 +55,9 @@ class _HomeCollectionState extends State<HomeCollection> {
                     element.products != null && element.products?.length != 0)
                 .map(
                   (c) => Container(
-                      margin: EdgeInsets.only(bottom: 16),
+                      margin: EdgeInsets.only(bottom: 8),
                       color: Colors.white,
-                      padding: EdgeInsets.all(8),
+                      padding: EdgeInsets.fromLTRB(8, 8, 8, 0),
                       child: buildHomeCollection(c)),
                 )
                 .toList(),
@@ -81,7 +82,7 @@ class _HomeCollectionState extends State<HomeCollection> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height: 8),
+          // SizedBox(height: 8),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -90,32 +91,39 @@ class _HomeCollectionState extends State<HomeCollection> {
                 children: [
                   Text(
                     collection.name,
-                    style: kTitleTextStyle.copyWith(fontSize: 20),
+                    style: BeanOiTheme.typography.subtitle1
+                        .copyWith(fontFamily: 'Inter'),
                   ),
-                  Text(
-                    collection.description ?? "",
-                    style: Get.theme.textTheme.headline4
-                        .copyWith(color: kDescriptionTextColor),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
+                  collection.description != null
+                      ? Text(
+                          collection.description ?? "",
+                          style: BeanOiTheme.typography.buttonSm
+                              .copyWith(color: BeanOiTheme.palettes.neutral600),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        )
+                      : SizedBox(
+                          height: 0,
+                        )
                 ],
               ),
               Text(
                 'Xem tất cả',
                 style: Get.find<RootViewModel>().isCurrentMenuAvailable()
-                    ? TextStyle(color: kPrimary)
+                    ? BeanOiTheme.typography.buttonSm
+                        .copyWith(color: BeanOiTheme.palettes.primary400)
                     : TextStyle(color: Colors.grey),
               )
             ],
           ),
-          SizedBox(height: 16),
+          SizedBox(height: 8),
           Container(
             width: Get.width,
-            height: 200,
+            height: 155,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
-              separatorBuilder: (context, index) => SizedBox(width: 16),
+              separatorBuilder: (context, index) =>
+                  SizedBox(width: BeanOiTheme.spacing.xs),
               itemBuilder: (context, index) {
                 var product = collection.products[index];
                 return Material(
@@ -148,14 +156,14 @@ class _HomeCollectionState extends State<HomeCollection> {
 
   Container buildProductInCollection(ProductDTO product) {
     return Container(
-      width: kWitdthItem,
+      width: 110,
       height: 200,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
-            width: kWitdthItem,
-            height: kWitdthItem,
+            width: 110,
+            height: 110,
             child: ColorFiltered(
               colorFilter: ColorFilter.mode(
                 Get.find<RootViewModel>().isCurrentMenuAvailable()
@@ -168,35 +176,32 @@ class _HomeCollectionState extends State<HomeCollection> {
               ),
             ),
           ),
-
-          SizedBox(height: 8),
+          SizedBox(height: BeanOiTheme.spacing.xxs),
           Text(
-            product.type != ProductType.MASTER_PRODUCT
-                ? '${formatPriceWithoutUnit(product.price)} đ'
-                : 'từ ${formatPriceWithoutUnit(product.minPrice ?? product.price)} đ',
+            product.name,
             style: Get.find<RootViewModel>().isCurrentMenuAvailable()
-                ? Get.theme.textTheme.headline5.copyWith(
-                    color: kBestSellerColor,
-                  )
+                ? BeanOiTheme.typography.buttonSm
+                    .copyWith(color: BeanOiTheme.palettes.shades200)
                 : Get.theme.textTheme.headline5.copyWith(
                     color: Colors.grey,
                   ),
+            overflow: TextOverflow.ellipsis,
           ),
           SizedBox(height: 4),
           Container(
-            height: 40,
+            // height: 40,
             child: Text(
-              product.name,
-              style: kTitleTextStyle.copyWith(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-              ),
+              product.type != ProductType.MASTER_PRODUCT
+                  ? '${formatPriceWithoutUnit(product.price)} đ'
+                  : 'từ ${formatPriceWithoutUnit(product.minPrice ?? product.price)} đ',
+              style: BeanOiTheme.typography.caption
+                  .copyWith(color: BeanOiTheme.palettes.primary300),
               textAlign: TextAlign.center,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
           ),
-          SizedBox(height: 4),
+          // SizedBox(height: 4),
           // Material(
           //   child: InkWell(
           //     onTap: () {

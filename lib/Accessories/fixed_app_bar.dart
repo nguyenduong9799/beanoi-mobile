@@ -4,12 +4,15 @@ import 'package:flutter_countdown_timer/index.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:unidelivery_mobile/Constraints/BeanOiTheme/button.dart';
+import 'package:unidelivery_mobile/Constraints/BeanOiTheme/index.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Enums/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/MenuDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/Utils/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
+import 'package:unidelivery_mobile/Widgets/beanoi_button.dart';
 import 'index.dart';
 
 class FixedAppBar extends StatefulWidget {
@@ -53,7 +56,7 @@ class _FixedAppBarState extends State<FixedAppBar> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Padding(
-              padding: EdgeInsets.fromLTRB(8, 0, 8, 0),
+              padding: EdgeInsets.fromLTRB(16, 0, 9, 0),
               child: _buildTopHeader(),
             ),
             Padding(
@@ -104,18 +107,18 @@ class _FixedAppBarState extends State<FixedAppBar> {
                 ],
               ),
             ),
-            SizedBox(width: 16),
+            // SizedBox(width: 16),
             Container(
               child: Material(
                 color: Colors.transparent,
                 child: InkWell(
                   borderRadius: BorderRadius.circular(25),
                   child: Container(
-                      padding: EdgeInsets.all(15),
+                      // padding: EdgeInsets.all(15),
                       child: Image.asset(
-                        'assets/images/history.png',
-                        width: 24,
-                      )),
+                    'assets/images/history_paper.png',
+                    width: 34,
+                  )),
                   onTap: () {
                     Get.toNamed(RouteHandler.ORDER_HISTORY);
                   },
@@ -335,7 +338,9 @@ class _FixedAppBarState extends State<FixedAppBar> {
                         margin: EdgeInsets.only(right: 8),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(isSelect ? 8 : 0),
-                          color: isSelect ? kPrimary : Colors.transparent,
+                          color: isSelect
+                              ? BeanOiTheme.palettes.primary300
+                              : Colors.transparent,
                         ),
                         duration: Duration(milliseconds: 300),
                         child: InkWell(
@@ -349,7 +354,9 @@ class _FixedAppBarState extends State<FixedAppBar> {
                                 style: isSelect
                                     ? Get.theme.textTheme.headline4
                                         .copyWith(color: Colors.white)
-                                    : Get.theme.textTheme.headline4),
+                                    : BeanOiTheme.typography.subtitle2.copyWith(
+                                        fontWeight: FontWeight.w500,
+                                        color: BeanOiTheme.palettes.shades200)),
                           ),
                         ),
                       );
@@ -406,33 +413,35 @@ class _FixedAppBarState extends State<FixedAppBar> {
         }
 
         return InkWell(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Row(
-                children: [
-                  Icon(Icons.location_on, color: Colors.orange[400], size: 20),
-                ],
-              ),
-              // Text(
-              //   "📌 Nơi nhận: ",
-              //   style:
-              //       Get.theme.textTheme.headline6.copyWith(color: Colors.black),
-              // ),
-              Flexible(
-                child: Text(
+          child: Center(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.location_on,
+                        color: Colors.orange[400], size: 20),
+                  ],
+                ),
+                // Text(
+                //   "📌 Nơi nhận: ",
+                //   style:
+                //       Get.theme.textTheme.headline6.copyWith(color: Colors.black),
+                // ),
+                Text(
                   text,
-                  style: Get.theme.textTheme.headline4,
+                  style: BeanOiTheme.typography.subtitle2,
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
                 ),
-              ),
-              Icon(
-                Icons.keyboard_arrow_down,
-                color: kPrimary,
-              )
-            ],
+                Icon(
+                  Icons.arrow_drop_down,
+                  color: BeanOiTheme.palettes.primary500,
+                  size: 24,
+                )
+              ],
+            ),
           ),
           onTap: () async {
             await root.processChangeLocation();

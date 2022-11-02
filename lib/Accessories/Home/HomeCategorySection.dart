@@ -4,6 +4,7 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Accessories/index.dart';
 import 'package:unidelivery_mobile/Accessories/section.dart';
 import 'package:unidelivery_mobile/Accessories/touchopacity.dart';
+import 'package:unidelivery_mobile/Constraints/BeanOiTheme/index.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Enums/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/CategoryDTO.dart';
@@ -112,7 +113,7 @@ class _HomeCategorySectionState extends State<HomeCategorySection> {
                 }
               },
               child: Container(
-                padding: EdgeInsets.all(3),
+                padding: EdgeInsets.all(4),
                 width: Get.width / 4 - 20,
                 child: Column(
                   children: [
@@ -135,7 +136,10 @@ class _HomeCategorySectionState extends State<HomeCategorySection> {
                     ),
                     Text(
                       category.categoryName ?? "",
-                      style: kTitleTextStyle.copyWith(fontSize: 14),
+                      style: BeanOiTheme.typography.subtitle2.copyWith(
+                          fontWeight: FontWeight.w500,
+                          fontFamily: 'Inter',
+                          color: BeanOiTheme.palettes.shades200),
                       textAlign: TextAlign.center,
                     ),
                   ],

@@ -29,4 +29,9 @@ class SupplierDTO extends StoreDTO {
       "is_available": available
     };
   }
+
+  static List<SupplierDTO> fromList(dynamic jsonList) {
+    var list = jsonList as List;
+    return list.map((map) => SupplierDTO.fromJson(map)).toList();
+  }
 }
