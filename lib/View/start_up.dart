@@ -28,7 +28,7 @@ class StartUpView extends StatelessWidget {
                         LoadingBean(),
                         SizedBox(height: 16),
                         Text(
-                          "Bean Oi",
+                          "Bean Ơi",
                           style: Get.theme.textTheme.headline1,
                         )
                       ],

@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:unidelivery_mobile/Accessories/dialog.dart';
+import 'package:unidelivery_mobile/Constraints/BeanOiTheme/index.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Enums/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
@@ -44,12 +45,14 @@ class _AppBarSate extends State<DefaultAppBar> {
                   onTap: () {
                     Get.back();
                   },
-                  child:
-                      Icon(Icons.arrow_back_ios, size: 20, color: Colors.black),
+                  child: Icon(Icons.arrow_back_ios,
+                      size: 20, color: BeanOiTheme.palettes.primary400),
                 ),
               ),
             ),
-      title: Text(widget.title, style: Get.theme.textTheme.headline2),
+      title: Text(widget.title.toUpperCase(),
+          style: BeanOiTheme.typography.h1
+              .copyWith(color: BeanOiTheme.palettes.primary400)),
     );
   }
 }
