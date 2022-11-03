@@ -5,12 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
-import 'package:unidelivery_mobile/Accessories/slide_fade_animation.dart';
 import 'package:unidelivery_mobile/Accessories/UpSellCollection.dart';
 import 'package:unidelivery_mobile/Accessories/index.dart';
+import 'package:unidelivery_mobile/Accessories/slide_fade_animation.dart';
 import 'package:unidelivery_mobile/Accessories/time_picker.dart';
 import 'package:unidelivery_mobile/Constraints/BeanOiTheme/index.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
@@ -267,6 +266,7 @@ class _OrderScreenState extends State<OrderScreen> {
         groupBy(cart.items, (CartItem item) => item.master.supplierId);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Container(
           margin: const EdgeInsets.fromLTRB(16, 0, 16, 0),
@@ -290,7 +290,7 @@ class _OrderScreenState extends State<OrderScreen> {
           },
           itemCount: map.keys.length,
           separatorBuilder: (context, index) => Divider(
-            color: kBackgroundGrey[3],
+            color: BeanOiTheme.palettes.neutral700,
           ),
         )
       ],
@@ -356,7 +356,7 @@ class _OrderScreenState extends State<OrderScreen> {
                 child: Column(
                   children: [
                     Divider(
-                      height: 1,
+                      height: 4,
                       color: BeanOiTheme.palettes.neutral600,
                     ),
                     Padding(
@@ -394,7 +394,7 @@ class _OrderScreenState extends State<OrderScreen> {
                       ),
                     ),
                     Divider(
-                      height: 1,
+                      height: 4,
                       color: BeanOiTheme.palettes.neutral600,
                     ),
                   ],
@@ -421,14 +421,11 @@ class _OrderScreenState extends State<OrderScreen> {
       list.add(SizedBox(
         height: 4,
       ));
-      list.add(Padding(
-        padding: const EdgeInsets.only(left: 50),
-        child: Text(
-            item.products[i].type == ProductType.EXTRA_PRODUCT
-                ? "+ " + item.products[i].name
-                : item.products[i].name,
-            style: BeanOiTheme.typography.overline),
-      ));
+      list.add(Text(
+          item.products[i].type == ProductType.EXTRA_PRODUCT
+              ? "+ " + item.products[i].name
+              : item.products[i].name,
+          style: BeanOiTheme.typography.overline));
       price += item.products[i].price * item.quantity;
     }
     // item.description = "Test đơn hàng";
@@ -463,7 +460,6 @@ class _OrderScreenState extends State<OrderScreen> {
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Flexible(
                             child: Row(
@@ -495,9 +491,6 @@ class _OrderScreenState extends State<OrderScreen> {
                                   ],
                                 ),
                                 Row(children: [
-                                  SizedBox(
-                                    height: 0,
-                                  ),
                                   RichText(
                                     text: TextSpan(
                                         text: isGift
@@ -525,13 +518,13 @@ class _OrderScreenState extends State<OrderScreen> {
                           ),
                         ],
                       ),
-                      ...list,
                     ],
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      ...list,
                       SizedBox(width: 8),
                       selectQuantity(item),
                     ],
@@ -1661,7 +1654,7 @@ class _OrderScreenState extends State<OrderScreen> {
     }
     Color plusColor = kPrimary;
     return Padding(
-      padding: const EdgeInsets.fromLTRB(0, 0, 0, 42),
+      padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
       child: Container(
         child: Row(
           mainAxisSize: MainAxisSize.min,
