@@ -2,12 +2,14 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:scoped_model/scoped_model.dart';
 import "package:collection/collection.dart";
 import 'package:unidelivery_mobile/Accessories/index.dart';
+import 'package:unidelivery_mobile/Constraints/BeanOiTheme/index.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Enums/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
@@ -40,25 +42,42 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
       model: orderDetailModel,
       child: Scaffold(
         bottomNavigationBar: _buildCancelBtn(),
-        appBar: DefaultAppBar(
-          title: "${widget.order.invoiceId.toString()}" ?? 'Đơn hàng',
-          backButton: Container(
-            child: IconButton(
-              icon: Icon(
-                AntDesign.down,
-                size: 24,
-                color: kPrimary,
-              ),
-              onPressed: () {
-                Get.back();
-              },
-            ),
-          ),
-        ),
+        appBar: AppBar(
+            centerTitle: true,
+            title: Text("${widget.order.invoiceId.toString()}" ?? 'Đơn hàng',
+                style: TextStyle(color: BeanOiTheme.palettes.primary400)),
+            backgroundColor: Colors.white,
+            leading: Container(
+              child: IconButton(
+                  icon: Icon(
+                    AntDesign.left,
+                    size: 24,
+                    color: kPrimary,
+                  ),
+                  onPressed: () {
+                    Get.back();
+                  }),
+// DefaultAppBar(
+//           title: "${widget.order.invoiceId.toString()}" ?? 'Đơn hàng',
+//           backButton: Container(
+//             child: IconButton(
+//               icon: Icon(
+//                 AntDesign.left,
+//                 size: 24,
+//                 color: kPrimary,
+//               ),
+//               onPressed: () {
+//                 Get.back();
+//               },
+//             ),
+//           ),
+              // ),
+            )),
         body: SingleChildScrollView(
           child: ScopedModelDescendant<OrderHistoryViewModel>(
             builder: (context, child, model) {
               final status = model.status;
+
               if (status == ViewStatus.Loading)
                 return AspectRatio(
                   aspectRatio: 1,
@@ -74,16 +93,16 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                   children: <Widget>[
                     Container(
                       width: Get.width,
-                      padding: EdgeInsets.all(8),
+                      padding: EdgeInsets.only(left: 16, right: 16, top: 8),
                       decoration: BoxDecoration(
-                        color: kBackgroundGrey[0],
+                        // color: kBackgroundGrey[0],
                         borderRadius: BorderRadius.circular(4),
                       ),
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        // crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
+                            // crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Container(
                                 height: 25,
@@ -105,12 +124,12 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                                   child: Divider(),
                                 ),
                               ),
-                              Expanded(
-                                child: Padding(
-                                  padding: EdgeInsets.only(left: 8, right: 8),
-                                  child: Divider(),
-                                ),
-                              ),
+                              // Expanded(
+                              //   child: Padding(
+                              //     padding: EdgeInsets.only(left: 8, right: 8),
+                              //     child: Divider(),
+                              //   ),
+                              // ),
                               Text(
                                 DateFormat('HH:mm dd/MM').format(
                                     DateTime.parse(orderDetail.orderTime)),
@@ -120,38 +139,260 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                               ),
                             ],
                           ),
-                          SizedBox(height: 8),
-                          Row(
-                            children: [
-                              Text("🎯 Nhận đơn tại: ",
-                                  style: Get.theme.textTheme.headline4),
-                              Text(orderDetail.address,
-                                  style: Get.theme.textTheme.headline4),
-                            ],
-                          ),
-                          SizedBox(height: 8),
-                          Row(
-                            children: [
-                              Text(" Giờ nhận đơn: ",
-                                  style: Get.theme.textTheme.headline4),
-                              orderDetail.arriveTime != null
-                                  ? Text(formatTime(orderDetail.arriveTime),
-                                      style: Get.theme.textTheme.headline4)
-                                  : Text('19 : 00'),
-                            ],
-                          )
+                          // SizedBox(height: 8),
+                          // Row(
+                          //   children: [
+                          //     Text("🎯 Nhận đơn tại: ",
+                          //         style: Get.theme.textTheme.headline4),
+                          //     Text(orderDetail.address,
+                          //         style: Get.theme.textTheme.headline4),
+                          //   ],
+                          // ),
+                          // SizedBox(height: 8),
+                          // Row(
+                          //   children: [
+                          //     Text(" Giờ nhận đơn: ",
+                          //         style: Get.theme.textTheme.headline4),
+                          //     orderDetail.arriveTime != null
+                          //         ? Text(formatTime(orderDetail.arriveTime),
+                          //             style: Get.theme.textTheme.headline4)
+                          //         : Text('19 : 00'),
+                          //   ],
+                          // )
                         ],
                       ),
                     ),
-                    SizedBox(height: 8),
+
                     Container(
+                      margin: EdgeInsets.only(left: 16, right: 16, top: 8),
+                      height: 188,
+                      padding: EdgeInsets.all(4),
                       decoration: BoxDecoration(
-                        color: kBackgroundGrey[0],
-                      ),
-                      child: buildOrderSummaryList(orderDetail),
+                          color: Color(0xffD9D9D9),
+                          borderRadius: BorderRadius.circular(8)),
+                      child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              height: MediaQuery.of(context).size.height * 0.05,
+                              width: MediaQuery.of(context).size.width * 0.2,
+                              // width: double.infinity * 0.25,
+                              child: Text(
+                                'Bạn đã xác nhận đơn hàng của mình!',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(fontSize: 8),
+                              ),
+                            ),
+                            Container(
+                              height: MediaQuery.of(context).size.height * 0.05,
+                              width: MediaQuery.of(context).size.width * 0.2,
+                              // width: double.infinity * 0.25,
+                              child: Text(
+                                'Bean Ơi đã chốt đơn hàng của bạn rồi nhé!',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(fontSize: 8),
+                              ),
+                            ),
+                            Container(
+                              height: MediaQuery.of(context).size.height * 0.05,
+                              width: MediaQuery.of(context).size.width * 0.2,
+                              // width: double.infinity * 0.25,
+                              child: Text(
+                                'Đơn hàng đã sẵn sàng để giao! Mau nhận thôi nào',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(fontSize: 8),
+                              ),
+                            ),
+                            Container(
+                              height: MediaQuery.of(context).size.height * 0.05,
+                              width: MediaQuery.of(context).size.width * 0.2,
+                              // width: double.infinity * 0.25,
+                              child: Text(
+                                'Đơn hàng giao thành công! Chúc bạn ngon miệng!',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(fontSize: 8),
+                              ),
+                            )
+                          ]),
                     ),
-                    SizedBox(height: 8),
-                    layoutSubtotal(orderDetail),
+                    Container(
+                        height: 70,
+                        padding: EdgeInsets.all(4),
+                        margin: EdgeInsets.only(left: 16, right: 16, top: 8),
+                        decoration: BoxDecoration(
+                            color: Color(0xffFFFFFF),
+                            borderRadius: BorderRadius.circular(8)),
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Container(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.2,
+                                  // width: double.infinity * 0.25,
+                                  child: Text(
+                                    '1',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        color: BeanOiTheme.palettes.primary400),
+                                  ),
+                                ),
+                                Container(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.2,
+                                  // width: double.infinity * 0.25,
+                                  child: Text(
+                                    '2',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        color: BeanOiTheme.palettes.primary400),
+                                  ),
+                                ),
+                                Container(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.2,
+                                  // width: double.infinity * 0.25,
+                                  child: Text(
+                                    '3',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        color: BeanOiTheme.palettes.primary400),
+                                  ),
+                                ),
+                                Container(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.2,
+                                  // width: double.infinity * 0.25,
+                                  child: Text(
+                                    '4',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        color: BeanOiTheme.palettes.primary400),
+                                  ),
+                                )
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Container(
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.2,
+                                    child: Column(
+                                      children: [
+                                        Text('Xác nhận',
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                fontSize: 14,
+                                                color: BeanOiTheme
+                                                    .palettes.primary400)),
+                                        orderDetail.orderTime != null
+                                            ? Text(
+                                                DateFormat('HH:mm').format(
+                                                    DateTime.parse(
+                                                        orderDetail.orderTime)),
+                                                style: Get
+                                                    .theme.textTheme.headline4)
+                                            : Text('19 : 00')
+                                      ],
+                                    )),
+                                Container(
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.2,
+                                    child: Column(
+                                      children: [
+                                        Text('Chốt đơn',
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                fontSize: 14,
+                                                color: BeanOiTheme
+                                                    .palettes.primary400)),
+                                        Text('00:00')
+                                      ],
+                                    )),
+                                Container(
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.2,
+                                    child: Column(
+                                      children: [
+                                        Text('Sẵn sàng',
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                fontSize: 14,
+                                                color: BeanOiTheme
+                                                    .palettes.primary400)),
+                                        Text('00:00')
+                                      ],
+                                    )),
+                                Container(
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.2,
+                                    child: Column(
+                                      children: [
+                                        Text('Hoàn thành',
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                fontSize: 14,
+                                                color: BeanOiTheme
+                                                    .palettes.primary400)),
+                                        Text('00:00')
+                                      ],
+                                    ))
+                              ],
+                            )
+                          ],
+                        )),
+                    Container(
+                        margin: EdgeInsets.only(left: 16, right: 16, top: 8),
+                        padding: EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            color: Colors.white),
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                Text("Nhận đơn tại: ",
+                                    style: Get.theme.textTheme.headline4),
+                                Text(orderDetail.address,
+                                    style: Get.theme.textTheme.headline4),
+                              ],
+                            ),
+                            SizedBox(height: 8),
+                            Row(
+                              children: [
+                                Text("Giờ nhận đơn: ",
+                                    style: Get.theme.textTheme.headline4),
+                                orderDetail.arriveTime != null
+                                    ? Text(formatTime(orderDetail.arriveTime),
+                                        style: Get.theme.textTheme.headline4)
+                                    : Text('19 : 00'),
+                              ],
+                            )
+                          ],
+                        ))
+                    // Container(
+                    //   margin: EdgeInsets.all(10),
+                    //   decoration: BoxDecoration(
+                    //     borderRadius: BorderRadius.circular(8),
+                    //     color: kBackgroundGrey[0],
+                    //   ),
+                    //   child: buildOrderSummaryList(orderDetail),
+                    // ),
+                    // Container(
+                    //   margin: EdgeInsets.all(10),
+                    //   decoration: BoxDecoration(
+                    //     borderRadius: BorderRadius.circular(8),
+                    //     color: kBackgroundGrey[0],
+                    //   ),
+                    //   child: layoutSubtotal(orderDetail),
+                    // ),
                   ],
                 ),
               );
