@@ -165,15 +165,36 @@ class _DesignScreenState extends State<DesignScreen> {
                     children: [
                       Expanded(
                         child: Text(
-                          'Caption',
-                          style: BeanOiTheme.typography.caption,
+                          'Caption 2',
+                          style: BeanOiTheme.typography.caption1,
                         ),
                       ),
                       Expanded(
                         child: Text(
                           'Typography',
                           textAlign: TextAlign.end,
-                          style: BeanOiTheme.typography.caption,
+                          style: BeanOiTheme.typography.caption1,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(BeanOiTheme.spacing.s),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          'Caption 2',
+                          style: BeanOiTheme.typography.caption2,
+                        ),
+                      ),
+                      Expanded(
+                        child: Text(
+                          'Typography',
+                          textAlign: TextAlign.end,
+                          style: BeanOiTheme.typography.caption2,
                         ),
                       ),
                     ],

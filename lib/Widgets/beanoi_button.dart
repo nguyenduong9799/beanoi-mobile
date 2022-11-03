@@ -146,11 +146,6 @@ class BeanOiButton extends StatelessWidget {
                         : size == BeanOiButtonSize.medium
                             ? 8
                             : 6)),
-                border: Border.all(
-                  color: BeanOiTheme.palettes.primary300,
-                  width: 1,
-                  style: isDisabled ? BorderStyle.none : BorderStyle.solid,
-                ),
                 boxShadow: [
                   BoxShadow(
                     color: Color.fromRGBO(21, 126, 52, 0.8),
