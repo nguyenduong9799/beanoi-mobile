@@ -3,19 +3,21 @@ import "package:collection/collection.dart";
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
-import 'package:unidelivery_mobile/Accessories/slide_fade_animation.dart';
 import 'package:unidelivery_mobile/Accessories/UpSellCollection.dart';
 import 'package:unidelivery_mobile/Accessories/index.dart';
+import 'package:unidelivery_mobile/Accessories/slide_fade_animation.dart';
 import 'package:unidelivery_mobile/Accessories/time_picker.dart';
+import 'package:unidelivery_mobile/Constraints/BeanOiTheme/index.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Enums/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/Utils/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
+import 'package:unidelivery_mobile/Widgets/beanoi_button.dart';
 
 import 'index.dart';
 
@@ -89,6 +91,11 @@ class _OrderScreenState extends State<OrderScreen> {
                       case ViewStatus.Completed:
                         return ListView(
                           children: [
+                            SizedBox(
+                                height: 8,
+                                child: Container(
+                                  color: kBackgroundGrey[2],
+                                )),
                             Hero(
                               tag: CART_TAG,
                               child: Container(
@@ -116,11 +123,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                   color: kBackgroundGrey[2],
                                 )),
                             UpSellCollection(),
-                            SizedBox(
-                                height: 8,
-                                child: Container(
-                                  color: kBackgroundGrey[2],
-                                )),
+
                             layoutSubtotal(),
                           ],
                         );
@@ -263,9 +266,11 @@ class _OrderScreenState extends State<OrderScreen> {
         groupBy(cart.items, (CartItem item) => item.master.supplierId);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Container(
-          padding: const EdgeInsets.all(8),
+          margin: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+          padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -285,7 +290,7 @@ class _OrderScreenState extends State<OrderScreen> {
           },
           itemCount: map.keys.length,
           separatorBuilder: (context, index) => Divider(
-            color: kBackgroundGrey[3],
+            color: BeanOiTheme.palettes.neutral700,
           ),
         )
       ],
@@ -316,7 +321,7 @@ class _OrderScreenState extends State<OrderScreen> {
     }
 
     return Container(
-      margin: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+      margin: const EdgeInsets.fromLTRB(16, 4, 16, 0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -328,7 +333,8 @@ class _OrderScreenState extends State<OrderScreen> {
                 children: [
                   Text(
                     list[0].master.supplierName,
-                    style: Get.theme.textTheme.headline4,
+                    style: BeanOiTheme.typography.subtitle2
+                        .copyWith(color: BeanOiTheme.palettes.primary500),
                   ),
                   Text(
                     list
@@ -338,52 +344,59 @@ class _OrderScreenState extends State<OrderScreen> {
                                     previousValue + element.quantity)
                             .toString() +
                         " món",
-                    style: Get.theme.textTheme.headline4
-                        .copyWith(color: Colors.orange),
+                    style: BeanOiTheme.typography.subtitle2
+                        .copyWith(color: BeanOiTheme.palettes.primary500),
                   )
                 ],
               ),
             ),
             Container(
-                padding: const EdgeInsets.only(left: 0, right: 8),
+                padding: const EdgeInsets.fromLTRB(0, 6, 8, 0),
                 width: Get.width,
                 child: Column(
                   children: [
                     Divider(
-                      color: kBackgroundGrey[6],
+                      height: 4,
+                      color: BeanOiTheme.palettes.neutral600,
                     ),
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.note_alt_outlined,
-                          color: Colors.black,
-                          size: 18,
-                        ),
-                        Flexible(
-                          child: Material(
-                            color: Colors.transparent,
-                            child: InkWell(
-                                onTap: () {
-                                  orderViewModel.addSupplierNote(
-                                      list[0].master.supplierId);
-                                },
-                                child: Padding(
-                                  padding: EdgeInsets.only(left: 8, right: 8),
-                                  child: Text(
-                                      (supplierNote == null)
-                                          ? "Thêm ghi chú"
-                                          : supplierNote.content,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: Get.theme.textTheme.headline4
-                                          .copyWith(color: Colors.grey)),
-                                )),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 2, 0, 2),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.note_alt_outlined,
+                            color: Colors.black,
+                            size: 18,
                           ),
-                        ),
-                      ],
+                          Flexible(
+                            child: Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                  onTap: () {
+                                    orderViewModel.addSupplierNote(
+                                        list[0].master.supplierId);
+                                  },
+                                  child: Padding(
+                                    padding: EdgeInsets.only(left: 8, right: 8),
+                                    child: Text(
+                                        (supplierNote == null)
+                                            ? "Ghi chú cho nhà hàng"
+                                            : supplierNote.content,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: BeanOiTheme.typography.caption
+                                            .copyWith(
+                                                color: BeanOiTheme
+                                                    .palettes.neutral700)),
+                                  )),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                     Divider(
-                      color: kBackgroundGrey[6],
-                    )
+                      height: 4,
+                      color: BeanOiTheme.palettes.neutral600,
+                    ),
                   ],
                 ))
           ]),
@@ -412,7 +425,7 @@ class _OrderScreenState extends State<OrderScreen> {
           item.products[i].type == ProductType.EXTRA_PRODUCT
               ? "+ " + item.products[i].name
               : item.products[i].name,
-          style: Get.theme.textTheme.headline4.copyWith(color: Colors.grey)));
+          style: BeanOiTheme.typography.overline));
       price += item.products[i].price * item.quantity;
     }
     // item.description = "Test đơn hàng";
@@ -433,7 +446,7 @@ class _OrderScreenState extends State<OrderScreen> {
 
     return Container(
       color: kBackgroundGrey[0],
-      padding: EdgeInsets.all(8),
+      padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
       child: InkWell(
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -442,54 +455,76 @@ class _OrderScreenState extends State<OrderScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Flexible(
-                        child: Text(
-                            item.master.type != ProductType.MASTER_PRODUCT
-                                ? item.master.name
-                                : item.products[0].name,
-                            style: Get.theme.textTheme.headline4),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Flexible(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.fromLTRB(0, 0, 8, 0),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(4),
+                                        child: Container(
+                                          width: 31,
+                                          height: 28,
+                                          child: CacheImage(
+                                              imageUrl: item.master.imageURL ??
+                                                  defaultImage),
+                                        ),
+                                      ),
+                                    ),
+                                    Text(
+                                        item.master.type !=
+                                                ProductType.MASTER_PRODUCT
+                                            ? item.master.name
+                                            : item.products[0].name,
+                                        style:
+                                            BeanOiTheme.typography.subtitle2),
+                                  ],
+                                ),
+                                Row(children: [
+                                  RichText(
+                                    text: TextSpan(
+                                        text: isGift
+                                            ? formatBean(price)
+                                            : formatPrice(price),
+                                        style: Get.theme.textTheme.headline4,
+                                        children: [
+                                          WidgetSpan(
+                                            alignment:
+                                                PlaceholderAlignment.bottom,
+                                            child: isGift
+                                                ? Image(
+                                                    image: AssetImage(
+                                                        "assets/images/icons/bean_coin.png"),
+                                                    width: 20,
+                                                    height: 20,
+                                                  )
+                                                : Container(),
+                                          )
+                                        ]),
+                                  ),
+                                ]),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
-                      SizedBox(width: 8),
                     ],
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Flexible(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            ...list,
-                            SizedBox(
-                              height: 8,
-                            ),
-                            RichText(
-                              text: TextSpan(
-                                  text: isGift
-                                      ? formatBean(price)
-                                      : formatPrice(price),
-                                  style: Get.theme.textTheme.headline4,
-                                  children: [
-                                    WidgetSpan(
-                                      alignment: PlaceholderAlignment.bottom,
-                                      child: isGift
-                                          ? Image(
-                                              image: AssetImage(
-                                                  "assets/images/icons/bean_coin.png"),
-                                              width: 20,
-                                              height: 20,
-                                            )
-                                          : Container(),
-                                    )
-                                  ]),
-                            ),
-                          ],
-                        ),
-                      ),
+                      ...list,
                       SizedBox(width: 8),
                       selectQuantity(item),
                     ],
@@ -515,78 +550,83 @@ class _OrderScreenState extends State<OrderScreen> {
         orElse: () => null,
       );
     }
-    return Column(
-      children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      child: InkWell(
+        onTap: () async {
+          await orderViewModel.changeLocationOfStore();
+        },
+        child: Column(
           children: [
-            Expanded(
-              flex: 3,
-              child: Container(
-                padding: const EdgeInsets.all(8),
-                child: Text(
-                  "Nhận đơn tại:",
-                  style:
-                      Get.theme.textTheme.headline5.copyWith(color: kPrimary),
-                ),
-              ),
-            ),
-            Expanded(
-              flex: 7,
-              child: InkWell(
-                onTap: () async {
-                  await orderViewModel.changeLocationOfStore();
-                },
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      destination != null
-                          ? Flexible(
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    location.address,
-                                    style: Get.theme.textTheme.headline4,
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 1,
-                                  ),
-                                  Icon(
-                                    Icons.arrow_forward_ios,
-                                    size: 16,
-                                  ),
-                                  Text(
-                                    destination.name,
-                                    style: Get.theme.textTheme.headline4,
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 1,
-                                  ),
-                                ],
-                              ),
-                            )
-                          : Flexible(
-                              child: Text(
-                                "Chọn địa điểm giao hàng",
-                                style: Get.theme.textTheme.headline4,
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 1,
-                              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                    width: MediaQuery.of(context).size.width * 0.7,
+                    padding: EdgeInsets.fromLTRB(16, 0, 0, 0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Image(
+                              image: AssetImage(
+                                  "assets/images/icons/location_icon.png"),
+                              width: 20,
+                              height: 20,
                             ),
-                      Icon(
-                        Icons.navigate_next,
-                        color: Colors.orange,
-                        size: 24,
-                      )
-                    ],
+                            Text(
+                              "Nơi nhận:",
+                              style: BeanOiTheme.typography.subtitle2,
+                            ),
+                          ],
+                        ),
+                        Container(
+                          padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              destination != null
+                                  ? Flexible(
+                                      child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            destination.name,
+                                            style:
+                                                BeanOiTheme.typography.caption,
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 1,
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                  : Flexible(
+                                      child: Text(
+                                        "Chọn địa điểm giao hàng",
+                                        style: BeanOiTheme.typography.caption,
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 1,
+                                      ),
+                                    ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    )),
+                Padding(
+                  padding: EdgeInsets.fromLTRB(0, 4, 16, 0),
+                  child: SvgPicture.asset(
+                    'assets/images/icons/Expand_right.svg',
                   ),
-                ),
-              ),
-            )
+                )
+              ],
+            ),
           ],
         ),
-      ],
+      ),
     );
   }
 
@@ -596,128 +636,177 @@ class _OrderScreenState extends State<OrderScreen> {
     TimeSlots currentTime = listTimeSlotAvailable.firstWhere(
         (element) => element.id == orderViewModel.currentCart.timeSlotId);
     String currentTimeSlot = currentTime.arriveTime.replaceAll(';', ' - ');
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Expanded(
-            flex: 3,
-            child: Text("Nhận đơn lúc: ",
-                style: Get.theme.textTheme.headline5.copyWith(color: kPrimary)),
-          ),
-          Expanded(
-            flex: 7,
-            child: InkWell(
-              onTap: () => Utils.showSheet(
-                context,
-                child: buildCustomPicker(listTimeSlotAvailable),
-                onClicked: () async {
-                  TimeSlots value = listTimeSlotAvailable[index];
-                  await Get.find<OrderViewModel>().changeTime(value);
-                  Get.back();
-                },
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    "$currentTimeSlot",
-                    style: Get.theme.textTheme.headline4,
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      child: InkWell(
+        onTap: () => Utils.showSheet(
+          context,
+          child: buildCustomPicker(listTimeSlotAvailable),
+          onClicked: () async {
+            TimeSlots value = listTimeSlotAvailable[index];
+            await Get.find<OrderViewModel>().changeTime(value);
+            Get.back();
+          },
+        ),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                    width: MediaQuery.of(context).size.width * 0.7,
+                    padding: EdgeInsets.fromLTRB(16, 4, 0, 0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Image(
+                              image: AssetImage(
+                                  "assets/images/icons/clock_icon.png"),
+                              width: 20,
+                              height: 20,
+                            ),
+                            Text(
+                              "Thời gian nhận:",
+                              style: BeanOiTheme.typography.subtitle2,
+                            ),
+                          ],
+                        ),
+                        Container(
+                          padding: EdgeInsets.fromLTRB(20, 0, 0, 4),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                "$currentTimeSlot",
+                                style: BeanOiTheme.typography.caption,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    )),
+                Padding(
+                  padding: EdgeInsets.fromLTRB(0, 4, 16, 0),
+                  child: SvgPicture.asset(
+                    'assets/images/icons/Expand_right.svg',
                   ),
-                  Text("Chọn giờ khác ",
-                      style: Get.theme.textTheme.headline4
-                          .copyWith(color: kPrimary))
-                ],
-              ),
+                )
+              ],
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
   Widget layoutSubtotal() {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-
-      // margin: const EdgeInsets.only(bottom: 8),
-      decoration: BoxDecoration(
-        color: kBackgroundGrey[0],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(
-                  'Chi phí',
-                  style: Get.theme.textTheme.headline3,
-                ),
-              ],
-            ),
-          ),
-          Container(
-            margin: const EdgeInsets.fromLTRB(8, 0, 8, 0),
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-                border: Border.all(color: kPrimary),
-                borderRadius: BorderRadius.all(Radius.circular(8))),
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Tạm tính",
-                        style: Get.theme.textTheme.headline4,
-                      ),
-                      Text(formatPrice(orderViewModel.orderAmount.totalAmount),
-                          style: Get.theme.textTheme.headline4),
-                    ],
-                  ),
-                ),
-                MySeparator(
-                  color: kPrimary,
-                ),
-                ..._buildOtherAmount(orderViewModel.orderAmount.others),
-              ],
-            ),
-          ),
-          SizedBox(height: 4),
-          if (orderViewModel.orderAmount.beanAmount.round() != 0)
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        // margin: const EdgeInsets.only(bottom: 8),
+        decoration: BoxDecoration(
+          color: kBackgroundGrey[0],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
             Container(
-              width: Get.width,
-              child: RichText(
-                  textAlign: TextAlign.center,
-                  text: TextSpan(
-                    text:
-                        "Bạn được tặng ${orderViewModel.orderAmount.beanAmount.round().toString()} ",
-                    style: Get.theme.textTheme.headline5
-                        .copyWith(color: Colors.orange),
-                    children: [
-                      WidgetSpan(
-                          alignment: PlaceholderAlignment.bottom,
-                          child: Image(
-                            image:
-                                AssetImage("assets/images/icons/bean_coin.png"),
-                            width: 16,
-                            height: 16,
-                          )),
-                      TextSpan(text: " cho đơn hàng 🎉."),
-                    ],
-                  )),
+              margin: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+              padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    'Chi phí',
+                    style: Get.theme.textTheme.headline3,
+                  ),
+                ],
+              ),
             ),
-          SizedBox(height: 8),
-        ],
+            Container(
+              margin: const EdgeInsets.fromLTRB(8, 0, 16, 0),
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                  border: Border.all(color: kPrimary),
+                  borderRadius: BorderRadius.all(Radius.circular(8))),
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Tạm tính",
+                          style: Get.theme.textTheme.headline4,
+                        ),
+                        Text(
+                            formatPrice(orderViewModel.orderAmount.totalAmount),
+                            style: Get.theme.textTheme.headline4),
+                      ],
+                    ),
+                  ),
+                  MySeparator(
+                    color: kPrimary,
+                  ),
+                  ..._buildOtherAmount(orderViewModel.orderAmount.others),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Tổng cộng",
+                          style: BeanOiTheme.typography.subtitle2,
+                        ),
+                        Text(
+                            orderViewModel.status == ViewStatus.Loading
+                                ? "..."
+                                : orderViewModel.currentCart.payment ==
+                                        PaymentTypeEnum.Cash
+                                    ? formatPrice(
+                                        orderViewModel.orderAmount.finalAmount)
+                                    : "${formatBean(orderViewModel.orderAmount.finalAmount)} Bean",
+                            style: BeanOiTheme.typography.subtitle1),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 4),
+            if (orderViewModel.orderAmount.beanAmount.round() != 0)
+              Container(
+                width: Get.width,
+                child: RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(
+                      text:
+                          "Bạn được tặng ${orderViewModel.orderAmount.beanAmount.round().toString()} ",
+                      style: Get.theme.textTheme.headline5
+                          .copyWith(color: Colors.orange),
+                      children: [
+                        WidgetSpan(
+                            alignment: PlaceholderAlignment.bottom,
+                            child: Image(
+                              image: AssetImage(
+                                  "assets/images/icons/bean_coin.png"),
+                              width: 16,
+                              height: 16,
+                            )),
+                        TextSpan(text: " cho đơn hàng 🎉."),
+                      ],
+                    )),
+              ),
+            SizedBox(height: 8),
+          ],
+        ),
       ),
     );
   }
@@ -855,46 +944,51 @@ class _OrderScreenState extends State<OrderScreen> {
                         ),
                   Container(
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Expanded(
-                          flex: 4,
+                          flex: 5,
                           child: Container(
                               child: TextButton(
                                   onPressed: () async {},
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        model.currentCart.payment ==
-                                                PaymentTypeEnum.Cash
-                                            ? FontAwesome5.money_bill_alt
-                                            : Icons.monetization_on_outlined,
-                                      ),
-                                      SizedBox(width: 12),
-                                      Expanded(
-                                        flex: 1,
-                                        child: Text(
-                                          model.listPayments.keys.elementAt(
-                                              model.currentCart.payment - 1),
-                                          style: Get.theme.textTheme.headline3,
-                                          textAlign: TextAlign.left,
-                                          overflow: TextOverflow.ellipsis,
+                                  child: Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(8, 0, 0, 0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          model.currentCart.payment ==
+                                                  PaymentTypeEnum.Cash
+                                              ? FontAwesome5.money_bill_alt
+                                              : Icons.monetization_on_outlined,
                                         ),
-                                      ),
-                                      Icon(
-                                        Icons.keyboard_arrow_up,
-                                        size: 30,
-                                        color: Colors.black,
-                                      ),
-                                    ],
+                                        SizedBox(width: 14),
+                                        Expanded(
+                                          flex: 1,
+                                          child: Text(
+                                            model.listPayments.keys.elementAt(
+                                                model.currentCart.payment - 1),
+                                            style:
+                                                Get.theme.textTheme.headline3,
+                                            textAlign: TextAlign.left,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                        SvgPicture.asset(
+                                          'assets/images/icons/dropdown.svg',
+                                        ),
+                                        SizedBox(width: 18),
+                                      ],
+                                    ),
                                   ))),
                         ),
                         Expanded(
-                          flex: 5,
+                          flex: 6,
                           child: Container(
                             child: TextButton(
                               onPressed: () {
@@ -906,7 +1000,9 @@ class _OrderScreenState extends State<OrderScreen> {
                                 children: [
                                   // SizedBox(width: 8),
                                   model.currentCart.vouchers.isEmpty
-                                      ? Icon(Icons.wallet_giftcard_outlined)
+                                      ? SvgPicture.asset(
+                                          'assets/images/icons/voucher.svg',
+                                        )
                                       : SizedBox(
                                           width: 0,
                                         ),
@@ -928,7 +1024,10 @@ class _OrderScreenState extends State<OrderScreen> {
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                   ),
-                                  SizedBox(width: 18)
+                                  SvgPicture.asset(
+                                    'assets/images/icons/dropdown.svg',
+                                  ),
+                                  SizedBox(width: 18),
                                 ],
                               ),
                             ),
@@ -941,62 +1040,67 @@ class _OrderScreenState extends State<OrderScreen> {
                     padding: EdgeInsets.fromLTRB(8, 0, 8, 4),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Expanded(
                           flex: 4,
-                          child: Container(
-                            alignment: Alignment.centerLeft,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text("Tổng cộng", style: kTextSecondary),
-                                SizedBox(height: 6),
-                                Text(
-                                  '...',
-                                  style: Get.theme.textTheme.headline1
-                                      .copyWith(color: Colors.black),
-                                )
-                              ],
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(8, 0, 0, 20),
+                            child: Container(
+                              alignment: Alignment.centerLeft,
+                              child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text("Tổng cộng",
+                                      style: BeanOiTheme.typography.caption
+                                          .copyWith(
+                                              color: BeanOiTheme
+                                                  .palettes.neutral600)),
+                                  SizedBox(height: 6),
+                                  Text(
+                                    '...',
+                                    style: Get.theme.textTheme.headline1
+                                        .copyWith(color: Colors.black),
+                                  )
+                                ],
+                              ),
                             ),
                           ),
                         ),
                         Expanded(
-                          flex: 5,
-                          child: FlatButton(
-                            onPressed: () {},
-                            height: 50,
-                            padding: EdgeInsets.only(
-                              left: 8.0,
-                              right: 8.0,
-                            ),
-                            textColor: Colors.white,
-                            color: kBackgroundGrey[4],
-                            shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(8))),
-                            child: Container(
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  AnimatedTextKit(
-                                    animatedTexts: [
-                                      FadeAnimatedText(
-                                        'Đợi tý nha',
-                                        textStyle: Get.theme.textTheme.headline4
-                                            .copyWith(color: Colors.white),
-                                        textAlign: TextAlign.center,
-                                        // speed: Duration(milliseconds: 300),
-                                      ),
-                                    ],
-                                    isRepeatingAnimation: true,
-                                    repeatForever: true,
-                                    onTap: () {
-                                      print("Tap Event");
-                                    },
-                                  ),
-                                ],
+                          flex: 7,
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 0, 8, 20),
+                            child: BeanOiButton.solid(
+                              onPressed: () {},
+                              height: 41,
+                              textColor: Colors.white,
+                              child: Container(
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    AnimatedTextKit(
+                                      animatedTexts: [
+                                        FadeAnimatedText(
+                                          'Đợi tý nha',
+                                          textStyle: Get
+                                              .theme.textTheme.headline4
+                                              .copyWith(color: Colors.white),
+                                          textAlign: TextAlign.center,
+                                          // speed: Duration(milliseconds: 300),
+                                        ),
+                                      ],
+                                      isRepeatingAnimation: true,
+                                      repeatForever: true,
+                                      onTap: () {
+                                        print("Tap Event");
+                                      },
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
@@ -1095,11 +1199,11 @@ class _OrderScreenState extends State<OrderScreen> {
                                 ),
                           Container(
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Expanded(
-                                  flex: 4,
+                                  flex: 5,
                                   child: Container(
                                       child: TextButton(
                                           onPressed: () async {
@@ -1115,46 +1219,49 @@ class _OrderScreenState extends State<OrderScreen> {
                                             // pr.hide();
                                             // showStateDialog();
                                           },
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: [
-                                              Icon(
-                                                model.currentCart.payment ==
-                                                        PaymentTypeEnum.Cash
-                                                    ? FontAwesome5
-                                                        .money_bill_alt
-                                                    : Icons
-                                                        .monetization_on_outlined,
-                                              ),
-                                              SizedBox(width: 12),
-                                              Expanded(
-                                                flex: 1,
-                                                child: Text(
-                                                  model.listPayments.keys
-                                                      .elementAt(model
-                                                              .currentCart
-                                                              .payment -
-                                                          1),
-                                                  style: Get.theme.textTheme
-                                                      .headline3,
-                                                  textAlign: TextAlign.left,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
+                                          child: Padding(
+                                            padding: const EdgeInsets.fromLTRB(
+                                                8, 0, 0, 0),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                Icon(
+                                                  model.currentCart.payment ==
+                                                          PaymentTypeEnum.Cash
+                                                      ? FontAwesome5
+                                                          .money_bill_alt
+                                                      : Icons
+                                                          .monetization_on_outlined,
                                                 ),
-                                              ),
-                                              Icon(
-                                                Icons.keyboard_arrow_up,
-                                                size: 30,
-                                                color: Colors.black,
-                                              ),
-                                            ],
+                                                SizedBox(width: 14),
+                                                Expanded(
+                                                  flex: 1,
+                                                  child: Text(
+                                                    model.listPayments.keys
+                                                        .elementAt(model
+                                                                .currentCart
+                                                                .payment -
+                                                            1),
+                                                    style: Get.theme.textTheme
+                                                        .headline3,
+                                                    textAlign: TextAlign.left,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                  ),
+                                                ),
+                                                SvgPicture.asset(
+                                                  'assets/images/icons/dropdown.svg',
+                                                ),
+                                                SizedBox(width: 18),
+                                              ],
+                                            ),
                                           ))),
                                 ),
                                 Expanded(
-                                  flex: 5,
+                                  flex: 6,
                                   child: Container(
                                     child: TextButton(
                                       onPressed: () {
@@ -1168,8 +1275,9 @@ class _OrderScreenState extends State<OrderScreen> {
                                         children: [
                                           // SizedBox(width: 8),
                                           model.currentCart.vouchers.isEmpty
-                                              ? Icon(Icons
-                                                  .wallet_giftcard_outlined)
+                                              ? SvgPicture.asset(
+                                                  'assets/images/icons/voucher.svg',
+                                                )
                                               : SizedBox(
                                                   width: 0,
                                                 ),
@@ -1194,7 +1302,10 @@ class _OrderScreenState extends State<OrderScreen> {
                                               overflow: TextOverflow.ellipsis,
                                             ),
                                           ),
-                                          SizedBox(width: 18)
+                                          SvgPicture.asset(
+                                            'assets/images/icons/dropdown.svg',
+                                          ),
+                                          SizedBox(width: 18),
                                         ],
                                       ),
                                     ),
@@ -1204,77 +1315,88 @@ class _OrderScreenState extends State<OrderScreen> {
                             ),
                           ),
                           Container(
-                            padding:
-                                EdgeInsets.only(left: 8, right: 8, bottom: 4),
+                            padding: EdgeInsets.fromLTRB(8, 0, 8, 4),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Expanded(
                                   flex: 4,
-                                  child: Container(
-                                    alignment: Alignment.centerLeft,
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          "Tổng cộng",
-                                          style: kTextSecondary,
-                                        ),
-                                        SizedBox(height: 6),
-                                        Text(
-                                          orderViewModel.status ==
-                                                  ViewStatus.Loading
-                                              ? "..."
-                                              : orderViewModel.currentCart
-                                                          .payment ==
-                                                      PaymentTypeEnum.Cash
-                                                  ? formatPrice(orderViewModel
-                                                      .orderAmount.finalAmount)
-                                                  : "${formatBean(orderViewModel.orderAmount.finalAmount)} Bean",
-                                          style: Get.theme.textTheme.headline3,
-                                        ),
-                                      ],
+                                  child: Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(8, 0, 0, 20),
+                                    child: Container(
+                                      alignment: Alignment.centerLeft,
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "Tổng cộng",
+                                            style: BeanOiTheme
+                                                .typography.caption
+                                                .copyWith(
+                                                    color: BeanOiTheme
+                                                        .palettes.neutral600),
+                                          ),
+                                          SizedBox(height: 6),
+                                          Text(
+                                              orderViewModel.status ==
+                                                      ViewStatus.Loading
+                                                  ? "..."
+                                                  : orderViewModel.currentCart
+                                                              .payment ==
+                                                          PaymentTypeEnum.Cash
+                                                      ? formatPrice(
+                                                          orderViewModel
+                                                              .orderAmount
+                                                              .finalAmount)
+                                                      : "${formatBean(orderViewModel.orderAmount.finalAmount)} Bean",
+                                              style: BeanOiTheme
+                                                  .typography.subtitle1),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
                                 Expanded(
-                                  flex: 5,
-                                  child: FlatButton(
-                                    onPressed: () async {
-                                      if (model.currentCart.payment != null &&
-                                          location != null &&
-                                          model.status != ViewStatus.Loading &&
-                                          isMenuAvailable) {
-                                        await model.orderCart();
-                                      }
-                                      // pr.hide();
-                                      // showStateDialog();
-                                    },
-                                    height: 50,
-                                    padding: EdgeInsets.only(
-                                      left: 8.0,
-                                      right: 8.0,
+                                  flex: 7,
+                                  child: Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(0, 0, 8, 20),
+                                    child: BeanOiButton.solid(
+                                      onPressed: () async {
+                                        if (model.currentCart.payment != null &&
+                                            location != null &&
+                                            model.status !=
+                                                ViewStatus.Loading &&
+                                            isMenuAvailable) {
+                                          await model.orderCart();
+                                        }
+                                      },
+                                      height: 41,
+                                      textColor: Colors.white,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                              isMenuAvailable
+                                                  ? "Đặt đơn"
+                                                  : "Khung giờ đã kết thúc",
+                                              style: Get
+                                                  .theme.textTheme.headline3
+                                                  .copyWith(
+                                                      color: isMenuAvailable
+                                                          ? Colors.white
+                                                          : kGreyTitle)),
+                                        ],
+                                      ),
                                     ),
-                                    textColor: Colors.white,
-                                    color: isMenuAvailable
-                                        ? kPrimary
-                                        : kBackgroundGrey[3],
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(8))),
-                                    child: Text(
-                                        isMenuAvailable
-                                            ? "Chốt đơn 👌"
-                                            : "Khung giờ đã kết thúc",
-                                        style: Get.theme.textTheme.headline3
-                                            .copyWith(
-                                                color: isMenuAvailable
-                                                    ? Colors.white
-                                                    : kGreyTitle)),
                                   ),
                                 ),
                               ],
@@ -1342,11 +1464,11 @@ class _OrderScreenState extends State<OrderScreen> {
                                 ),
                           Container(
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Expanded(
-                                  flex: 4,
+                                  flex: 5,
                                   child: Container(
                                       child: TextButton(
                                           onPressed: () async {
@@ -1362,42 +1484,45 @@ class _OrderScreenState extends State<OrderScreen> {
                                             // pr.hide();
                                             // showStateDialog();
                                           },
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: [
-                                              Icon(
-                                                model.currentCart.payment ==
-                                                        PaymentTypeEnum.Cash
-                                                    ? FontAwesome5
-                                                        .money_bill_alt
-                                                    : Icons
-                                                        .monetization_on_outlined,
-                                              ),
-                                              SizedBox(width: 12),
-                                              Expanded(
-                                                flex: 1,
-                                                child: Text(
-                                                  "...",
-                                                  style: Get.theme.textTheme
-                                                      .headline3,
-                                                  textAlign: TextAlign.left,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
+                                          child: Padding(
+                                            padding: const EdgeInsets.fromLTRB(
+                                                8, 0, 0, 0),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                Icon(
+                                                  model.currentCart.payment ==
+                                                          PaymentTypeEnum.Cash
+                                                      ? FontAwesome5
+                                                          .money_bill_alt
+                                                      : Icons
+                                                          .monetization_on_outlined,
                                                 ),
-                                              ),
-                                              Icon(
-                                                Icons.keyboard_arrow_up,
-                                                size: 30,
-                                                color: Colors.black,
-                                              ),
-                                            ],
+                                                SizedBox(width: 14),
+                                                Expanded(
+                                                  flex: 1,
+                                                  child: Text(
+                                                    "...",
+                                                    style: Get.theme.textTheme
+                                                        .headline3,
+                                                    textAlign: TextAlign.left,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                  ),
+                                                ),
+                                                SvgPicture.asset(
+                                                  'assets/images/icons/dropdown.svg',
+                                                ),
+                                                SizedBox(width: 18),
+                                              ],
+                                            ),
                                           ))),
                                 ),
                                 Expanded(
-                                  flex: 5,
+                                  flex: 6,
                                   child: Container(
                                     child: TextButton(
                                       onPressed: () {
@@ -1411,8 +1536,9 @@ class _OrderScreenState extends State<OrderScreen> {
                                         children: [
                                           // SizedBox(width: 8),
                                           model.currentCart.vouchers.isEmpty
-                                              ? Icon(Icons
-                                                  .wallet_giftcard_outlined)
+                                              ? SvgPicture.asset(
+                                                  'assets/images/icons/voucher.svg',
+                                                )
                                               : SizedBox(
                                                   width: 0,
                                                 ),
@@ -1437,7 +1563,10 @@ class _OrderScreenState extends State<OrderScreen> {
                                               overflow: TextOverflow.ellipsis,
                                             ),
                                           ),
-                                          SizedBox(width: 18)
+                                          SvgPicture.asset(
+                                            'assets/images/icons/dropdown.svg',
+                                          ),
+                                          SizedBox(width: 18),
                                         ],
                                       ),
                                     ),
@@ -1447,60 +1576,61 @@ class _OrderScreenState extends State<OrderScreen> {
                             ),
                           ),
                           Container(
-                            padding:
-                                EdgeInsets.only(left: 8, right: 8, bottom: 4),
+                            padding: EdgeInsets.fromLTRB(8, 0, 8, 4),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Expanded(
                                   flex: 4,
-                                  child: Container(
-                                    alignment: Alignment.centerLeft,
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          "Tổng cộng",
-                                          style: kTextSecondary,
-                                        ),
-                                        SizedBox(height: 6),
-                                        Text(
-                                          "...",
-                                          style: Get.theme.textTheme.headline3,
-                                        ),
-                                      ],
+                                  child: Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(8, 0, 0, 20),
+                                    child: Container(
+                                      alignment: Alignment.centerLeft,
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "Tổng cộng",
+                                            style: BeanOiTheme
+                                                .typography.caption
+                                                .copyWith(
+                                                    color: BeanOiTheme
+                                                        .palettes.neutral600),
+                                          ),
+                                          SizedBox(height: 6),
+                                          Text(
+                                            "...",
+                                            style:
+                                                Get.theme.textTheme.headline3,
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
                                 Expanded(
-                                  flex: 5,
-                                  child: FlatButton(
-                                    onPressed: () async {
-                                      // pr.hide();
-                                      // showStateDialog();
-                                    },
-                                    height: 50,
-                                    padding: EdgeInsets.only(
-                                      left: 8.0,
-                                      right: 8.0,
+                                  flex: 7,
+                                  child: Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(0, 0, 0, 20),
+                                    child: BeanOiButton.solid(
+                                      onPressed: () async {},
+                                      height: 50,
+                                      textColor: Colors.white,
+                                      child: Text(
+                                          // "Vui lòng chọn phương thức thanh toán 💰",
+                                          errorMsg,
+                                          style: Get.theme.textTheme.headline3
+                                              .copyWith(
+                                                  color: isMenuAvailable
+                                                      ? Colors.white
+                                                      : kGreyTitle)),
                                     ),
-                                    textColor: Colors.white,
-                                    color: kBackgroundGrey[4],
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(8))),
-                                    child: Text(
-                                        // "Vui lòng chọn phương thức thanh toán 💰",
-                                        errorMsg,
-                                        style: Get.theme.textTheme.headline3
-                                            .copyWith(
-                                                color: isMenuAvailable
-                                                    ? Colors.white
-                                                    : kGreyTitle)),
                                   ),
                                 ),
                               ],
@@ -1523,58 +1653,61 @@ class _OrderScreenState extends State<OrderScreen> {
       minusColor = kPrimary;
     }
     Color plusColor = kPrimary;
-    return Container(
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.end,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SizedBox(
-            height: 20,
-            width: 20,
-            child: IconButton(
-              padding: new EdgeInsets.all(0.0),
-              icon: Icon(
-                AntDesign.minuscircleo,
-                size: 16,
-                color: minusColor,
-              ),
-              onPressed: () async {
-                if (item.quantity >= 1) {
-                  if (item.quantity == 1) {
-                    await orderViewModel.deleteItem(item);
-                  } else {
-                    item.quantity--;
-                    await orderViewModel.updateQuantity(item);
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
+      child: Container(
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(
+              height: 18,
+              width: 18,
+              child: IconButton(
+                padding: new EdgeInsets.all(0.0),
+                icon: Icon(
+                  AntDesign.minuscircleo,
+                  size: 16,
+                  color: minusColor,
+                ),
+                onPressed: () async {
+                  if (item.quantity >= 1) {
+                    if (item.quantity == 1) {
+                      await orderViewModel.deleteItem(item);
+                    } else {
+                      item.quantity--;
+                      await orderViewModel.updateQuantity(item);
+                    }
                   }
-                }
-              },
-            ),
-          ),
-          Container(
-            width: 30,
-            child: Text(
-              item.quantity.toString(),
-              textAlign: TextAlign.center,
-            ),
-          ),
-          SizedBox(
-            height: 20,
-            width: 20,
-            child: IconButton(
-              padding: new EdgeInsets.all(0.0),
-              icon: Icon(
-                AntDesign.pluscircleo,
-                size: 16,
-                color: plusColor,
+                },
               ),
-              onPressed: () async {
-                item.quantity++;
-                await orderViewModel.updateQuantity(item);
-              },
             ),
-          ),
-        ],
+            Container(
+              width: 30,
+              child: Text(
+                item.quantity.toString(),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            SizedBox(
+              height: 18,
+              width: 18,
+              child: IconButton(
+                padding: new EdgeInsets.all(0.0),
+                icon: Icon(
+                  AntDesign.pluscircleo,
+                  size: 16,
+                  color: plusColor,
+                ),
+                onPressed: () async {
+                  item.quantity++;
+                  await orderViewModel.updateQuantity(item);
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
