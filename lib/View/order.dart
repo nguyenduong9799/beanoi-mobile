@@ -351,7 +351,7 @@ class _OrderScreenState extends State<OrderScreen> {
               ),
             ),
             Container(
-                padding: const EdgeInsets.fromLTRB(0, 6, 8, 0),
+                padding: const EdgeInsets.fromLTRB(0, 4, 8, 0),
                 width: Get.width,
                 child: Column(
                   children: [
@@ -573,8 +573,8 @@ class _OrderScreenState extends State<OrderScreen> {
                             Image(
                               image: AssetImage(
                                   "assets/images/icons/location_icon.png"),
-                              width: 20,
-                              height: 20,
+                              width: 24,
+                              height: 24,
                             ),
                             Text(
                               "Nơi nhận:",
@@ -665,8 +665,8 @@ class _OrderScreenState extends State<OrderScreen> {
                             Image(
                               image: AssetImage(
                                   "assets/images/icons/clock_icon.png"),
-                              width: 20,
-                              height: 20,
+                              width: 24,
+                              height: 24,
                             ),
                             Text(
                               "Thời gian nhận:",
@@ -773,7 +773,8 @@ class _OrderScreenState extends State<OrderScreen> {
                                     ? formatPrice(
                                         orderViewModel.orderAmount.finalAmount)
                                     : "${formatBean(orderViewModel.orderAmount.finalAmount)} Bean",
-                            style: BeanOiTheme.typography.subtitle1),
+                            style: BeanOiTheme.typography.subtitle1
+                                .copyWith(fontWeight: FontWeight.bold)),
                       ],
                     ),
                   ),
@@ -1045,7 +1046,7 @@ class _OrderScreenState extends State<OrderScreen> {
                         Expanded(
                           flex: 4,
                           child: Padding(
-                            padding: const EdgeInsets.fromLTRB(8, 0, 0, 20),
+                            padding: const EdgeInsets.fromLTRB(8, 0, 0, 24),
                             child: Container(
                               alignment: Alignment.centerLeft,
                               child: Column(
@@ -1061,8 +1062,8 @@ class _OrderScreenState extends State<OrderScreen> {
                                   SizedBox(height: 6),
                                   Text(
                                     '...',
-                                    style: Get.theme.textTheme.headline1
-                                        .copyWith(color: Colors.black),
+                                    style: BeanOiTheme.typography.subtitle1
+                                        .copyWith(fontWeight: FontWeight.bold),
                                   )
                                 ],
                               ),
@@ -1072,7 +1073,7 @@ class _OrderScreenState extends State<OrderScreen> {
                         Expanded(
                           flex: 7,
                           child: Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 0, 8, 20),
+                            padding: const EdgeInsets.fromLTRB(0, 0, 8, 24),
                             child: BeanOiButton.solid(
                               onPressed: () {},
                               height: 41,
@@ -1087,7 +1088,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                         FadeAnimatedText(
                                           'Đợi tý nha',
                                           textStyle: Get
-                                              .theme.textTheme.headline4
+                                              .theme.textTheme.headline3
                                               .copyWith(color: Colors.white),
                                           textAlign: TextAlign.center,
                                           // speed: Duration(milliseconds: 300),
@@ -1324,7 +1325,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                   flex: 4,
                                   child: Padding(
                                     padding:
-                                        const EdgeInsets.fromLTRB(8, 0, 0, 20),
+                                        const EdgeInsets.fromLTRB(8, 0, 0, 24),
                                     child: Container(
                                       alignment: Alignment.centerLeft,
                                       child: Column(
@@ -1355,7 +1356,10 @@ class _OrderScreenState extends State<OrderScreen> {
                                                               .finalAmount)
                                                       : "${formatBean(orderViewModel.orderAmount.finalAmount)} Bean",
                                               style: BeanOiTheme
-                                                  .typography.subtitle1),
+                                                  .typography.subtitle1
+                                                  .copyWith(
+                                                      fontWeight:
+                                                          FontWeight.bold)),
                                         ],
                                       ),
                                     ),
@@ -1365,7 +1369,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                   flex: 7,
                                   child: Padding(
                                     padding:
-                                        const EdgeInsets.fromLTRB(0, 0, 8, 20),
+                                        const EdgeInsets.fromLTRB(0, 0, 8, 24),
                                     child: BeanOiButton.solid(
                                       onPressed: () async {
                                         if (model.currentCart.payment != null &&
@@ -1585,7 +1589,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                   flex: 4,
                                   child: Padding(
                                     padding:
-                                        const EdgeInsets.fromLTRB(8, 0, 0, 20),
+                                        const EdgeInsets.fromLTRB(8, 0, 0, 24),
                                     child: Container(
                                       alignment: Alignment.centerLeft,
                                       child: Column(
@@ -1605,8 +1609,11 @@ class _OrderScreenState extends State<OrderScreen> {
                                           SizedBox(height: 6),
                                           Text(
                                             "...",
-                                            style:
-                                                Get.theme.textTheme.headline3,
+                                            style: BeanOiTheme
+                                                .typography.subtitle1
+                                                .copyWith(
+                                                    fontWeight:
+                                                        FontWeight.bold),
                                           ),
                                         ],
                                       ),
@@ -1617,7 +1624,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                   flex: 7,
                                   child: Padding(
                                     padding:
-                                        const EdgeInsets.fromLTRB(0, 0, 0, 20),
+                                        const EdgeInsets.fromLTRB(0, 0, 0, 24),
                                     child: BeanOiButton.solid(
                                       onPressed: () async {},
                                       height: 50,
