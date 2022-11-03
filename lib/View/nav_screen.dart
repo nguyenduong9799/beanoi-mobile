@@ -3,6 +3,7 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
 import 'package:unidelivery_mobile/Accessories/index.dart';
 import 'package:unidelivery_mobile/View/index.dart';
+import 'package:unidelivery_mobile/View/newsfeed.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
 
 class RootScreen extends StatefulWidget {
@@ -17,7 +18,8 @@ class RootScreen extends StatefulWidget {
 class _RootScreenState extends State<RootScreen> {
   final List<Widget> _screens = [
     HomeScreen(),
-    GiftScreen(),
+    // GiftScreen(),
+    NewsfeedScreen(),
     ProfileScreen(),
   ];
   final List<IconData> _icons = const [
