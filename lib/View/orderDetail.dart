@@ -29,6 +29,7 @@ class OrderHistoryDetail extends StatefulWidget {
 
 class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
   final orderDetailModel = Get.find<OrderHistoryViewModel>();
+  bool isShow = false;
 
   @override
   void initState() {
@@ -57,21 +58,6 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                   onPressed: () {
                     Get.back();
                   }),
-// DefaultAppBar(
-//           title: "${widget.order.invoiceId.toString()}" ?? 'Đơn hàng',
-//           backButton: Container(
-//             child: IconButton(
-//               icon: Icon(
-//                 AntDesign.left,
-//                 size: 24,
-//                 color: kPrimary,
-//               ),
-//               onPressed: () {
-//                 Get.back();
-//               },
-//             ),
-//           ),
-              // ),
             )),
         body: SingleChildScrollView(
           child: ScopedModelDescendant<OrderHistoryViewModel>(
@@ -124,12 +110,6 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                                   child: Divider(),
                                 ),
                               ),
-                              // Expanded(
-                              //   child: Padding(
-                              //     padding: EdgeInsets.only(left: 8, right: 8),
-                              //     child: Divider(),
-                              //   ),
-                              // ),
                               Text(
                                 DateFormat('HH:mm dd/MM').format(
                                     DateTime.parse(orderDetail.orderTime)),
@@ -139,30 +119,9 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                               ),
                             ],
                           ),
-                          // SizedBox(height: 8),
-                          // Row(
-                          //   children: [
-                          //     Text("🎯 Nhận đơn tại: ",
-                          //         style: Get.theme.textTheme.headline4),
-                          //     Text(orderDetail.address,
-                          //         style: Get.theme.textTheme.headline4),
-                          //   ],
-                          // ),
-                          // SizedBox(height: 8),
-                          // Row(
-                          //   children: [
-                          //     Text(" Giờ nhận đơn: ",
-                          //         style: Get.theme.textTheme.headline4),
-                          //     orderDetail.arriveTime != null
-                          //         ? Text(formatTime(orderDetail.arriveTime),
-                          //             style: Get.theme.textTheme.headline4)
-                          //         : Text('19 : 00'),
-                          //   ],
-                          // )
                         ],
                       ),
                     ),
-
                     Container(
                       margin: EdgeInsets.only(left: 16, right: 16, top: 8),
                       height: 188,
@@ -217,8 +176,8 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                           ]),
                     ),
                     Container(
-                        height: 70,
-                        padding: EdgeInsets.all(4),
+                        // height: 70,
+                        padding: EdgeInsets.all(6),
                         margin: EdgeInsets.only(left: 16, right: 16, top: 8),
                         decoration: BoxDecoration(
                             color: Color(0xffFFFFFF),
@@ -356,43 +315,92 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                             color: Colors.white),
                         child: Column(
                           children: [
-                            Row(
-                              children: [
-                                Text("Nhận đơn tại: ",
-                                    style: Get.theme.textTheme.headline4),
-                                Text(orderDetail.address,
-                                    style: Get.theme.textTheme.headline4),
-                              ],
+                            Container(
+                              margin: EdgeInsets.only(left: 10),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    width: 10,
+                                    height: 10,
+                                    margin: EdgeInsets.only(right: 8),
+                                    child: ImageIcon(
+                                      AssetImage(
+                                          'assets\images\icons\Subtract.png'),
+                                    ),
+                                  ),
+                                  Text("Nhận đơn tại: ",
+                                      style: Get.theme.textTheme.headline4),
+                                  Expanded(
+                                    child: Text(
+                                      orderDetail.address,
+                                      style: Get.theme.textTheme.headline4,
+                                    ),
+                                  )
+                                ],
+                              ),
                             ),
                             SizedBox(height: 8),
-                            Row(
-                              children: [
-                                Text("Giờ nhận đơn: ",
-                                    style: Get.theme.textTheme.headline4),
-                                orderDetail.arriveTime != null
-                                    ? Text(formatTime(orderDetail.arriveTime),
-                                        style: Get.theme.textTheme.headline4)
-                                    : Text('19 : 00'),
-                              ],
-                            )
+                            Container(
+                              margin: EdgeInsets.only(left: 10),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    width: 10,
+                                    height: 10,
+                                    margin: EdgeInsets.only(right: 8),
+                                    child: ImageIcon(
+                                      AssetImage(
+                                          'assets\images\icons\Clock_fill.png'),
+                                    ),
+                                  ),
+                                  Text("Giờ nhận đơn: ",
+                                      style: Get.theme.textTheme.headline4),
+                                  orderDetail.arriveTime != null
+                                      ? Text(formatTime(orderDetail.arriveTime),
+                                          style: Get.theme.textTheme.headline4)
+                                      : Text('19 : 00'),
+                                ],
+                              ),
+                            ),
                           ],
-                        ))
-                    // Container(
-                    //   margin: EdgeInsets.all(10),
-                    //   decoration: BoxDecoration(
-                    //     borderRadius: BorderRadius.circular(8),
-                    //     color: kBackgroundGrey[0],
-                    //   ),
-                    //   child: buildOrderSummaryList(orderDetail),
-                    // ),
-                    // Container(
-                    //   margin: EdgeInsets.all(10),
-                    //   decoration: BoxDecoration(
-                    //     borderRadius: BorderRadius.circular(8),
-                    //     color: kBackgroundGrey[0],
-                    //   ),
-                    //   child: layoutSubtotal(orderDetail),
-                    // ),
+                        )),
+                    Container(
+                      margin: EdgeInsets.only(left: 16, right: 16, top: 8),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        color: kBackgroundGrey[0],
+                      ),
+                      child: Column(
+                        children: [
+                          layoutSubtotal(orderDetail),
+                          Row(
+                            children: [
+                              Container(
+                                  padding: EdgeInsets.only(left: 16, bottom: 8),
+                                  child: GestureDetector(
+                                    onTap: () => setState(() =>
+                                        {isShow = !isShow, print('$isShow')}),
+                                    child: Text(
+                                        'Xem chi tiết đơn hàng (${orderDetail.itemQuantity} Món)',
+                                        style: TextStyle(
+                                            color: BeanOiTheme
+                                                .palettes.neutral1000)),
+                                  ))
+                            ],
+                          ),
+                          if (isShow)
+                            Container(
+                              margin: EdgeInsets.only(left: 16, right: 16),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                color: kBackgroundGrey[0],
+                              ),
+                              child: buildOrderSummaryList(orderDetail),
+                            ),
+                        ],
+                      ),
+                    ),
+                    // if (isShow == true)
                   ],
                 ),
               );
@@ -518,7 +526,7 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
     Map<int, List<OrderItemDTO>> map =
         groupBy(orderDetail.orderItems, (OrderItemDTO item) => item.supplierId);
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(30.0),
       child: ListView.separated(
         physics: NeverScrollableScrollPhysics(),
         shrinkWrap: true,
@@ -538,8 +546,8 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                   ? Container(
                       width: Get.width,
                       color: Colors.yellow[100],
-                      margin: EdgeInsets.only(top: 4),
-                      padding: const EdgeInsets.all(4),
+                      // margin: EdgeInsets.only(top: 4),
+                      // padding: const EdgeInsets.all(4),
                       child: Text.rich(TextSpan(
                           text: "Ghi chú:\n",
                           style: Get.theme.textTheme.headline6
@@ -552,14 +560,15 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                           ])),
                     )
                   : SizedBox.shrink(),
-              SizedBox(
-                height: 8,
-              ),
+
               Container(
-                padding: const EdgeInsets.all(8),
+                // padding: const EdgeInsets.only(top: 5),
+                margin: EdgeInsets.only(top: 8),
                 decoration: BoxDecoration(
-                    border: Border.all(color: kBackgroundGrey[4]),
-                    borderRadius: BorderRadius.all(Radius.circular(8))),
+                  border:
+                      Border(top: BorderSide(width: 1, color: Colors.black)),
+                  // borderRadius: BorderRadius.all(Radius.circular(8))
+                ),
                 child: ListView.separated(
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
@@ -567,13 +576,12 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                       return buildOrderItem(items[index]);
                     },
                     separatorBuilder: (context, index) => Container(
-                        margin: EdgeInsets.only(top: 8, bottom: 8),
-                        child: MySeparator()),
+                        margin: EdgeInsets.only(top: 8), child: MySeparator()),
                     itemCount: items.length),
               ),
-              SizedBox(
-                height: 8,
-              ),
+              // SizedBox(
+              //   height: 8,
+              // ),
             ],
           );
         },
@@ -614,16 +622,17 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              "${item.quantity} x",
-              style: Get.theme.textTheme.headline4.copyWith(color: Colors.grey),
-              overflow: TextOverflow.ellipsis,
-            ),
             Container(
-              width: Get.width * 0.6,
               child: Wrap(
                 children: [
+                  Text(
+                    "${item.quantity} x",
+                    style: Get.theme.textTheme.headline4
+                        .copyWith(color: Colors.grey),
+                    overflow: TextOverflow.ellipsis,
+                  ),
                   Container(
+                    margin: EdgeInsets.only(left: 5),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -676,74 +685,77 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                "Tổng tiền",
-                style: Get.theme.textTheme.headline3,
-              ),
-              Text(
-                "${orderDetail.itemQuantity} món",
-                style: Get.theme.textTheme.headline3,
-              ),
-            ],
-          ),
-          RichText(
-            text: TextSpan(
-                text: "P.Thức: ",
-                style:
-                    Get.theme.textTheme.headline6.copyWith(color: Colors.black),
-                children: <TextSpan>[
-                  TextSpan(
-                    text: "${payment}",
-                    style:
-                        Get.theme.textTheme.headline5.copyWith(color: kPrimary),
-                  ),
-                ]),
-          ),
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //   children: [
+          //     Text(
+          //       "Tổng tiền",
+          //       style: Get.theme.textTheme.headline3,
+          //     ),
+          //     Text(
+          //       "${orderDetail.itemQuantity} món",
+          //       style: Get.theme.textTheme.headline3,
+          //     ),
+          //   ],
+          // ),
+          // RichText(
+          //   text: TextSpan(
+          //       text: "P.Thức: ",
+          //       style:
+          //           Get.theme.textTheme.headline6.copyWith(color: Colors.black),
+          //       children: <TextSpan>[
+          //         TextSpan(
+          //           text: "${payment}",
+          //           style:
+          //               Get.theme.textTheme.headline5.copyWith(color: kPrimary),
+          //         ),
+          //       ]),
+          // ),
           Container(
-            margin: EdgeInsets.only(top: 8),
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-                border: Border.all(color: kBackgroundGrey[4]),
-                borderRadius: BorderRadius.all(Radius.circular(8))),
+            // margin: EdgeInsets.only(top: 8),
+            padding: const EdgeInsets.only(left: 8, right: 8),
+            // decoration: BoxDecoration(
+            //     border: Border.all(color: kBackgroundGrey[4]),
+            //     borderRadius: BorderRadius.all(Radius.circular(8))),
             child: Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(top: 5, bottom: 10),
+                  padding: const EdgeInsets.only(bottom: 0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "Tạm tính",
+                        "Đơn hàng",
+                        style: TextStyle(
+                            color: BeanOiTheme.palettes.secondary1000),
                       ),
-                      Text("${formatPrice(orderDetail.total)}"),
+                      // Text("${formatPrice(orderDetail.total)}"),
                     ],
                   ),
                 ),
-                MySeparator(),
+                // MySeparator(),
                 // OTHER AMOUNTS GO HERE
-                ..._buildOtherAmount(orderDetail.otherAmounts),
-                Divider(color: Colors.black),
-                Padding(
-                  padding: const EdgeInsets.only(top: 5, bottom: 5),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Tổng cộng",
-                        style: Get.theme.textTheme.headline3,
-                      ),
-                      Text(
-                        orderDetail.paymentType == PaymentTypeEnum.BeanCoin
-                            ? "${formatBean(orderDetail.finalAmount)} Bean"
-                            : "${formatPrice(orderDetail.finalAmount)}",
-                        style: Get.theme.textTheme.headline3,
-                      ),
-                    ],
-                  ),
-                )
+                // ..._buildOtherAmount(orderDetail.otherAmounts),
+                newDesignPayment(orderDetail),
+                // Divider(color: Colors.black),
+                // Padding(
+                //   padding: const EdgeInsets.only(bottom: 5),
+                //   child: Row(
+                //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //     children: [
+                //       Text(
+                //         "Tổng cộng",
+                //         style: Get.theme.textTheme.headline3,
+                //       ),
+                //       Text(
+                //         orderDetail.paymentType == PaymentTypeEnum.BeanCoin
+                //             ? "${formatBean(orderDetail.finalAmount)} Bean"
+                //             : "${formatPrice(orderDetail.finalAmount)}",
+                //         style: Get.theme.textTheme.headline3,
+                //       ),
+                //     ],
+                //   ),
+                // )
               ],
             ),
           ),
@@ -760,6 +772,47 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
               otherAmount: amountObj,
             ))
         .toList();
+  }
+
+  Widget newDesignPayment(OrderDTO orderDetail) {
+    int index = orderDetailModel.listPayments.values
+        .toList()
+        .indexOf(orderDetail.paymentType);
+    String payment = "Không xác định";
+    if (index >= 0 && index < orderDetailModel.listPayments.keys.length) {
+      payment = orderDetailModel.listPayments.keys.elementAt(index);
+    }
+    if (orderDetail.paymentType == PaymentTypeEnum.Momo) {
+      payment = "Momo";
+    }
+    return Container(
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Phương thức thanh toán',
+                style: TextStyle(color: BeanOiTheme.palettes.neutral800),
+              ),
+              Text('$payment')
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Tổng cộng',
+                style: TextStyle(color: BeanOiTheme.palettes.neutral800),
+              ),
+              Text(orderDetail.paymentType == PaymentTypeEnum.BeanCoin
+                  ? "${formatBean(orderDetail.finalAmount)} Bean"
+                  : "${formatPrice(orderDetail.finalAmount)}"),
+            ],
+          )
+        ],
+      ),
+    );
   }
 
   void _launchUrl(String url, {bool isFB = false, forceWebView = false}) {
