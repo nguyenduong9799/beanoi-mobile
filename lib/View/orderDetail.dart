@@ -390,6 +390,7 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                           ),
                           if (isShow)
                             Container(
+                              // transform: Matrix4.translationValues(0, -16, 0),
                               margin: EdgeInsets.only(left: 16, right: 16),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(8),
@@ -526,8 +527,8 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
     Map<int, List<OrderItemDTO>> map =
         groupBy(orderDetail.orderItems, (OrderItemDTO item) => item.supplierId);
     return Padding(
-      padding: const EdgeInsets.all(30.0),
-      child: ListView.separated(
+      padding: const EdgeInsets.only(left: 20, right: 20, bottom: 10, top: 10),
+      child: ListView.builder(
         physics: NeverScrollableScrollPhysics(),
         shrinkWrap: true,
         itemBuilder: (context, index) {
@@ -562,7 +563,7 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                   : SizedBox.shrink(),
 
               Container(
-                // padding: const EdgeInsets.only(top: 5),
+                padding: const EdgeInsets.only(top: 5, bottom: 5),
                 margin: EdgeInsets.only(top: 8),
                 decoration: BoxDecoration(
                   border:
@@ -575,17 +576,22 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                     itemBuilder: (context, index) {
                       return buildOrderItem(items[index]);
                     },
-                    separatorBuilder: (context, index) => Container(
-                        margin: EdgeInsets.only(top: 8), child: MySeparator()),
+                    separatorBuilder: (context, index) =>
+                        // MySeparator()
+                        Container(margin: EdgeInsets.only(top: 8), child: null),
                     itemCount: items.length),
               ),
+              SizedBox(height: 10),
+              MySeparator(),
+              SizedBox(height: 10),
+
               // SizedBox(
               //   height: 8,
               // ),
             ],
           );
         },
-        separatorBuilder: (context, index) => Divider(),
+        // separatorBuilder: (context, index) => Divider(),
         itemCount: map.keys.length,
       ),
     );
