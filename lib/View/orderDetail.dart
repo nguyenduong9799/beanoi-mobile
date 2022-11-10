@@ -319,17 +319,20 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                               margin: EdgeInsets.only(left: 10),
                               child: Row(
                                 children: [
-                                  Container(
-                                    width: 10,
-                                    height: 10,
-                                    margin: EdgeInsets.only(right: 8),
-                                    child: ImageIcon(
-                                      AssetImage(
-                                          'assets\images\icons\Subtract.png'),
-                                    ),
+                                  Icon(
+                                    Icons.location_on_sharp,
+                                    color: Color(0xffF17F23),
+                                    size: 15,
                                   ),
-                                  Text("Nhận đơn tại: ",
-                                      style: Get.theme.textTheme.headline4),
+                                  // ImageIcon(
+                                  //   AssetImage(
+                                  //       'assets\images\icons\Subtract.png'),
+                                  // ),
+                                  Container(
+                                    margin: EdgeInsets.only(left: 5),
+                                    child: Text("Nhận đơn tại: ",
+                                        style: Get.theme.textTheme.headline4),
+                                  ),
                                   Expanded(
                                     child: Text(
                                       orderDetail.address,
@@ -344,17 +347,25 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                               margin: EdgeInsets.only(left: 10),
                               child: Row(
                                 children: [
-                                  Container(
-                                    width: 10,
-                                    height: 10,
-                                    margin: EdgeInsets.only(right: 8),
-                                    child: ImageIcon(
-                                      AssetImage(
-                                          'assets\images\icons\Clock_fill.png'),
-                                    ),
+                                  Icon(
+                                    Icons.access_alarm,
+                                    color: Color(0xffF17F23),
+                                    size: 15,
                                   ),
-                                  Text("Giờ nhận đơn: ",
-                                      style: Get.theme.textTheme.headline4),
+                                  // Container(
+                                  //   width: 10,
+                                  //   height: 10,
+                                  //   margin: EdgeInsets.only(right: 8),
+                                  //   child: ImageIcon(
+                                  //     AssetImage(
+                                  //         'assets\images\icons\Clock_fill.png'),
+                                  //   ),
+                                  // ),
+                                  Container(
+                                    margin: EdgeInsets.only(left: 5),
+                                    child: Text("Giờ nhận đơn: ",
+                                        style: Get.theme.textTheme.headline4),
+                                  ),
                                   orderDetail.arriveTime != null
                                       ? Text(formatTime(orderDetail.arriveTime),
                                           style: Get.theme.textTheme.headline4)
