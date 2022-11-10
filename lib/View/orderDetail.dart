@@ -324,12 +324,8 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                                     color: Color(0xffF17F23),
                                     size: 15,
                                   ),
-                                  // ImageIcon(
-                                  //   AssetImage(
-                                  //       'assets\images\icons\Subtract.png'),
-                                  // ),
                                   Container(
-                                    margin: EdgeInsets.only(left: 5),
+                                    margin: EdgeInsets.only(left: 5, right: 10),
                                     child: Text("Nhận đơn tại: ",
                                         style: Get.theme.textTheme.headline4),
                                   ),
@@ -353,7 +349,7 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                                     size: 15,
                                   ),
                                   Container(
-                                    margin: EdgeInsets.only(left: 5),
+                                    margin: EdgeInsets.only(left: 5, right: 10),
                                     child: Text("Giờ nhận đơn: ",
                                         style: Get.theme.textTheme.headline4),
                                   ),
