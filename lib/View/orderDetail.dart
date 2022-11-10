@@ -2,12 +2,14 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:scoped_model/scoped_model.dart';
 import "package:collection/collection.dart";
 import 'package:unidelivery_mobile/Accessories/index.dart';
+import 'package:unidelivery_mobile/Constraints/BeanOiTheme/index.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Enums/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
@@ -27,6 +29,7 @@ class OrderHistoryDetail extends StatefulWidget {
 
 class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
   final orderDetailModel = Get.find<OrderHistoryViewModel>();
+  bool isShow = false;
 
   @override
   void initState() {
@@ -39,26 +42,28 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
     return ScopedModel<OrderHistoryViewModel>(
       model: orderDetailModel,
       child: Scaffold(
-        bottomNavigationBar: _buildCancelBtn(),
-        appBar: DefaultAppBar(
-          title: "${widget.order.invoiceId.toString()}" ?? 'Đơn hàng',
-          backButton: Container(
-            child: IconButton(
-              icon: Icon(
-                AntDesign.down,
-                size: 24,
-                color: kPrimary,
-              ),
-              onPressed: () {
-                Get.back();
-              },
-            ),
-          ),
-        ),
+        // bottomNavigationBar: _buildCancelBtn(),
+        appBar: AppBar(
+            centerTitle: true,
+            title: Text("${widget.order.invoiceId.toString()}" ?? 'Đơn hàng',
+                style: TextStyle(color: BeanOiTheme.palettes.primary400)),
+            backgroundColor: Colors.white,
+            leading: Container(
+              child: IconButton(
+                  icon: Icon(
+                    AntDesign.left,
+                    size: 24,
+                    color: kPrimary,
+                  ),
+                  onPressed: () {
+                    Get.back();
+                  }),
+            )),
         body: SingleChildScrollView(
           child: ScopedModelDescendant<OrderHistoryViewModel>(
             builder: (context, child, model) {
               final status = model.status;
+
               if (status == ViewStatus.Loading)
                 return AspectRatio(
                   aspectRatio: 1,
@@ -74,16 +79,16 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                   children: <Widget>[
                     Container(
                       width: Get.width,
-                      padding: EdgeInsets.all(8),
+                      padding: EdgeInsets.only(left: 16, right: 16, top: 8),
                       decoration: BoxDecoration(
-                        color: kBackgroundGrey[0],
+                        // color: kBackgroundGrey[0],
                         borderRadius: BorderRadius.circular(4),
                       ),
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        // crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
+                            // crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Container(
                                 height: 25,
@@ -105,12 +110,6 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                                   child: Divider(),
                                 ),
                               ),
-                              Expanded(
-                                child: Padding(
-                                  padding: EdgeInsets.only(left: 8, right: 8),
-                                  child: Divider(),
-                                ),
-                              ),
                               Text(
                                 DateFormat('HH:mm dd/MM').format(
                                     DateTime.parse(orderDetail.orderTime)),
@@ -120,38 +119,291 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                               ),
                             ],
                           ),
-                          SizedBox(height: 8),
-                          Row(
-                            children: [
-                              Text("🎯 Nhận đơn tại: ",
-                                  style: Get.theme.textTheme.headline4),
-                              Text(orderDetail.address,
-                                  style: Get.theme.textTheme.headline4),
-                            ],
-                          ),
-                          SizedBox(height: 8),
-                          Row(
-                            children: [
-                              Text(" Giờ nhận đơn: ",
-                                  style: Get.theme.textTheme.headline4),
-                              orderDetail.arriveTime != null
-                                  ? Text(formatTime(orderDetail.arriveTime),
-                                      style: Get.theme.textTheme.headline4)
-                                  : Text('19 : 00'),
-                            ],
-                          )
                         ],
                       ),
                     ),
-                    SizedBox(height: 8),
                     Container(
+                      margin: EdgeInsets.only(left: 16, right: 16, top: 8),
+                      height: 188,
+                      padding: EdgeInsets.all(4),
                       decoration: BoxDecoration(
+                          color: Color(0xffD9D9D9),
+                          borderRadius: BorderRadius.circular(8)),
+                      child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              height: MediaQuery.of(context).size.height * 0.05,
+                              width: MediaQuery.of(context).size.width * 0.2,
+                              // width: double.infinity * 0.25,
+                              child: Text(
+                                'Bạn đã xác nhận đơn hàng của mình!',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(fontSize: 8),
+                              ),
+                            ),
+                            Container(
+                              height: MediaQuery.of(context).size.height * 0.05,
+                              width: MediaQuery.of(context).size.width * 0.2,
+                              // width: double.infinity * 0.25,
+                              child: Text(
+                                'Bean Ơi đã chốt đơn hàng của bạn rồi nhé!',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(fontSize: 8),
+                              ),
+                            ),
+                            Container(
+                              height: MediaQuery.of(context).size.height * 0.05,
+                              width: MediaQuery.of(context).size.width * 0.2,
+                              // width: double.infinity * 0.25,
+                              child: Text(
+                                'Đơn hàng đã sẵn sàng để giao! Mau nhận thôi nào',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(fontSize: 8),
+                              ),
+                            ),
+                            Container(
+                              height: MediaQuery.of(context).size.height * 0.05,
+                              width: MediaQuery.of(context).size.width * 0.2,
+                              // width: double.infinity * 0.25,
+                              child: Text(
+                                'Đơn hàng giao thành công! Chúc bạn ngon miệng!',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(fontSize: 8),
+                              ),
+                            )
+                          ]),
+                    ),
+                    Container(
+                        // height: 70,
+                        padding: EdgeInsets.all(6),
+                        margin: EdgeInsets.only(left: 16, right: 16, top: 8),
+                        decoration: BoxDecoration(
+                            color: Color(0xffFFFFFF),
+                            borderRadius: BorderRadius.circular(8)),
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Container(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.2,
+                                  // width: double.infinity * 0.25,
+                                  child: Text(
+                                    '1',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        color: BeanOiTheme.palettes.primary400),
+                                  ),
+                                ),
+                                Container(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.2,
+                                  // width: double.infinity * 0.25,
+                                  child: Text(
+                                    '2',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        color: BeanOiTheme.palettes.primary400),
+                                  ),
+                                ),
+                                Container(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.2,
+                                  // width: double.infinity * 0.25,
+                                  child: Text(
+                                    '3',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        color: BeanOiTheme.palettes.primary400),
+                                  ),
+                                ),
+                                Container(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.2,
+                                  // width: double.infinity * 0.25,
+                                  child: Text(
+                                    '4',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        color: BeanOiTheme.palettes.primary400),
+                                  ),
+                                )
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Container(
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.2,
+                                    child: Column(
+                                      children: [
+                                        Text('Xác nhận',
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                fontSize: 14,
+                                                color: BeanOiTheme
+                                                    .palettes.primary400)),
+                                        orderDetail.orderTime != null
+                                            ? Text(
+                                                DateFormat('HH:mm').format(
+                                                    DateTime.parse(
+                                                        orderDetail.orderTime)),
+                                                style: Get
+                                                    .theme.textTheme.headline4)
+                                            : Text('19 : 00')
+                                      ],
+                                    )),
+                                Container(
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.2,
+                                    child: Column(
+                                      children: [
+                                        Text('Chốt đơn',
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                fontSize: 14,
+                                                color: BeanOiTheme
+                                                    .palettes.primary400)),
+                                        Text('00:00')
+                                      ],
+                                    )),
+                                Container(
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.2,
+                                    child: Column(
+                                      children: [
+                                        Text('Sẵn sàng',
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                fontSize: 14,
+                                                color: BeanOiTheme
+                                                    .palettes.primary400)),
+                                        Text('00:00')
+                                      ],
+                                    )),
+                                Container(
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.2,
+                                    child: Column(
+                                      children: [
+                                        Text('Hoàn thành',
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                fontSize: 14,
+                                                color: BeanOiTheme
+                                                    .palettes.primary400)),
+                                        Text('00:00')
+                                      ],
+                                    ))
+                              ],
+                            )
+                          ],
+                        )),
+                    Container(
+                        margin: EdgeInsets.only(left: 16, right: 16, top: 8),
+                        padding: EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            color: Colors.white),
+                        child: Column(
+                          children: [
+                            Container(
+                              margin: EdgeInsets.only(left: 10),
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.location_on_sharp,
+                                    color: Color(0xffF17F23),
+                                    size: 15,
+                                  ),
+                                  Container(
+                                    margin: EdgeInsets.only(left: 5, right: 10),
+                                    child: Text("Nhận đơn tại: ",
+                                        style: Get.theme.textTheme.headline4),
+                                  ),
+                                  Expanded(
+                                    child: Text(
+                                      orderDetail.address,
+                                      style: Get.theme.textTheme.headline4,
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                            SizedBox(height: 8),
+                            Container(
+                              margin: EdgeInsets.only(left: 10),
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.access_alarm,
+                                    color: Color(0xffF17F23),
+                                    size: 15,
+                                  ),
+                                  Container(
+                                    margin: EdgeInsets.only(left: 5, right: 10),
+                                    child: Text("Giờ nhận đơn: ",
+                                        style: Get.theme.textTheme.headline4),
+                                  ),
+                                  orderDetail.arriveTime != null
+                                      ? Text(formatTime(orderDetail.arriveTime),
+                                          style: Get.theme.textTheme.headline4)
+                                      : Text('19 : 00'),
+                                ],
+                              ),
+                            ),
+                          ],
+                        )),
+                    Container(
+                      margin: EdgeInsets.only(left: 16, right: 16, top: 8),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
                         color: kBackgroundGrey[0],
                       ),
-                      child: buildOrderSummaryList(orderDetail),
+                      child: Column(
+                        children: [
+                          layoutSubtotal(orderDetail),
+                          Row(
+                            children: [
+                              Container(
+                                  padding: EdgeInsets.only(left: 16, bottom: 8),
+                                  child: GestureDetector(
+                                      onTap: () => setState(() =>
+                                          {isShow = !isShow, print('$isShow')}),
+                                      child: Row(
+                                        children: [
+                                          Text(
+                                              'Xem chi tiết đơn hàng (${orderDetail.itemQuantity} Món)',
+                                              style: TextStyle(
+                                                  color: BeanOiTheme
+                                                      .palettes.neutral1000)),
+                                          Icon(Icons.arrow_drop_down_rounded),
+                                        ],
+                                      )))
+                            ],
+                          ),
+                          if (isShow)
+                            Container(
+                              // transform: Matrix4.translationValues(0, -16, 0),
+                              margin: EdgeInsets.only(left: 16, right: 16),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                color: kBackgroundGrey[0],
+                              ),
+                              child: buildOrderSummaryList(orderDetail),
+                            ),
+                        ],
+                      ),
                     ),
-                    SizedBox(height: 8),
-                    layoutSubtotal(orderDetail),
+                    // if (isShow == true)
                   ],
                 ),
               );
@@ -276,29 +528,41 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
   Widget buildOrderSummaryList(OrderDTO orderDetail) {
     Map<int, List<OrderItemDTO>> map =
         groupBy(orderDetail.orderItems, (OrderItemDTO item) => item.supplierId);
+
     return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: ListView.separated(
+      padding: const EdgeInsets.only(left: 20, right: 20, bottom: 10, top: 10),
+      child: ListView.builder(
         physics: NeverScrollableScrollPhysics(),
         shrinkWrap: true,
         itemBuilder: (context, index) {
           List<OrderItemDTO> items = map.values.elementAt(index);
+          int count = 0;
+          items.forEach((element) {
+            count += element.quantity;
+          });
           SupplierNoteDTO note = orderDetail.notes?.firstWhere(
               (element) => element.supplierId == items[0].supplierId,
               orElse: () => null);
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                items[0].supplierName,
-                style: Get.theme.textTheme.headline3,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    items[0].supplierName,
+                    style: Get.theme.textTheme.headline3,
+                  ),
+                  Text(
+                    count.toString() + " x ",
+                    style: Get.theme.textTheme.headline3,
+                  ),
+                ],
               ),
               (note != null)
                   ? Container(
                       width: Get.width,
                       color: Colors.yellow[100],
-                      margin: EdgeInsets.only(top: 4),
-                      padding: const EdgeInsets.all(4),
                       child: Text.rich(TextSpan(
                           text: "Ghi chú:\n",
                           style: Get.theme.textTheme.headline6
@@ -311,32 +575,37 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                           ])),
                     )
                   : SizedBox.shrink(),
-              SizedBox(
-                height: 8,
-              ),
+
               Container(
-                padding: const EdgeInsets.all(8),
+                padding: const EdgeInsets.only(top: 5, bottom: 5),
+                margin: EdgeInsets.only(top: 8),
                 decoration: BoxDecoration(
-                    border: Border.all(color: kBackgroundGrey[4]),
-                    borderRadius: BorderRadius.all(Radius.circular(8))),
+                  border:
+                      Border(top: BorderSide(width: 1, color: Colors.black)),
+                  // borderRadius: BorderRadius.all(Radius.circular(8))
+                ),
                 child: ListView.separated(
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
                     itemBuilder: (context, index) {
                       return buildOrderItem(items[index]);
                     },
-                    separatorBuilder: (context, index) => Container(
-                        margin: EdgeInsets.only(top: 8, bottom: 8),
-                        child: MySeparator()),
+                    separatorBuilder: (context, index) =>
+                        // MySeparator()
+                        Container(margin: EdgeInsets.only(top: 8), child: null),
                     itemCount: items.length),
               ),
-              SizedBox(
-                height: 8,
-              ),
+              SizedBox(height: 10),
+              MySeparator(),
+              SizedBox(height: 10),
+
+              // SizedBox(
+              //   height: 8,
+              // ),
             ],
           );
         },
-        separatorBuilder: (context, index) => Divider(),
+        // separatorBuilder: (context, index) => Divider(),
         itemCount: map.keys.length,
       ),
     );
@@ -373,16 +642,17 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              "${item.quantity} x",
-              style: Get.theme.textTheme.headline4.copyWith(color: Colors.grey),
-              overflow: TextOverflow.ellipsis,
-            ),
             Container(
-              width: Get.width * 0.6,
               child: Wrap(
                 children: [
+                  Text(
+                    "${item.quantity} x",
+                    style: Get.theme.textTheme.headline4
+                        .copyWith(color: Colors.grey),
+                    overflow: TextOverflow.ellipsis,
+                  ),
                   Container(
+                    margin: EdgeInsets.only(left: 5),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -418,6 +688,7 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
     int index = orderDetailModel.listPayments.values
         .toList()
         .indexOf(orderDetail.paymentType);
+
     String payment = "Không xác định";
     if (index >= 0 && index < orderDetailModel.listPayments.keys.length) {
       payment = orderDetailModel.listPayments.keys.elementAt(index);
@@ -435,74 +706,24 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                "Tổng tiền",
-                style: Get.theme.textTheme.headline3,
-              ),
-              Text(
-                "${orderDetail.itemQuantity} món",
-                style: Get.theme.textTheme.headline3,
-              ),
-            ],
-          ),
-          RichText(
-            text: TextSpan(
-                text: "P.Thức: ",
-                style:
-                    Get.theme.textTheme.headline6.copyWith(color: Colors.black),
-                children: <TextSpan>[
-                  TextSpan(
-                    text: "${payment}",
-                    style:
-                        Get.theme.textTheme.headline5.copyWith(color: kPrimary),
-                  ),
-                ]),
-          ),
           Container(
-            margin: EdgeInsets.only(top: 8),
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-                border: Border.all(color: kBackgroundGrey[4]),
-                borderRadius: BorderRadius.all(Radius.circular(8))),
+            padding: const EdgeInsets.only(left: 8, right: 8),
             child: Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(top: 5, bottom: 10),
+                  padding: const EdgeInsets.only(bottom: 0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "Tạm tính",
+                        "Đơn hàng",
+                        style: TextStyle(
+                            color: BeanOiTheme.palettes.secondary1000),
                       ),
-                      Text("${formatPrice(orderDetail.total)}"),
                     ],
                   ),
                 ),
-                MySeparator(),
-                // OTHER AMOUNTS GO HERE
-                ..._buildOtherAmount(orderDetail.otherAmounts),
-                Divider(color: Colors.black),
-                Padding(
-                  padding: const EdgeInsets.only(top: 5, bottom: 5),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Tổng cộng",
-                        style: Get.theme.textTheme.headline3,
-                      ),
-                      Text(
-                        orderDetail.paymentType == PaymentTypeEnum.BeanCoin
-                            ? "${formatBean(orderDetail.finalAmount)} Bean"
-                            : "${formatPrice(orderDetail.finalAmount)}",
-                        style: Get.theme.textTheme.headline3,
-                      ),
-                    ],
-                  ),
-                )
+                newDesignPayment(orderDetail),
               ],
             ),
           ),
@@ -519,6 +740,47 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
               otherAmount: amountObj,
             ))
         .toList();
+  }
+
+  Widget newDesignPayment(OrderDTO orderDetail) {
+    int index = orderDetailModel.listPayments.values
+        .toList()
+        .indexOf(orderDetail.paymentType);
+    String payment = "Không xác định";
+    if (index >= 0 && index < orderDetailModel.listPayments.keys.length) {
+      payment = orderDetailModel.listPayments.keys.elementAt(index);
+    }
+    if (orderDetail.paymentType == PaymentTypeEnum.Momo) {
+      payment = "Momo";
+    }
+    return Container(
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Phương thức thanh toán',
+                style: TextStyle(color: BeanOiTheme.palettes.neutral800),
+              ),
+              Text('$payment')
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Tổng cộng',
+                style: TextStyle(color: BeanOiTheme.palettes.neutral800),
+              ),
+              Text(orderDetail.paymentType == PaymentTypeEnum.BeanCoin
+                  ? "${formatBean(orderDetail.finalAmount)} Bean"
+                  : "${formatPrice(orderDetail.finalAmount)}"),
+            ],
+          )
+        ],
+      ),
+    );
   }
 
   void _launchUrl(String url, {bool isFB = false, forceWebView = false}) {

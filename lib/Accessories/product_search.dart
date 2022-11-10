@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/shims/dart_ui_real.dart';
 import 'package:get/get.dart';
 import 'package:unidelivery_mobile/Accessories/CacheImage.dart';
+import 'package:unidelivery_mobile/Constraints/BeanOiTheme/index.dart';
 import 'package:unidelivery_mobile/Constraints/constraints.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/Utils/format_price.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
+import 'package:unidelivery_mobile/Widgets/beanoi_button.dart';
 
 class ProductSearchItem extends StatelessWidget {
   const ProductSearchItem({
@@ -61,40 +64,63 @@ class ProductSearchItem extends StatelessWidget {
                           maxLines: 2,
                           style: kSubtitleTextStyle.copyWith(fontSize: 18),
                         ),
-                        Text(
-                          product.description ?? '',
-                          style: kDescriptionTextStyle,
-                          textAlign: TextAlign.left,
-                          overflow: TextOverflow.ellipsis,
-                        ),
+                        // Text(
+                        //   product.description ?? '',
+                        //   style: kDescriptionTextStyle,
+                        //   textAlign: TextAlign.left,
+                        //   overflow: TextOverflow.ellipsis,
+                        // ),
                         Expanded(
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.end,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Container(
-                                padding: EdgeInsets.fromLTRB(8, 4, 8, 4),
-                                decoration: BoxDecoration(
-                                  color: kPrimary,
-                                  borderRadius: BorderRadius.circular(16),
-                                ),
+                                padding: EdgeInsets.fromLTRB(0, 6, 8, 4),
+                                // decoration: BoxDecoration(
+                                //   color: kPrimary,
+                                //   borderRadius: BorderRadius.circular(16),
+                                // ),
                                 child: Text(
                                   formatPrice(product.price),
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 14),
+                                  style: BeanOiTheme.typography.subtitle2
+                                      .copyWith(
+                                          color:
+                                              BeanOiTheme.palettes.primary400),
                                 ),
                               ),
                               SizedBox(width: 8),
                               Container(
-                                padding: EdgeInsets.fromLTRB(8, 4, 8, 4),
-                                decoration: BoxDecoration(
-                                  color: kBestSellerColor,
-                                  borderRadius: BorderRadius.circular(16),
-                                ),
-                                child: Text(
-                                  "+ ${product.bean} bean",
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 14),
-                                ),
+                                padding: EdgeInsets.fromLTRB(0, 6, 8, 4),
+                                // decoration: BoxDecoration(
+                                //   color: kBestSellerColor,
+                                //   borderRadius: BorderRadius.circular(16),
+                                // ),
+                                child: Text.rich(
+                                    // "+ ${product.bean}",
+                                    // style: BeanOiTheme.typography.subtitle2
+                                    //     .copyWith(
+                                    //         color: BeanOiTheme
+                                    //             .palettes.secondary1000),
+                                    TextSpan(children: [
+                                  TextSpan(
+                                    text: "+ ${product.bean}",
+                                    style: BeanOiTheme.typography.subtitle2
+                                        .copyWith(
+                                            color: BeanOiTheme
+                                                .palettes.secondary1000),
+                                  ),
+                                  WidgetSpan(
+                                      child: Container(
+                                    margin: EdgeInsets.only(left: 10),
+                                    child: ImageIcon(
+                                      AssetImage(
+                                          "/assets/images/icons/bean_coin.png"),
+                                    ),
+                                    width: 15,
+                                    height: 15,
+                                  ))
+                                ])),
                               )
                             ],
                           ),
