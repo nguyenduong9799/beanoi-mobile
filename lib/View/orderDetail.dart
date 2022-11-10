@@ -378,14 +378,18 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                               Container(
                                   padding: EdgeInsets.only(left: 16, bottom: 8),
                                   child: GestureDetector(
-                                    onTap: () => setState(() =>
-                                        {isShow = !isShow, print('$isShow')}),
-                                    child: Text(
-                                        'Xem chi tiết đơn hàng (${orderDetail.itemQuantity} Món)',
-                                        style: TextStyle(
-                                            color: BeanOiTheme
-                                                .palettes.neutral1000)),
-                                  ))
+                                      onTap: () => setState(() =>
+                                          {isShow = !isShow, print('$isShow')}),
+                                      child: Row(
+                                        children: [
+                                          Text(
+                                              'Xem chi tiết đơn hàng (${orderDetail.itemQuantity} Món)',
+                                              style: TextStyle(
+                                                  color: BeanOiTheme
+                                                      .palettes.neutral1000)),
+                                          Icon(Icons.arrow_drop_down_rounded),
+                                        ],
+                                      )))
                             ],
                           ),
                           if (isShow)
