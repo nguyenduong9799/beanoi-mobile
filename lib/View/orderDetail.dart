@@ -42,7 +42,7 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
     return ScopedModel<OrderHistoryViewModel>(
       model: orderDetailModel,
       child: Scaffold(
-        bottomNavigationBar: _buildCancelBtn(),
+        // bottomNavigationBar: _buildCancelBtn(),
         appBar: AppBar(
             centerTitle: true,
             title: Text("${widget.order.invoiceId.toString()}" ?? 'Đơn hàng',
@@ -524,8 +524,26 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
   }
 
   Widget buildOrderSummaryList(OrderDTO orderDetail) {
+    // List supplierIDs = [];
+    // for (var i = 0; i < orderDetail.orderItems.length; i++) {
+    //   final supId = orderDetail.orderItems[i].supplierId;
+    //   var supplier;
+    //   if (supplierIDs.length != 0) {
+    //     supplier = supplierIDs
+    //         .firstWhereOrNull((element) => element.supplierId == supId);
+    //   }
+
+    //   if (supplier == null) {
+    //     supplierIDs.add(orderDetail.orderItems[i]);
+    //   } else {
+    //     // supplier.quantity += orderDetail.orderItems[i].quantity;
+
+    //   }
+    // }
+
     Map<int, List<OrderItemDTO>> map =
         groupBy(orderDetail.orderItems, (OrderItemDTO item) => item.supplierId);
+
     return Padding(
       padding: const EdgeInsets.only(left: 20, right: 20, bottom: 10, top: 10),
       child: ListView.builder(
@@ -533,15 +551,28 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
         shrinkWrap: true,
         itemBuilder: (context, index) {
           List<OrderItemDTO> items = map.values.elementAt(index);
+          int count = 0;
+          items.forEach((element) {
+            count += element.quantity;
+          });
           SupplierNoteDTO note = orderDetail.notes?.firstWhere(
               (element) => element.supplierId == items[0].supplierId,
               orElse: () => null);
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                items[0].supplierName,
-                style: Get.theme.textTheme.headline3,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    items[0].supplierName,
+                    style: Get.theme.textTheme.headline3,
+                  ),
+                  Text(
+                    count.toString() + " x ",
+                    style: Get.theme.textTheme.headline3,
+                  ),
+                ],
               ),
               (note != null)
                   ? Container(
@@ -674,6 +705,7 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
     int index = orderDetailModel.listPayments.values
         .toList()
         .indexOf(orderDetail.paymentType);
+
     String payment = "Không xác định";
     if (index >= 0 && index < orderDetailModel.listPayments.keys.length) {
       payment = orderDetailModel.listPayments.keys.elementAt(index);
