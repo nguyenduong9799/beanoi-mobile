@@ -383,7 +383,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                             ? "Ghi chú cho nhà hàng"
                                             : supplierNote.content,
                                         overflow: TextOverflow.ellipsis,
-                                        style: BeanOiTheme.typography.caption
+                                        style: BeanOiTheme.typography.caption1
                                             .copyWith(
                                                 color: BeanOiTheme
                                                     .palettes.neutral700)),
@@ -596,7 +596,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                           Text(
                                             destination.name,
                                             style:
-                                                BeanOiTheme.typography.caption,
+                                                BeanOiTheme.typography.caption1,
                                             overflow: TextOverflow.ellipsis,
                                             maxLines: 1,
                                           ),
@@ -606,7 +606,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                   : Flexible(
                                       child: Text(
                                         "Chọn địa điểm giao hàng",
-                                        style: BeanOiTheme.typography.caption,
+                                        style: BeanOiTheme.typography.caption1,
                                         overflow: TextOverflow.ellipsis,
                                         maxLines: 1,
                                       ),
@@ -682,7 +682,7 @@ class _OrderScreenState extends State<OrderScreen> {
                             children: [
                               Text(
                                 "$currentTimeSlot",
-                                style: BeanOiTheme.typography.caption,
+                                style: BeanOiTheme.typography.caption1,
                               ),
                             ],
                           ),
@@ -1055,7 +1055,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text("Tổng cộng",
-                                      style: BeanOiTheme.typography.caption
+                                      style: BeanOiTheme.typography.caption1
                                           .copyWith(
                                               color: BeanOiTheme
                                                   .palettes.neutral600)),
@@ -1337,7 +1337,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                           Text(
                                             "Tổng cộng",
                                             style: BeanOiTheme
-                                                .typography.caption
+                                                .typography.caption1
                                                 .copyWith(
                                                     color: BeanOiTheme
                                                         .palettes.neutral600),
@@ -1601,7 +1601,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                           Text(
                                             "Tổng cộng",
                                             style: BeanOiTheme
-                                                .typography.caption
+                                                .typography.caption1
                                                 .copyWith(
                                                     color: BeanOiTheme
                                                         .palettes.neutral600),

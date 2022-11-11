@@ -61,15 +61,9 @@ class ProductSearchItem extends StatelessWidget {
                           product.name,
                           textAlign: TextAlign.left,
                           overflow: TextOverflow.ellipsis,
-                          maxLines: 2,
+                          maxLines: 1,
                           style: kSubtitleTextStyle.copyWith(fontSize: 18),
                         ),
-                        // Text(
-                        //   product.description ?? '',
-                        //   style: kDescriptionTextStyle,
-                        //   textAlign: TextAlign.left,
-                        //   overflow: TextOverflow.ellipsis,
-                        // ),
                         Expanded(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -77,10 +71,6 @@ class ProductSearchItem extends StatelessWidget {
                             children: [
                               Container(
                                 padding: EdgeInsets.fromLTRB(0, 6, 8, 4),
-                                // decoration: BoxDecoration(
-                                //   color: kPrimary,
-                                //   borderRadius: BorderRadius.circular(16),
-                                // ),
                                 child: Text(
                                   formatPrice(product.price),
                                   style: BeanOiTheme.typography.subtitle2
@@ -92,17 +82,7 @@ class ProductSearchItem extends StatelessWidget {
                               SizedBox(width: 8),
                               Container(
                                 padding: EdgeInsets.fromLTRB(0, 6, 8, 4),
-                                // decoration: BoxDecoration(
-                                //   color: kBestSellerColor,
-                                //   borderRadius: BorderRadius.circular(16),
-                                // ),
-                                child: Text.rich(
-                                    // "+ ${product.bean}",
-                                    // style: BeanOiTheme.typography.subtitle2
-                                    //     .copyWith(
-                                    //         color: BeanOiTheme
-                                    //             .palettes.secondary1000),
-                                    TextSpan(children: [
+                                child: Text.rich(TextSpan(children: [
                                   TextSpan(
                                     text: "+ ${product.bean}",
                                     style: BeanOiTheme.typography.subtitle2
@@ -112,10 +92,11 @@ class ProductSearchItem extends StatelessWidget {
                                   ),
                                   WidgetSpan(
                                       child: Container(
-                                    margin: EdgeInsets.only(left: 10),
+                                    margin: EdgeInsets.only(left: 5, bottom: 2),
                                     child: ImageIcon(
                                       AssetImage(
-                                          "/assets/images/icons/bean_coin.png"),
+                                          "assets/images/icons/bean_coin.png"),
+                                      color: Colors.orange,
                                     ),
                                     width: 15,
                                     height: 15,

@@ -194,7 +194,7 @@ class _HomeCollectionState extends State<HomeCollection> {
               product.type != ProductType.MASTER_PRODUCT
                   ? '${formatPriceWithoutUnit(product.price)} đ'
                   : 'từ ${formatPriceWithoutUnit(product.minPrice ?? product.price)} đ',
-              style: BeanOiTheme.typography.caption
+              style: BeanOiTheme.typography.caption1
                   .copyWith(color: BeanOiTheme.palettes.primary300),
               textAlign: TextAlign.center,
               maxLines: 2,

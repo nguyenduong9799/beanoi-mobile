@@ -9,7 +9,7 @@ import 'package:unidelivery_mobile/Model/DTO/CategoryDTO.dart';
 import 'package:unidelivery_mobile/ViewModel/product_filter_viewModel.dart';
 
 class ProductsFilterPage extends StatefulWidget {
-  final Map<String,dynamic> params;
+  final Map<String, dynamic> params;
   ProductsFilterPage({Key key, this.params = const {}}) : super(key: key);
 
   @override
@@ -88,9 +88,7 @@ class _ProductsFilterPageState extends State<ProductsFilterPage> {
                   );
                 }
                 final product = model.listProducts.elementAt(index);
-                return ProductSearchItem(
-                    product: product,
-                    index: index);
+                return ProductSearchItem(product: product, index: index);
               },
             ),
           );
