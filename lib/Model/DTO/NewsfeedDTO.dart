@@ -10,6 +10,7 @@ class NewsfeedDTO {
   OrderDTO order;
   String createAt;
   String feedType;
+  bool isNewFeed;
 
   NewsfeedDTO(
       {this.message,
@@ -18,7 +19,8 @@ class NewsfeedDTO {
       this.listProducts,
       this.order,
       this.createAt,
-      this.feedType});
+      this.feedType,
+      this.isNewFeed});
 
   factory NewsfeedDTO.fromJson(dynamic json) {
     return NewsfeedDTO(
@@ -29,7 +31,8 @@ class NewsfeedDTO {
             : AccountDTO.fromJson(json['receiver']),
         listProducts: ProductNewsfeedDTO.fromList(json['list_products']),
         createAt: json['created_at'],
-        feedType: json['feed_type']);
+        feedType: json['feed_type'],
+        isNewFeed: false);
   }
 
   static fromList(data) {
@@ -49,16 +52,17 @@ class ProductNewsfeedDTO {
   String productCode;
   int productTypeId;
 
-  ProductNewsfeedDTO(
-      {this.productId,
-      this.productName,
-      this.quantity,
-      this.supplierStoreName,
-      this.supplierStoreId,
-      this.categoryId,
-      this.isAvailable,
-      this.productCode,
-      this.productTypeId});
+  ProductNewsfeedDTO({
+    this.productId,
+    this.productName,
+    this.quantity,
+    this.supplierStoreName,
+    this.supplierStoreId,
+    this.categoryId,
+    this.isAvailable,
+    this.productCode,
+    this.productTypeId,
+  });
 
   ProductNewsfeedDTO.fromJson(Map<String, dynamic> json) {
     productId = json['product_id'];

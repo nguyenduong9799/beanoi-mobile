@@ -1,5 +1,10 @@
+import 'dart:async';
+
 import 'package:animator/animator.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
+import 'package:intl/intl.dart';
+import 'package:jiffy/jiffy.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Accessories/appbar.dart';
 import 'package:unidelivery_mobile/Constraints/BeanOiTheme/button.dart';
@@ -22,10 +27,24 @@ class _NewsfeedScreenState extends State<NewsfeedScreen> {
   @override
   void initState() {
     super.initState();
+
+    String now = DateFormat('yyyy-MM-dd').format(DateTime.now());
+    String sevenDayBefore = DateFormat('yyyy-MM-dd')
+        .format(DateTime.now().subtract(const Duration(days: 7)));
+
     _newsfeedViewModel = NewsfeedViewModel();
-    _newsfeedViewModel.getNewsfeed(
-        params: {"from-date": "2022-11-1", "to-date": "2022-11-8"});
+    Timer.periodic(
+        Duration(seconds: 5),
+        (_) => _newsfeedViewModel.getNewsfeed(
+            params: {"from-date": sevenDayBefore, "to-date": now}));
   }
+
+  // @override
+  // void didChangeDependencies() {
+  //   super.didChangeDependencies();
+  //   NewsfeedDTO lastFeed = _newsfeedViewModel.newsfeeds[0];
+
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -144,7 +163,7 @@ class _NewsfeedScreenState extends State<NewsfeedScreen> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
                 child: ScopedModelDescendant<NewsfeedViewModel>(
                   builder: (context, child, model) {
                     final newsfeeds = model.newsfeeds;
@@ -177,7 +196,87 @@ class _NewsfeedScreenState extends State<NewsfeedScreen> {
       // height: 100,
       child: Column(
         children: [
-          if (newsfeed.feedType == 'Normal') ...[_buildNormalNewsfeed(newsfeed)]
+          if (newsfeed.feedType == 'Normal') ...[
+            _buildNormalNewsfeed(newsfeed)
+          ] else ...[
+            _buildGiftNewsfeed(newsfeed)
+          ]
+        ],
+      ),
+    );
+  }
+
+  Widget _buildGiftNewsfeed(NewsfeedDTO newsfeed) {
+    return ListTile(
+      contentPadding: EdgeInsets.fromLTRB(0, 8, 8, 8),
+      title: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                flex: 1,
+                child: Container(
+                  height: 41,
+                  width: 41,
+                  decoration:
+                      BoxDecoration(color: kPrimary, shape: BoxShape.circle),
+                  child:
+                      ClipOval(child: Image.asset('assets/images/avatar.png')),
+                ),
+              ),
+              Expanded(
+                  flex: 4,
+                  child: Column(
+                    // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Flexible(
+                              child: RichText(
+                            text: TextSpan(
+                                text:
+                                    '${newsfeed.sender.name} đã tặng quà cho ',
+                                style: BeanOiTheme.typography.subtitle2
+                                    .copyWith(
+                                        color: BeanOiTheme.palettes.neutral700),
+                                children: [
+                                  TextSpan(
+                                      text: "${newsfeed.receiver.name}",
+                                      style: BeanOiTheme.typography.body2
+                                          .copyWith(
+                                              color:
+                                                  Color.fromRGBO(0, 0, 0, 1))),
+                                ]),
+                          )),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Text(Jiffy("${newsfeed.createAt}").fromNow(),
+                              style: BeanOiTheme.typography.caption.copyWith(
+                                  color: BeanOiTheme.palettes.neutral700))
+                        ],
+                      ),
+                      Row(children: [
+                        Flexible(
+                          child: Text(
+                              newsfeed.listProducts
+                                  .map((p) => p.productName)
+                                  .join(", "),
+                              overflow: TextOverflow.ellipsis,
+                              style: BeanOiTheme.typography.subtitle1.copyWith(
+                                  color: BeanOiTheme.palettes.primary300)),
+                        )
+                      ])
+                    ],
+                  ))
+            ],
+          ),
+          // Expanded(child: child)
         ],
       ),
     );
@@ -251,7 +350,7 @@ class _NewsfeedScreenState extends State<NewsfeedScreen> {
                       ),
                       Row(
                         children: [
-                          Text("10 phut truoc",
+                          Text(Jiffy("${newsfeed.createAt}").fromNow(),
                               style: BeanOiTheme.typography.caption.copyWith(
                                   color: BeanOiTheme.palettes.neutral700))
                         ],
