@@ -73,6 +73,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
             pinned: true,
             floating: false,
             expandedHeight: 250.0,
+            backgroundColor: Colors.white,
             flexibleSpace: FlexibleSpaceBar(
               background: ClipRRect(
                 child: CacheImage(
