@@ -338,36 +338,32 @@ class _SupplierScreenState extends State<SupplierScreen> {
                                 flex: 2,
                                 child: Text(
                                   product.name,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
                                   style: Get.theme.textTheme.headline3.copyWith(
                                     decorationThickness: 0.5,
                                     fontSize: 14,
                                   ),
                                 )),
-                            Flexible(
-                                child: Text(
-                                    product.type != ProductType.MASTER_PRODUCT
-                                        ? formatPrice(price)
-                                        : "từ " +
-                                            formatPrice(price ?? product.price),
-                                    style: Get.theme.textTheme.headline4
-                                        .copyWith(color: kPrimary)))
                           ],
                         ),
+                        Container(
+                            margin: EdgeInsets.only(top: 5),
+                            child: Text(
+                                product.type != ProductType.MASTER_PRODUCT
+                                    ? formatPrice(price)
+                                    : "từ " +
+                                        formatPrice(price ?? product.price),
+                                style: Get.theme.textTheme.headline4
+                                    .copyWith(color: kPrimary))),
                         SizedBox(
                           height: 8,
                         ),
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Container(
-                                width: Get.width * 0.6,
-                                child: Text(
-                                  product.description ?? "",
-                                  maxLines: 1,
-                                  style: Get.theme.textTheme.headline6,
-                                  overflow: TextOverflow.ellipsis,
-                                )),
-                            Flexible(
+                              margin: EdgeInsets.only(top: 15),
                               child: RichText(
                                   text: TextSpan(
                                       style: Get.theme.textTheme.headline6
