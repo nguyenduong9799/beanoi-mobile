@@ -247,17 +247,21 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                                       children: [
                                         Text('Xác nhận',
                                             textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                                fontSize: 14,
-                                                color: BeanOiTheme
-                                                    .palettes.primary400)),
+                                            style: BeanOiTheme
+                                                .typography.subtitle1
+                                                .copyWith(
+                                                    fontSize: 14,
+                                                    color: BeanOiTheme
+                                                        .palettes.primary400)),
                                         orderDetail.orderTime != null
                                             ? Text(
                                                 DateFormat('HH:mm').format(
                                                     DateTime.parse(
                                                         orderDetail.orderTime)),
-                                                style: Get
-                                                    .theme.textTheme.headline4)
+                                                style: BeanOiTheme
+                                                    .typography.caption1
+                                                    .copyWith(
+                                                        color: Colors.black))
                                             : Text('19 : 00')
                                       ],
                                     )),
@@ -268,11 +272,16 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                                       children: [
                                         Text('Chốt đơn',
                                             textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                                fontSize: 14,
-                                                color: BeanOiTheme
-                                                    .palettes.primary400)),
-                                        Text('00:00')
+                                            style: BeanOiTheme
+                                                .typography.subtitle1
+                                                .copyWith(
+                                                    fontSize: 14,
+                                                    color: BeanOiTheme
+                                                        .palettes.primary400)),
+                                        Text('00:00',
+                                            style: BeanOiTheme
+                                                .typography.caption1
+                                                .copyWith(color: Colors.black))
                                       ],
                                     )),
                                 Container(
@@ -282,11 +291,16 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                                       children: [
                                         Text('Sẵn sàng',
                                             textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                                fontSize: 14,
-                                                color: BeanOiTheme
-                                                    .palettes.primary400)),
-                                        Text('00:00')
+                                            style: BeanOiTheme
+                                                .typography.subtitle1
+                                                .copyWith(
+                                                    fontSize: 14,
+                                                    color: BeanOiTheme
+                                                        .palettes.primary400)),
+                                        Text('00:00',
+                                            style: BeanOiTheme
+                                                .typography.caption1
+                                                .copyWith(color: Colors.black))
                                       ],
                                     )),
                                 Container(
@@ -296,11 +310,17 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                                       children: [
                                         Text('Hoàn thành',
                                             textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                                fontSize: 14,
-                                                color: BeanOiTheme
-                                                    .palettes.primary400)),
-                                        Text('00:00')
+                                            style: BeanOiTheme
+                                                .typography.subtitle1
+                                                .copyWith(
+                                                    fontSize: 14,
+                                                    color: BeanOiTheme
+                                                        .palettes.primary400)),
+                                        Text(
+                                          '00:00',
+                                          style: BeanOiTheme.typography.caption1
+                                              .copyWith(color: Colors.black),
+                                        )
                                       ],
                                     ))
                               ],
@@ -327,13 +347,17 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                                   Container(
                                     margin: EdgeInsets.only(left: 5, right: 10),
                                     child: Text("Nhận đơn tại: ",
-                                        style: Get.theme.textTheme.headline4),
+                                        style: BeanOiTheme.typography.subtitle1
+                                            .copyWith(
+                                                fontSize: 14,
+                                                color: Colors.black)),
                                   ),
                                   Expanded(
-                                    child: Text(
-                                      orderDetail.address,
-                                      style: Get.theme.textTheme.headline4,
-                                    ),
+                                    child: Text(orderDetail.address,
+                                        style: BeanOiTheme.typography.subtitle1
+                                            .copyWith(
+                                                fontSize: 14,
+                                                color: Colors.black)),
                                   )
                                 ],
                               ),
@@ -343,19 +367,27 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                               margin: EdgeInsets.only(left: 10),
                               child: Row(
                                 children: [
-                                  Icon(
-                                    Icons.access_alarm,
+                                  ImageIcon(
+                                    AssetImage(
+                                        "assets/images/icons/clock_icon.png"),
                                     color: Color(0xffF17F23),
                                     size: 15,
                                   ),
                                   Container(
                                     margin: EdgeInsets.only(left: 5, right: 10),
                                     child: Text("Giờ nhận đơn: ",
-                                        style: Get.theme.textTheme.headline4),
+                                        style: BeanOiTheme.typography.subtitle1
+                                            .copyWith(
+                                                fontSize: 14,
+                                                color: Colors.black)),
                                   ),
                                   orderDetail.arriveTime != null
                                       ? Text(formatTime(orderDetail.arriveTime),
-                                          style: Get.theme.textTheme.headline4)
+                                          style: BeanOiTheme
+                                              .typography.subtitle1
+                                              .copyWith(
+                                                  fontSize: 14,
+                                                  color: Colors.black))
                                       : Text('19 : 00'),
                                 ],
                               ),
@@ -382,9 +414,12 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                                         children: [
                                           Text(
                                               'Xem chi tiết đơn hàng (${orderDetail.itemQuantity} Món)',
-                                              style: TextStyle(
-                                                  color: BeanOiTheme
-                                                      .palettes.neutral1000)),
+                                              style: BeanOiTheme
+                                                  .typography.caption2
+                                                  .copyWith(
+                                                      color: BeanOiTheme
+                                                          .palettes
+                                                          .neutral1000)),
                                           Icon(Icons.arrow_drop_down_rounded),
                                         ],
                                       )))
@@ -551,11 +586,13 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                 children: [
                   Text(
                     items[0].supplierName,
-                    style: Get.theme.textTheme.headline3,
+                    style: BeanOiTheme.typography.subtitle1
+                        .copyWith(fontSize: 14, color: Colors.black),
                   ),
                   Text(
                     count.toString() + " x ",
-                    style: Get.theme.textTheme.headline3,
+                    style: BeanOiTheme.typography.subtitle1
+                        .copyWith(fontSize: 14, color: Colors.black),
                   ),
                 ],
               ),
@@ -619,7 +656,10 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
       orderItemPrice += element.amount;
     });
     // orderItemPrice *= orderMaster.quantity;
-    Widget displayPrice = Text("${formatPrice(orderItemPrice)}");
+    Widget displayPrice = Text(
+      "${formatPrice(orderItemPrice)}",
+      style: BeanOiTheme.typography.caption1.copyWith(color: Colors.black),
+    );
     if (item.type == ProductType.GIFT_PRODUCT) {
       displayPrice = RichText(
           text: TextSpan(
@@ -647,8 +687,8 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                 children: [
                   Text(
                     "${item.quantity} x",
-                    style: Get.theme.textTheme.headline4
-                        .copyWith(color: Colors.grey),
+                    style: BeanOiTheme.typography.caption1
+                        .copyWith(color: Colors.black),
                     overflow: TextOverflow.ellipsis,
                   ),
                   Container(
@@ -659,6 +699,8 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                         item.type != ProductType.MASTER_PRODUCT
                             ? Text(
                                 item.masterProductName,
+                                style: BeanOiTheme.typography.caption1
+                                    .copyWith(color: Colors.black),
                                 textAlign: TextAlign.start,
                               )
                             : SizedBox.shrink(),
@@ -717,7 +759,8 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                     children: [
                       Text(
                         "Đơn hàng",
-                        style: TextStyle(
+                        style: BeanOiTheme.typography.subtitle1.copyWith(
+                            fontSize: 14,
                             color: BeanOiTheme.palettes.secondary1000),
                       ),
                     ],
@@ -761,9 +804,12 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
             children: [
               Text(
                 'Phương thức thanh toán',
-                style: TextStyle(color: BeanOiTheme.palettes.neutral800),
+                style: BeanOiTheme.typography.caption1
+                    .copyWith(color: BeanOiTheme.palettes.neutral800),
               ),
-              Text('$payment')
+              Text('$payment',
+                  style: BeanOiTheme.typography.caption1
+                      .copyWith(color: BeanOiTheme.palettes.neutral1000))
             ],
           ),
           Row(
@@ -771,11 +817,16 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
             children: [
               Text(
                 'Tổng cộng',
-                style: TextStyle(color: BeanOiTheme.palettes.neutral800),
+                style: BeanOiTheme.typography.caption1
+                    .copyWith(color: BeanOiTheme.palettes.neutral800),
               ),
-              Text(orderDetail.paymentType == PaymentTypeEnum.BeanCoin
-                  ? "${formatBean(orderDetail.finalAmount)} Bean"
-                  : "${formatPrice(orderDetail.finalAmount)}"),
+              Text(
+                orderDetail.paymentType == PaymentTypeEnum.BeanCoin
+                    ? "${formatBean(orderDetail.finalAmount)} Bean"
+                    : "${formatPrice(orderDetail.finalAmount)}",
+                style: BeanOiTheme.typography.caption1
+                    .copyWith(color: BeanOiTheme.palettes.neutral1000),
+              ),
             ],
           )
         ],
