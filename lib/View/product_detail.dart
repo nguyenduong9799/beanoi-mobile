@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Accessories/index.dart';
+import 'package:unidelivery_mobile/Constraints/BeanOiTheme/index.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Enums/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
@@ -43,17 +44,13 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: kBackgroundGrey[0],
+      backgroundColor: BeanOiTheme.palettes.neutral200,
       bottomNavigationBar: bottomBar(),
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
             leading: Container(
               margin: EdgeInsets.only(left: 8),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: kPrimary.withOpacity(0.8),
-              ),
               child: Center(
                 child: Container(
                   child: IconButton(
@@ -63,24 +60,13 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                       },
                       icon: Icon(
                         Icons.chevron_left_outlined,
-                        color: Colors.white,
+                        color: Colors.black,
                         size: 32,
                       )),
                 ),
               ),
             ),
-            elevation: 0,
-            pinned: true,
-            floating: false,
-            expandedHeight: 250.0,
-            backgroundColor: Colors.white,
-            flexibleSpace: FlexibleSpaceBar(
-              background: ClipRRect(
-                child: CacheImage(
-                  imageUrl: widget.dto.imageURL ?? defaultImage,
-                ),
-              ),
-            ),
+            backgroundColor: BeanOiTheme.palettes.neutral200,
           ),
           SliverList(
             delegate: SliverChildListDelegate(<Widget>[
@@ -91,9 +77,17 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      Container(
+                        margin: EdgeInsets.only(left: 10, right: 10),
+                        height: 300,
+                        child: ClipRRect(
+                          child: CacheImage(
+                            imageUrl: widget.dto.imageURL ?? defaultImage,
+                          ),
+                        ),
+                      ),
                       productTitle(),
-                      tabAffectAtritbute(),
-                      affectedAtributeContent(),
+                      tabCompination()
                     ],
                   ),
                 ),
@@ -107,8 +101,13 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
 
   Widget productTitle() {
     return Container(
-      color: kBackgroundGrey[0],
+      margin: EdgeInsets.only(left: 10, right: 10),
+      transform: Matrix4.translationValues(0.0, -50.0, 0.0),
+      // color: kBackgroundGrey[0],
       padding: EdgeInsets.fromLTRB(8, 16, 8, 16),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+          color: Colors.white),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -134,7 +133,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                                       : "0") +
                                   " ",
                               style: Get.theme.textTheme.headline3
-                                  .copyWith(color: Colors.orange),
+                                  .copyWith(color: Colors.black),
                               children: [
                                 WidgetSpan(
                                     alignment: PlaceholderAlignment.bottom,
@@ -166,6 +165,18 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
     );
   }
 
+  Widget tabCompination() {
+    return Container(
+      decoration: BoxDecoration(
+          color: Colors.white, borderRadius: BorderRadius.circular(10)),
+      margin: EdgeInsets.only(left: 10, right: 10),
+      // decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
+      child: Column(
+        children: [tabAffectAtritbute(), affectedAtributeContent()],
+      ),
+    );
+  }
+
   Widget tabAffectAtritbute() {
     // Tab extraTab = Tab(
     //   child: Text("Thêm"),
@@ -192,19 +203,20 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
 
           return Container(
               width: Get.width,
-              color: kPrimary,
-              padding: EdgeInsets.fromLTRB(8, 16, 8, 0),
+              // padding: EdgeInsets.fromLTRB(8, 16, 8, 0),
               child: CustomTabView(
                 itemCount: affectPriceTabs.length,
                 tabBuilder: (context, index) => Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
-                  child: Text.rich(
-                      TextSpan(text: affectPriceTabs[index], children: [
-                    TextSpan(
-                        text: affectPriceTabs[index] != extraTab ? " *" : "",
-                        style: Get.theme.textTheme.headline4
-                            .copyWith(color: Colors.red))
-                  ])),
+                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                  child: Text.rich(TextSpan(
+                      text: affectPriceTabs[index].capitalize,
+                      children: [
+                        TextSpan(
+                            text:
+                                affectPriceTabs[index] != extraTab ? " *" : "",
+                            style: Get.theme.textTheme.headline4
+                                .copyWith(color: Colors.red))
+                      ])),
                 ),
                 onPositionChange: (index) {
                   model.changeAffectIndex(index);
