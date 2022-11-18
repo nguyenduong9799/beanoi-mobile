@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -241,6 +242,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
   Widget affectedAtributeContent() {
     List<Widget> attributes;
     List<String> listOptions;
+    Map sizeL = {'size': 'L'};
+    // print(
+    //     'pricesizeL>> ${widget.dto.listChild.firstWhere((element) => mapEquals(element.attributes, sizeL)).price}');
     return ScopedModelDescendant(
       builder:
           (BuildContext context, Widget child, ProductDetailViewModel model) {
@@ -305,7 +309,14 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                                     if (listOptions[i] == 'M') ...[
                                       Text("+" + formatPrice(0))
                                     ] else if (listOptions[i] == 'L') ...[
-                                      Text("+" + formatPrice(10000))
+                                      Text("+" +
+                                          formatPrice(widget.dto.listChild
+                                                  .firstWhere((element) =>
+                                                      mapEquals(
+                                                          element.attributes,
+                                                          sizeL))
+                                                  .price -
+                                              widget.dto.price))
                                     ] else if (listOptions[i] == 'S') ...[
                                       Text("+" + formatPrice(10000))
                                     ],
