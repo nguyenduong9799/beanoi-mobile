@@ -75,7 +75,7 @@ class ProductSearchItem extends StatelessWidget {
                               Container(
                                 padding: EdgeInsets.fromLTRB(0, 6, 8, 4),
                                 child: Text(
-                                  formatPrice(product.price),
+                                  formatPrice(product.minPrice),
                                   style: BeanOiTheme.typography.subtitle2
                                       .copyWith(
                                           color:
