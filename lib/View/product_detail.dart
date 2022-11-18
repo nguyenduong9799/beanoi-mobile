@@ -115,12 +115,20 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
-                child: Text(
-                  widget.dto.name + " ",
-                  style: Get.theme.textTheme.headline1
-                      .copyWith(color: Colors.black),
+                  child: Container(
+                padding: EdgeInsets.only(left: 5),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.dto.name,
+                      style: Get.theme.textTheme.headline1
+                          .copyWith(color: Colors.black),
+                    ),
+                    Text(formatPrice(widget.dto.price))
+                  ],
                 ),
-              ),
+              )),
               widget.dto.type != ProductType.GIFT_PRODUCT
                   ? Container(
                       width: 80,
@@ -149,7 +157,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
             ],
           ),
           SizedBox(
-            height: 24,
+            height: 5,
           ),
           Text(
             widget.dto.description != null ? " " + widget.dto.description : "",
@@ -157,9 +165,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
             overflow: TextOverflow.ellipsis,
             maxLines: 3,
           ),
-          SizedBox(
-            height: 8,
-          )
         ],
       ),
     );
@@ -173,9 +178,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
         left: 10,
         right: 10,
       ),
-      padding: EdgeInsets.only(left: 10, right: 10),
+      padding: EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
       transform: Matrix4.translationValues(0.0, -45.0, 0.0),
-      // decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
       child: Column(
         children: [tabAffectAtritbute(), affectedAtributeContent()],
       ),
@@ -211,8 +215,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
               // padding: EdgeInsets.fromLTRB(8, 16, 8, 0),
               child: CustomTabView(
                 itemCount: affectPriceTabs.length,
-                tabBuilder: (context, index) => Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                tabBuilder: (context, index) => Container(
+                  transform: Matrix4.translationValues(-10.0, 0.0, 0.0),
                   child: Text.rich(TextSpan(
                       text: affectPriceTabs[index].capitalize,
                       children: [
@@ -259,26 +263,65 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                 listOptions = model.affectPriceContent[
                     model.affectPriceContent.keys.elementAt(model.affectIndex)];
                 for (int i = 0; i < listOptions.length; i++) {
-                  attributes.add(Row(
+                  attributes.add(Column(
                     children: [
-                      Radio(
-                        visualDensity: const VisualDensity(
-                            horizontal: VisualDensity.minimumDensity,
-                            vertical: VisualDensity.minimumDensity),
-                        value: Text(listOptions[i]),
-                        groupValue: model.selectedAttributes[model
-                            .affectPriceContent.keys
-                            .elementAt(model.affectIndex)],
-                        onChanged: (e) {
-                          model.changeAffectPriceAtrribute(e);
-                        },
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            children: [
+                              Row(
+                                children: [
+                                  Radio(
+                                    visualDensity: const VisualDensity(
+                                        horizontal:
+                                            VisualDensity.minimumDensity,
+                                        vertical: VisualDensity.minimumDensity),
+                                    value: listOptions[i],
+                                    groupValue: model.selectedAttributes[model
+                                        .affectPriceContent.keys
+                                        .elementAt(model.affectIndex)],
+                                    onChanged: (e) {
+                                      model.changeAffectPriceAtrribute(e);
+                                    },
+                                  ),
+                                  if (listOptions[i] == 'M') ...[
+                                    Text("Medium")
+                                  ] else if (listOptions[i] == 'L') ...[
+                                    Text("Large")
+                                  ] else if (listOptions[i] == 'S') ...[
+                                    Text("Small")
+                                  ],
+                                ],
+                              ),
+                            ],
+                          ),
+                          Column(
+                            children: [
+                              Container(
+                                margin: EdgeInsets.only(right: 10),
+                                child: Row(
+                                  children: [
+                                    if (listOptions[i] == 'M') ...[
+                                      Text("+" + formatPrice(0))
+                                    ] else if (listOptions[i] == 'L') ...[
+                                      Text("+" + formatPrice(10000))
+                                    ] else if (listOptions[i] == 'S') ...[
+                                      Text("+" + formatPrice(10000))
+                                    ],
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
-                      if (listOptions[i] == 'M') ...[
-                        Text("Medium"),
-                      ] else if (listOptions[i] == 'L') ...[
-                        Text("Large")
-                      ] else if (listOptions[i] == 'S') ...[
-                        Text("Small")
+                      if (i < listOptions.length - 1) ...[
+                        Divider(
+                          color: BeanOiTheme.palettes.neutral600,
+                          indent: 7,
+                          endIndent: 7,
+                        )
                       ]
                     ],
                   ));
@@ -320,7 +363,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
               }
             }
             return Container(
-              color: kBackgroundGrey[0],
               child: Column(
                 children: [...attributes],
               ),
