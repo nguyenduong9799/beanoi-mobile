@@ -126,7 +126,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                       style: Get.theme.textTheme.headline1
                           .copyWith(color: Colors.black),
                     ),
-                    Text(formatPrice(widget.dto.price))
+                    Text(formatPrice(widget.dto.minPrice))
                   ],
                 ),
               )),
@@ -243,8 +243,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
     List<Widget> attributes;
     List<String> listOptions;
     Map sizeL = {'size': 'L'};
-    // print(
-    //     'pricesizeL>> ${widget.dto.listChild.firstWhere((element) => mapEquals(element.attributes, sizeL)).price}');
+    print(
+        'pricesizeL>> ${widget.dto.listChild.firstWhere((element) => mapEquals(element.attributes, sizeL)).price}');
     return ScopedModelDescendant(
       builder:
           (BuildContext context, Widget child, ProductDetailViewModel model) {
@@ -319,7 +319,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                                                             element.attributes,
                                                             sizeL))
                                                     .price -
-                                                widget.dto.price))
+                                                widget.dto.minPrice))
                                       ] else if (listOptions[i] == 'S') ...[
                                         Text("+" + formatPrice(10000))
                                       ],
