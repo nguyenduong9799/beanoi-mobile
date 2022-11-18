@@ -169,7 +169,12 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
     return Container(
       decoration: BoxDecoration(
           color: Colors.white, borderRadius: BorderRadius.circular(10)),
-      margin: EdgeInsets.only(left: 10, right: 10),
+      margin: EdgeInsets.only(
+        left: 10,
+        right: 10,
+      ),
+      padding: EdgeInsets.only(left: 10, right: 10),
+      transform: Matrix4.translationValues(0.0, -45.0, 0.0),
       // decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
       child: Column(
         children: [tabAffectAtritbute(), affectedAtributeContent()],
@@ -212,10 +217,11 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                       text: affectPriceTabs[index].capitalize,
                       children: [
                         TextSpan(
-                            text:
-                                affectPriceTabs[index] != extraTab ? " *" : "",
-                            style: Get.theme.textTheme.headline4
-                                .copyWith(color: Colors.red))
+                            text: affectPriceTabs[index] != extraTab
+                                ? " (Bạn vui lòng chọn món nhé)"
+                                : "",
+                            style: BeanOiTheme.typography.caption1.copyWith(
+                                color: BeanOiTheme.palettes.neutral700))
                       ])),
                 ),
                 onPositionChange: (index) {
@@ -253,15 +259,28 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                 listOptions = model.affectPriceContent[
                     model.affectPriceContent.keys.elementAt(model.affectIndex)];
                 for (int i = 0; i < listOptions.length; i++) {
-                  attributes.add(RadioListTile(
-                    title: Text(listOptions[i]),
-                    groupValue: model.selectedAttributes[model
-                        .affectPriceContent.keys
-                        .elementAt(model.affectIndex)],
-                    value: listOptions[i],
-                    onChanged: (e) {
-                      model.changeAffectPriceAtrribute(e);
-                    },
+                  attributes.add(Row(
+                    children: [
+                      Radio(
+                        visualDensity: const VisualDensity(
+                            horizontal: VisualDensity.minimumDensity,
+                            vertical: VisualDensity.minimumDensity),
+                        value: Text(listOptions[i]),
+                        groupValue: model.selectedAttributes[model
+                            .affectPriceContent.keys
+                            .elementAt(model.affectIndex)],
+                        onChanged: (e) {
+                          model.changeAffectPriceAtrribute(e);
+                        },
+                      ),
+                      if (listOptions[i] == 'M') ...[
+                        Text("Medium"),
+                      ] else if (listOptions[i] == 'L') ...[
+                        Text("Large")
+                      ] else if (listOptions[i] == 'S') ...[
+                        Text("Small")
+                      ]
+                    ],
                   ));
                 }
               }
