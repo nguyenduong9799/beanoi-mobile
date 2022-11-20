@@ -18,7 +18,10 @@ import 'package:unidelivery_mobile/Accessories/touchopacity.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Enums/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
+import 'package:unidelivery_mobile/View/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
+
+import 'initiation_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -180,8 +183,30 @@ class _HomeScreenState extends State<HomeScreen> {
       HomeCollection(),
       SizedBox(height: 8),
       HomeStoreSection(),
-      SizedBox(height: 46)
+      // SizedBox(height: 46),
+      testScreen(),
     ];
+  }
+
+  Widget testScreen() {
+    onPressed() {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => InitiationPage()),
+      );
+    }
+
+    return Container(
+      child: Column(
+        children: [
+          Row(
+            children: [
+              IconButton(onPressed: onPressed, icon: Icon(Icons.access_alarm))
+            ],
+          )
+        ],
+      ),
+    );
   }
 
   Widget buildLinkBtns() {
