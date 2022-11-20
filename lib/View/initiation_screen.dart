@@ -71,9 +71,15 @@ class _InitiationPageState extends State<InitiationPage> {
                                   Icons.location_on_outlined,
                                   color: BeanOiTheme.palettes.secondary800,
                                 ),
-                                Text(
-                                  'Khu vực công nghệ cao',
-                                  style: TextStyle(fontWeight: FontWeight.w600),
+                                InkWell(
+                                  onTap: () {
+                                    print('Khu vực công nghệ cao is tapped');
+                                  },
+                                  child: Text(
+                                    'Khu vực công nghệ cao',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.w600),
+                                  ),
                                 )
                               ],
                             ),
@@ -105,7 +111,14 @@ class _InitiationPageState extends State<InitiationPage> {
                                   Icons.location_on_outlined,
                                   color: BeanOiTheme.palettes.secondary800,
                                 ),
-                                Text('Vinhomes Grandpark')
+                                InkWell(
+                                  onTap: () {
+                                    print('Vinhomes Grandpark is tapped');
+                                  },
+                                  child: Text('Vinhomes Grandpark',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w600)),
+                                )
                               ],
                             ),
                             Row(
@@ -125,13 +138,31 @@ class _InitiationPageState extends State<InitiationPage> {
                 Container(
                   margin: EdgeInsets.only(top: 30),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Container(
                         child: Text('Không có trong khu vực bạn muốn?'),
                       ),
                       Container(
-                        child: Row(
-                          children: [],
+                        child: Container(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              InkWell(
+                                onTap: () {
+                                  print('Gợi ý is tapped');
+                                },
+                                child: Text(
+                                  'Gợi ý',
+                                  style: TextStyle(
+                                      decoration: TextDecoration.underline,
+                                      color: BeanOiTheme.palettes.primary400,
+                                      fontWeight: FontWeight.w800),
+                                ),
+                              ),
+                              Text(' cho chúng mình nhé')
+                            ],
+                          ),
                         ),
                       )
                     ],
