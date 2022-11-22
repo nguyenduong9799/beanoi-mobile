@@ -72,16 +72,29 @@ class ProductSearchItem extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Container(
-                                padding: EdgeInsets.fromLTRB(0, 6, 8, 4),
-                                child: Text(
-                                  formatPrice(product.minPrice),
-                                  style: BeanOiTheme.typography.subtitle2
-                                      .copyWith(
-                                          color:
-                                              BeanOiTheme.palettes.primary400),
+                              if (product.minPrice != null) ...[
+                                Container(
+                                  padding: EdgeInsets.fromLTRB(0, 6, 8, 4),
+                                  child: Text(
+                                    formatPrice(product.minPrice),
+                                    style: BeanOiTheme.typography.subtitle2
+                                        .copyWith(
+                                            color: BeanOiTheme
+                                                .palettes.primary400),
+                                  ),
                                 ),
-                              ),
+                              ] else ...[
+                                Container(
+                                  padding: EdgeInsets.fromLTRB(0, 6, 8, 4),
+                                  child: Text(
+                                    formatPrice(product.price),
+                                    style: BeanOiTheme.typography.subtitle2
+                                        .copyWith(
+                                            color: BeanOiTheme
+                                                .palettes.primary400),
+                                  ),
+                                ),
+                              ],
                               SizedBox(width: 8),
                               Container(
                                 padding: EdgeInsets.fromLTRB(0, 6, 8, 4),
