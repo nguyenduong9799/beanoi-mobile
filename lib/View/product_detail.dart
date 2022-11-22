@@ -126,7 +126,11 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                       style: Get.theme.textTheme.headline1
                           .copyWith(color: Colors.black),
                     ),
-                    Text(formatPrice(widget.dto.minPrice))
+                    if (widget.dto.minPrice != null) ...[
+                      Text(formatPrice(widget.dto.minPrice))
+                    ] else ...[
+                      Text(formatPrice(widget.dto.price))
+                    ]
                   ],
                 ),
               )),
@@ -243,8 +247,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
     List<Widget> attributes;
     List<String> listOptions;
     Map sizeL = {'size': 'L'};
-    print(
-        'pricesizeL>> ${widget.dto.listChild.firstWhere((element) => mapEquals(element.attributes, sizeL)).price}');
+    if (widget.dto.listChild != null) {
+      print(
+          'pricesizeL>> ${widget.dto.listChild.firstWhere((element) => mapEquals(element.attributes, sizeL)).price}');
+    }
     return ScopedModelDescendant(
       builder:
           (BuildContext context, Widget child, ProductDetailViewModel model) {
@@ -303,31 +309,34 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                                 ),
                               ],
                             ),
-                            Column(
-                              children: [
-                                Container(
-                                  margin: EdgeInsets.only(right: 10),
-                                  child: Row(
-                                    children: [
-                                      if (listOptions[i] == 'M') ...[
-                                        Text("+" + formatPrice(0))
-                                      ] else if (listOptions[i] == 'L') ...[
-                                        Text("+" +
-                                            formatPrice(widget.dto.listChild
-                                                    .firstWhere((element) =>
-                                                        mapEquals(
-                                                            element.attributes,
-                                                            sizeL))
-                                                    .price -
-                                                widget.dto.minPrice))
-                                      ] else if (listOptions[i] == 'S') ...[
-                                        Text("+" + formatPrice(10000))
+                            if (widget.dto.minPrice != null) ...[
+                              Column(
+                                children: [
+                                  Container(
+                                    margin: EdgeInsets.only(right: 10),
+                                    child: Row(
+                                      children: [
+                                        if (listOptions[i] == 'M') ...[
+                                          Text("+" + formatPrice(0))
+                                        ] else if (listOptions[i] == 'L') ...[
+                                          Text("+" +
+                                              formatPrice(widget.dto.listChild
+                                                      .firstWhere((element) =>
+                                                          mapEquals(
+                                                              element
+                                                                  .attributes,
+                                                              sizeL))
+                                                      .price -
+                                                  widget.dto.minPrice))
+                                        ] else if (listOptions[i] == 'S') ...[
+                                          Text("+" + formatPrice(10000))
+                                        ],
                                       ],
-                                    ],
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
+                                ],
+                              ),
+                            ]
                           ],
                         ),
                         if (i < listOptions.length - 1) ...[
