@@ -424,7 +424,11 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                                                       color: BeanOiTheme
                                                           .palettes
                                                           .neutral1000)),
-                                          Icon(Icons.arrow_drop_down_rounded),
+                                          if (isShow == false) ...[
+                                            Icon(Icons.arrow_drop_down_rounded)
+                                          ] else ...[
+                                            Icon(Icons.arrow_drop_up_rounded)
+                                          ],
                                         ],
                                       )))
                             ],
