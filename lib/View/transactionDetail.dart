@@ -74,7 +74,7 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
         children: [
           Text(
             widget.transaction.name ?? "Giao dịch",
-            style: BeanOiTheme.typography.h1.copyWith(color: Colors.black),
+            style: BeanOiTheme.typography.h2.copyWith(color: Colors.black),
             textAlign: TextAlign.center,
           ),
           SizedBox(height: 16),
