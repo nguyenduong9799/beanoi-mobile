@@ -181,10 +181,10 @@ class _HomeScreenState extends State<HomeScreen> {
       buildGiftCanExchangeSection(),
       SizedBox(height: 8),
       HomeCollection(),
+      // testScreen(),
       SizedBox(height: 8),
       HomeStoreSection(),
-      // SizedBox(height: 46),
-      testScreen(),
+      SizedBox(height: 46),
     ];
   }
 
