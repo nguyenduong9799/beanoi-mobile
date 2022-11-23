@@ -7,20 +7,22 @@ import 'package:reactive_forms/reactive_forms.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Accessories/index.dart';
 import 'package:unidelivery_mobile/Accessories/voucher/voucher_card.dart';
+import 'package:unidelivery_mobile/Constraints/BeanOiTheme/index.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Enums/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
-import 'package:unidelivery_mobile/ViewModel/index.dart';
+import 'package:unidelivery_mobile/ViewModel/account_viewModel.dart';
 import 'package:unidelivery_mobile/ViewModel/order_viewModel.dart';
 
-class VouchersListPage extends StatefulWidget {
-  VouchersListPage();
+class VoucherDetailListPage extends StatefulWidget {
+  VoucherDetailListPage();
 
   @override
-  _VouchersListPageState createState() => _VouchersListPageState();
+  _VoucherDetailListPageState createState() => _VoucherDetailListPageState();
 }
 
-class _VouchersListPageState extends State<VouchersListPage> {
+class _VoucherDetailListPageState extends State<VoucherDetailListPage> {
+  final AccountViewModel model = Get.find<AccountViewModel>();
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       new GlobalKey<RefreshIndicatorState>();
   Future<void> _refresh() async {
@@ -32,32 +34,95 @@ class _VouchersListPageState extends State<VouchersListPage> {
   void initState() {
     Get.find<OrderViewModel>().getVouchers();
     super.initState();
-
     // UPDATE USER INFO INTO FORM
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: DefaultAppBar(
-        title: "Danh sách mã giảm giá",
-      ),
-      body: Container(
-        color: Colors.white,
-        child: RefreshIndicator(
-          key: _refreshIndicatorKey,
-          onRefresh: _refresh,
-          child: Column(
-            children: [
-              const SizedBox(height: 16),
-              _buildSearchVoucher(),
-              const SizedBox(height: 8),
-              // _buildFilter(),
-              _buildListVoucher(),
-            ],
-          ),
+    return ScopedModel<AccountViewModel>(
+      model: model,
+      child: Scaffold(
+        appBar: DefaultAppBar(
+          title: "Quà và khuyến mãi",
+        ),
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            voucherStatusBar(),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: Container(
+                  color: BeanOiTheme.palettes.neutral100,
+                  child: RefreshIndicator(
+                    key: _refreshIndicatorKey,
+                    onRefresh: _refresh,
+                    child: Column(
+                      children: [
+                        // _buildSearchVoucher(),
+                        const SizedBox(height: 8),
+                        // _buildFilter(),
+                        _buildListVoucher(),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
+    );
+  }
+
+  Widget voucherStatusBar() {
+    return ScopedModelDescendant<AccountViewModel>(
+      builder: (context, child, model) {
+        return Center(
+          child: Container(
+            // color: Colors.amber,
+            padding: EdgeInsets.fromLTRB(0, 8, 0, 8),
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey,
+                  offset: Offset(0.0, 1.0), //(x,y)
+                  blurRadius: 6.0,
+                ),
+              ],
+            ),
+            child: Center(
+              child: ToggleButtons(
+                renderBorder: false,
+                selectedColor: kPrimary,
+                onPressed: (int index) async {
+                  await model.changeStatus(index);
+                },
+                borderRadius: BorderRadius.circular(24),
+                isSelected: model.selections,
+                children: [
+                  Container(
+                    width: MediaQuery.of(context).size.width / 3,
+                    child: Text(
+                      "Quà của bạn",
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width / 3,
+                    child: Text(
+                      "Mã khuyến mãi",
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -163,7 +228,7 @@ class _VouchersListPageState extends State<VouchersListPage> {
         },
         child: VoucherCard(
           height: 110,
-          backgroundColor: primaryColor,
+          backgroundColor: Colors.white,
           clockwise: true,
           curvePosition: 130,
           curveRadius: 30,
@@ -252,7 +317,7 @@ class _VouchersListPageState extends State<VouchersListPage> {
             padding: EdgeInsets.all(8),
             child: Column(
               mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 // Container(
@@ -276,7 +341,7 @@ class _VouchersListPageState extends State<VouchersListPage> {
                 // ),
                 Spacer(),
                 Text(
-                  voucher.voucherName,
+                  voucher.promotionName,
                   maxLines: 1,
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -301,8 +366,9 @@ class _VouchersListPageState extends State<VouchersListPage> {
                 // ),
                 Text(
                   //
-                  "-${voucher.description}",
-                  maxLines: 2,
+                  // "-${voucher.description}",
+                  voucher.actionName,
+                  maxLines: 3,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 12,
@@ -313,20 +379,20 @@ class _VouchersListPageState extends State<VouchersListPage> {
                 Spacer(),
                 voucher.endDate == null
                     ? Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.end,
                         children: [
+                          // Text(
+                          //   "HSD: ",
+                          //   textAlign: TextAlign.center,
+                          //   style: TextStyle(
+                          //     color: Colors.black45,
+                          //   ),
+                          // ),
                           Text(
-                            "HSD: ",
+                            "Xem chi tiết",
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                              color: Colors.black45,
-                            ),
-                          ),
-                          Text(
-                            "Vĩnh viễn",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Colors.black45,
+                              color: kPrimary,
                             ),
                           ),
                         ],
@@ -360,87 +426,87 @@ class _VouchersListPageState extends State<VouchersListPage> {
     );
   }
 
-  Widget _buildSearchVoucher() {
-    TextEditingController controller = TextEditingController(text: '');
+  // Widget _buildSearchVoucher() {
+  //   TextEditingController controller = TextEditingController(text: '');
 
-    void applyVoucher(OrderViewModel model) async {
-      VoucherDTO inputVoucher = new VoucherDTO(voucherCode: controller.text);
-      print(inputVoucher.voucherCode);
-      await model.selectVoucher(inputVoucher);
-      Get.back();
-    }
+  //   void applyVoucher(OrderViewModel model) async {
+  //     VoucherDTO inputVoucher = new VoucherDTO(voucherCode: controller.text);
+  //     print(inputVoucher.voucherCode);
+  //     await model.selectVoucher(inputVoucher);
+  //     Get.back();
+  //   }
 
-    return ScopedModel(
-        model: Get.find<OrderViewModel>(),
-        child: ScopedModelDescendant<OrderViewModel>(
-            builder: (context, child, model) {
-          return Padding(
-            padding: const EdgeInsets.only(left: 12, right: 12),
-            child: Row(
-              children: [
-                Flexible(
-                  flex: 7,
-                  child: Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(8)),
-                        border:
-                            Border.all(color: isErrorInput ? kFail : kPrimary)),
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
-                      child: TextField(
-                        onChanged: (input) {},
-                        controller: controller,
-                        decoration: InputDecoration(
-                            hintText: isErrorInput
-                                ? 'Vui lòng nhập mã'
-                                : 'Nhập mã giảm giá',
-                            border: InputBorder.none,
-                            suffixIcon: IconButton(
-                              icon: Icon(
-                                Icons.clear,
-                                size: 16,
-                                color: Colors.grey,
-                              ),
-                              onPressed: () {
-                                controller.clear();
-                              },
-                            )),
-                        style: Get.theme.textTheme.headline4
-                            .copyWith(color: Colors.grey),
-                        keyboardType: TextInputType.multiline,
-                        maxLines: 1,
-                        autofocus: true,
-                      ),
-                    ),
-                  ),
-                ),
-                Flexible(
-                  flex: 3,
-                  fit: FlexFit.tight,
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(8)),
-                          color: kPrimary,
-                          border: Border.all(color: kPrimary)),
-                      child: TextButton(
-                          onPressed: () => controller.text.isNotEmpty
-                              ? applyVoucher(model)
-                              : setState(() {
-                                  isErrorInput = true;
-                                }),
-                          child: Text('Áp dụng',
-                              style: TextStyle(
-                                  color: Colors.white, fontSize: 15))),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          );
-        }));
-  }
+  //   return ScopedModel(
+  //       model: Get.find<OrderViewModel>(),
+  //       child: ScopedModelDescendant<OrderViewModel>(
+  //           builder: (context, child, model) {
+  //         return Padding(
+  //           padding: const EdgeInsets.only(left: 12, right: 12),
+  //           child: Row(
+  //             children: [
+  //               Flexible(
+  //                 flex: 7,
+  //                 child: Container(
+  //                   decoration: BoxDecoration(
+  //                       borderRadius: BorderRadius.all(Radius.circular(8)),
+  //                       border:
+  //                           Border.all(color: isErrorInput ? kFail : kPrimary)),
+  //                   child: Padding(
+  //                     padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
+  //                     child: TextField(
+  //                       onChanged: (input) {},
+  //                       controller: controller,
+  //                       decoration: InputDecoration(
+  //                           hintText: isErrorInput
+  //                               ? 'Vui lòng nhập mã'
+  //                               : 'Nhập mã giảm giá',
+  //                           border: InputBorder.none,
+  //                           suffixIcon: IconButton(
+  //                             icon: Icon(
+  //                               Icons.clear,
+  //                               size: 16,
+  //                               color: Colors.grey,
+  //                             ),
+  //                             onPressed: () {
+  //                               controller.clear();
+  //                             },
+  //                           )),
+  //                       style: Get.theme.textTheme.headline4
+  //                           .copyWith(color: Colors.grey),
+  //                       keyboardType: TextInputType.multiline,
+  //                       maxLines: 1,
+  //                       autofocus: true,
+  //                     ),
+  //                   ),
+  //                 ),
+  //               ),
+  //               Flexible(
+  //                 flex: 3,
+  //                 fit: FlexFit.tight,
+  //                 child: Padding(
+  //                   padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
+  //                   child: Container(
+  //                     decoration: BoxDecoration(
+  //                         borderRadius: BorderRadius.all(Radius.circular(8)),
+  //                         color: kPrimary,
+  //                         border: Border.all(color: kPrimary)),
+  //                     child: TextButton(
+  //                         onPressed: () => controller.text.isNotEmpty
+  //                             ? applyVoucher(model)
+  //                             : setState(() {
+  //                                 isErrorInput = true;
+  //                               }),
+  //                         child: Text('Áp dụng',
+  //                             style: TextStyle(
+  //                                 color: Colors.white, fontSize: 15))),
+  //                   ),
+  //                 ),
+  //               ),
+  //             ],
+  //           ),
+  //         );
+  //       }));
+  // }
 
   Widget _buildLoading() {
     return Flexible(

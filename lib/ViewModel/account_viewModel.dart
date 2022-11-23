@@ -10,12 +10,17 @@ import 'package:unidelivery_mobile/Utils/index.dart';
 import 'index.dart';
 
 class AccountViewModel extends BaseModel {
+  List<VoucherDTO> vouchers;
+  PromotionDAO promoDao;
+
   AccountDAO _dao;
   AccountDTO currentUser;
   String version;
+  List<bool> selections = [true, false];
 
   AccountViewModel() {
     _dao = AccountDAO();
+    promoDao = new PromotionDAO();
   }
 
   Future<void> fetchUser({bool isRefetch = false}) async {
@@ -36,7 +41,7 @@ class AccountViewModel extends BaseModel {
         PackageInfo packageInfo = await PackageInfo.fromPlatform();
         version = packageInfo.version;
       }
-
+      getVouchers();
       setState(ViewStatus.Completed);
     } catch (e, stacktrace) {
       print(e.toString() + stacktrace.toString());
@@ -46,6 +51,22 @@ class AccountViewModel extends BaseModel {
       } else
         setState(ViewStatus.Error);
     }
+  }
+
+  Future<void> changeStatus(int index) async {
+    selections = selections.map((e) => false).toList();
+    selections[index] = true;
+    notifyListeners();
+    await getVouchers();
+  }
+
+  Future<void> getVouchers() async {
+    setState(ViewStatus.Loading);
+    if (selections[0] == true) {
+      final voucherList = await promoDao.getPromotions();
+      vouchers = voucherList;
+    }
+    setState(ViewStatus.Completed);
   }
 
   Future<void> showRefferalMessage() async {

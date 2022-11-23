@@ -12,6 +12,7 @@ import 'package:unidelivery_mobile/View/referral.dart';
 import 'package:unidelivery_mobile/View/transaction.dart';
 import 'package:unidelivery_mobile/View/transactionDetail.dart';
 import 'package:unidelivery_mobile/View/voucher.dart';
+import 'package:unidelivery_mobile/View/voucherDetail.dart';
 import 'package:unidelivery_mobile/setup.dart';
 
 void main() async {
@@ -141,6 +142,10 @@ class MyApp extends StatelessWidget {
           case RouteHandler.VOUCHER:
             return CupertinoPageRoute<bool>(
                 builder: (context) => VouchersListPage(), settings: settings);
+          case RouteHandler.VOUCHER_DETAIL:
+            return CupertinoPageRoute<bool>(
+                builder: (context) => VoucherDetailListPage(),
+                settings: settings);
           case RouteHandler.DESIGN:
             return CupertinoPageRoute<bool>(
                 builder: (context) => DesignScreen(), settings: settings);
