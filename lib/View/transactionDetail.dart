@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:unidelivery_mobile/Accessories/index.dart';
+import 'package:unidelivery_mobile/Constraints/BeanOiTheme/index.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/Utils/format_price.dart';
@@ -73,17 +74,19 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
         children: [
           Text(
             widget.transaction.name ?? "Giao dịch",
-            style: Get.theme.textTheme.headline1.copyWith(color: Colors.black),
+            style: BeanOiTheme.typography.h1.copyWith(color: Colors.black),
+            textAlign: TextAlign.center,
           ),
           SizedBox(height: 16),
           Text(
             "${widget.transaction.isIncrease ? "+" : "-"} ${formatPriceWithoutUnit(widget.transaction.amount)}",
-            style: Get.theme.textTheme.subtitle2.copyWith(color: Colors.black),
+            style:
+                BeanOiTheme.typography.subtitle2.copyWith(color: Colors.black),
           ),
           SizedBox(height: 16),
           Text(
             status,
-            style: Get.theme.textTheme.headline2,
+            style: BeanOiTheme.typography.subtitle1,
           ),
         ],
       ),
@@ -107,8 +110,8 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
             child: Divider(),
           ),
           buildItemDetail("Loại giao dịch", widget.transaction.currency,
-              descriptionStyle:
-                  Get.theme.textTheme.headline4.copyWith(color: Colors.orange)),
+              descriptionStyle: BeanOiTheme.typography.subtitle1
+                  .copyWith(color: Colors.orange)),
         ],
       ),
     );
@@ -122,19 +125,31 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
         Text(
           title,
           style: titleStyle ??
-              Get.theme.textTheme.headline2.copyWith(color: Colors.grey),
+              BeanOiTheme.typography.subtitle1.copyWith(color: Colors.grey),
+          // Get.theme.textTheme.headline2.copyWith(color: Colors.grey),
         ),
         SizedBox(
           width: 8,
         ),
         Container(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                description.split(' ')[0].toString(),
+                description.split(' ').first,
                 style: descriptionStyle ??
-                    Get.theme.textTheme.headline2.copyWith(color: kTextColor),
+                    BeanOiTheme.typography.subtitle1
+                        .copyWith(color: kTextColor),
               ),
+              Row(
+                children: [
+                  if (description.split(' ').last.isNotEmpty &&
+                      description.split(' ').last !=
+                          description.split(' ').first) ...[
+                    Text(description.split(' ').last),
+                  ]
+                ],
+              )
             ],
           ),
         )
