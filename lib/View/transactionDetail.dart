@@ -127,10 +127,16 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
         SizedBox(
           width: 8,
         ),
-        Text(
-          description,
-          style: descriptionStyle ??
-              Get.theme.textTheme.headline2.copyWith(color: kTextColor),
+        Container(
+          child: Column(
+            children: [
+              Text(
+                description.split(' ')[0].toString(),
+                style: descriptionStyle ??
+                    Get.theme.textTheme.headline2.copyWith(color: kTextColor),
+              ),
+            ],
+          ),
         )
       ],
     );

@@ -199,6 +199,10 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                                         color: BeanOiTheme.palettes.primary400),
                                   ),
                                 ),
+                                // Divider(
+                                //   color: Colors.black,
+                                //   height: 2,
+                                // ),
                                 Container(
                                   width:
                                       MediaQuery.of(context).size.width * 0.2,
