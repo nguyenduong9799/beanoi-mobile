@@ -222,13 +222,11 @@ class RootViewModel extends BaseModel {
     try {
       setState(ViewStatus.Loading);
       StoreDAO _storeDAO = new StoreDAO();
-      MenuDAO _menuDAO = new MenuDAO();
       Function eq = const ListEquality().equals;
-
+      clearCart();
       currentStore = await getStore();
       if (currentStore == null) {
         listStore = await _storeDAO.getStores(id: UNIBEAN_STORE);
-        // listMenu = await _menuDAO.getMenus(areaID: UNIBEAN_STORE);
         await getListMenu(UNIBEAN_STORE);
         currentStore = listStore[0];
       } else {
