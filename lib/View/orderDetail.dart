@@ -568,6 +568,9 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
     Map<int, List<OrderItemDTO>> map =
         groupBy(orderDetail.orderItems, (OrderItemDTO item) => item.supplierId);
 
+    int totalBoard = map.length;
+    print('totalBoard $totalBoard');
+
     return Padding(
       padding: const EdgeInsets.only(left: 20, right: 20, bottom: 10, top: 10),
       child: ListView.builder(
@@ -637,7 +640,9 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                     itemCount: items.length),
               ),
               SizedBox(height: 10),
-              MySeparator(),
+              if (index + 1 < totalBoard) ...[
+                MySeparator(),
+              ],
               SizedBox(height: 10),
 
               // SizedBox(
