@@ -51,6 +51,7 @@ class ProductNewsfeedDTO {
   bool isAvailable;
   String productCode;
   int productTypeId;
+  String picUrl;
 
   ProductNewsfeedDTO({
     this.productId,
@@ -74,6 +75,7 @@ class ProductNewsfeedDTO {
     isAvailable = json['is_available'];
     productCode = json['product_code'];
     productTypeId = json['product_type_id'];
+    picUrl = json['pic_url'];
   }
 
   Map<String, dynamic> toJson() {

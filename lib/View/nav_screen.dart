@@ -18,12 +18,14 @@ class RootScreen extends StatefulWidget {
 class _RootScreenState extends State<RootScreen> {
   final List<Widget> _screens = [
     HomeScreen(),
-    // GiftScreen(),
     NewsfeedScreen(),
+    GiftScreen(),
+    
     ProfileScreen(),
   ];
   final List<IconData> _icons = const [
     MaterialCommunityIcons.food,
+    Icons.add_alert_outlined,
     Icons.card_giftcard,
     MaterialCommunityIcons.face_outline,
   ];
