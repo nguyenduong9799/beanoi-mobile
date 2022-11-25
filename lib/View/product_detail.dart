@@ -246,7 +246,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
   Widget affectedAtributeContent() {
     List<Widget> attributes;
     List<String> listOptions;
+    Map sizeM = {'size': 'M'};
     Map sizeL = {'size': 'L'};
+    Map sizeS = {'size': 'S'};
     if (widget.dto.listChild != null) {
       print(
           'pricesizeL>> ${widget.dto.listChild.firstWhere((element) => mapEquals(element.attributes, sizeL)).price}');
@@ -317,7 +319,15 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                                     child: Row(
                                       children: [
                                         if (listOptions[i] == 'M') ...[
-                                          Text("+" + formatPrice(0))
+                                          Text("+" +
+                                              formatPrice(widget.dto.listChild
+                                                      .firstWhere((element) =>
+                                                          mapEquals(
+                                                              element
+                                                                  .attributes,
+                                                              sizeM))
+                                                      .price -
+                                                  widget.dto.minPrice))
                                         ] else if (listOptions[i] == 'L') ...[
                                           Text("+" +
                                               formatPrice(widget.dto.listChild
@@ -329,7 +339,15 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                                                       .price -
                                                   widget.dto.minPrice))
                                         ] else if (listOptions[i] == 'S') ...[
-                                          Text("+" + formatPrice(10000))
+                                          Text("+" +
+                                              formatPrice(widget.dto.listChild
+                                                      .firstWhere((element) =>
+                                                          mapEquals(
+                                                              element
+                                                                  .attributes,
+                                                              sizeS))
+                                                      .price -
+                                                  widget.dto.minPrice))
                                         ],
                                       ],
                                     ),
