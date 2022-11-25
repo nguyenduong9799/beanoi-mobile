@@ -9,6 +9,7 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:unidelivery_mobile/Accessories/index.dart';
 import 'package:unidelivery_mobile/Accessories/touchopacity.dart';
+import 'package:unidelivery_mobile/Constraints/BeanOiTheme/index.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Enums/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
@@ -229,7 +230,7 @@ class _SupplierScreenState extends State<SupplierScreen> {
                       ? RichText(
                           text: TextSpan(
                               text: formatBean(product.price),
-                              style: Get.theme.textTheme.headline4
+                              style: BeanOiTheme.typography.caption2
                                   .copyWith(color: kBean),
                               children: [
                                 WidgetSpan(
@@ -249,7 +250,8 @@ class _SupplierScreenState extends State<SupplierScreen> {
                           product.type != ProductType.MASTER_PRODUCT
                               ? formatPrice(price)
                               : "từ " + formatPrice(price ?? product.price),
-                          style: TextStyle(color: kPrimary))
+                          style:
+                              TextStyle(color: BeanOiTheme.palettes.primary200))
                 ],
               ),
             ),
@@ -257,7 +259,7 @@ class _SupplierScreenState extends State<SupplierScreen> {
         });
         return Container(
           margin: EdgeInsets.only(top: 8, bottom: 0),
-          color: kBackgroundGrey[0],
+          color: BeanOiTheme.palettes.neutral200,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -267,7 +269,7 @@ class _SupplierScreenState extends State<SupplierScreen> {
                   child: Text(
                     collection.name,
                     style: TextStyle(
-                        color: kPrimary,
+                        color: BeanOiTheme.palettes.primary200,
                         fontSize: 18,
                         fontWeight: FontWeight.bold),
                   ),
@@ -277,7 +279,7 @@ class _SupplierScreenState extends State<SupplierScreen> {
                 child: Container(
                   width: collection.name.length * 0.8 * 8,
                   child: Divider(
-                    color: kPrimary,
+                    color: BeanOiTheme.palettes.primary200,
                   ),
                 ),
               ),
@@ -340,10 +342,11 @@ class _SupplierScreenState extends State<SupplierScreen> {
                                   product.name,
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
-                                  style: Get.theme.textTheme.headline3.copyWith(
-                                    decorationThickness: 0.5,
-                                    fontSize: 14,
-                                  ),
+                                  style:
+                                      BeanOiTheme.typography.subtitle1.copyWith(
+                                          // decorationThickness: 0.5,
+                                          // fontSize: 14,
+                                          ),
                                 )),
                           ],
                         ),
@@ -354,8 +357,10 @@ class _SupplierScreenState extends State<SupplierScreen> {
                                     ? formatPrice(price)
                                     : "từ " +
                                         formatPrice(price ?? product.price),
-                                style: Get.theme.textTheme.headline4
-                                    .copyWith(color: kPrimary))),
+                                style: BeanOiTheme.typography.subtitle2
+                                    .copyWith(
+                                        color:
+                                            BeanOiTheme.palettes.primary400))),
                         SizedBox(
                           height: 8,
                         ),
@@ -366,8 +371,10 @@ class _SupplierScreenState extends State<SupplierScreen> {
                               margin: EdgeInsets.only(top: 15),
                               child: RichText(
                                   text: TextSpan(
-                                      style: Get.theme.textTheme.headline6
-                                          .copyWith(color: Colors.orange),
+                                      style: BeanOiTheme.typography.subtitle2
+                                          .copyWith(
+                                              color: BeanOiTheme
+                                                  .palettes.secondary1000),
                                       text:
                                           "+ " + product.bean.toString() + " ",
                                       children: [
@@ -376,8 +383,8 @@ class _SupplierScreenState extends State<SupplierScreen> {
                                         child: Image(
                                           image: AssetImage(
                                               "assets/images/icons/bean_coin.png"),
-                                          width: 16,
-                                          height: 16,
+                                          width: 15,
+                                          height: 15,
                                         ))
                                   ])),
                             )
