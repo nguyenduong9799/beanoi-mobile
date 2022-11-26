@@ -76,21 +76,23 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
               var receiveOrder = BeanOiTheme.palettes.neutral1000;
               var readyOrder = BeanOiTheme.palettes.neutral1000;
               var finishOrder = BeanOiTheme.palettes.neutral1000;
-              if (orderDetail.status == OrderFilter.NEW ||
-                  orderDetail.status == OrderFilter.DONE ||
-                  orderDetail.status == OrderFilter.ORDERING) {
+              if (orderDetail.status == OrderFilter.NEW) {
                 confirmOrder = BeanOiTheme.palettes.primary400;
               }
-              if (orderDetail.status == OrderFilter.DONE ||
-                  orderDetail.status == OrderFilter.ORDERING) {
+              if (orderDetail.status == OrderFilter.ORDERING) {
+                confirmOrder = BeanOiTheme.palettes.primary400;
                 receiveOrder = BeanOiTheme.palettes.primary400;
               }
-              if (orderDetail.status == OrderFilter.DONE ||
-                  orderDetail.status == OrderFilter.ORDERING) {
+              if (orderDetail.status == OrderFilter.ORDERING) {
+                receiveOrder = BeanOiTheme.palettes.primary400;
+                confirmOrder = BeanOiTheme.palettes.primary400;
                 readyOrder = BeanOiTheme.palettes.primary400;
               }
               if (orderDetail.status == OrderFilter.DONE) {
                 finishOrder = BeanOiTheme.palettes.primary400;
+                receiveOrder = BeanOiTheme.palettes.primary400;
+                readyOrder = BeanOiTheme.palettes.primary400;
+                confirmOrder = BeanOiTheme.palettes.primary400;
               }
 
               return Container(
