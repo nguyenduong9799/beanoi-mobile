@@ -71,6 +71,28 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                 );
 
               final orderDetail = model.orderDetail;
+
+              var confirmOrder = BeanOiTheme.palettes.neutral1000;
+              var receiveOrder = BeanOiTheme.palettes.neutral1000;
+              var readyOrder = BeanOiTheme.palettes.neutral1000;
+              var finishOrder = BeanOiTheme.palettes.neutral1000;
+              if (orderDetail.status == OrderFilter.NEW ||
+                  orderDetail.status == OrderFilter.DONE ||
+                  orderDetail.status == OrderFilter.ORDERING) {
+                confirmOrder = BeanOiTheme.palettes.primary400;
+              }
+              if (orderDetail.status == OrderFilter.DONE ||
+                  orderDetail.status == OrderFilter.ORDERING) {
+                receiveOrder = BeanOiTheme.palettes.primary400;
+              }
+              if (orderDetail.status == OrderFilter.DONE ||
+                  orderDetail.status == OrderFilter.ORDERING) {
+                readyOrder = BeanOiTheme.palettes.primary400;
+              }
+              if (orderDetail.status == OrderFilter.DONE) {
+                finishOrder = BeanOiTheme.palettes.primary400;
+              }
+
               return Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(4),
@@ -188,57 +210,91 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Container(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.2,
-                                  // width: double.infinity * 0.25,
-                                  child: Text(
-                                    '1',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        fontSize: 12,
-                                        color: BeanOiTheme.palettes.primary400),
-                                  ),
-                                ),
-                                // Divider(
-                                //   color: Colors.black,
-                                //   height: 2,
-                                // ),
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.2,
+                                    // width: double.infinity * 0.25,
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          '1',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              fontSize: 12,
+                                              color: confirmOrder),
+                                        ),
+                                        Text('Xác nhận',
+                                            textAlign: TextAlign.center,
+                                            style: BeanOiTheme
+                                                .typography.subtitle1
+                                                .copyWith(
+                                                    fontSize: 14,
+                                                    color: confirmOrder)),
+                                      ],
+                                    )),
                                 Container(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.2,
-                                  // width: double.infinity * 0.25,
-                                  child: Text(
-                                    '2',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        fontSize: 12,
-                                        color: BeanOiTheme.palettes.primary400),
-                                  ),
-                                ),
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.2,
+                                    // width: double.infinity * 0.25,
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          '2',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              fontSize: 12,
+                                              color: receiveOrder),
+                                        ),
+                                        Text('Chốt đơn',
+                                            textAlign: TextAlign.center,
+                                            style: BeanOiTheme
+                                                .typography.subtitle1
+                                                .copyWith(
+                                                    fontSize: 14,
+                                                    color: receiveOrder)),
+                                      ],
+                                    )),
                                 Container(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.2,
-                                  // width: double.infinity * 0.25,
-                                  child: Text(
-                                    '3',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        fontSize: 12,
-                                        color: BeanOiTheme.palettes.primary400),
-                                  ),
-                                ),
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.2,
+                                    // width: double.infinity * 0.25,
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          '3',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              fontSize: 12, color: readyOrder),
+                                        ),
+                                        Text('Sẵn sàng',
+                                            textAlign: TextAlign.center,
+                                            style: BeanOiTheme
+                                                .typography.subtitle1
+                                                .copyWith(
+                                                    fontSize: 14,
+                                                    color: readyOrder)),
+                                      ],
+                                    )),
                                 Container(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.2,
-                                  // width: double.infinity * 0.25,
-                                  child: Text(
-                                    '4',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        fontSize: 12,
-                                        color: BeanOiTheme.palettes.primary400),
-                                  ),
-                                )
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.2,
+                                    // width: double.infinity * 0.25,
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          '4',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              fontSize: 12, color: finishOrder),
+                                        ),
+                                        Text('Hoàn thành',
+                                            textAlign: TextAlign.center,
+                                            style: BeanOiTheme
+                                                .typography.subtitle1
+                                                .copyWith(
+                                                    fontSize: 14,
+                                                    color: finishOrder)),
+                                      ],
+                                    ))
                               ],
                             ),
                             Row(
@@ -249,14 +305,6 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                                         MediaQuery.of(context).size.width * 0.2,
                                     child: Column(
                                       children: [
-                                        Text('Xác nhận',
-                                            textAlign: TextAlign.center,
-                                            style: BeanOiTheme
-                                                .typography.subtitle1
-                                                .copyWith(
-                                                    fontSize: 14,
-                                                    color: BeanOiTheme
-                                                        .palettes.primary400)),
                                         orderDetail.orderTime != null
                                             ? Text(
                                                 DateFormat('HH:mm').format(
@@ -274,14 +322,6 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                                         MediaQuery.of(context).size.width * 0.2,
                                     child: Column(
                                       children: [
-                                        Text('Chốt đơn',
-                                            textAlign: TextAlign.center,
-                                            style: BeanOiTheme
-                                                .typography.subtitle1
-                                                .copyWith(
-                                                    fontSize: 14,
-                                                    color: BeanOiTheme
-                                                        .palettes.primary400)),
                                         Text('00:00',
                                             style: BeanOiTheme
                                                 .typography.caption1
@@ -293,14 +333,6 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                                         MediaQuery.of(context).size.width * 0.2,
                                     child: Column(
                                       children: [
-                                        Text('Sẵn sàng',
-                                            textAlign: TextAlign.center,
-                                            style: BeanOiTheme
-                                                .typography.subtitle1
-                                                .copyWith(
-                                                    fontSize: 14,
-                                                    color: BeanOiTheme
-                                                        .palettes.primary400)),
                                         Text('00:00',
                                             style: BeanOiTheme
                                                 .typography.caption1
@@ -312,14 +344,6 @@ class _OrderHistoryDetailState extends State<OrderHistoryDetail> {
                                         MediaQuery.of(context).size.width * 0.2,
                                     child: Column(
                                       children: [
-                                        Text('Hoàn thành',
-                                            textAlign: TextAlign.center,
-                                            style: BeanOiTheme
-                                                .typography.subtitle1
-                                                .copyWith(
-                                                    fontSize: 14,
-                                                    color: BeanOiTheme
-                                                        .palettes.primary400)),
                                         Text(
                                           '00:00',
                                           style: BeanOiTheme.typography.caption1
