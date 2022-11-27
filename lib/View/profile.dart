@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Accessories/index.dart';
+import 'package:unidelivery_mobile/Constraints/BeanOiTheme/index.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Enums/index.dart';
 import 'package:unidelivery_mobile/Utils/format_price.dart';
@@ -120,7 +121,7 @@ class _UpdateAccountState extends State<ProfileScreen> {
                 children: [
                   Text(
                     model.currentUser.name,
-                    style: Get.theme.textTheme.headline1
+                    style: BeanOiTheme.typography.h1
                         .copyWith(color: Colors.orange),
                   ),
                   SizedBox(
@@ -166,7 +167,7 @@ class _UpdateAccountState extends State<ProfileScreen> {
                           },
                           child: Icon(
                             Icons.replay,
-                            color: kPrimary,
+                            color: BeanOiTheme.palettes.primary200,
                             size: 26,
                           ),
                         ),

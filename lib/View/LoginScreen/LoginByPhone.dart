@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:unidelivery_mobile/Constraints/BeanOiTheme/index.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
 
@@ -69,7 +70,7 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
             width: 32,
             height: 32,
             decoration: BoxDecoration(
-              color: kPrimary,
+              color: BeanOiTheme.palettes.primary300,
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
@@ -109,7 +110,7 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
                 flex: 2,
                 child: Container(
                   decoration: BoxDecoration(
-                    color: kPrimary,
+                    color: BeanOiTheme.palettes.primary300,
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(16),
                       topRight: Radius.circular(16),
@@ -125,7 +126,7 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
                         padding: const EdgeInsets.fromLTRB(32, 0, 32, 0),
                         child: Text(
                           "Nhập số điện thoại",
-                          style: Get.theme.textTheme.headline1
+                          style: BeanOiTheme.typography.h1
                               .copyWith(color: Colors.white),
                         ),
                       ),
@@ -143,7 +144,7 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(8),
                                   border: Border.all(color: kBackgroundGrey[0]),
-                                  color: kPrimary,
+                                  color: BeanOiTheme.palettes.primary300,
                                 ),
                                 child: DropdownButtonHideUnderline(
                                   child: DropdownButton(
@@ -205,12 +206,13 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
                                         filled: true,
                                         fillColor: _phoneFocus.hasFocus
                                             ? kBackgroundGrey[0]
-                                            : kPrimary,
+                                            : BeanOiTheme.palettes.primary300,
                                         focusedBorder: OutlineInputBorder(
                                           borderRadius:
                                               BorderRadius.circular(8),
                                           borderSide: new BorderSide(
-                                            color: kPrimary,
+                                            color:
+                                                BeanOiTheme.palettes.primary300,
                                             style: BorderStyle.solid,
                                           ),
                                           // borderRadius: new BorderRadius.circular(25.7),

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:unidelivery_mobile/Constraints/BeanOiTheme/index.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
 
@@ -169,7 +170,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   Expanded(
                     child: Text(
                       "Đăng nhập bằng số điện thoại",
-                      style: Get.theme.textTheme.headline2,
+                      style: BeanOiTheme.typography.h2,
                       textAlign: TextAlign.center,
                     ),
                   ),
