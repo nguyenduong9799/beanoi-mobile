@@ -10,6 +10,7 @@ import 'package:unidelivery_mobile/Accessories/index.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Enums/index.dart';
 import 'package:unidelivery_mobile/Model/DAO/index.dart';
+import 'package:unidelivery_mobile/Model/DTO/GiftDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/Services/analytic_service.dart';
 import 'package:unidelivery_mobile/Utils/index.dart';
@@ -18,7 +19,7 @@ import 'index.dart';
 
 class OrderViewModel extends BaseModel {
   List<VoucherDTO> vouchers;
-
+  List<GiftDTO> myVouchers;
   OrderAmountDTO orderAmount;
   Map<String, dynamic> listPayments;
   CampusDTO campusDTO;
@@ -31,6 +32,7 @@ class OrderViewModel extends BaseModel {
   String errorMessage = null;
 
   List<String> listError = <String>[];
+  List<bool> selections = [true, false];
 
   OrderViewModel() {
     dao = new OrderDAO();
@@ -40,12 +42,30 @@ class OrderViewModel extends BaseModel {
     currentCart = null;
   }
 
-  Future<void> getVouchers() async {
-    setState(ViewStatus.Loading);
-    final voucherList = await promoDao.getPromotions();
-    vouchers = voucherList;
-    setState(ViewStatus.Completed);
-  }
+  // Future<void> changeStatus(int index) async {
+  //   selections = selections.map((e) => false).toList();
+  //   selections[index] = true;
+  //   notifyListeners();
+  //   if (selections[0] == true) {
+  //     await Get.find<PromoViewModel>().getMyVouchers();
+  //   }
+
+  //   await Get.find<PromoViewModel>().getVouchers();
+  // }
+
+  // Future<void> getMyVouchers() async {
+  //   setState(ViewStatus.Loading);
+  //   final myVoucherList = await promoDao.getMyPromotions();
+  //   myVouchers = myVoucherList;
+  //   setState(ViewStatus.Completed);
+  // }
+
+  // Future<void> getVouchers() async {
+  //   setState(ViewStatus.Loading);
+  //   final voucherList = await promoDao.getPromotions();
+  //   vouchers = voucherList;
+  //   setState(ViewStatus.Completed);
+  // }
 
   Future<void> prepareOrder() async {
     try {

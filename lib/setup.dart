@@ -26,4 +26,5 @@ void createRouteBindings() async {
   Get.put(BlogsViewModel());
   Get.put(GiftViewModel());
   Get.put(OrderViewModel());
+  Get.put(PromoViewModel());
 }

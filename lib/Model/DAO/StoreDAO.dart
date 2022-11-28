@@ -39,8 +39,11 @@ class StoreDAO extends BaseDAO {
     var jsonList = res.data["data"] as List;
     //metaDataDTO = MetaDataDTO.fromJson(res.data["metadata"]);
     if (jsonList != null) {
-      List<SupplierDTO> list =
-          jsonList.map((e) => SupplierDTO.fromJson(e)).toList();
+      List<SupplierDTO> list = jsonList
+          .map((e) => SupplierDTO.fromJson(e))
+          .where((element) => element.available)
+          .toList();
+      // list.where((element) => element.available == true).toList();
       return list;
     }
     return null;

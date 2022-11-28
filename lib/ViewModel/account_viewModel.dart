@@ -16,7 +16,6 @@ class AccountViewModel extends BaseModel {
   AccountDAO _dao;
   AccountDTO currentUser;
   String version;
-  List<bool> selections = [true, false];
 
   AccountViewModel() {
     _dao = AccountDAO();
@@ -53,19 +52,12 @@ class AccountViewModel extends BaseModel {
     }
   }
 
-  Future<void> changeStatus(int index) async {
-    selections = selections.map((e) => false).toList();
-    selections[index] = true;
-    notifyListeners();
-    await getVouchers();
-  }
-
   Future<void> getVouchers() async {
     setState(ViewStatus.Loading);
-    if (selections[0] == true) {
-      final voucherList = await promoDao.getPromotions();
-      vouchers = voucherList;
-    }
+
+    final voucherList = await promoDao.getPromotions();
+    vouchers = voucherList;
+
     setState(ViewStatus.Completed);
   }
 

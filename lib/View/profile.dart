@@ -236,7 +236,7 @@ class _UpdateAccountState extends State<ProfileScreen> {
               child: Container(
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -297,7 +297,7 @@ class _UpdateAccountState extends State<ProfileScreen> {
                     ),
                     InkWell(
                       onTap: () {
-                        Get.toNamed(RouteHandler.VOUCHER_DETAIL);
+                        Get.toNamed(RouteHandler.VOUCHER_WALLET);
                       },
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,

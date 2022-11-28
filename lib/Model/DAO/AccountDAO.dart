@@ -22,7 +22,7 @@ class AccountDAO extends BaseDAO {
       final user = response.data["data"];
       final userDTO = AccountDTO.fromJson(user);
       final accessToken = user["access_token"] as String;
-      // print("accessToken    $accessToken");
+      print("accessToken    $accessToken");
       requestObj.setToken = accessToken;
       setToken(accessToken);
       return userDTO;
