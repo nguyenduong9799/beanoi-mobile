@@ -27,11 +27,7 @@ class _NewsfeedScreenState extends State<NewsfeedScreen> {
   NewsfeedViewModel _newsfeedViewModel;
   bool open = true;
 
-  static const FILTER_ALL = 'FILTER_ALL';
-  static const FILTER_NORMAL = 'FILTER_NORMAL';
-  static const FILTER_GIFT = 'FILTER_GIFT';
-
-  String filterBy = FILTER_ALL;
+  String filterBy = FilterBy.FILTER_ALL;
 
   void _buttonClose() {
     setState(() {
@@ -163,7 +159,7 @@ class _NewsfeedScreenState extends State<NewsfeedScreen> {
                       child: Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8),
-                          color: filterBy == FILTER_ALL
+                          color: filterBy == FilterBy.FILTER_ALL
                               ? BeanOiTheme.palettes.primary300
                               : null,
                         ),
@@ -171,14 +167,14 @@ class _NewsfeedScreenState extends State<NewsfeedScreen> {
                           padding: const EdgeInsets.all(8.0),
                           child: Text("Tất cả",
                               style: BeanOiTheme.typography.subtitle1.copyWith(
-                                  color: filterBy == FILTER_ALL
+                                  color: filterBy == FilterBy.FILTER_ALL
                                       ? BeanOiTheme.palettes.neutral100
                                       : BeanOiTheme.palettes.primary400)),
                         ),
                       ),
                       onTap: () => {
                         setState(() {
-                          filterBy = FILTER_ALL;
+                          filterBy = FilterBy.FILTER_ALL;
                         })
                       },
                     ),
@@ -186,7 +182,7 @@ class _NewsfeedScreenState extends State<NewsfeedScreen> {
                       child: Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8),
-                          color: filterBy == FILTER_NORMAL
+                          color: filterBy == FilterBy.FILTER_NORMAL
                               ? BeanOiTheme.palettes.primary300
                               : null,
                         ),
@@ -194,14 +190,14 @@ class _NewsfeedScreenState extends State<NewsfeedScreen> {
                           padding: const EdgeInsets.all(8.0),
                           child: Text("Đặt món",
                               style: BeanOiTheme.typography.subtitle1.copyWith(
-                                  color: filterBy == FILTER_NORMAL
+                                  color: filterBy == FilterBy.FILTER_NORMAL
                                       ? BeanOiTheme.palettes.neutral100
                                       : BeanOiTheme.palettes.primary400)),
                         ),
                       ),
                       onTap: () => {
                         setState(() {
-                          filterBy = FILTER_NORMAL;
+                          filterBy = FilterBy.FILTER_NORMAL;
                         })
                       },
                     ),
@@ -209,7 +205,7 @@ class _NewsfeedScreenState extends State<NewsfeedScreen> {
                       child: Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8),
-                          color: filterBy == FILTER_GIFT
+                          color: filterBy == FilterBy.FILTER_GIFT
                               ? BeanOiTheme.palettes.primary300
                               : null,
                         ),
@@ -217,18 +213,17 @@ class _NewsfeedScreenState extends State<NewsfeedScreen> {
                           padding: const EdgeInsets.all(8.0),
                           child: Text("Tặng quà",
                               style: BeanOiTheme.typography.subtitle1.copyWith(
-                                  color: filterBy == FILTER_GIFT
+                                  color: filterBy == FilterBy.FILTER_GIFT
                                       ? BeanOiTheme.palettes.neutral100
                                       : BeanOiTheme.palettes.primary400)),
                         ),
                       ),
                       onTap: () => {
                         setState(() {
-                          filterBy = FILTER_GIFT;
+                          filterBy = FilterBy.FILTER_GIFT;
                         })
                       },
                     ),
-                    
                   ],
                 ),
               ),
@@ -237,9 +232,9 @@ class _NewsfeedScreenState extends State<NewsfeedScreen> {
                 child: ScopedModelDescendant<NewsfeedViewModel>(
                   builder: (context, child, model) {
                     List<NewsfeedDTO> newsfeeds;
-                    if (filterBy == FILTER_ALL) {
+                    if (filterBy == FilterBy.FILTER_ALL) {
                       newsfeeds = model.newsfeeds;
-                    } else if (filterBy == FILTER_NORMAL) {
+                    } else if (filterBy == FilterBy.FILTER_NORMAL) {
                       newsfeeds = List<NewsfeedDTO>.from(model.newsfeeds
                           .where((element) => element.feedType == 'Normal'));
                     } else {
@@ -273,91 +268,15 @@ class _NewsfeedScreenState extends State<NewsfeedScreen> {
         color: Colors.white,
       ),
       // height: 100,
-      child: Column(
-        children: [
-          if (newsfeed.feedType == 'Normal') ...[
-            _buildNormalNewsfeed(newsfeed)
-          ] else ...[
-            _buildGiftNewsfeed(newsfeed)
-          ]
-        ],
-      ),
-    );
-  }
-
-  Widget _buildGiftNewsfeed(NewsfeedDTO newsfeed) {
-    return ListTile(
-      contentPadding: EdgeInsets.fromLTRB(0, 8, 8, 8),
-      title: Column(
-        // crossAxisAlignment: CrossAxisAlignment.end,
-        // mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                flex: 1,
-                child: Container(
-                  height: 68,
-                  width: 68,
-                  decoration:
-                      BoxDecoration(color: kPrimary, shape: BoxShape.circle),
-                  child:
-                      ClipOval(child: Image.asset('assets/images/avatar.png')),
-                ),
-              ),
-              Expanded(
-                  flex: 4,
-                  child: Column(
-                    // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          Flexible(
-                              child: RichText(
-                            text: TextSpan(
-                                text:
-                                    '${newsfeed.sender.name} đã tặng quà cho ',
-                                style: BeanOiTheme.typography.subtitle2
-                                    .copyWith(
-                                        color: BeanOiTheme.palettes.neutral700),
-                                children: [
-                                  TextSpan(
-                                      text: "${newsfeed.receiver.name}",
-                                      style: BeanOiTheme.typography.body2
-                                          .copyWith(
-                                              color:
-                                                  Color.fromRGBO(0, 0, 0, 1))),
-                                ]),
-                          )),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Text(Jiffy("${newsfeed.createAt}").fromNow(),
-                              style: BeanOiTheme.typography.caption.copyWith(
-                                  color: BeanOiTheme.palettes.neutral700))
-                        ],
-                      ),
-                      Row(children: [
-                        Flexible(
-                          child: Text(
-                              newsfeed.listProducts
-                                  .map((p) => p.productName)
-                                  .join(", "),
-                              overflow: TextOverflow.ellipsis,
-                              style: BeanOiTheme.typography.subtitle1.copyWith(
-                                  color: BeanOiTheme.palettes.primary300)),
-                        )
-                      ])
-                    ],
-                  ))
-            ],
+      child: Column(children: [_buildNormalNewsfeed(newsfeed)]
+          // [
+          //   if (newsfeed.feedType == 'Normal') ...[
+          //     _buildNormalNewsfeed(newsfeed)
+          //   ] else ...[
+          //     _buildGiftNewsfeed(newsfeed)
+          //   ]
+          // ],
           ),
-          // Expanded(child: child)
-        ],
-      ),
     );
   }
 
@@ -370,6 +289,10 @@ class _NewsfeedScreenState extends State<NewsfeedScreen> {
         listUndupicateStoreName.add(productStoreNames[i]);
       }
     }
+
+    final listProducts = newsfeed.listProducts
+        .where((p) => p.productTypeId != ProductType.EXTRA_PRODUCT);
+
     return ListTile(
       contentPadding: EdgeInsets.fromLTRB(8, 8, 8, 8),
       title: Column(
@@ -404,29 +327,41 @@ class _NewsfeedScreenState extends State<NewsfeedScreen> {
                             Flexible(
                                 child: RichText(
                               text: TextSpan(
-                                text:
-                                    '${newsfeed.sender.name} đã chốt ${newsfeed.listProducts.length} món tại ',
+                                text: newsfeed.feedType == FeedType.NORMAL
+                                    ? '${newsfeed.sender.name} đã chốt ${newsfeed.listProducts.length} món tại '
+                                    : '${newsfeed.sender.name} đã tặng 1 món quà cho ',
                                 style: BeanOiTheme.typography.subtitle2
                                     .copyWith(
                                         color: BeanOiTheme.palettes.neutral700),
-                                children: listUndupicateStoreName
-                                    .asMap()
-                                    .entries
-                                    .map((p) => p.key !=
-                                            (listUndupicateStoreName.length - 1)
-                                        ? TextSpan(
-                                            text: "${p.value}, ",
+                                children: newsfeed.feedType == FeedType.NORMAL
+                                    ? listUndupicateStoreName
+                                        .asMap()
+                                        .entries
+                                        .map((p) => p.key !=
+                                                (listUndupicateStoreName.length -
+                                                    1)
+                                            ? TextSpan(
+                                                text: "${p.value}, ",
+                                                style: BeanOiTheme.typography.body2
+                                                    .copyWith(
+                                                        color: Color.fromRGBO(
+                                                            0, 0, 0, 1)))
+                                            : TextSpan(
+                                                text: "${p.value}",
+                                                style: BeanOiTheme
+                                                    .typography.body2
+                                                    .copyWith(
+                                                        color: Color.fromRGBO(
+                                                            0, 0, 0, 1))))
+                                        .toList()
+                                    : [
+                                        TextSpan(
+                                            text: "${newsfeed.receiver.name}",
                                             style: BeanOiTheme.typography.body2
                                                 .copyWith(
                                                     color: Color.fromRGBO(
                                                         0, 0, 0, 1)))
-                                        : TextSpan(
-                                            text: "${p.value}",
-                                            style: BeanOiTheme.typography.body2
-                                                .copyWith(
-                                                    color: Color.fromRGBO(
-                                                        0, 0, 0, 1))))
-                                    .toList(),
+                                      ],
                               ),
                             )),
                           ],
@@ -438,17 +373,56 @@ class _NewsfeedScreenState extends State<NewsfeedScreen> {
                                     color: BeanOiTheme.palettes.neutral700))
                           ],
                         ),
-                        SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            children: newsfeed.listProducts
-                                .map((p) => _buildProduct(p))
-                                .toList(),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                                children: listProducts
+                                    .map((p) => listProducts.length != 1
+                                        ? _buildProducts(p)
+                                        : _buildProduct(p))
+                                    .toList()),
                           ),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            TextButton(
+                              child: Text("Xem món"),
+                              onPressed: () {
+                                showModalBottomSheet<void>(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return Container(
+                                      height: 200,
+                                      color: Colors.amber,
+                                      child: Center(
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: <Widget>[
+                                            const Text('Modal BottomSheet'),
+                                            ElevatedButton(
+                                              child: const Text(
+                                                  'Close BottomSheet'),
+                                              onPressed: () =>
+                                                  Navigator.pop(context),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                            )
+                          ],
                         )
                       ],
                     ),
-                  ))
+                  )),
             ],
           ),
           // Expanded(child: child)
@@ -458,15 +432,55 @@ class _NewsfeedScreenState extends State<NewsfeedScreen> {
   }
 
   Widget _buildProduct(ProductNewsfeedDTO product) {
-    return Row(
-      children: [
-        Container(
-            child: Image.network(
-          product.picUrl ?? defaultImage,
-          width: 40,
-          height: 40,
-        ))
-      ],
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
+      child: Row(
+        children: [
+          Container(
+              width: 40,
+              height: 40,
+              child: CacheImage(
+                imageUrl: product.picUrl ?? defaultImage,
+              )),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              child: Text(
+                product.productName,
+                style: BeanOiTheme.typography.body2
+                    .copyWith(color: BeanOiTheme.palettes.neutral700),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _buildProducts(ProductNewsfeedDTO product) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
+      child: Column(
+        children: [
+          Container(
+              width: 40,
+              height: 40,
+              child: CacheImage(
+                imageUrl: product.picUrl ?? defaultImage,
+              )),
+          Container(
+            width: 40,
+            height: 40,
+            child: Text(
+              product.productName,
+              style: BeanOiTheme.typography.overline
+                  .copyWith(color: BeanOiTheme.palettes.neutral700),
+              textAlign: TextAlign.center,
+            ),
+          )
+        ],
+      ),
     );
   }
 }

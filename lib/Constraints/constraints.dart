@@ -118,3 +118,14 @@ class CollectionTypeEnum {
   static const int BestSeller = 1;
   static const int Suggestion = 2;
 }
+
+class FilterBy {
+   static const FILTER_ALL = 'FILTER_ALL';
+  static const FILTER_NORMAL = 'FILTER_NORMAL';
+  static const FILTER_GIFT = 'FILTER_GIFT';
+}
+
+class FeedType {
+  static const String NORMAL = 'Normal';
+  static const String GIFT = 'Gift';
+}
