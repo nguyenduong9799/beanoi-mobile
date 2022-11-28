@@ -293,6 +293,9 @@ class _NewsfeedScreenState extends State<NewsfeedScreen> {
     final listProducts = newsfeed.listProducts
         .where((p) => p.productTypeId != ProductType.EXTRA_PRODUCT);
 
+    final list = newsfeed.listProducts.map((e) => e.productName);
+    print('name>> $list');
+
     return ListTile(
       contentPadding: EdgeInsets.fromLTRB(8, 8, 8, 8),
       title: Column(
@@ -395,21 +398,27 @@ class _NewsfeedScreenState extends State<NewsfeedScreen> {
                                   context: context,
                                   builder: (BuildContext context) {
                                     return Container(
-                                      height: 200,
-                                      color: Colors.amber,
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.only(
+                                        topLeft: const Radius.circular(100.0),
+                                        topRight: const Radius.circular(100.0),
+                                      )),
+                                      height: 400,
+                                      color: Color(0xFFFFFF),
                                       child: Center(
                                         child: Column(
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
                                           mainAxisSize: MainAxisSize.min,
                                           children: <Widget>[
-                                            const Text('Modal BottomSheet'),
-                                            ElevatedButton(
-                                              child: const Text(
-                                                  'Close BottomSheet'),
-                                              onPressed: () =>
-                                                  Navigator.pop(context),
-                                            ),
+                                            showProductDetail(newsfeed),
+                                            // const Text('Modal BottomSheet'),
+                                            // ElevatedButton(
+                                            //   child: const Text(
+                                            //       'Close BottomSheet'),
+                                            //   onPressed: () =>
+                                            //       Navigator.pop(context),
+                                            // ),
                                           ],
                                         ),
                                       ),
@@ -426,6 +435,21 @@ class _NewsfeedScreenState extends State<NewsfeedScreen> {
             ],
           ),
           // Expanded(child: child)
+        ],
+      ),
+    );
+  }
+
+  Widget showProductDetail(NewsfeedDTO newsfeed) {
+    // print('print ${newsfeed.listProducts.map((e) => e.productName)}');
+
+    return Container(
+      decoration: BoxDecoration(color: Colors.white),
+      child: Column(
+        children: [
+          Row(
+            children: [Container()],
+          )
         ],
       ),
     );
