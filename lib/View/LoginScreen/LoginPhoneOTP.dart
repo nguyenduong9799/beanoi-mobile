@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:unidelivery_mobile/Constraints/BeanOiTheme/index.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Enums/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
@@ -60,7 +61,7 @@ class _LoginWithPhoneOTPState extends State<LoginWithPhoneOTP> {
               width: 32,
               height: 32,
               decoration: BoxDecoration(
-                  color: kPrimary,
+                  color: BeanOiTheme.palettes.primary300,
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
@@ -97,7 +98,7 @@ class _LoginWithPhoneOTPState extends State<LoginWithPhoneOTP> {
                 flex: 2,
                 child: Container(
                   decoration: BoxDecoration(
-                    color: kPrimary,
+                    color: BeanOiTheme.palettes.primary300,
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(16),
                       topRight: Radius.circular(16),
@@ -115,7 +116,7 @@ class _LoginWithPhoneOTPState extends State<LoginWithPhoneOTP> {
                             padding: const EdgeInsets.symmetric(vertical: 8.0),
                             child: Text(
                               'Nhập mã OTP',
-                              style: Get.theme.textTheme.headline1
+                              style: BeanOiTheme.typography.h1
                                   .copyWith(color: Colors.white),
                               textAlign: TextAlign.left,
                             ),
@@ -214,7 +215,7 @@ class _LoginWithPhoneOTPState extends State<LoginWithPhoneOTP> {
                               },
                               child: Center(
                                   child: Text("Xác nhận".toUpperCase(),
-                                      style: Get.theme.textTheme.headline1)),
+                                      style: BeanOiTheme.typography.h1)),
                             ),
                           ),
                         ],
@@ -241,10 +242,10 @@ class _LoginWithPhoneOTPState extends State<LoginWithPhoneOTP> {
         shape: PinCodeFieldShape.box,
         inactiveColor: kBackgroundGrey[0],
         selectedFillColor: Colors.white,
-        inactiveFillColor: kPrimary,
+        inactiveFillColor: BeanOiTheme.palettes.primary300,
         activeFillColor: Colors.white,
-        activeColor: kPrimary,
-        selectedColor: kPrimary,
+        activeColor: BeanOiTheme.palettes.primary300,
+        selectedColor: BeanOiTheme.palettes.primary300,
         borderRadius: BorderRadius.circular(8),
         fieldHeight: 50,
         fieldWidth: 40,

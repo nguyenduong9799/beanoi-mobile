@@ -6,6 +6,7 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:unidelivery_mobile/Accessories/index.dart';
+import 'package:unidelivery_mobile/Constraints/BeanOiTheme/index.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 
@@ -31,7 +32,7 @@ class _BannerDetailScreenState extends State<BannerDetailScreen> {
             icon: Icon(
               AntDesign.close,
               size: 24,
-              color: kPrimary,
+              color: BeanOiTheme.palettes.primary400,
             ),
             onPressed: () {
               Get.back();
@@ -65,7 +66,7 @@ class _BannerDetailScreenState extends State<BannerDetailScreen> {
               ),
               errorWidget: (context, url, error) => Icon(
                 MaterialIcons.broken_image,
-                color: kPrimary.withOpacity(0.5),
+                color: BeanOiTheme.palettes.primary400.withOpacity(0.5),
               ),
             ),
             Html(
@@ -73,7 +74,7 @@ class _BannerDetailScreenState extends State<BannerDetailScreen> {
               onImageError: (exception, stackTrace) {},
               onLinkTap: (url, context, attributes, element) async {
                 if (url != null) {
-                   Get.toNamed(RouteHandler.WEBVIEW, arguments: url);
+                  Get.toNamed(RouteHandler.WEBVIEW, arguments: url);
                 }
               },
             ),

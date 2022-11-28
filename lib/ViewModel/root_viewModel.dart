@@ -254,7 +254,6 @@ class RootViewModel extends BaseModel {
       setState(ViewStatus.Loading);
       StoreDAO _storeDAO = new StoreDAO();
       Function eq = const ListEquality().equals;
-      clearCart();
       currentStore = await getStore();
       if (currentStore == null) {
         listStore = await _storeDAO.getStores(id: UNIBEAN_STORE);

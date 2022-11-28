@@ -145,7 +145,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                                       ? widget.dto.bean.toString()
                                       : "0") +
                                   " ",
-                              style: Get.theme.textTheme.headline3
+                              style: BeanOiTheme.typography.buttonLg
                                   .copyWith(color: Colors.black),
                               children: [
                                 WidgetSpan(
@@ -195,7 +195,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
     // Tab extraTab = Tab(
     //   child: Text("Thêm"),
     // );
-    String extraTab = "Thêm";
+    String extraTab = "Topping";
 
     if (widget.dto.type == ProductType.MASTER_PRODUCT ||
         widget.dto.type == ProductType.COMPLEX_PRODUCT) {
@@ -246,7 +246,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
   Widget affectedAtributeContent() {
     List<Widget> attributes;
     List<String> listOptions;
+    Map sizeM = {'size': 'M'};
     Map sizeL = {'size': 'L'};
+    Map sizeS = {'size': 'S'};
     if (widget.dto.listChild != null) {
       print(
           'pricesizeL>> ${widget.dto.listChild.firstWhere((element) => mapEquals(element.attributes, sizeL)).price}');
@@ -317,7 +319,15 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                                     child: Row(
                                       children: [
                                         if (listOptions[i] == 'M') ...[
-                                          Text("+" + formatPrice(0))
+                                          Text("+" +
+                                              formatPrice(widget.dto.listChild
+                                                      .firstWhere((element) =>
+                                                          mapEquals(
+                                                              element
+                                                                  .attributes,
+                                                              sizeM))
+                                                      .price -
+                                                  widget.dto.minPrice))
                                         ] else if (listOptions[i] == 'L') ...[
                                           Text("+" +
                                               formatPrice(widget.dto.listChild
@@ -329,7 +339,15 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                                                       .price -
                                                   widget.dto.minPrice))
                                         ] else if (listOptions[i] == 'S') ...[
-                                          Text("+" + formatPrice(10000))
+                                          Text("+" +
+                                              formatPrice(widget.dto.listChild
+                                                      .firstWhere((element) =>
+                                                          mapEquals(
+                                                              element
+                                                                  .attributes,
+                                                              sizeS))
+                                                      .price -
+                                                  widget.dto.minPrice))
                                         ],
                                       ],
                                     ),
@@ -355,25 +373,32 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
               attributes = [];
               for (int i = 0; i < model.extra.keys.toList().length; i++) {
                 attributes.add(CheckboxListTile(
+                  controlAffinity: ListTileControlAffinity.leading,
                   title: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        model.extra.keys.elementAt(i).name.contains("Extra")
-                            ? model.extra.keys
-                                .elementAt(i)
-                                .name
-                                .replaceAll("Extra", "+")
-                            : model.extra.keys.elementAt(i).name,
-                        style: kSubtitleTextStyle,
+                      Container(
+                        transform: Matrix4.translationValues(-15.0, 0.0, 0.0),
+                        child: Text(
+                          model.extra.keys.elementAt(i).name.contains("Extra")
+                              ? model.extra.keys
+                                  .elementAt(i)
+                                  .name
+                                  .replaceAll("Extra", "+")
+                              : model.extra.keys.elementAt(i).name,
+                          style: BeanOiTheme.typography.body1
+                              .copyWith(fontSize: 14),
+                        ),
                       ),
                       Flexible(
                         child: Padding(
-                          padding: const EdgeInsets.only(right: 8.0),
+                          padding: const EdgeInsets.only(right: 0.0),
                           child: Text(
-                            NumberFormat.simpleCurrency(locale: "vi")
-                                .format(model.extra.keys.elementAt(i).price),
-                            style: kSubtitleTextStyle,
+                            '+' +
+                                NumberFormat.simpleCurrency(locale: "vi")
+                                    .format(
+                                        model.extra.keys.elementAt(i).price),
+                            style: BeanOiTheme.typography.subtitle1,
                           ),
                         ),
                       )
@@ -457,19 +482,19 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                           children: [
                             Flexible(
                               child: Text(model.count.toString() + " Món ",
-                                  style: Get.theme.textTheme.headline3
+                                  style: BeanOiTheme.typography.buttonLg
                                       .copyWith(color: Colors.white)),
                             ),
                             Flexible(
                               child: Text("Thêm",
-                                  style: Get.theme.textTheme.headline3
+                                  style: BeanOiTheme.typography.buttonLg
                                       .copyWith(color: Colors.white)),
                             ),
                             widget.dto.type != ProductType.GIFT_PRODUCT
                                 ? Flexible(
                                     child: Text(
                                       formatPrice(model.total) ?? "",
-                                      style: Get.theme.textTheme.headline3
+                                      style: BeanOiTheme.typography.buttonLg
                                           .copyWith(color: Colors.white),
                                     ),
                                   )
@@ -477,7 +502,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                                     child: RichText(
                                         text: TextSpan(
                                             text: formatBean(model.total) + " ",
-                                            style: Get.theme.textTheme.headline3
+                                            style: BeanOiTheme
+                                                .typography.buttonLg
                                                 .copyWith(color: Colors.white),
                                             children: [
                                           WidgetSpan(
@@ -512,7 +538,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                           height: 8,
                         ),
                         Text("Vui lòng chọn những trường bắt buộc (*)",
-                            style: Get.theme.textTheme.headline3
+                            style: BeanOiTheme.typography.buttonLg
                                 .copyWith(color: Colors.white)),
                         SizedBox(
                           height: 8,
@@ -539,17 +565,23 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                 model.minusQuantity();
               },
             ),
-            SizedBox(
-              width: 8,
+            // SizedBox(
+            //   width: 8,
+            // ),
+            Container(
+              padding: EdgeInsets.fromLTRB(12, 5, 12, 5),
+              decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey),
+                  borderRadius: BorderRadius.circular(8)),
+              child: Text(
+                model.count.toString(),
+                style: BeanOiTheme.typography.subtitle1
+                    .copyWith(color: Colors.black, fontWeight: FontWeight.w700),
+              ),
             ),
-            Text(
-              model.count.toString(),
-              style:
-                  Get.theme.textTheme.headline1.copyWith(color: Colors.black),
-            ),
-            SizedBox(
-              width: 8,
-            ),
+            // SizedBox(
+            //   width: 1,
+            // ),
             IconButton(
               icon: Icon(
                 Icons.add_circle_outline,

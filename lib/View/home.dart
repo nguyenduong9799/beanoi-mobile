@@ -15,6 +15,7 @@ import 'package:unidelivery_mobile/Accessories/Home/HomeStoreSection.dart';
 import 'package:unidelivery_mobile/Accessories/index.dart';
 import 'package:unidelivery_mobile/Accessories/section.dart';
 import 'package:unidelivery_mobile/Accessories/touchopacity.dart';
+import 'package:unidelivery_mobile/Constraints/BeanOiTheme/index.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Enums/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
@@ -58,7 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
     //         Brightness.dark // Dark == white status bar -- for IOS.
     //     ));
     return Scaffold(
-      backgroundColor: kBackgroundGrey[2],
+      backgroundColor: BeanOiTheme.palettes.neutral200,
       resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: Container(
@@ -75,7 +76,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     Expanded(
                       child: Container(
-                        color: kBackgroundGrey[2],
+                        color: BeanOiTheme.palettes.neutral200,
                         padding: EdgeInsets.only(top: 0),
                         child: RefreshIndicator(
                           key: _refreshIndicatorKey,
@@ -90,7 +91,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     child: Text(
                                       "BeanOi đã cố gắng hết sức ..\nNhưng vẫn bị con quỷ Bug đánh bại.",
                                       textAlign: TextAlign.center,
-                                      style: Get.theme.textTheme.headline3,
+                                      style: BeanOiTheme.typography.subtitle2,
                                     ),
                                   ),
                                   SizedBox(height: 8),
@@ -131,7 +132,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               );
                             } else {
                               return Container(
-                                color: kBackgroundGrey[2],
+                                color: BeanOiTheme.palettes.neutral200,
                                 child: NotificationListener<ScrollNotification>(
                                   onNotification: (n) {
                                     if (n.metrics.pixels <= HEIGHT) {
@@ -180,6 +181,7 @@ class _HomeScreenState extends State<HomeScreen> {
       buildGiftCanExchangeSection(),
       SizedBox(height: 8),
       HomeCollection(),
+      // testScreen(),
       SizedBox(height: 8),
       HomeStoreSection(),
       // SizedBox(height: 46),
@@ -241,7 +243,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               SizedBox(width: 8),
                               Text(
                                 "BEAN MART",
-                                style: Get.theme.textTheme.headline3
+                                style: BeanOiTheme.typography.subtitle2
                                     .copyWith(fontSize: 14),
                               ),
                             ],
@@ -295,12 +297,15 @@ class _HomeScreenState extends State<HomeScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Icon(Icons.wallet_giftcard_outlined, color: kPrimary),
+              Icon(Icons.wallet_giftcard_outlined,
+                  color: BeanOiTheme.palettes.primary400),
               Text(
                 "Bạn có 20 mã giảm giá vẫy gọi nè",
-                style: kTitleTextStyle.copyWith(color: kPrimary),
+                style: kTitleTextStyle.copyWith(
+                    color: BeanOiTheme.palettes.primary400),
               ),
-              Icon(Icons.arrow_forward_ios_outlined, color: kPrimary)
+              Icon(Icons.arrow_forward_ios_outlined,
+                  color: BeanOiTheme.palettes.primary400)
             ],
           )),
     ));
@@ -351,7 +356,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               canExchangeGift
                                   ? "Đổi ngay 1 ${gift.name}"
                                   : "Bạn sắp nhận được ${gift.name} rồi đấy",
-                              style: Get.theme.textTheme.headline3
+                              style: BeanOiTheme.typography.subtitle2
                                   .copyWith(color: kDescriptionTextColor),
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
@@ -365,7 +370,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               width: Get.width,
                               height: 16,
                               decoration: BoxDecoration(
-                                color: kBackgroundGrey[2],
+                                color: BeanOiTheme.palettes.neutral200,
                                 borderRadius: BorderRadius.circular((8)),
                               ),
                               child: Stack(
@@ -378,7 +383,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     child: AnimatedContainer(
                                       duration: Duration(seconds: 2),
                                       decoration: BoxDecoration(
-                                        color: kPrimary,
+                                        color: BeanOiTheme.palettes.primary400,
                                         borderRadius:
                                             BorderRadius.circular((8)),
                                       ),
@@ -409,7 +414,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                         child: Text(
                                           "Đổi ngay",
                                           style: TextStyle(
-                                            color: kPrimary,
+                                            color:
+                                                BeanOiTheme.palettes.primary400,
                                             fontSize: 18,
                                             fontWeight: FontWeight.bold,
                                           ),
@@ -419,7 +425,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                     : RichText(
                                         text: TextSpan(
                                             text: "",
-                                            style: Get.theme.textTheme.headline3
+                                            style: BeanOiTheme
+                                                .typography.subtitle2
                                                 .copyWith(
                                                     color:
                                                         kDescriptionTextColor),
@@ -427,7 +434,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                               TextSpan(
                                                 text: "${userBean.ceil()}",
                                                 style: TextStyle(
-                                                  color: kPrimary,
+                                                  color: BeanOiTheme
+                                                      .palettes.primary400,
                                                   fontSize: 18,
                                                   fontWeight: FontWeight.bold,
                                                 ),
@@ -489,7 +497,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         duration: Duration(seconds: 2),
                         decoration: BoxDecoration(
                             border: Border(
-                                left: BorderSide(color: kPrimary, width: 3))),
+                                left: BorderSide(
+                                    color: BeanOiTheme.palettes.primary400,
+                                    width: 3))),
                         width: Get.width * 0.95,
                         child: IntrinsicHeight(
                           child: Row(
@@ -514,8 +524,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                           children: [
                                             Text(
                                               order.invoiceId,
-                                              style:
-                                                  Get.theme.textTheme.headline3,
+                                              style: BeanOiTheme
+                                                  .typography.subtitle2,
                                             ),
                                             SizedBox(height: 8),
                                             Text('Đơn hàng mới',
@@ -617,7 +627,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               model.blogs[index].imageUrl == "")
                             return Icon(
                               MaterialIcons.broken_image,
-                              color: kPrimary.withOpacity(0.5),
+                              color: BeanOiTheme.palettes.primary400
+                                  .withOpacity(0.5),
                             );
 
                           return CachedNetworkImage(
@@ -654,7 +665,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             errorWidget: (context, url, error) => Icon(
                               MaterialIcons.broken_image,
-                              color: kPrimary.withOpacity(0.5),
+                              color: BeanOiTheme.palettes.primary400
+                                  .withOpacity(0.5),
                             ),
                           );
                         }),
@@ -715,12 +727,15 @@ class _HomeScreenState extends State<HomeScreen> {
                           decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(8),
-                              border: Border.all(color: kPrimary)),
+                              border: Border.all(
+                                  color: BeanOiTheme.palettes.primary400)),
                           child: Text(
                             dialog.metaData["btnTitle"] != null
                                 ? dialog.metaData["btnTitle"]
                                 : "Chi Tiết",
-                            style: TextStyle(fontSize: 14, color: kPrimary),
+                            style: TextStyle(
+                                fontSize: 14,
+                                color: BeanOiTheme.palettes.primary400),
                             textAlign: TextAlign.center,
                           ),
                         ),
@@ -740,7 +755,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           errorWidget: (context, url, error) => Icon(
             MaterialIcons.broken_image,
-            color: kPrimary.withOpacity(0.5),
+            color: BeanOiTheme.palettes.primary400.withOpacity(0.5),
           ),
         ),
       )),
