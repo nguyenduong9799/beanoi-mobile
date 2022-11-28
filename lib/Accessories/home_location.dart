@@ -3,10 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:unidelivery_mobile/Constraints/BeanOiTheme/button.dart';
+import 'package:unidelivery_mobile/Constraints/BeanOiTheme/index.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Enums/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
+import 'package:unidelivery_mobile/Widgets/beanoi_button.dart';
+// import 'package:unidelivery_mobile/Widgets/button.dart';
 
 class HomeLocationSelect extends StatefulWidget {
   final CampusDTO selectedCampus;
@@ -73,32 +77,54 @@ class _HomeLocationSelectState extends State<HomeLocationSelect> {
                     topRight: Radius.circular(8),
                   ),
                 ),
-                padding: EdgeInsets.only(top: 8),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        "Chọn nơi nhận",
-                        style: Get.theme.textTheme.headline1,
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text("Chọn nơi nhận",
+                              style: BeanOiTheme.typography.h2),
+                        ),
+                        Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: BeanOiButton.outlined(
+                                onPressed: () {
+                                  Get.offAndToNamed(RouteHandler.SELECT_STORE);
+                                },
+                                size: BeanOiButtonSize.small,
+                                child: Text(
+                                  "Đổi khu vực",
+                                ))),
+                      ],
                     ),
                     Expanded(
                       child: Container(
                         color: Colors.white,
                         child: ListView(
-                          children: widget.selectedCampus != null
-                              ? [_buildPanel(widget.selectedCampus)]
-                              : model.campuses
-                                  .asMap()
-                                  .map((index, campus) => MapEntry(
-                                      campus, _buildPanel(campus, index)))
-                                  .values
-                                  .toList(),
-                        ),
+                            children: widget.selectedCampus != null
+                                ? [_buildPanel(widget.selectedCampus)]
+                                : _buildPanel(widget.selectedCampus)),
                       ),
-                    )
+                    ),
+                    // Expanded(
+                    //   child: Container(
+                    //     color: Colors.white,
+                    //     child: ListView(
+                    //       children: widget.selectedCampus != null
+                    //           ? [_buildPanel(widget.selectedCampus)]
+                    //           : model.listStore
+                    //               .asMap()
+                    //               .map((index, campus) => MapEntry(
+                    //                   campus, _buildPanel(campus, index)))
+                    //               .values
+                    //               .toList(),
+                    //     ),
+                    //   ),
+                    // )
                   ],
                 ),
               );
@@ -108,43 +134,58 @@ class _HomeLocationSelectState extends State<HomeLocationSelect> {
     );
   }
 
-  Widget _buildPanel(CampusDTO campus, [int index]) {
-    return ExpandablePanel(
-      theme: const ExpandableThemeData(
-        tapBodyToCollapse: true,
-        iconColor: kPrimary,
-      ),
-      collapsed: SizedBox.shrink(),
-      header: Container(
-        padding: EdgeInsets.only(top: 8, bottom: 8),
-        child: Row(
-          children: [
-            Icon(Icons.location_on_outlined, color: kPrimary),
-            SizedBox(width: 8),
-            Flexible(
-              child: Text(campus.name,
-                  style: campus.available
-                      ? Get.theme.textTheme.headline3
-                      : Get.theme.textTheme.headline3
-                          .copyWith(color: Colors.grey)),
-            ),
-          ],
-        ),
-      ),
-      expanded: Container(
-        width: double.infinity,
-        padding: EdgeInsets.only(bottom: 8),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ...campus.locations
-                .map(
-                  (location) => _buildLocationItem(location, campus),
-                )
-                .toList(),
-          ],
-        ),
+  Widget _buildPanel(CampusDTO campus) {
+    // return ExpandablePanel(
+    //   theme: const ExpandableThemeData(
+    //     tapBodyToCollapse: true,
+    //     iconColor: kPrimary,
+    //   ),
+    //   collapsed: SizedBox.shrink(),
+    //   header: Container(
+    //     padding: EdgeInsets.only(top: 8, bottom: 8),
+    //     child: Row(
+    //       children: [
+    //         Icon(Icons.location_on_outlined, color: kPrimary),
+    //         SizedBox(width: 8),
+    //         Flexible(
+    //           child: Text(campus.name,
+    //               style: campus.available
+    //                   ? Get.theme.textTheme.headline3
+    //                   : Get.theme.textTheme.headline3
+    //                       .copyWith(color: Colors.grey)),
+    //         ),
+    //       ],
+    //     ),
+    //   ),
+    //   expanded: Container(
+    //     width: double.infinity,
+    //     padding: EdgeInsets.only(bottom: 8),
+    //     child: Column(
+    //       crossAxisAlignment: CrossAxisAlignment.start,
+    //       mainAxisAlignment: MainAxisAlignment.center,
+    //       children: [
+    //         ...campus.locations
+    //             .map(
+    //               (location) => _buildLocationItem(location, campus),
+    //             )
+    //             .toList(),
+    //       ],
+    //     ),
+    //   ),
+    // );
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.only(bottom: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          ...campus.locations
+              .map(
+                (location) => _buildLocationItem(location, campus),
+              )
+              .toList(),
+        ],
       ),
     );
   }

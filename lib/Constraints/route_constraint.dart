@@ -28,4 +28,5 @@ class RouteHandler {
   static const String BEAN_MART = "BEAN_MART";
   static const String VOUCHER = "/voucher";
   static const String DESIGN = "/design";
+  static const String SELECT_STORE = "/select_store";
 }

@@ -143,7 +143,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                     child: Column(
                                       // addAutomaticKeepAlives: true,
                                       children: [
-                                        SizedBox(height: 8),
                                         ...renderHomeSections().toList(),
                                       ],
                                     ),
@@ -184,29 +183,7 @@ class _HomeScreenState extends State<HomeScreen> {
       SizedBox(height: 8),
       HomeStoreSection(),
       // SizedBox(height: 46),
-      testScreen(),
     ];
-  }
-
-  Widget testScreen() {
-    onPressed() {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => InitiationPage()),
-      );
-    }
-
-    return Container(
-      child: Column(
-        children: [
-          Row(
-            children: [
-              IconButton(onPressed: onPressed, icon: Icon(Icons.access_alarm))
-            ],
-          )
-        ],
-      ),
-    );
   }
 
   Widget buildLinkBtns() {

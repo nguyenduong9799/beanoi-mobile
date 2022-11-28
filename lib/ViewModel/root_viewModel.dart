@@ -23,7 +23,6 @@ class RootViewModel extends BaseModel {
   MenuDTO selectedMenu;
   List<MenuDTO> listMenu;
   List<CampusDTO> listStore;
-  List<CampusDTO> campuses;
   ProductDAO _productDAO;
   List<TimeSlots> listAvailableTimeSlots;
 
@@ -56,19 +55,55 @@ class RootViewModel extends BaseModel {
   Future getStores() async {
     setState(ViewStatus.Loading);
     StoreDAO dao = new StoreDAO();
-    campuses = await dao.getStores();
-    for (int i = 0; i < campuses.length; i++) {
-      List<LocationDTO> locations = await dao.getLocations(campuses[i].id);
-      campuses[i].locations = locations;
+    listStore = await dao.getStores();
+    for (int i = 0; i < listStore.length; i++) {
+      List<LocationDTO> locations = await dao.getLocations(listStore[i].id);
+      listStore[i].locations = locations;
     }
-    CampusDTO campus = campuses.firstWhere(
-      (element) => element.id == currentStore.id,
-      orElse: () => null,
-    );
-    if (campus != null) {
-      campus.locations = currentStore.locations;
-    }
+    // CampusDTO campus = listStore.firstWhere(
+    //   (element) => element.id == currentStore.id,
+    //   orElse: () => null,
+    // );
+    // if (campus != null) {
+    //   campus.locations = currentStore.locations;
+    // }
     setState(ViewStatus.Completed);
+  }
+
+  Future<void> setCurrentStore(CampusDTO campus) async {
+    showLoadingDialog();
+    Function eq = const ListEquality().equals;
+    StoreDAO _storeDAO = new StoreDAO();
+    currentStore = campus;
+    List<LocationDTO> locations = await _storeDAO.getLocations(currentStore.id);
+    if (!eq(locations, currentStore.locations)) {
+      currentStore.locations.forEach((location) {
+        if (location.isSelected) {
+          DestinationDTO destination = location.destinations
+              .where(
+                (element) => element.isSelected,
+              )
+              .first;
+          locations.forEach((element) {
+            if (element.id == location.id) {
+              element.isSelected = true;
+              element.destinations.forEach((des) {
+                if (des.id == destination.id) des.isSelected = true;
+              });
+            }
+          });
+        }
+      });
+
+      currentStore.locations = locations;
+      await setStore(currentStore);
+      setState(ViewStatus.Completed);
+    }
+    await setStore(currentStore);
+    await getListMenu(currentStore.id);
+    await startUp();
+    hideDialog();
+    Get.toNamed(RouteHandler.NAV);
   }
 
   Future<void> setLocation(DestinationDTO destination, LocationDTO location,
@@ -112,13 +147,11 @@ class RootViewModel extends BaseModel {
     MenuDAO _menuDAO = new MenuDAO();
     listMenu = await _menuDAO.getMenus(storeId);
     bool found = false;
-    selectedMenu = await getMenu();
     if (selectedMenu == null) {
       selectedMenu = listMenu[0];
       for (MenuDTO element in listMenu) {
         if (isMenuAvailable(element)) {
           selectedMenu = element;
-          await setMenu(selectedMenu);
           found = true;
           break;
         }
@@ -133,7 +166,6 @@ class RootViewModel extends BaseModel {
       for (MenuDTO element in listMenu) {
         if (selectedMenu.menuId == element.menuId) {
           selectedMenu = element;
-          await setMenu(selectedMenu);
           listAvailableTimeSlots = selectedMenu.timeSlots
               .where((element) => isTimeSlotAvailable(element.checkoutTime))
               .toList();
@@ -208,7 +240,6 @@ class RootViewModel extends BaseModel {
       if (option == 1) {
         // showLoadingDialog();
         selectedMenu = menu;
-        await setMenu(selectedMenu);
         await Get.find<OrderViewModel>().removeCart();
         await setStore(currentStore);
         await refreshMenu();
@@ -234,13 +265,11 @@ class RootViewModel extends BaseModel {
           await getListMenu(currentStore.id);
         } else {
           bool found = false;
-          selectedMenu = await getMenu();
           if (selectedMenu == null) {
             selectedMenu = listMenu[0];
             for (MenuDTO element in listMenu) {
               if (isMenuAvailable(element)) {
                 selectedMenu = element;
-                await setMenu(selectedMenu);
                 found = true;
                 break;
               }

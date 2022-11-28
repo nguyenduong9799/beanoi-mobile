@@ -377,18 +377,19 @@ class _FixedAppBarState extends State<FixedAppBar> {
   Widget location([bool loading = false]) {
     return ScopedModelDescendant<RootViewModel>(
       builder: (context, child, root) {
-        LocationDTO location = root.currentStore?.locations?.firstWhere(
-          (element) => element.isSelected,
-          orElse: () => null,
-        );
-        DestinationDTO destinationDTO = location?.destinations
-            ?.firstWhere((element) => element.isSelected, orElse: () => null);
+        // LocationDTO location = root.currentStore?.locations?.firstWhere(
+        //   (element) => element.isSelected,
+        //   orElse: () => null,
+        // );
+        // DestinationDTO destinationDTO = location?.destinations
+        //     ?.firstWhere((element) => element.isSelected, orElse: () => null);
         String text = "Đợi tý đang load...";
         final status = root.status;
         if (root.changeAddress) {
           text = "Đang thay đổi...";
         } else if (location != null) {
-          text = destinationDTO.name + " - " + location.address;
+          // text = destinationDTO.name + " - " + location.address;
+          text = root.currentStore?.name;
         } else {
           text = "Chưa chọn";
         }
@@ -444,7 +445,7 @@ class _FixedAppBarState extends State<FixedAppBar> {
             ),
           ),
           onTap: () async {
-            await root.processChangeLocation();
+            Get.offAndToNamed(RouteHandler.SELECT_STORE);
           },
         );
       },

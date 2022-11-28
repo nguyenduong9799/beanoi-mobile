@@ -1,13 +1,27 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Constraints/BeanOiTheme/index.dart';
+import 'package:unidelivery_mobile/Constraints/index.dart';
+import 'package:unidelivery_mobile/Enums/index.dart';
+import 'package:unidelivery_mobile/Model/DTO/index.dart';
+import 'package:unidelivery_mobile/ViewModel/index.dart';
 
 class InitiationPage extends StatefulWidget {
+  const InitiationPage({Key key}) : super(key: key);
   @override
   _InitiationPageState createState() => _InitiationPageState();
 }
 
 class _InitiationPageState extends State<InitiationPage> {
+  @override
+  void initState() {
+    Get.find<RootViewModel>().getStores();
+    super.initState();
+    // _refresh();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,7 +30,8 @@ class _InitiationPageState extends State<InitiationPage> {
         width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(color: BeanOiTheme.palettes.neutral100),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Container(
                 margin: EdgeInsets.only(top: 50, left: 30),
@@ -33,110 +48,60 @@ class _InitiationPageState extends State<InitiationPage> {
             Column(
               children: [
                 Container(
-                  margin: EdgeInsets.only(top: 20),
+                  margin: EdgeInsets.only(top: 16),
                   alignment: Alignment.center,
                   child: Text(
                     'CHỌN KHU VỰC ĐẶT ĐƠN',
-                    style: TextStyle(
-                        color: BeanOiTheme.palettes.primary200,
-                        fontWeight: FontWeight.w800,
-                        fontSize: 15),
+                    style: BeanOiTheme.typography.h2.copyWith(
+                        color: BeanOiTheme.palettes.primary400,
+                        fontWeight: FontWeight.bold),
                   ),
                 ),
-                Container(
-                  margin: EdgeInsets.only(top: 30, left: 40, right: 40),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: Colors.white,
-                      boxShadow: [
-                        BoxShadow(
-                          color: BeanOiTheme.palettes.neutral300,
-                          blurRadius: 6.0, // soften the shadow
-                          offset: Offset(
-                            0.0, // Move to right 10  horizontally
-                            5.0, // Move to bottom 10 Vertically
-                          ),
-                        )
-                      ]),
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(30, 15, 30, 15),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.location_on_outlined,
-                                  color: BeanOiTheme.palettes.secondary800,
+                ScopedModel(
+                  model: Get.find<RootViewModel>(),
+                  child: ScopedModelDescendant<RootViewModel>(
+                      builder: (context, child, model) {
+                    final status = model.status;
+                    final stores = model.listStore;
+
+                    if (status == ViewStatus.Loading)
+                      return AspectRatio(
+                        aspectRatio: 1,
+                        child: Container(
+                            height: 50,
+                            width: MediaQuery.of(context).size.width,
+                            child: Center(child: CircularProgressIndicator())),
+                      );
+
+                    if (stores == null)
+                      return Center(
+                        child: Text('Không có cửa khu vực nào'),
+                      );
+
+                    return Container(
+                        margin: EdgeInsets.all(24),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(16),
+                            color: Colors.white,
+                            boxShadow: [
+                              BoxShadow(
+                                color: BeanOiTheme.palettes.neutral300,
+                                blurRadius: 6.0, // soften the shadow
+                                offset: Offset(
+                                  0.0, // Move to right 10  horizontally
+                                  5.0, // Move to bottom 10 Vertically
                                 ),
-                                InkWell(
-                                  onTap: () {
-                                    print('Khu vực công nghệ cao is tapped');
-                                  },
-                                  child: Text(
-                                    'Khu vực công nghệ cao',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.w600),
-                                  ),
-                                )
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.arrow_forward_ios,
-                                  color: BeanOiTheme.palettes.secondary800,
-                                )
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
-                      Divider(
-                        color: Colors.black,
-                        indent: 20,
-                        endIndent: 20,
-                        height: 1,
-                      ),
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(30, 15, 30, 15),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.location_on_outlined,
-                                  color: BeanOiTheme.palettes.secondary800,
-                                ),
-                                InkWell(
-                                  onTap: () {
-                                    print('Vinhomes Grandpark is tapped');
-                                  },
-                                  child: Text('Vinhomes Grandpark',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w600)),
-                                )
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.arrow_forward_ios,
-                                  color: BeanOiTheme.palettes.secondary800,
-                                )
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+                              )
+                            ]),
+                        child: Column(
+                          children: stores
+                              .map((store) => buildStoreSelect(store))
+                              .toList(),
+                        ));
+                  }),
                 ),
                 Container(
-                  margin: EdgeInsets.only(top: 30),
+                  margin: EdgeInsets.only(top: 24),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
@@ -170,18 +135,51 @@ class _InitiationPageState extends State<InitiationPage> {
                 )
               ],
             ),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.end,
+            //   children: [
+            //     Container(
+            //       child: Image(
+            //         image: AssetImage('assets/images/logo.png'),
+            //         height: 200,
+            //         width: 200,
+            //       ),
+            //     )
+            //   ],
+            // ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildStoreSelect(CampusDTO area) {
+    return Padding(
+      padding: EdgeInsets.all(8),
+      child: InkWell(
+        onTap: () {
+          Get.find<RootViewModel>().setCurrentStore(area);
+        },
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
             Row(
-              mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Container(
-                  child: Image(
-                    image: AssetImage('assets/images/logo.png'),
-                    height: 200,
-                    width: 200,
-                  ),
+                Icon(
+                  Icons.location_on_outlined,
+                  color: BeanOiTheme.palettes.secondary800,
+                ),
+                Text(
+                  area.name,
+                  style: BeanOiTheme.typography.body2,
                 )
               ],
             ),
+            Icon(
+              Icons.arrow_forward_ios,
+              color: BeanOiTheme.palettes.secondary800,
+            )
           ],
         ),
       ),

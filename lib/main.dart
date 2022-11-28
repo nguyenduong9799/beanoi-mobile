@@ -8,6 +8,7 @@ import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Utils/index.dart';
 import 'package:unidelivery_mobile/View/design_screen.dart';
 import 'package:unidelivery_mobile/View/index.dart';
+import 'package:unidelivery_mobile/View/initiation_screen.dart';
 import 'package:unidelivery_mobile/View/referral.dart';
 import 'package:unidelivery_mobile/View/transaction.dart';
 import 'package:unidelivery_mobile/View/transactionDetail.dart';
@@ -127,6 +128,8 @@ class MyApp extends StatelessWidget {
             return ScaleRoute(page: OnBoardScreen());
           case RouteHandler.BEAN_MART:
             return ScaleRoute(page: ShopScreen());
+          case RouteHandler.SELECT_STORE:
+            return ScaleRoute(page: InitiationPage());
           case RouteHandler.WEBVIEW:
             return FadeRoute(
               page: WebViewScreen(url: settings.arguments),

@@ -79,7 +79,7 @@ class MyRequest {
   static BaseOptions options = new BaseOptions(
       // baseUrl: 'https://localhost:5001/api/',
       // baseUrl: 'https://stg-api.beanoi.com/api/',
-      baseUrl: 'https://api.beanoi.com/api/',
+      baseUrl: 'https://stg-api.beanoi.com/api/',
       headers: {
         Headers.contentTypeHeader: "application/json",
       },

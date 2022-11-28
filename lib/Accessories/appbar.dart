@@ -51,7 +51,7 @@ class _AppBarSate extends State<DefaultAppBar> {
               ),
             ),
       title: Text(widget.title.toUpperCase(),
-          style: BeanOiTheme.typography.h1
+          style: BeanOiTheme.typography.h2
               .copyWith(color: BeanOiTheme.palettes.primary400)),
     );
   }
