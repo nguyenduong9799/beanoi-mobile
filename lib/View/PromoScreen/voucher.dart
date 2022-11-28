@@ -10,6 +10,7 @@ import 'package:unidelivery_mobile/Accessories/voucher/voucher_card.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Enums/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
+import 'package:unidelivery_mobile/ViewModel/index.dart';
 import 'package:unidelivery_mobile/ViewModel/order_viewModel.dart';
 
 class VouchersListPage extends StatefulWidget {
@@ -23,13 +24,13 @@ class _VouchersListPageState extends State<VouchersListPage> {
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       new GlobalKey<RefreshIndicatorState>();
   Future<void> _refresh() async {
-    Get.find<OrderViewModel>().getVouchers();
+    Get.find<PromoViewModel>().getVouchers();
   }
 
   bool isErrorInput = false;
   @override
   void initState() {
-    Get.find<OrderViewModel>().getVouchers();
+    Get.find<PromoViewModel>().getVouchers();
     super.initState();
 
     // UPDATE USER INFO INTO FORM
@@ -62,8 +63,8 @@ class _VouchersListPageState extends State<VouchersListPage> {
 
   Widget _buildListVoucher() {
     return ScopedModel(
-      model: Get.find<OrderViewModel>(),
-      child: ScopedModelDescendant<OrderViewModel>(
+      model: Get.find<PromoViewModel>(),
+      child: ScopedModelDescendant<PromoViewModel>(
         builder: (context, child, model) {
           if (model.status == ViewStatus.Loading) {
             return _buildLoading();
@@ -124,7 +125,7 @@ class _VouchersListPageState extends State<VouchersListPage> {
     );
   }
 
-  Widget voucherCard(VoucherDTO voucher, OrderViewModel model) {
+  Widget voucherCard(VoucherDTO voucher, PromoViewModel model) {
     const Color primaryColor = Color(0xfff2f6f8);
     const Color secondaryColor = Color(0xFF4fba6f);
     const Color firstColor = Color(0xFF2E7D32);
@@ -132,8 +133,7 @@ class _VouchersListPageState extends State<VouchersListPage> {
 
     bool visibleText = false;
     bool isApplied = false;
-
-    final vouchersInCart = model.currentCart?.vouchers;
+    final vouchersInCart = Get.find<OrderViewModel>().currentCart?.vouchers;
     if (vouchersInCart == null) {
       isApplied = false;
     } else {
@@ -154,9 +154,9 @@ class _VouchersListPageState extends State<VouchersListPage> {
       child: InkWell(
         onTap: () {
           if (isApplied) {
-            model.unselectVoucher(voucher);
+            Get.find<OrderViewModel>().unselectVoucher(voucher);
           } else {
-            model.selectVoucher(voucher);
+            Get.find<OrderViewModel>().selectVoucher(voucher);
           }
           Get.back();
         },
@@ -362,16 +362,16 @@ class _VouchersListPageState extends State<VouchersListPage> {
   Widget _buildSearchVoucher() {
     TextEditingController controller = TextEditingController(text: '');
 
-    void applyVoucher(OrderViewModel model) async {
+    void applyVoucher(PromoViewModel model) async {
       VoucherDTO inputVoucher = new VoucherDTO(voucherCode: controller.text);
       print(inputVoucher.voucherCode);
-      await model.selectVoucher(inputVoucher);
+      await Get.find<OrderViewModel>().selectVoucher(inputVoucher);
       Get.back();
     }
 
     return ScopedModel(
-        model: Get.find<OrderViewModel>(),
-        child: ScopedModelDescendant<OrderViewModel>(
+        model: Get.find<PromoViewModel>(),
+        child: ScopedModelDescendant<PromoViewModel>(
             builder: (context, child, model) {
           return Padding(
             padding: const EdgeInsets.only(left: 12, right: 12),
@@ -485,8 +485,8 @@ class _VouchersListPageState extends State<VouchersListPage> {
 
   Widget voucherList() {
     return ScopedModel(
-        model: Get.find<OrderViewModel>(),
-        child: ScopedModelDescendant<OrderViewModel>(
+        model: Get.find<PromoViewModel>(),
+        child: ScopedModelDescendant<PromoViewModel>(
             builder: (context, child, model) {
           if (model.status == ViewStatus.Loading) {
             return _buildLoading();
@@ -517,7 +517,8 @@ class _VouchersListPageState extends State<VouchersListPage> {
               scrollDirection: Axis.horizontal,
               itemBuilder: (context, index) {
                 final voucher = currentVouchers[index];
-                final currentVouchersInCart = model.currentCart.vouchers;
+                final currentVouchersInCart =
+                    Get.find<OrderViewModel>().currentCart.vouchers;
                 bool isApplied = currentVouchersInCart
                     .any((e) => e.voucherCode == voucher.voucherCode);
                 return ClipPath(
@@ -575,9 +576,11 @@ class _VouchersListPageState extends State<VouchersListPage> {
                           child: InkWell(
                             onTap: () {
                               if (isApplied) {
-                                model.unselectVoucher(voucher);
+                                Get.find<OrderViewModel>()
+                                    .unselectVoucher(voucher);
                               } else {
-                                model.selectVoucher(voucher);
+                                Get.find<OrderViewModel>()
+                                    .selectVoucher(voucher);
                               }
                             },
                             child: Container(

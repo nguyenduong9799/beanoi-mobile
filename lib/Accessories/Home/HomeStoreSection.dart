@@ -24,9 +24,9 @@ class HomeStoreSection extends StatelessWidget {
     return ScopedModelDescendant<HomeViewModel>(
       builder: (context, child, model) {
         ViewStatus status = model.status;
-        var supplierList =
-            model.suppliers.where((element) => element.available).toList();
-        // var supplierList = model.suppliers;
+        // var supplierList =
+        //     model.suppliers.where((element) => element.available).toList();
+        final supplierList = model.suppliers;
         // print(supliers);
         bool isMenuAvailable =
             Get.find<RootViewModel>().isCurrentMenuAvailable();
@@ -141,17 +141,11 @@ class HomeStoreSection extends StatelessWidget {
                       textAlign: TextAlign.left,
                     ),
                   ),
-                  ColorFiltered(
-                    colorFilter: ColorFilter.mode(
-                      isMenuAvailable ? Colors.transparent : Colors.grey,
-                      BlendMode.saturation,
-                    ),
-                    child: Container(
-                      margin: EdgeInsets.only(bottom: 8),
-                      color: Colors.white,
-                      padding: EdgeInsets.fromLTRB(8, 8, 8, 0),
-                      child: buildSupplierSection(supplierList),
-                    ),
+                  Container(
+                    margin: EdgeInsets.only(bottom: 8),
+                    color: Colors.white,
+                    padding: EdgeInsets.fromLTRB(8, 8, 8, 0),
+                    child: buildSupplierSection(supplierList),
                   ),
                   // SizedBox(height: 8),
                   _suggestRestaurant(),

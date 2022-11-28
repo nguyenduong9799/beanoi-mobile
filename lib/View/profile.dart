@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/style.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Accessories/index.dart';
+import 'package:unidelivery_mobile/Constraints/BeanOiTheme/index.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Enums/index.dart';
 import 'package:unidelivery_mobile/Utils/format_price.dart';
@@ -98,92 +100,241 @@ class _UpdateAccountState extends State<ProfileScreen> {
   Widget account() {
     return ScopedModelDescendant<AccountViewModel>(
         builder: (context, child, model) {
+      final vouchers = model.vouchers.length;
       return Container(
         //color: Color(0xFFddf1ed),
         padding: const EdgeInsets.all(8.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
-              height: Get.width * 0.3,
-              width: Get.width * 0.3,
-              decoration:
-                  BoxDecoration(color: kPrimary, shape: BoxShape.circle),
-              child: ClipOval(child: Image.asset('assets/images/avatar.png')),
-            ),
-            SizedBox(
-              width: 16,
-            ),
-            Flexible(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    model.currentUser.name,
-                    style: Get.theme.textTheme.headline1
-                        .copyWith(color: Colors.orange),
-                  ),
-                  SizedBox(
-                    height: 4,
-                  ),
-                  // infoDetail("Số xu: ", color: Colors.grey, list: [
-                  //   TextSpan(
-                  //       text:
-                  //           formatPriceWithoutUnit(model.currentUser.balance) +
-                  //               " xu",
-                  //       style: Get.theme.textTheme.headline4)
-                  // ]),
-                  // SizedBox(
-                  //   height: 4,
-                  // ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Container(
+                  height: 100,
+                  width: 100,
+                  decoration:
+                      BoxDecoration(color: kPrimary, shape: BoxShape.circle),
+                  child:
+                      ClipOval(child: Image.asset('assets/images/avatar.png')),
+                ),
+                SizedBox(
+                  width: 16,
+                ),
+                Flexible(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      infoDetail("Điểm Bean: ", color: Colors.grey, list: [
-                        TextSpan(
-                            text: formatPriceWithoutUnit(
-                                model.currentUser.balance),
-                            style: Get.theme.textTheme.headline4),
-                        WidgetSpan(
-                            alignment: PlaceholderAlignment.middle,
-                            child: Image(
-                              image: AssetImage(
-                                  "assets/images/icons/bean_coin.png"),
-                              width: 20,
-                              height: 20,
-                            ))
-                      ]),
+                      Text(
+                        model.currentUser.name,
+                        style: Get.theme.textTheme.headline1
+                            .copyWith(color: Colors.orange),
+                      ),
                       SizedBox(
                         height: 4,
                       ),
-                      Padding(
-                        padding: EdgeInsets.only(right: 30),
-                        child: InkWell(
-                          onTap: () async {
-                            showLoadingDialog();
-                            await model.fetchUser(isRefetch: true);
-                            hideDialog();
-                          },
-                          child: Icon(
-                            Icons.replay,
-                            color: kPrimary,
-                            size: 26,
+                      // infoDetail("Số xu: ", color: Colors.grey, list: [
+                      //   TextSpan(
+                      //       text:
+                      //           formatPriceWithoutUnit(model.currentUser.balance) +
+                      //               " xu",
+                      //       style: Get.theme.textTheme.headline4)
+                      // ]),
+                      // SizedBox(
+                      //   height: 4,
+                      // ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          // infoDetail("Điểm Bean: ", color: Colors.grey, list: [
+                          //   TextSpan(
+                          // text: formatPriceWithoutUnit(
+                          //     model.currentUser.balance),
+                          //       style: Get.theme.textTheme.headline4),
+                          //   WidgetSpan(
+                          //       alignment: PlaceholderAlignment.middle,
+                          //       child: Image(
+                          //         image: AssetImage(
+                          //             "assets/images/icons/bean_coin.png"),
+                          //         width: 20,
+                          //         height: 20,
+                          //       ))
+                          // ]),
+                          infoDetail("Mã giới thiệu: ",
+                              color: Colors.black,
+                              list: [
+                                TextSpan(
+                                    text: model.currentUser.referalCode ?? "-",
+                                    style: Get.theme.textTheme.headline4)
+                              ]),
+                          SizedBox(
+                            height: 4,
                           ),
+                          Padding(
+                            padding: EdgeInsets.only(right: 30),
+                            child: InkWell(
+                              onTap: () async {
+                                showLoadingDialog();
+                                await model.fetchUser(isRefetch: true);
+                                hideDialog();
+                              },
+                              child: Icon(
+                                Icons.replay,
+                                color: kPrimary,
+                                size: 26,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 4,
+                      ),
+                      Container(
+                        width: 120,
+                        padding: EdgeInsets.fromLTRB(8, 4, 8, 4),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: kPrimary),
+                          color: Color(0xFFeffff4),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          // crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              'assets/images/icon.png',
+                              width: 20,
+                              height: 20,
+                            ),
+                            SizedBox(
+                              width: 2,
+                            ),
+                            Text(
+                              'Thành viên',
+                              style: TextStyle(
+                                  color: Color(0xFF00ab56),
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ],
                         ),
                       ),
+                      // infoDetail("Mã giới thiệu: ", color: Colors.grey, list: [
+                      //   TextSpan(
+                      //       text: model.currentUser.referalCode ?? "-",
+                      //       style: Get.theme.textTheme.headline4)
+                      // ]),
                     ],
                   ),
-                  SizedBox(
-                    height: 4,
-                  ),
-                  infoDetail("Mã giới thiệu: ", color: Colors.grey, list: [
-                    TextSpan(
-                        text: model.currentUser.referalCode ?? "-",
-                        style: Get.theme.textTheme.headline4)
-                  ]),
-                ],
+                )
+              ],
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 24, right: 24, top: 8),
+              child: Container(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              'assets/images/icons/bean_coin.png',
+                              width: 20,
+                              height: 20,
+                            ),
+                            SizedBox(
+                              width: 2,
+                            ),
+                            Text(
+                              'Bean của bạn',
+                              style: TextStyle(
+                                  color: Colors.orange,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            // RichText(
+                            //   text: TextSpan(
+                            //       text: 'BEAN: ',
+                            //       style: TextStyle(
+                            //           color: Colors.orange,
+                            //           fontWeight: FontWeight.bold),
+                            //       children: [
+                            //         TextSpan(
+                            //           text: formatPriceWithoutUnit(
+                            //               model.currentUser.balance),
+                            //         ),
+                            //       ]),
+                            // ),
+                          ],
+                        ),
+                        Text(
+                          formatPriceWithoutUnit(model.currentUser.balance),
+                          style: TextStyle(color: Colors.orange),
+                        ),
+                      ],
+                    ),
+                    Container(
+                      height: 40,
+                      width: 10,
+                      child: VerticalDivider(
+                        color:
+                            BeanOiTheme.palettes.neutral400, //color of divider
+                        width: 10, //width space of divider
+                        //Spacing at the bottom of divider.
+                        thickness: 2, //thickness of divier line
+                        indent: 8, //Spacing at the top of divider.
+                        endIndent: 8,
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () {
+                        Get.toNamed(RouteHandler.VOUCHER_WALLET);
+                      },
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                'assets/images/icons/voucher_icon.png',
+                                width: 20,
+                                height: 20,
+                              ),
+                              SizedBox(
+                                width: 2,
+                              ),
+                              Text(
+                                'Quà và khuyến mãi',
+                                style: TextStyle(
+                                    color: BeanOiTheme.palettes.neutral700,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                          Text(
+                            // '$model.vouchers.length',
+                            '$vouchers',
+                            style: TextStyle(color: kPrimary),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            )
+            ),
           ],
         ),
       );
@@ -308,7 +459,7 @@ class _UpdateAccountState extends State<ProfileScreen> {
     return RichText(
         text: TextSpan(
             text: title,
-            style: Get.theme.textTheme.headline4,
+            style: Get.theme.textTheme.headline4 ?? TextStyle(color: color),
             children: list ?? []));
   }
 

@@ -12,8 +12,11 @@ import 'package:unidelivery_mobile/View/initiation_screen.dart';
 import 'package:unidelivery_mobile/View/referral.dart';
 import 'package:unidelivery_mobile/View/transaction.dart';
 import 'package:unidelivery_mobile/View/transactionDetail.dart';
-import 'package:unidelivery_mobile/View/voucher.dart';
+import 'package:unidelivery_mobile/View/PromoScreen/voucher.dart';
+import 'package:unidelivery_mobile/View/PromoScreen/voucherWallet.dart';
 import 'package:unidelivery_mobile/setup.dart';
+
+import 'View/PromoScreen/voucherDetail.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -144,6 +147,14 @@ class MyApp extends StatelessWidget {
           case RouteHandler.VOUCHER:
             return CupertinoPageRoute<bool>(
                 builder: (context) => VouchersListPage(), settings: settings);
+          case RouteHandler.VOUCHER_WALLET:
+            return CupertinoPageRoute<bool>(
+                builder: (context) => VoucherWalletPage(), settings: settings);
+          case RouteHandler.VOUCHER_DETAIL:
+            return CupertinoPageRoute<bool>(
+                builder: (context) => VoucherDetailScreen(
+                      voucherDTO: settings.arguments,
+                    ));
           case RouteHandler.DESIGN:
             return CupertinoPageRoute<bool>(
                 builder: (context) => DesignScreen(), settings: settings);
