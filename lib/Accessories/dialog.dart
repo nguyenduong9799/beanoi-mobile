@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
+import 'package:unidelivery_mobile/Constraints/BeanOiTheme/index.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
 import 'index.dart';
@@ -96,7 +97,7 @@ void showLoadingDialog() {
           ),
         ),
       ),
-      titleStyle: Get.theme.textTheme.headline2);
+      titleStyle: BeanOiTheme.typography.h2);
 }
 
 Future<bool> showErrorDialog(

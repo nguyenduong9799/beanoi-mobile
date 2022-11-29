@@ -440,14 +440,14 @@ class _UpdateAccountState extends State<ProfileScreen> {
                   await model.processSignout();
                 }),
             Divider(),
-            section(
-                icon: Icon(Icons.help_outline, color: Colors.black54),
-                title: Text("Design System",
-                    style: Get.theme.textTheme.headline4
-                        .copyWith(color: Colors.black54)),
-                function: () {
-                  Get.toNamed(RouteHandler.DESIGN);
-                }),
+            // section(
+            //     icon: Icon(Icons.help_outline, color: Colors.black54),
+            //     title: Text("Design System",
+            //         style: Get.theme.textTheme.headline4
+            //             .copyWith(color: Colors.black54)),
+            //     function: () {
+            //       Get.toNamed(RouteHandler.DESIGN);
+            //     }),
           ],
         ),
       ),

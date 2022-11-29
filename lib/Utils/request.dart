@@ -78,7 +78,6 @@ class CustomInterceptors extends Interceptor {
 class MyRequest {
   static BaseOptions options = new BaseOptions(
       // baseUrl: 'https://localhost:5001/api/',
-      // baseUrl: 'https://stg-api.beanoi.com/api/',
       baseUrl: 'https://stg-api.beanoi.com/api/',
       headers: {
         Headers.contentTypeHeader: "application/json",
@@ -101,6 +100,9 @@ class MyRequest {
           await showStatusDialog("assets/images/global_error.png", "Lỗi",
               "Vui lòng đăng nhập lại");
           Get.Get.offAllNamed(RouteHandler.LOGIN);
+        } else if (e.response?.statusCode == 500) {
+          await showStatusDialog("assets/images/global_error.png", "Lỗi mạng",
+              "Đã xảy ra sự cố với đường truyền mạng, vui lòng tắt ứng dụng và mở lại");
         } else {
           handler.next(e);
         }

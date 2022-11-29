@@ -10,7 +10,11 @@ class CacheImage extends StatelessWidget {
   Widget build(BuildContext context) {
     if (imageUrl == null) {
       return Container(
-        color: Colors.grey[200],
+        // color: Colors.grey[200],
+        decoration: BoxDecoration(
+          color: Colors.grey[200],
+          borderRadius: BorderRadius.circular(10),
+        ),
         child: Center(
             child: FittedBox(
           fit: BoxFit.fitWidth,
@@ -48,7 +52,11 @@ class CacheImage extends StatelessWidget {
         ),
       ),
       errorWidget: (context, url, error) => Container(
-        color: Colors.grey[200],
+        // color: Colors.grey[200],
+        decoration: BoxDecoration(
+          color: Colors.grey[200],
+          borderRadius: BorderRadius.circular(10),
+        ),
         child: Center(
             child: FittedBox(
           fit: BoxFit.fitWidth,

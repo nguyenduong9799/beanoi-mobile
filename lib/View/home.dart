@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:get/get.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -174,15 +175,15 @@ class _HomeScreenState extends State<HomeScreen> {
     return [
       banner(),
       // buildLinkBtns(),
+      SizedBox(height: 8),
       HomeCategorySection(),
-      // SizedBox(height: 8),
-      // buildVoucherSection(),
+      SizedBox(height: 8),
+      buildVoucherSection(),
       // SizedBox(height: 8),
       buildGiftCanExchangeSection(),
       SizedBox(height: 8),
       HomeCollection(),
-      // testScreen(),
-      SizedBox(height: 8),
+
       HomeStoreSection(),
       // SizedBox(height: 46),
     ];
@@ -286,29 +287,51 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget buildVoucherSection() {
-    return Section(
-        child: Container(
-      height: 30,
-      child: TouchOpacity(
-          onTap: () {
-            Get.toNamed(RouteHandler.VOUCHER);
-          },
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Icon(Icons.wallet_giftcard_outlined,
-                  color: BeanOiTheme.palettes.primary400),
-              Text(
-                "Bạn có 20 mã giảm giá vẫy gọi nè",
-                style: kTitleTextStyle.copyWith(
-                    color: BeanOiTheme.palettes.primary400),
-              ),
-              Icon(Icons.arrow_forward_ios_outlined,
-                  color: BeanOiTheme.palettes.primary400)
-            ],
-          )),
-    ));
+    return ScopedModel(
+      model: Get.find<AccountViewModel>(),
+      child: ScopedModelDescendant<AccountViewModel>(
+        builder: (context, child, AccountViewModel model) {
+          var numberOfVoucher = 0;
+          if (model.status == ViewStatus.Loading) {
+            return SizedBox.shrink();
+          }
+          if (model.vouchers != null || model.vouchers.isNotEmpty) {
+            numberOfVoucher = model.vouchers.length;
+          }
+
+          return Section(
+              child: Container(
+            height: 30,
+            child: TouchOpacity(
+                onTap: () {
+                  Get.toNamed(RouteHandler.VOUCHER_WALLET);
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Row(
+                      children: [
+                        SvgPicture.asset(
+                          'assets/images/icons/voucher.svg',
+                          color: BeanOiTheme.palettes.primary300,
+                        ),
+                        SizedBox(width: 8),
+                        Text(
+                          "Bạn có $numberOfVoucher mã giảm giá",
+                          style: BeanOiTheme.typography.body2
+                              .copyWith(color: BeanOiTheme.palettes.primary400),
+                        ),
+                      ],
+                    ),
+                    Icon(Icons.arrow_forward_ios_outlined,
+                        color: BeanOiTheme.palettes.primary400)
+                  ],
+                )),
+          ));
+        },
+      ),
+    );
   }
 
   Widget buildGiftCanExchangeSection() {
