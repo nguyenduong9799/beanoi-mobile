@@ -122,7 +122,7 @@ class _NewsfeedScreenState extends State<NewsfeedScreen> {
                                   padding: const EdgeInsets.all(16),
                                   child: Text(
                                       "Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts. Far far away, behind the word mountains, far",
-                                      style: BeanOiTheme.typography.caption
+                                      style: BeanOiTheme.typography.caption1
                                           .copyWith(
                                               color: BeanOiTheme
                                                   .palettes.secondary100)),
@@ -419,7 +419,7 @@ class _NewsfeedScreenState extends State<NewsfeedScreen> {
                         Row(
                           children: [
                             Text(Jiffy("${newsfeed.createAt}").fromNow(),
-                                style: BeanOiTheme.typography.caption.copyWith(
+                                style: BeanOiTheme.typography.caption1.copyWith(
                                     color: BeanOiTheme.palettes.neutral700))
                           ],
                         ),
