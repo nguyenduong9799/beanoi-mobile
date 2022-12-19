@@ -100,7 +100,10 @@ class _UpdateAccountState extends State<ProfileScreen> {
   Widget account() {
     return ScopedModelDescendant<AccountViewModel>(
         builder: (context, child, model) {
-      final vouchers = model.vouchers.length;
+      var vouchers = 0;
+      if (model.vouchers != null) {
+        vouchers = model.vouchers.length;
+      }
       return Container(
         //color: Color(0xFFddf1ed),
         padding: const EdgeInsets.all(8.0),

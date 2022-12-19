@@ -295,7 +295,7 @@ class _HomeScreenState extends State<HomeScreen> {
           if (model.status == ViewStatus.Loading) {
             return SizedBox.shrink();
           }
-          if (model.vouchers != null || model.vouchers.isNotEmpty) {
+          if (model.vouchers != null) {
             numberOfVoucher = model.vouchers.length;
           }
 
