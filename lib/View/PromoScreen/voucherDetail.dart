@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:unidelivery_mobile/Accessories/index.dart';
+import 'package:unidelivery_mobile/Constraints/BeanOiTheme/button.dart';
 import 'package:unidelivery_mobile/Constraints/BeanOiTheme/index.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
 import 'package:unidelivery_mobile/Model/DTO/GiftDTO.dart';
 import 'package:unidelivery_mobile/Model/DTO/index.dart';
 import 'package:unidelivery_mobile/ViewModel/index.dart';
+import 'package:unidelivery_mobile/Widgets/beanoi_button.dart';
 
 class VoucherDetailScreen extends StatefulWidget {
   final VoucherDTO voucherDTO;
@@ -106,6 +108,18 @@ class _VoucherDetailScreenState extends State<VoucherDetailScreen>
   }
 
   Widget bottomBar() {
+    bool isApplied = false;
+    OrderViewModel root = Get.find<OrderViewModel>();
+    final vouchersInCart = root.currentCart?.vouchers;
+
+    if (vouchersInCart == null) {
+      isApplied = false;
+    } else {
+      if (vouchersInCart.length != 0) {
+        isApplied =
+            vouchersInCart[0].voucherCode == widget.voucherDTO.voucherCode;
+      }
+    }
     return Container(
       padding: const EdgeInsets.only(left: 10, right: 10),
       decoration: BoxDecoration(
@@ -125,6 +139,29 @@ class _VoucherDetailScreenState extends State<VoucherDetailScreen>
             height: 8,
           ),
           // orderButton(),
+          BeanOiButton.gradient(
+            height: 50,
+            onPressed: () async {
+              if (isApplied) {
+                await root.unselectVoucher(widget.voucherDTO);
+              } else {
+                await root.selectVoucher(widget.voucherDTO);
+                if (root.listError != null) {
+                  await showErrorDialog(
+                      errorTitle: Get.find<OrderViewModel>().listError[0]);
+                }
+              }
+
+              Get.back();
+            },
+            child: Center(
+              child: Text(
+                'Áp dụng mã khuyến mãi',
+                style: BeanOiTheme.typography.buttonLg,
+              ),
+            ),
+            size: BeanOiButtonSize.large,
+          ),
           SizedBox(
             height: 8,
           )
@@ -132,93 +169,4 @@ class _VoucherDetailScreenState extends State<VoucherDetailScreen>
       ),
     );
   }
-
-  // Widget orderButton() {
-  //   return ScopedModelDescendant(
-  //       builder: (BuildContext context, Widget child,
-  //               ProductDetailViewModel model) =>
-  //           model.order
-  //               ? FlatButton(
-  //                   padding: EdgeInsets.all(8),
-  //                   onPressed: () async {
-  //                     await model.addProductToCart();
-  //                   },
-  //                   textColor: kBackgroundGrey[0],
-  //                   color: kPrimary,
-  //                   shape: RoundedRectangleBorder(
-  //                       borderRadius: BorderRadius.all(Radius.circular(8))),
-  //                   child: Column(
-  //                     children: [
-  //                       SizedBox(
-  //                         height: 8,
-  //                       ),
-  //                       Row(
-  //                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //                         children: [
-  //                           Flexible(
-  //                             child: Text(model.count.toString() + " Món ",
-  //                                 style: Get.theme.textTheme.headline3
-  //                                     .copyWith(color: Colors.white)),
-  //                           ),
-  //                           Flexible(
-  //                             child: Text("Thêm",
-  //                                 style: Get.theme.textTheme.headline3
-  //                                     .copyWith(color: Colors.white)),
-  //                           ),
-  //                           widget.voucherDTO.type != ProductType.GIFT_PRODUCT
-  //                               ? Flexible(
-  //                                   child: Text(
-  //                                     formatPrice(model.total) ?? "",
-  //                                     style: Get.theme.textTheme.headline3
-  //                                         .copyWith(color: Colors.white),
-  //                                   ),
-  //                                 )
-  //                               : Flexible(
-  //                                   child: RichText(
-  //                                       text: TextSpan(
-  //                                           text: formatBean(model.total) + " ",
-  //                                           style: Get.theme.textTheme.headline3
-  //                                               .copyWith(color: Colors.white),
-  //                                           children: [
-  //                                         WidgetSpan(
-  //                                             alignment:
-  //                                                 PlaceholderAlignment.bottom,
-  //                                             child: Image(
-  //                                               image: AssetImage(
-  //                                                   "assets/images/icons/bean_coin.png"),
-  //                                               width: 20,
-  //                                               height: 20,
-  //                                             ))
-  //                                       ])),
-  //                                 ),
-  //                         ],
-  //                       ),
-  //                       SizedBox(
-  //                         height: 8,
-  //                       ),
-  //                     ],
-  //                   ),
-  //                 )
-  //               : FlatButton(
-  //                   padding: EdgeInsets.all(8),
-  //                   onPressed: () {},
-  //                   textColor: kBackgroundGrey[0],
-  //                   color: kBackgroundGrey[5],
-  //                   shape: RoundedRectangleBorder(
-  //                       borderRadius: BorderRadius.all(Radius.circular(8))),
-  //                   child: Column(
-  //                     children: [
-  //                       SizedBox(
-  //                         height: 8,
-  //                       ),
-  //                       Text("Vui lòng chọn những trường bắt buộc (*)",
-  //                           style: Get.theme.textTheme.headline3
-  //                               .copyWith(color: Colors.white)),
-  //                       SizedBox(
-  //                         height: 8,
-  //                       ),
-  //                     ],
-  //                   ),
-  //                 ));
-  // }
 }

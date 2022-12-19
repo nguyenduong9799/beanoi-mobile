@@ -144,7 +144,7 @@ class LoginViewModel extends BaseModel {
             margin: EdgeInsets.only(left: 8, right: 8, bottom: 32),
             borderRadius: 8);
         await Get.find<RootViewModel>().startUp();
-        await Get.offAllNamed(RouteHandler.NAV);
+        await Get.offAllNamed(RouteHandler.SELECT_STORE);
       }
     } on FirebaseAuthException catch (e) {
       await showStatusDialog(

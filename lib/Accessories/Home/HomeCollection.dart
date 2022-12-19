@@ -5,6 +5,7 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:get/get.dart';
 import 'package:unidelivery_mobile/Accessories/CacheImage.dart';
+import 'package:unidelivery_mobile/Accessories/shimmer_block.dart';
 import 'package:unidelivery_mobile/Accessories/touchopacity.dart';
 import 'package:unidelivery_mobile/Constraints/BeanOiTheme/index.dart';
 import 'package:unidelivery_mobile/Constraints/index.dart';
@@ -47,7 +48,7 @@ class _HomeCollectionState extends State<HomeCollection> {
           if (model.status == ViewStatus.Loading ||
               collections == null ||
               collections?.length == 0) {
-            return SizedBox();
+            return _buildLoading();
           }
           return Column(
             children: collections
@@ -225,4 +226,52 @@ class _HomeCollectionState extends State<HomeCollection> {
       ),
     );
   }
+}
+
+Widget _buildLoading() {
+  return Container(
+    margin: EdgeInsets.only(bottom: 8),
+    color: Colors.white,
+    padding: EdgeInsets.fromLTRB(8, 8, 8, 0),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            ShimmerBlock(width: Get.width * 0.4, height: 30),
+            ShimmerBlock(width: Get.width * 0.2, height: 30),
+          ],
+        ),
+        SizedBox(height: 8),
+        Container(
+          width: Get.width,
+          height: 155,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ShimmerBlock(
+                height: 110,
+                width: 110,
+                borderRadius: 16,
+              ),
+              SizedBox(width: 8),
+              ShimmerBlock(
+                height: 110,
+                width: 110,
+                borderRadius: 16,
+              ),
+              SizedBox(width: 8),
+              ShimmerBlock(
+                height: 110,
+                width: 110,
+                borderRadius: 16,
+              ),
+            ],
+          ),
+        ),
+      ],
+    ),
+  );
 }

@@ -49,7 +49,7 @@ class RootViewModel extends BaseModel {
     await Get.find<HomeViewModel>().getSuppliers();
     await Get.find<HomeViewModel>().getCollections();
     await Get.find<OrderViewModel>().getUpSellCollections();
-    await Get.find<GiftViewModel>().getGifts();
+    // await Get.find<GiftViewModel>().getGifts();
   }
 
   Future getStores() async {
@@ -524,7 +524,7 @@ class RootViewModel extends BaseModel {
       double.parse(currentCheckoutTime.split(':')[1]).round(),
     );
     int differentTime = checkoutTime.difference(currentDate).inMilliseconds;
-    if (differentTime < 0) {
+    if (differentTime <= 0) {
       return false;
     } else
       return true;
