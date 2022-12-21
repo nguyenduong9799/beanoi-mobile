@@ -274,7 +274,7 @@ class ProductDetailViewModel extends BaseModel {
     hideDialog();
     if (backToHome) {
       Get.find<OrderViewModel>().prepareOrder();
-      Get.back(result: true);
+      // Get.back(result: true);
     } else {
       Get.find<OrderViewModel>().prepareOrder();
     }

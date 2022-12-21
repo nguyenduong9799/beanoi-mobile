@@ -48,19 +48,13 @@ class HomeStoreSection extends StatelessWidget {
               ],
             );
           case ViewStatus.Loading:
-            return Padding(
-              padding: const EdgeInsets.all(8.0),
+            return Container(
+              margin: EdgeInsets.only(bottom: 8),
+              color: Colors.white,
+              padding: EdgeInsets.fromLTRB(8, 8, 8, 0),
               child: Column(
                 children: [
                   ShimmerBlock(width: Get.width * 0.4, height: 40),
-                  SizedBox(height: 8),
-                  buildSupplierSection(null, true),
-                  SizedBox(height: 8),
-                  buildSupplierSection(null, true),
-                  SizedBox(height: 8),
-                  buildSupplierSection(null, true),
-                  SizedBox(height: 8),
-                  buildSupplierSection(null, true),
                   SizedBox(height: 8),
                   buildSupplierSection(null, true),
                 ],
@@ -164,6 +158,18 @@ class HomeStoreSection extends StatelessWidget {
       return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          ShimmerBlock(
+            height: 50,
+            width: 50,
+            borderRadius: 16,
+          ),
+          SizedBox(width: 8),
+          ShimmerBlock(
+            height: 50,
+            width: 50,
+            borderRadius: 16,
+          ),
+          SizedBox(width: 8),
           ShimmerBlock(
             height: 50,
             width: 50,
